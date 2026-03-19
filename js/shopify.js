@@ -25,14 +25,15 @@ var AtlasShop = (function() {
   // Format: 'gid://shopify/ProductVariant/XXXXXXXXXX'
   var VARIANTS = {
     'strawberry-lemonade': {
-      id: 'gid://shopify/ProductVariant/7693950255178',
+      id: 'gid://shopify/ProductVariant/42739482067018',
       title: 'Strawberry Lemonade — 16 Pack',
       price: '29.99',
+      comparePrice: '32.99',
       image: null
     },
     'lemon-lime': {
-      id: 'gid://shopify/ProductVariant/7862662103114',
-      title: 'Lemon Lime — 16 Pack',
+      id: 'gid://shopify/ProductVariant/41850457817162',
+      title: 'Grapefruit — 16 Pack',
       price: '29.99',
       image: null
     }
@@ -424,52 +425,37 @@ var AtlasShop = (function() {
   }
 
   // =============================================
-  // FETCH PRODUCT IMAGES FROM STOREFRONT API
+  // FETCH PRODUCT IMAGES FROM SHOPIFY
   // =============================================
+  // Product ID to slug mapping
+  var PRODUCT_MAP = {
+    7693950255178: 'strawberry-lemonade',
+    7862662103114: 'lemon-lime'
+  };
+
   function fetchProductImages() {
-    var query = '{ products(first: 10) { edges { node { title handle images(first: 5) { edges { node { src altText } } } variants(first: 5) { edges { node { id title price { amount } image { src altText } } } } } } } }';
+    fetch('https://' + CONFIG.domain + '/products.json')
+      .then(function(res) { return res.json(); })
+      .then(function(data) {
+        if (!data || !data.products) return;
 
-    fetch('https://' + CONFIG.domain + '/api/2024-01/graphql.json', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-Shopify-Storefront-Access-Token': CONFIG.storefrontAccessToken
-      },
-      body: JSON.stringify({ query: query })
-    })
-    .then(function(res) { return res.json(); })
-    .then(function(data) {
-      if (!data || !data.data || !data.data.products) return;
+        for (var i = 0; i < data.products.length; i++) {
+          var product = data.products[i];
+          var slug = PRODUCT_MAP[product.id];
+          if (!slug) continue;
 
-      var products = data.data.products.edges;
-      for (var i = 0; i < products.length; i++) {
-        var product = products[i].node;
-        var images = product.images.edges;
-        var firstImage = images.length > 0 ? images[0].node.src : null;
-
-        // Match product to our variants by checking variant IDs
-        var variants = product.variants.edges;
-        for (var j = 0; j < variants.length; j++) {
-          var variantNode = variants[j].node;
-          var variantId = variantNode.id;
-
-          // Find matching slug in our VARIANTS map
-          for (var slug in VARIANTS) {
-            if (VARIANTS[slug].id === variantId) {
-              var imgSrc = (variantNode.image && variantNode.image.src) || firstImage;
-              if (imgSrc) {
-                VARIANTS[slug].image = imgSrc;
-                VARIANTS[slug].shopifyTitle = product.title;
-                injectProductImage(slug, imgSrc, product.title);
-              }
-            }
+          var images = product.images;
+          if (images && images.length > 0) {
+            var imgSrc = images[0].src;
+            VARIANTS[slug].image = imgSrc;
+            VARIANTS[slug].allImages = images.map(function(img) { return img.src; });
+            injectProductImage(slug, imgSrc, product.title);
           }
         }
-      }
-    })
-    .catch(function(err) {
-      // Silently fail — CSS sachet illustrations remain as fallback
-    });
+      })
+      .catch(function() {
+        // Silently fail — CSS sachet illustrations remain as fallback
+      });
   }
 
   function injectProductImage(slug, imgSrc, altText) {
