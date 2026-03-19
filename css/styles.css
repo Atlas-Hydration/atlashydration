@@ -1754,6 +1754,346 @@ img {
 }
 
 /* ========================================
+   Product Gallery
+   ======================================== */
+.product-gallery {
+  position: sticky;
+  top: 120px;
+}
+
+.product-gallery__main {
+  aspect-ratio: 1;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  margin-bottom: 12px;
+  position: relative;
+}
+
+.product-gallery__slide {
+  display: none;
+  width: 100%;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.product-gallery__slide.active {
+  display: flex;
+}
+
+.product-gallery__slide--strawberry {
+  background: linear-gradient(135deg, #fef2f4, #fce4e8, #fef2f4);
+}
+
+.product-gallery__slide--lemon {
+  background: linear-gradient(135deg, #f5fce8, #eef9d6, #f5fce8);
+}
+
+.product-gallery__slide--brand {
+  background: linear-gradient(135deg, #1a1a1a, #2a2a2a, #1a1a1a);
+}
+
+.product-gallery__slide--ingredients {
+  background: var(--color-bg-light);
+}
+
+.product-gallery__slide--lifestyle {
+  background: var(--color-bg-light);
+}
+
+.product-gallery__slide .sachet {
+  width: 180px;
+  animation: float 3s ease-in-out infinite;
+}
+
+.product-gallery__slide .sachet__body {
+  min-height: 200px;
+  padding: 24px 16px;
+}
+
+.product-gallery__slide .sachet__brand {
+  font-size: 1.5rem;
+}
+
+.product-gallery__slide .sachet__flavor {
+  font-size: 0.85rem;
+}
+
+.product-gallery__slide .sachet__top {
+  height: 28px;
+}
+
+/* Brand slide */
+.product-gallery__brand-content {
+  text-align: center;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+}
+
+.product-gallery__brand-content svg {
+  max-width: 280px;
+  height: auto;
+  opacity: 0.95;
+}
+
+.product-gallery__brand-tagline {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.7);
+}
+
+/* Ingredients slide */
+.product-gallery__ingredients {
+  padding: 48px 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  text-align: center;
+  width: 100%;
+}
+
+.product-gallery__ingredients-title {
+  font-family: var(--font-serif);
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.product-gallery__ingredients-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  width: 100%;
+  max-width: 360px;
+}
+
+.product-gallery__ingredient {
+  background: var(--color-white);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 16px 12px;
+  text-align: center;
+}
+
+.product-gallery__ingredient-value {
+  font-family: var(--font-serif);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-text);
+  line-height: 1.2;
+}
+
+.product-gallery__ingredient-label {
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-text-muted);
+  margin-top: 4px;
+}
+
+/* Lifestyle slide */
+.product-gallery__lifestyle {
+  padding: 48px 40px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.product-gallery__lifestyle-icon {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.05);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text);
+}
+
+.product-gallery__lifestyle-text {
+  font-family: var(--font-serif);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-text);
+  line-height: 1.3;
+  max-width: 280px;
+}
+
+.product-gallery__lifestyle-sub {
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+  max-width: 260px;
+  line-height: 1.6;
+}
+
+/* Thumbnails */
+.product-gallery__thumbs {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+
+.product-gallery__thumb {
+  aspect-ratio: 1;
+  border-radius: 8px;
+  overflow: hidden;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: all var(--transition);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  opacity: 0.5;
+}
+
+.product-gallery__thumb:hover {
+  opacity: 0.8;
+  border-color: var(--color-border);
+}
+
+.product-gallery__thumb.active {
+  border-color: var(--color-text);
+  opacity: 1;
+}
+
+.product-gallery__thumb--strawberry {
+  background: linear-gradient(135deg, #fef2f4, #fce4e8);
+}
+
+.product-gallery__thumb--lemon {
+  background: linear-gradient(135deg, #f5fce8, #eef9d6);
+}
+
+.product-gallery__thumb--brand {
+  background: linear-gradient(135deg, #1a1a1a, #2a2a2a);
+}
+
+.product-gallery__thumb--ingredients {
+  background: var(--color-bg-light);
+}
+
+.product-gallery__thumb--lifestyle {
+  background: var(--color-bg-light);
+}
+
+.product-gallery__thumb .sachet {
+  width: 30px;
+  animation: none;
+  filter: drop-shadow(0 2px 6px rgba(0,0,0,0.1));
+}
+
+.product-gallery__thumb .sachet__top {
+  height: 6px;
+  border-bottom-width: 1px;
+}
+
+.product-gallery__thumb .sachet__body {
+  min-height: 36px;
+  padding: 4px 3px;
+  gap: 1px;
+}
+
+.product-gallery__thumb .sachet__brand {
+  font-size: 0.35rem;
+}
+
+.product-gallery__thumb .sachet__flavor,
+.product-gallery__thumb .sachet__info {
+  display: none;
+}
+
+.product-gallery__thumb-icon {
+  color: var(--color-text-muted);
+}
+
+.product-gallery__thumb-label {
+  font-size: 0.5rem;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 600;
+  margin-top: 2px;
+  text-align: center;
+  line-height: 1.2;
+}
+
+/* ========================================
+   Benefits Bar
+   ======================================== */
+.benefits-bar {
+  padding: 60px 0;
+  border-top: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.benefits-bar__grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 24px;
+  text-align: center;
+}
+
+.benefits-bar__item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.benefits-bar__icon {
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text);
+}
+
+.benefits-bar__icon svg {
+  width: 36px;
+  height: 36px;
+}
+
+.benefits-bar__label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-text);
+  letter-spacing: 0.02em;
+}
+
+@media (max-width: 1024px) {
+  .product-gallery {
+    position: static;
+    max-width: 500px;
+    margin: 0 auto;
+  }
+}
+
+@media (max-width: 768px) {
+  .benefits-bar__grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 32px;
+  }
+}
+
+@media (max-width: 480px) {
+  .benefits-bar__grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* ========================================
    Animations
    ======================================== */
 @keyframes fadeInUp {
