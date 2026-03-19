@@ -25,13 +25,13 @@ var AtlasShop = (function() {
   // Format: 'gid://shopify/ProductVariant/XXXXXXXXXX'
   var VARIANTS = {
     'strawberry-lemonade': {
-      id: 'VARIANT_ID_STRAWBERRY_LEMONADE',
+      id: '7693950255178',
       title: 'Strawberry Lemonade — 16 Pack',
       price: '29.99',
       image: null
     },
     'lemon-lime': {
-      id: 'VARIANT_ID_LEMON_LIME',
+      id: '7862662103114',
       title: 'Lemon Lime — 16 Pack',
       price: '29.99',
       image: null
