@@ -28,7 +28,7 @@
 // Scroll-based fade-in animations
 (function() {
   var targets = document.querySelectorAll(
-    '.science__card, .how-it-works__step, .testimonial, .product-card, .sf-highlight, .mission__content, .mission__visual'
+    '.science__accordion, .science__left, .how-it-works__step, .testimonial, .product-card, .sf-highlight, .mission__content, .mission__visual'
   );
 
   targets.forEach(function(el) {
@@ -113,11 +113,44 @@ document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
 
   window.addEventListener('scroll', function() {
     if (window.scrollY > 50) {
-      header.style.background = 'rgba(10, 22, 40, 0.95)';
+      header.style.background = 'rgba(255, 255, 255, 0.98)';
     } else {
-      header.style.background = 'rgba(10, 22, 40, 0.85)';
+      header.style.background = 'rgba(255, 255, 255, 0.95)';
     }
   }, { passive: true });
+})();
+
+// Science accordion toggle
+(function() {
+  var headers = document.querySelectorAll('.science__accordion-header');
+  headers.forEach(function(header) {
+    header.addEventListener('click', function() {
+      var accordion = header.parentElement;
+      var isOpen = accordion.classList.contains('science__accordion--open');
+
+      // Close all
+      document.querySelectorAll('.science__accordion').forEach(function(a) {
+        a.classList.remove('science__accordion--open');
+        var body = a.querySelector('.science__accordion-body');
+        if (body) body.style.display = 'none';
+      });
+
+      // Toggle clicked one
+      if (!isOpen) {
+        accordion.classList.add('science__accordion--open');
+        var body = accordion.querySelector('.science__accordion-body');
+        if (body) body.style.display = 'block';
+      }
+    });
+  });
+
+  // Initialize: hide closed accordion bodies
+  document.querySelectorAll('.science__accordion').forEach(function(a) {
+    if (!a.classList.contains('science__accordion--open')) {
+      var body = a.querySelector('.science__accordion-body');
+      if (body) body.style.display = 'none';
+    }
+  });
 })();
 
 // Quantity selector (product pages)

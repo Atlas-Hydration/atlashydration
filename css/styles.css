@@ -780,48 +780,168 @@ img {
 }
 
 /* ========================================
-   Science
+   Science / Ingredients
    ======================================== */
 .science {
   padding: 120px 0;
   background: var(--color-bg-light);
 }
 
-.science__grid {
+.science__layout {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 24px;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  align-items: start;
 }
 
-.science__card {
-  background: var(--color-white);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius);
-  padding: 36px 28px;
-  transition: all var(--transition);
+.science__left {
+  padding-top: 40px;
 }
 
-.science__card:hover {
-  border-color: rgba(0, 0, 0, 0.15);
-  transform: translateY(-4px);
+.science__heading {
+  font-family: var(--font-serif);
+  font-size: clamp(2rem, 3.5vw, 2.8rem);
+  font-weight: 400;
+  line-height: 1.25;
+  color: var(--color-text-muted);
+  margin-bottom: 24px;
 }
 
-.science__icon {
-  color: var(--color-text);
-  margin-bottom: 20px;
-}
-
-.science__card-title {
-  font-size: 1.1rem;
-  font-weight: 700;
-  margin-bottom: 10px;
-  color: var(--color-text);
-}
-
-.science__card-text {
-  font-size: 0.875rem;
+.science__desc {
+  font-size: 0.95rem;
   color: var(--color-text-muted);
   line-height: 1.7;
+  max-width: 420px;
+  margin-bottom: 40px;
+}
+
+.science__badges {
+  display: flex;
+  gap: 32px;
+  margin-bottom: 32px;
+}
+
+.science__badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--color-text);
+}
+
+.science__badge svg {
+  color: var(--color-text-muted);
+}
+
+.science__usa {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  color: var(--color-text-muted);
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.science__usa svg {
+  color: var(--color-text-muted);
+}
+
+/* Accordion styles */
+.science__accordion {
+  background: var(--color-white);
+  border-radius: var(--radius);
+  margin-bottom: 8px;
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+}
+
+.science__accordion-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 20px;
+  cursor: pointer;
+  background: #333;
+  color: #fff;
+  border-radius: var(--radius);
+}
+
+.science__accordion-dose {
+  background: rgba(255,255,255,0.15);
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.science__accordion-title {
+  flex: 1;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.science__accordion-toggle {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  opacity: 0.8;
+}
+
+.science__accordion-toggle svg {
+  transition: transform var(--transition);
+}
+
+.science__accordion--open .science__accordion-toggle svg {
+  transform: rotate(180deg);
+}
+
+.science__accordion-body {
+  padding: 8px 0;
+  background: var(--color-bg);
+}
+
+.science__ingredient {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 14px 20px;
+}
+
+.science__ingredient-dose {
+  background: var(--color-bg-light);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--color-text);
+  white-space: nowrap;
+  min-width: 70px;
+  text-align: center;
+}
+
+.science__ingredient-info h4 {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--color-text);
+  margin-bottom: 2px;
+}
+
+.science__ingredient-info h4 span {
+  font-weight: 400;
+  color: var(--color-text-muted);
+  font-size: 0.75rem;
+}
+
+.science__ingredient-info p {
+  font-size: 0.78rem;
+  color: var(--color-text-muted);
+  line-height: 1.5;
 }
 
 /* ========================================
@@ -1687,8 +1807,9 @@ img {
     grid-template-columns: repeat(2, 1fr);
   }
 
-  .science__grid {
-    grid-template-columns: repeat(2, 1fr);
+  .science__layout {
+    grid-template-columns: 1fr;
+    gap: 48px;
   }
 
   .testimonials__grid {
@@ -1756,8 +1877,27 @@ img {
     margin: 0 auto;
   }
 
-  .science__grid {
+  .science__layout {
     grid-template-columns: 1fr;
+    gap: 40px;
+  }
+
+  .science__left {
+    text-align: center;
+    padding-top: 0;
+  }
+
+  .science__desc {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .science__badges {
+    justify-content: center;
+  }
+
+  .science__usa {
+    align-items: center;
   }
 
   .how-it-works__grid {

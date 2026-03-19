@@ -53,6 +53,7 @@ var AtlasShop = (function() {
     bindCartEvents();
     bindAddToCartButtons();
     loadCheckout();
+    fetchProductImages();
   }
 
   function loadCheckout() {
@@ -420,6 +421,84 @@ var AtlasShop = (function() {
 
       addToCart(slug, qty);
     });
+  }
+
+  // =============================================
+  // FETCH PRODUCT IMAGES FROM STOREFRONT API
+  // =============================================
+  function fetchProductImages() {
+    var query = '{ products(first: 10) { edges { node { title handle images(first: 5) { edges { node { src altText } } } variants(first: 5) { edges { node { id title price { amount } image { src altText } } } } } } } }';
+
+    fetch('https://' + CONFIG.domain + '/api/2024-01/graphql.json', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Shopify-Storefront-Access-Token': CONFIG.storefrontAccessToken
+      },
+      body: JSON.stringify({ query: query })
+    })
+    .then(function(res) { return res.json(); })
+    .then(function(data) {
+      if (!data || !data.data || !data.data.products) return;
+
+      var products = data.data.products.edges;
+      for (var i = 0; i < products.length; i++) {
+        var product = products[i].node;
+        var images = product.images.edges;
+        var firstImage = images.length > 0 ? images[0].node.src : null;
+
+        // Match product to our variants by checking variant IDs
+        var variants = product.variants.edges;
+        for (var j = 0; j < variants.length; j++) {
+          var variantNode = variants[j].node;
+          var variantId = variantNode.id;
+
+          // Find matching slug in our VARIANTS map
+          for (var slug in VARIANTS) {
+            if (VARIANTS[slug].id === variantId) {
+              var imgSrc = (variantNode.image && variantNode.image.src) || firstImage;
+              if (imgSrc) {
+                VARIANTS[slug].image = imgSrc;
+                VARIANTS[slug].shopifyTitle = product.title;
+                injectProductImage(slug, imgSrc, product.title);
+              }
+            }
+          }
+        }
+      }
+    })
+    .catch(function(err) {
+      // Silently fail — CSS sachet illustrations remain as fallback
+    });
+  }
+
+  function injectProductImage(slug, imgSrc, altText) {
+    // Update product card visuals on landing page
+    var cards = document.querySelectorAll('.product-card__visual--' + getVisualClass(slug));
+    for (var i = 0; i < cards.length; i++) {
+      cards[i].innerHTML = '<img src="' + imgSrc + '" alt="' + (altText || slug) + '" style="width:100%;height:100%;object-fit:cover;">';
+    }
+
+    // Update product hero image on product detail pages
+    var heroImages = document.querySelectorAll('.product-hero__image--' + getVisualClass(slug));
+    for (var j = 0; j < heroImages.length; j++) {
+      heroImages[j].innerHTML = '<img src="' + imgSrc + '" alt="' + (altText || slug) + '" style="width:100%;height:100%;object-fit:cover;border-radius:var(--radius-lg);">';
+    }
+
+    // Update hero right panel if on landing page (show first product found)
+    var heroRight = document.querySelector('.hero__right-bg');
+    if (heroRight && !heroRight.dataset.filled) {
+      heroRight.dataset.filled = 'true';
+      heroRight.style.backgroundImage = 'url(' + imgSrc + ')';
+      heroRight.style.backgroundSize = 'cover';
+      heroRight.style.backgroundPosition = 'center';
+    }
+  }
+
+  function getVisualClass(slug) {
+    if (slug === 'strawberry-lemonade') return 'strawberry';
+    if (slug === 'lemon-lime') return 'lemon';
+    return slug;
   }
 
   // =============================================
