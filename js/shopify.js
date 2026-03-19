@@ -18,20 +18,20 @@ var AtlasShop = (function() {
   // =============================================
   var CONFIG = {
     domain: '7fa7b7-42.myshopify.com',
-    storefrontAccessToken: 'YOUR_STOREFRONT_ACCESS_TOKEN'
+    storefrontAccessToken: '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'
   };
 
   // Map product slugs to Shopify variant GIDs
   // Format: 'gid://shopify/ProductVariant/XXXXXXXXXX'
   var VARIANTS = {
     'strawberry-lemonade': {
-      id: 'VARIANT_ID_STRAWBERRY_LEMONADE',
+      id: 'gid://shopify/ProductVariant/7693950255178',
       title: 'Strawberry Lemonade — 16 Pack',
       price: '29.99',
       image: null
     },
     'lemon-lime': {
-      id: 'VARIANT_ID_LEMON_LIME',
+      id: 'gid://shopify/ProductVariant/7862662103114',
       title: 'Lemon Lime — 16 Pack',
       price: '29.99',
       image: null
@@ -362,7 +362,7 @@ var AtlasShop = (function() {
       var parts = [];
       for (var i = 0; i < localCart.length; i++) {
         var variant = VARIANTS[localCart[i].slug];
-        if (variant && variant.id && variant.id !== 'VARIANT_ID_STRAWBERRY_LEMONADE' && variant.id !== 'VARIANT_ID_LEMON_LIME') {
+        if (variant && variant.id) {
           // Extract numeric ID from GID if needed
           var numericId = variant.id.replace('gid://shopify/ProductVariant/', '');
           parts.push(numericId + ':' + localCart[i].quantity);
