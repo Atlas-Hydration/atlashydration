@@ -254,7 +254,7 @@ img {
   letter-spacing: 0.08em;
   text-transform: uppercase;
   border: none;
-  border-radius: 4px;
+  border-radius: 999px;
   cursor: pointer;
   transition: all var(--transition);
   text-decoration: none;
@@ -1275,99 +1275,256 @@ img {
   opacity: 0.5;
 }
 
+.product-hero__eyebrow {
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  margin-bottom: 12px;
+}
+
 .product-hero__title {
   font-family: var(--font-serif);
   font-size: 2.5rem;
   font-weight: 700;
-  margin-bottom: 8px;
+  margin-bottom: 12px;
+  line-height: 1.15;
 }
 
-.product-hero__subtitle {
-  font-size: 0.875rem;
-  color: var(--color-text-dim);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+.product-hero__stars {
+  display: flex;
+  align-items: center;
+  gap: 6px;
   margin-bottom: 16px;
 }
 
-.product-hero__tag {
-  display: inline-block;
-  font-size: 0.75rem;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--color-accent);
-  background: rgba(6, 214, 160, 0.1);
-  padding: 6px 14px;
-  border-radius: 4px;
-  margin-bottom: 24px;
+.stars {
+  color: #1a1a1a;
+  font-size: 1.2rem;
+  letter-spacing: 2px;
 }
 
-.product-hero__desc-box {
-  background: var(--color-bg-light);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius);
-  padding: 24px;
-  margin-bottom: 32px;
-}
-
-.product-hero__desc-title {
-  font-weight: 700;
-  margin-bottom: 12px;
-  font-size: 1rem;
-}
-
-.product-hero__desc-text {
-  font-size: 0.9rem;
+.stars__count {
+  font-size: 0.95rem;
   color: var(--color-text-muted);
-  line-height: 1.7;
 }
 
-.product-hero__price-box {
-  display: flex;
-  align-items: center;
-  gap: 16px;
+.product-hero__packs {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--color-text);
+  margin-bottom: 8px;
+}
+
+.product-hero__desc {
+  font-size: 0.95rem;
+  color: var(--color-text-muted);
+  line-height: 1.6;
   margin-bottom: 24px;
 }
 
-.product-hero__price {
-  font-size: 2rem;
-  font-weight: 800;
-}
-
-.product-hero__per {
-  font-size: 0.85rem;
-  color: var(--color-text-dim);
-}
-
-.product-hero__actions {
+/* Flavor Selector */
+.flavor-selector {
   display: flex;
   gap: 12px;
   margin-bottom: 24px;
 }
 
-.product-hero__actions .btn {
+.flavor-selector__btn {
+  flex: 1;
+  padding: 14px 20px;
+  border-radius: 999px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-align: center;
+  border: 2px solid var(--color-border);
+  background: var(--color-bg);
+  color: var(--color-text);
+  cursor: pointer;
+  transition: all var(--transition);
+  text-decoration: none;
+}
+
+.flavor-selector__btn:hover {
+  border-color: var(--color-text-muted);
+}
+
+.flavor-selector__btn--strawberry.active {
+  background: #d4907e;
+  border-color: #d4907e;
+  color: #ffffff;
+}
+
+.flavor-selector__btn--grapefruit.active {
+  background: #d4907e;
+  border-color: #d4907e;
+  color: #ffffff;
+}
+
+/* Purchase Options */
+.purchase-options {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.purchase-option {
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 20px;
+  cursor: pointer;
+  transition: all var(--transition);
+}
+
+.purchase-option:hover {
+  border-color: var(--color-text-muted);
+}
+
+.purchase-option.active {
+  border-color: var(--color-text);
+}
+
+.purchase-option__header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.purchase-option__radio {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.purchase-option__radio input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.purchase-option__radio-custom {
+  display: block;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 2px solid var(--color-text-muted);
+  transition: all var(--transition);
+}
+
+.purchase-option__radio input:checked + .purchase-option__radio-custom {
+  border-color: var(--color-text);
+  border-width: 6px;
+}
+
+.purchase-option__label {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--color-text);
   flex: 1;
 }
 
-.product-hero__details {
-  display: flex;
-  gap: 24px;
-  padding-top: 16px;
-  border-top: 1px solid var(--color-border);
-}
-
-.product-hero__detail {
+.purchase-option__pricing {
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-size: 0.8rem;
-  color: var(--color-text-muted);
+  gap: 10px;
+  margin-left: auto;
 }
 
-.product-hero__detail svg {
-  color: var(--color-accent);
+.purchase-option__price {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.purchase-option__per {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-white);
+  background: var(--color-text-muted);
+  padding: 4px 10px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+/* Subscribe details */
+.purchase-option__details {
+  margin-top: 16px;
+  padding-top: 0;
+}
+
+.purchase-option__perks {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.purchase-option__perk {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--color-border);
+  font-size: 0.9rem;
+  color: var(--color-text);
+}
+
+.purchase-option__perk:last-child {
+  border-bottom: none;
+}
+
+.purchase-option__perk svg {
+  color: var(--color-text);
   flex-shrink: 0;
+}
+
+.purchase-option__save-badge {
+  background: #dc2626;
+  color: #ffffff;
+  font-size: 0.8rem;
+  font-weight: 700;
+  padding: 4px 12px;
+  border-radius: 4px;
+}
+
+/* Frequency Selector */
+.frequency-selector {
+  display: flex;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.frequency-selector__btn {
+  flex: 1;
+  padding: 12px 16px;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-align: center;
+  border: 2px solid var(--color-border);
+  background: var(--color-bg);
+  color: var(--color-text);
+  cursor: pointer;
+  transition: all var(--transition);
+}
+
+.frequency-selector__btn:hover {
+  border-color: var(--color-text-muted);
+}
+
+.frequency-selector__btn.active {
+  background: var(--color-text-muted);
+  border-color: var(--color-text-muted);
+  color: #ffffff;
+}
+
+/* Promo */
+.product-hero__promo {
+  text-align: center;
+  font-size: 0.95rem;
+  color: var(--color-text);
+  margin-bottom: 20px;
 }
 
 /* Supplement Facts Table */
@@ -1520,7 +1677,7 @@ img {
   display: flex;
   align-items: center;
   border: 1px solid var(--color-border);
-  border-radius: 4px;
+  border-radius: 999px;
   overflow: hidden;
 }
 

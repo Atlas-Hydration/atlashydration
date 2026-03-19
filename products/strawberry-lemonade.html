@@ -157,28 +157,76 @@
 
           <!-- Product Info -->
           <div class="product-hero__info">
-            <nav class="breadcrumb" aria-label="Breadcrumb">
-              <a href="../index.html">Home</a>
-              <span class="breadcrumb__sep">&bull;</span>
-              <a href="../index.html#products">Products</a>
-              <span class="breadcrumb__sep">&bull;</span>
-              <span>Strawberry Lemonade</span>
-            </nav>
+            <p class="product-hero__eyebrow">Hydrate. Recover. Thrive.</p>
+            <h1 class="product-hero__title">Atlas Zero-Sugar Electrolytes</h1>
 
-            <h1 class="product-hero__title">Strawberry Lemonade</h1>
-            <p class="product-hero__subtitle">16 Stick Packs &bull; Zero Sugar Electrolyte Mix</p>
-            <span class="product-hero__tag">Best Seller</span>
-
-            <div class="product-hero__desc-box">
-              <h2 class="product-hero__desc-title">Evidence-Based Formula</h2>
-              <p class="product-hero__desc-text">Real hydration. Built for performance. This zero-sugar electrolyte drink mix delivers a science-backed blend of Sodium (600mg), Potassium (500mg), and Magnesium (200mg) plus B vitamins, Vitamin C, and recovery amino acids including 1,000mg L-Glutamine.</p>
-              <p class="product-hero__desc-text" style="margin-top: 12px;">Clean & refreshing, with only 5 calories per serving. Naturally sweetened — no artificial flavors, colors, or sweeteners. Built for daily hydration, sustained performance, and feeling balanced.</p>
+            <div class="product-hero__stars">
+              <span class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
+              <span class="stars__count">(20)</span>
             </div>
 
-            <div class="product-hero__price-box">
-              <span class="product-hero__price">$29.99</span>
-              <span class="product-hero__per">$1.87 / stick</span>
+            <p class="product-hero__packs">16 Stick Packs</p>
+            <p class="product-hero__desc">Clean, zero-sugar hydration with electrolytes, vitamins, and amino acids.</p>
+
+            <!-- Flavor Selector -->
+            <div class="flavor-selector">
+              <a href="strawberry-lemonade.html" class="flavor-selector__btn flavor-selector__btn--strawberry active">Strawberry Lemonade</a>
+              <a href="lemon-lime.html" class="flavor-selector__btn flavor-selector__btn--grapefruit">Grapefruit</a>
             </div>
+
+            <!-- Subscribe & Save -->
+            <div class="purchase-options">
+              <label class="purchase-option purchase-option--subscribe active" data-option="subscribe">
+                <div class="purchase-option__header">
+                  <div class="purchase-option__radio">
+                    <input type="radio" name="purchase-type" value="subscribe" checked>
+                    <span class="purchase-option__radio-custom"></span>
+                  </div>
+                  <span class="purchase-option__label">Subscribe &amp; Save</span>
+                  <div class="purchase-option__pricing">
+                    <span class="purchase-option__price" id="subscribePrice">$23.99</span>
+                    <span class="purchase-option__per">$1.69 / Stick</span>
+                  </div>
+                </div>
+                <div class="purchase-option__details">
+                  <div class="purchase-option__perks">
+                    <div class="purchase-option__perk">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
+                      <span class="purchase-option__save-badge">Save 20%</span>
+                    </div>
+                    <div class="purchase-option__perk">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
+                      <strong>Free Shipping</strong>
+                    </div>
+                    <div class="purchase-option__perk">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
+                      <strong>Cancel Anytime</strong>
+                    </div>
+                  </div>
+                  <div class="frequency-selector">
+                    <button class="frequency-selector__btn active" data-frequency="2">2 Weeks</button>
+                    <button class="frequency-selector__btn" data-frequency="4">4 Weeks</button>
+                    <button class="frequency-selector__btn" data-frequency="6">6 Weeks</button>
+                  </div>
+                </div>
+              </label>
+
+              <label class="purchase-option purchase-option--onetime" data-option="onetime">
+                <div class="purchase-option__header">
+                  <div class="purchase-option__radio">
+                    <input type="radio" name="purchase-type" value="onetime">
+                    <span class="purchase-option__radio-custom"></span>
+                  </div>
+                  <span class="purchase-option__label">One-time</span>
+                  <div class="purchase-option__pricing">
+                    <span class="purchase-option__price" id="onetimePrice">$29.99</span>
+                    <span class="purchase-option__per">$1.87 / Stick</span>
+                  </div>
+                </div>
+              </label>
+            </div>
+
+            <p class="product-hero__promo"><strong>Limited Time. Buy 3 Get 1 Free</strong></p>
 
             <!-- Quantity Selector + Add to Cart -->
             <div class="product-hero__buy">
@@ -188,25 +236,6 @@
                 <button class="qty-selector__btn" id="qtyPlus" aria-label="Increase quantity">+</button>
               </div>
               <button class="btn btn--primary btn--lg js-add-to-cart" data-product="strawberry-lemonade">Add to Cart</button>
-            </div>
-
-            <div class="product-hero__details">
-              <div class="product-hero__detail">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="10"/></svg>
-                Non-GMO
-              </div>
-              <div class="product-hero__detail">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="10"/></svg>
-                Made in USA
-              </div>
-              <div class="product-hero__detail">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="10"/></svg>
-                Zero Sugar
-              </div>
-              <div class="product-hero__detail">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="10"/></svg>
-                5 Calories
-              </div>
             </div>
           </div>
         </div>
@@ -397,7 +426,7 @@
         <div class="cta-section__inner">
           <h2 class="cta-section__title">Ready to Try Strawberry Lemonade?</h2>
           <p class="cta-section__text">16 stick packs of clean, science-backed hydration. Zero sugar. Five calories. Full performance.</p>
-          <button class="btn btn--primary btn--lg js-add-to-cart" data-product="strawberry-lemonade">Add to Cart — $29.99</button>
+          <button class="btn btn--primary btn--lg js-add-to-cart" data-product="strawberry-lemonade">Add to Cart</button>
         </div>
       </div>
     </section>

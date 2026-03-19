@@ -175,6 +175,32 @@ document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
   });
 })();
 
+// Purchase option toggle (subscribe vs one-time)
+(function() {
+  var options = document.querySelectorAll('.purchase-option');
+  if (!options.length) return;
+
+  options.forEach(function(option) {
+    option.addEventListener('click', function() {
+      options.forEach(function(o) { o.classList.remove('active'); });
+      option.classList.add('active');
+      var radio = option.querySelector('input[type="radio"]');
+      if (radio) radio.checked = true;
+    });
+  });
+
+  // Frequency selector
+  var freqBtns = document.querySelectorAll('.frequency-selector__btn');
+  freqBtns.forEach(function(btn) {
+    btn.addEventListener('click', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      freqBtns.forEach(function(b) { b.classList.remove('active'); });
+      btn.classList.add('active');
+    });
+  });
+})();
+
 // Quantity selector (product pages)
 (function() {
   var qtyInput = document.getElementById('productQty');

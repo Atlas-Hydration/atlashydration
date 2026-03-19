@@ -451,11 +451,58 @@ var AtlasShop = (function() {
             VARIANTS[slug].allImages = images.map(function(img) { return img.src; });
             injectProductImage(slug, imgSrc, product.title);
           }
+
+          // Update product details from Shopify data
+          if (product.variants && product.variants.length > 0) {
+            var variant = product.variants[0];
+            var price = variant.price;
+            VARIANTS[slug].price = price;
+            VARIANTS[slug].shopifyTitle = product.title;
+            VARIANTS[slug].shopifyDesc = product.body_html;
+          }
+
+          // Update prices on the product page if this is the current product
+          updateProductPagePrices(slug, product);
         }
       })
       .catch(function() {
-        // Silently fail — CSS sachet illustrations remain as fallback
+        // Silently fail — static content remains as fallback
       });
+  }
+
+  function updateProductPagePrices(slug, product) {
+    // Check if we're on this product's page
+    var addBtn = document.querySelector('.js-add-to-cart[data-product="' + slug + '"]');
+    if (!addBtn) return;
+
+    var variant = product.variants && product.variants[0];
+    if (!variant) return;
+
+    var price = parseFloat(variant.price);
+    var subscribePrice = (price * 0.8).toFixed(2);
+    var perStick = (price / 16).toFixed(2);
+    var subPerStick = (subscribePrice / 16).toFixed(2);
+
+    // Update one-time price
+    var onetimeEl = document.getElementById('onetimePrice');
+    if (onetimeEl) onetimeEl.textContent = '$' + price.toFixed(2);
+
+    // Update subscribe price
+    var subscribeEl = document.getElementById('subscribePrice');
+    if (subscribeEl) subscribeEl.textContent = '$' + subscribePrice;
+
+    // Update per-stick prices
+    var perEls = document.querySelectorAll('.purchase-option__per');
+    if (perEls.length >= 2) {
+      perEls[0].textContent = '$' + subPerStick + ' / Stick';
+      perEls[1].textContent = '$' + perStick + ' / Stick';
+    }
+
+    // Update CTA button price
+    var ctaBtn = document.querySelector('.cta-section .js-add-to-cart');
+    if (ctaBtn) {
+      ctaBtn.textContent = 'Add to Cart — $' + price.toFixed(2);
+    }
   }
 
   function injectProductImage(slug, imgSrc, altText) {
