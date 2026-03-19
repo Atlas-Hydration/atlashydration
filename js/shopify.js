@@ -18,7 +18,7 @@ var AtlasShop = (function() {
   // =============================================
   var CONFIG = {
     domain: '7fa7b7-42.myshopify.com',
-    storefrontAccessToken: 'YOUR_STOREFRONT_ACCESS_TOKEN'
+    storefrontAccessToken: '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'
   };
 
   // Map product slugs to Shopify variant GIDs
