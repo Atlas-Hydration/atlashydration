@@ -4,20 +4,17 @@
 
 // Mobile menu toggle
 (function() {
-  const toggle = document.getElementById('menuToggle');
-  const menu = document.getElementById('mobileMenu');
+  var toggle = document.getElementById('menuToggle');
+  var menu = document.getElementById('mobileMenu');
 
   if (toggle && menu) {
     toggle.addEventListener('click', function() {
-      const isOpen = menu.classList.toggle('active');
+      var isOpen = menu.classList.toggle('active');
       menu.setAttribute('aria-hidden', !isOpen);
       toggle.setAttribute('aria-expanded', isOpen);
-
-      // Animate hamburger to X
       toggle.classList.toggle('open');
     });
 
-    // Close menu on link click
     menu.querySelectorAll('a').forEach(function(link) {
       link.addEventListener('click', function() {
         menu.classList.remove('active');
@@ -66,13 +63,12 @@
     stats.forEach(function(el) {
       var target = parseInt(el.getAttribute('data-count'), 10);
       var duration = 1500;
-      var start = 0;
       var startTime = null;
 
       function step(timestamp) {
         if (!startTime) startTime = timestamp;
         var progress = Math.min((timestamp - startTime) / duration, 1);
-        var eased = 1 - Math.pow(1 - progress, 3); // easeOutCubic
+        var eased = 1 - Math.pow(1 - progress, 3);
         el.textContent = Math.floor(eased * target);
         if (progress < 1) {
           requestAnimationFrame(step);
@@ -122,4 +118,32 @@ document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
       header.style.background = 'rgba(10, 22, 40, 0.85)';
     }
   }, { passive: true });
+})();
+
+// Quantity selector (product pages)
+(function() {
+  var qtyInput = document.getElementById('productQty');
+  var minus = document.getElementById('qtyMinus');
+  var plus = document.getElementById('qtyPlus');
+
+  if (!qtyInput || !minus || !plus) return;
+
+  minus.addEventListener('click', function() {
+    var val = parseInt(qtyInput.value, 10) || 1;
+    if (val > 1) qtyInput.value = val - 1;
+  });
+
+  plus.addEventListener('click', function() {
+    var val = parseInt(qtyInput.value, 10) || 1;
+    var max = parseInt(qtyInput.max, 10) || 10;
+    if (val < max) qtyInput.value = val + 1;
+  });
+
+  qtyInput.addEventListener('change', function() {
+    var val = parseInt(qtyInput.value, 10);
+    var min = parseInt(qtyInput.min, 10) || 1;
+    var max = parseInt(qtyInput.max, 10) || 10;
+    if (isNaN(val) || val < min) qtyInput.value = min;
+    if (val > max) qtyInput.value = max;
+  });
 })();
