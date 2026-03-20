@@ -383,61 +383,84 @@
         <div class="section-header">
           <p class="section-eyebrow">Compare</p>
           <h2 class="section-title">How Atlas Compares</h2>
-          <p class="section-subtitle">Atlas is a cleaner, modern upgrade with higher electrolytes plus vitamins and recovery support, all zero sugar.</p>
+          <p class="section-subtitle">Select brands and categories to see how Atlas stacks up. Click any row for a head-to-head breakdown.</p>
         </div>
+
+        <!-- Brand Selector -->
+        <div class="compare__controls">
+          <div class="compare__control-group">
+            <span class="compare__control-label">Compare against</span>
+            <div class="compare__brand-toggles" id="brandToggles">
+              <button class="compare__toggle active" data-brand="lmnt">LMNT</button>
+              <button class="compare__toggle active" data-brand="liv">Liquid I.V.</button>
+              <button class="compare__toggle active" data-brand="wb">WaterBoy</button>
+              <button class="compare__toggle" data-brand="drip">DripDrop</button>
+              <button class="compare__toggle" data-brand="nuun">Nuun</button>
+            </div>
+          </div>
+          <div class="compare__control-group">
+            <span class="compare__control-label">Categories</span>
+            <div class="compare__cat-toggles" id="catToggles">
+              <button class="compare__toggle compare__toggle--cat active" data-cat="electrolytes">Electrolytes</button>
+              <button class="compare__toggle compare__toggle--cat active" data-cat="vitaminb">Vitamin B</button>
+              <button class="compare__toggle compare__toggle--cat active" data-cat="vitaminc">Vitamin C</button>
+              <button class="compare__toggle compare__toggle--cat active" data-cat="aminos">Amino Acids</button>
+              <button class="compare__toggle compare__toggle--cat active" data-cat="sugar">Sugar</button>
+              <button class="compare__toggle compare__toggle--cat" data-cat="calories">Calories</button>
+              <button class="compare__toggle compare__toggle--cat" data-cat="sodium">Sodium</button>
+              <button class="compare__toggle compare__toggle--cat" data-cat="potassium">Potassium</button>
+              <button class="compare__toggle compare__toggle--cat" data-cat="magnesium">Magnesium</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Interactive Table -->
         <div class="compare__table-wrap">
-          <table class="compare__table" role="table">
+          <table class="compare__table" id="compareTable" role="table">
             <thead>
-              <tr>
-                <th></th>
-                <th class="compare__brand compare__brand--atlas">
-                  <span class="compare__brand-name">
-                    <img src="logo.svg" alt="Atlas Hydration" height="18" style="display:inline-block;vertical-align:middle;filter:brightness(0);">
-                  </span>
-                </th>
-                <th class="compare__brand"><span class="compare__brand-name compare__brand-name--lmnt">LMNT</span></th>
-                <th class="compare__brand"><span class="compare__brand-name compare__brand-name--liv">Liquid I.V.</span></th>
-                <th class="compare__brand"><span class="compare__brand-name compare__brand-name--wb">WaterBoy</span></th>
-              </tr>
+              <tr id="compareHead"></tr>
             </thead>
-            <tbody>
-              <tr>
-                <td class="compare__label">Electrolytes (Hydration)</td>
-                <td class="compare__value compare__value--atlas"><div class="compare__bar" style="--bar-width:100%"><strong>1,769 MG</strong></div></td>
-                <td class="compare__value"><div class="compare__bar" style="--bar-width:71%">1,260 MG</div></td>
-                <td class="compare__value"><div class="compare__bar" style="--bar-width:53%">930 MG</div></td>
-                <td class="compare__value"><div class="compare__bar" style="--bar-width:87%">1,540 MG</div></td>
-              </tr>
-              <tr>
-                <td class="compare__label">Vitamin B (Cellular)</td>
-                <td class="compare__value compare__value--atlas"><div class="compare__bar" style="--bar-width:100%"><strong>38 MG</strong></div></td>
-                <td class="compare__value"><span class="compare__zero">&#10005;</span></td>
-                <td class="compare__value"><div class="compare__bar" style="--bar-width:95%">36 MG</div></td>
-                <td class="compare__value"><span class="compare__zero">&#10005;</span></td>
-              </tr>
-              <tr>
-                <td class="compare__label">Vitamin C (Immunity)</td>
-                <td class="compare__value compare__value--atlas"><div class="compare__bar" style="--bar-width:100%"><strong>90 MG</strong></div></td>
-                <td class="compare__value"><span class="compare__zero">&#10005;</span></td>
-                <td class="compare__value"><div class="compare__bar" style="--bar-width:69%">62 MG</div></td>
-                <td class="compare__value"><span class="compare__zero">&#10005;</span></td>
-              </tr>
-              <tr>
-                <td class="compare__label">Amino Acids (Recovery)</td>
-                <td class="compare__value compare__value--atlas"><div class="compare__bar" style="--bar-width:100%"><strong>1,200 MG</strong></div></td>
-                <td class="compare__value"><span class="compare__zero">&#10005;</span></td>
-                <td class="compare__value"><span class="compare__zero">&#10005;</span></td>
-                <td class="compare__value"><span class="compare__zero">&#10005;</span></td>
-              </tr>
-              <tr>
-                <td class="compare__label">Sugar</td>
-                <td class="compare__value compare__value--atlas"><div class="compare__check"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg> <strong>0 G</strong></div></td>
-                <td class="compare__value"><div class="compare__check"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg> 0 G</div></td>
-                <td class="compare__value"><span class="compare__sugar-bad">11 G</span></td>
-                <td class="compare__value"><div class="compare__check"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg> 0 G</div></td>
-              </tr>
-            </tbody>
+            <tbody id="compareBody"></tbody>
           </table>
+        </div>
+
+        <!-- Head-to-Head Breakdown Panel -->
+        <div class="compare__breakdown" id="compareBreakdown" style="display:none;">
+          <button class="compare__breakdown-close" id="breakdownClose" aria-label="Close breakdown">&times;</button>
+          <div class="compare__breakdown-header">
+            <div class="compare__breakdown-vs">
+              <span class="compare__breakdown-brand compare__breakdown-brand--atlas">Atlas</span>
+              <span class="compare__breakdown-vs-text">vs</span>
+              <span class="compare__breakdown-brand compare__breakdown-brand--rival" id="breakdownRival">LMNT</span>
+            </div>
+            <p class="compare__breakdown-cat" id="breakdownCat">Electrolytes</p>
+          </div>
+          <div class="compare__breakdown-bars">
+            <div class="compare__breakdown-row">
+              <div class="compare__breakdown-label compare__breakdown-label--atlas">
+                <span class="compare__breakdown-name">Atlas</span>
+                <span class="compare__breakdown-val" id="breakdownAtlasVal">1,769 mg</span>
+              </div>
+              <div class="compare__breakdown-track">
+                <div class="compare__breakdown-fill compare__breakdown-fill--atlas" id="breakdownAtlasBar"></div>
+              </div>
+            </div>
+            <div class="compare__breakdown-row">
+              <div class="compare__breakdown-label">
+                <span class="compare__breakdown-name" id="breakdownRivalName">LMNT</span>
+                <span class="compare__breakdown-val" id="breakdownRivalVal">1,260 mg</span>
+              </div>
+              <div class="compare__breakdown-track">
+                <div class="compare__breakdown-fill compare__breakdown-fill--rival" id="breakdownRivalBar"></div>
+              </div>
+            </div>
+          </div>
+          <div class="compare__breakdown-verdict" id="breakdownVerdict">
+            <div class="compare__breakdown-badge" id="breakdownBadge">Atlas Wins</div>
+            <p class="compare__breakdown-detail" id="breakdownDetail"></p>
+          </div>
+          <!-- Sub-ingredient breakdown for compound categories -->
+          <div class="compare__breakdown-subs" id="breakdownSubs" style="display:none;"></div>
         </div>
       </div>
     </section>
