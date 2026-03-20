@@ -1329,6 +1329,7 @@ img {
 .wave-text {
   position: relative;
   display: inline;
+  white-space: nowrap;
   color: #e85d75;
 }
 
