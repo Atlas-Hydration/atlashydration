@@ -1456,6 +1456,282 @@ document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
   render();
 })();
 
+// ========================================
+// Animated Section Backgrounds
+// ========================================
+(function() {
+  var BLUE = { r: 64, g: 160, b: 220 };
+
+  // Shared: create canvas for a section
+  function addCanvas(selector) {
+    var el = document.querySelector(selector);
+    if (!el) return null;
+    el.style.position = 'relative';
+    el.style.overflow = 'hidden';
+    var c = document.createElement('canvas');
+    c.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:0;';
+    el.insertBefore(c, el.firstChild);
+    // Ensure content sits above canvas
+    Array.from(el.children).forEach(function(child) {
+      if (child !== c && getComputedStyle(child).position === 'static') {
+        child.style.position = 'relative';
+        child.style.zIndex = '1';
+      }
+    });
+    var ctx = c.getContext('2d');
+    function resize() {
+      c.width = el.offsetWidth * (window.devicePixelRatio || 1);
+      c.height = el.offsetHeight * (window.devicePixelRatio || 1);
+      c.style.width = el.offsetWidth + 'px';
+      c.style.height = el.offsetHeight + 'px';
+      ctx.setTransform(window.devicePixelRatio || 1, 0, 0, window.devicePixelRatio || 1, 0, 0);
+    }
+    resize();
+    window.addEventListener('resize', resize);
+    return { canvas: c, ctx: ctx, el: el, w: function() { return el.offsetWidth; }, h: function() { return el.offsetHeight; }, resize: resize };
+  }
+
+  // Only animate when section is near viewport
+  function onVisible(el, cb) {
+    var active = false;
+    var obs = new IntersectionObserver(function(entries) {
+      active = entries[0].isIntersecting;
+    }, { rootMargin: '200px' });
+    obs.observe(el);
+    function loop(t) {
+      if (active) cb(t);
+      requestAnimationFrame(loop);
+    }
+    requestAnimationFrame(loop);
+  }
+
+  // --- 1. Hero: DNA Helix (light strands on dark #0a1628) ---
+  (function() {
+    var s = addCanvas('.hero');
+    if (!s) return;
+    var alpha = 0.08;
+    onVisible(s.el, function(t) {
+      var w = s.w(), h = s.h();
+      s.resize();
+      var time = t * 0.0004;
+      var helixCount = 4;
+      var spacing = w / (helixCount + 1);
+      for (var hi = 0; hi < helixCount; hi++) {
+        var cx = spacing * (hi + 1);
+        var amp = 35 + hi * 8;
+        var phase = hi * 2.1;
+        var steps = 70;
+        // Rungs
+        for (var i = 0; i < steps; i++) {
+          if (i % 4 !== 0) continue;
+          var yy = (i / steps) * (h + 40) - 20;
+          var tt = (i / steps) * Math.PI * 6 + time + phase;
+          var x1 = cx + Math.sin(tt) * amp;
+          var x2 = cx + Math.sin(tt + Math.PI) * amp;
+          var depth = (Math.cos(tt) + 1) * 0.5;
+          s.ctx.beginPath();
+          s.ctx.moveTo(x1, yy);
+          s.ctx.lineTo(x2, yy);
+          s.ctx.strokeStyle = 'rgba(' + BLUE.r + ',' + BLUE.g + ',' + BLUE.b + ',' + (alpha * 0.4 * depth) + ')';
+          s.ctx.lineWidth = 1;
+          s.ctx.stroke();
+        }
+        // Strands
+        for (var strand = 0; strand < 2; strand++) {
+          s.ctx.beginPath();
+          for (var i = 0; i < steps; i++) {
+            var yy = (i / steps) * (h + 40) - 20;
+            var tt = (i / steps) * Math.PI * 6 + time + phase;
+            var xx = cx + Math.sin(tt + strand * Math.PI) * amp;
+            if (i === 0) s.ctx.moveTo(xx, yy); else s.ctx.lineTo(xx, yy);
+          }
+          s.ctx.strokeStyle = 'rgba(' + BLUE.r + ',' + BLUE.g + ',' + BLUE.b + ',' + alpha + ')';
+          s.ctx.lineWidth = 1.2;
+          s.ctx.stroke();
+        }
+      }
+    });
+  })();
+
+  // --- 2. Science: Water Molecules (on #f5f5f5) ---
+  (function() {
+    var s = addCanvas('.science');
+    if (!s) return;
+    var alpha = 0.07;
+    var molecules = [];
+    for (var i = 0; i < 14; i++) {
+      molecules.push({
+        x: Math.random() * 1400, y: Math.random() * 800,
+        vx: (Math.random() - 0.5) * 0.25, vy: (Math.random() - 0.5) * 0.25,
+        rot: Math.random() * Math.PI * 2, rotSpd: (Math.random() - 0.5) * 0.002,
+        sc: 0.5 + Math.random() * 0.5
+      });
+    }
+    function drawMol(ctx, x, y, rot, sc) {
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.rotate(rot);
+      ctx.scale(sc, sc);
+      var bl = 28, a = 52.25 * Math.PI / 180;
+      var hx1 = -Math.sin(a) * bl, hy1 = -Math.cos(a) * bl;
+      var hx2 = Math.sin(a) * bl, hy2 = -Math.cos(a) * bl;
+      ctx.beginPath(); ctx.moveTo(hx1, hy1); ctx.lineTo(0, 0); ctx.lineTo(hx2, hy2);
+      ctx.strokeStyle = 'rgba(' + BLUE.r + ',' + BLUE.g + ',' + BLUE.b + ',' + (alpha * 0.7) + ')';
+      ctx.lineWidth = 2; ctx.stroke();
+      // Oxygen
+      ctx.beginPath(); ctx.arc(0, 0, 7, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(' + BLUE.r + ',' + BLUE.g + ',' + BLUE.b + ',' + (alpha * 0.5) + ')';
+      ctx.fill();
+      ctx.strokeStyle = 'rgba(' + BLUE.r + ',' + BLUE.g + ',' + BLUE.b + ',' + alpha + ')';
+      ctx.lineWidth = 1.5; ctx.stroke();
+      // Hydrogens
+      [[hx1, hy1], [hx2, hy2]].forEach(function(p) {
+        ctx.beginPath(); ctx.arc(p[0], p[1], 4.5, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(' + BLUE.r + ',' + BLUE.g + ',' + BLUE.b + ',' + (alpha * 0.3) + ')';
+        ctx.fill();
+        ctx.strokeStyle = 'rgba(' + BLUE.r + ',' + BLUE.g + ',' + BLUE.b + ',' + (alpha * 0.8) + ')';
+        ctx.lineWidth = 1.2; ctx.stroke();
+      });
+      ctx.restore();
+    }
+    onVisible(s.el, function() {
+      var w = s.w(), h = s.h();
+      s.resize();
+      molecules.forEach(function(m) {
+        m.x += m.vx; m.y += m.vy; m.rot += m.rotSpd;
+        if (m.x < -60) m.x = w + 60; if (m.x > w + 60) m.x = -60;
+        if (m.y < -60) m.y = h + 60; if (m.y > h + 60) m.y = -60;
+        drawMol(s.ctx, m.x, m.y, m.rot, m.sc);
+      });
+      // Hydrogen bonds
+      for (var i = 0; i < molecules.length; i++) {
+        for (var j = i + 1; j < molecules.length; j++) {
+          var dx = molecules[i].x - molecules[j].x;
+          var dy = molecules[i].y - molecules[j].y;
+          var dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < 140) {
+            s.ctx.beginPath(); s.ctx.setLineDash([4, 6]);
+            s.ctx.moveTo(molecules[i].x, molecules[i].y);
+            s.ctx.lineTo(molecules[j].x, molecules[j].y);
+            s.ctx.strokeStyle = 'rgba(' + BLUE.r + ',' + BLUE.g + ',' + BLUE.b + ',' + (alpha * 0.25 * (1 - dist / 140)) + ')';
+            s.ctx.lineWidth = 1; s.ctx.stroke(); s.ctx.setLineDash([]);
+          }
+        }
+      }
+    });
+  })();
+
+  // --- 3. Testimonials: Hydration Bubbles (on #f5f5f5) ---
+  (function() {
+    var s = addCanvas('.testimonials');
+    if (!s) return;
+    var alpha = 0.06;
+    var bubbles = [];
+    for (var i = 0; i < 25; i++) {
+      bubbles.push({
+        x: Math.random() * 1400, y: Math.random() * 600,
+        r: 4 + Math.random() * 20,
+        speed: 0.12 + Math.random() * 0.3,
+        wobAmp: 10 + Math.random() * 18,
+        wobFreq: 0.5 + Math.random() * 1.2,
+        phase: Math.random() * Math.PI * 2
+      });
+    }
+    onVisible(s.el, function(t) {
+      var w = s.w(), h = s.h();
+      s.resize();
+      var time = t * 0.001;
+      bubbles.forEach(function(b) {
+        b.y -= b.speed;
+        if (b.y < -b.r * 2) { b.y = h + b.r * 2; b.x = Math.random() * w; }
+        var bx = b.x + Math.sin(time * b.wobFreq + b.phase) * b.wobAmp;
+        var sa = 0.3 + (1 - b.r / 24) * 0.7;
+        // Glow
+        s.ctx.beginPath(); s.ctx.arc(bx, b.y, b.r + 3, 0, Math.PI * 2);
+        s.ctx.fillStyle = 'rgba(' + BLUE.r + ',' + BLUE.g + ',' + BLUE.b + ',' + (alpha * 0.12 * sa) + ')';
+        s.ctx.fill();
+        // Ring
+        s.ctx.beginPath(); s.ctx.arc(bx, b.y, b.r, 0, Math.PI * 2);
+        s.ctx.strokeStyle = 'rgba(' + BLUE.r + ',' + BLUE.g + ',' + BLUE.b + ',' + (alpha * sa) + ')';
+        s.ctx.lineWidth = 1; s.ctx.stroke();
+        // Highlight
+        s.ctx.beginPath(); s.ctx.arc(bx - b.r * 0.25, b.y - b.r * 0.3, b.r * 0.2, 0, Math.PI * 2);
+        s.ctx.fillStyle = 'rgba(' + BLUE.r + ',' + BLUE.g + ',' + BLUE.b + ',' + (alpha * 0.5 * sa) + ')';
+        s.ctx.fill();
+      });
+    });
+  })();
+
+  // --- 4. Founder: Topographic Contours (on #f5f5f5) ---
+  (function() {
+    var s = addCanvas('.founder');
+    if (!s) return;
+    var alpha = 0.05;
+    onVisible(s.el, function(t) {
+      var w = s.w(), h = s.h();
+      s.resize();
+      var time = t * 0.00015;
+      for (var li = 0; li < 10; li++) {
+        s.ctx.beginPath();
+        for (var x = 0; x < w; x += 4) {
+          var n = Math.sin(x * 0.005 + time * 0.8 + li * 0.5) * 0.3
+                + Math.sin(x * 0.012 - time * 0.5 + li * 1.2) * 0.2
+                + Math.cos(x * 0.008 + time * 0.3 + li * 0.8) * 0.15 + 0.5;
+          var y = h * (0.08 + 0.84 * (li / 10)) + n * 60 - 30;
+          if (x === 0) s.ctx.moveTo(x, y); else s.ctx.lineTo(x, y);
+        }
+        s.ctx.strokeStyle = 'rgba(' + BLUE.r + ',' + BLUE.g + ',' + BLUE.b + ',' + (alpha * (0.5 + 0.5 * Math.sin(li * 0.7 + time))) + ')';
+        s.ctx.lineWidth = 1;
+        s.ctx.stroke();
+      }
+    });
+  })();
+
+  // --- 5. CTA Dark: Electrolyte Pulse Grid (on #0a0a0a) ---
+  (function() {
+    var s = addCanvas('.cta-dark');
+    if (!s) return;
+    var alpha = 0.06;
+    var cellSize = 50;
+    onVisible(s.el, function(t) {
+      var w = s.w(), h = s.h();
+      s.resize();
+      var time = t * 0.001;
+      var cols = Math.ceil(w / cellSize) + 1;
+      var rows = Math.ceil(h / cellSize) + 1;
+      // Grid lines
+      for (var r = 0; r <= rows; r++) {
+        s.ctx.beginPath(); s.ctx.moveTo(0, r * cellSize); s.ctx.lineTo(w, r * cellSize);
+        s.ctx.strokeStyle = 'rgba(' + BLUE.r + ',' + BLUE.g + ',' + BLUE.b + ',' + (alpha * 0.2) + ')';
+        s.ctx.lineWidth = 0.5; s.ctx.stroke();
+      }
+      for (var c = 0; c <= cols; c++) {
+        s.ctx.beginPath(); s.ctx.moveTo(c * cellSize, 0); s.ctx.lineTo(c * cellSize, h);
+        s.ctx.strokeStyle = 'rgba(' + BLUE.r + ',' + BLUE.g + ',' + BLUE.b + ',' + (alpha * 0.2) + ')';
+        s.ctx.lineWidth = 0.5; s.ctx.stroke();
+      }
+      // Pulses
+      for (var r = 0; r <= rows; r++) {
+        for (var c = 0; c <= cols; c++) {
+          var ix = c * cellSize, iy = r * cellSize;
+          var dx = ix - w / 2, dy = iy - h / 2;
+          var dist = Math.sqrt(dx * dx + dy * dy);
+          var pulse = Math.sin(dist * 0.02 - time * 1.5) * 0.5 + 0.5;
+          if (pulse > 0.15) {
+            s.ctx.beginPath(); s.ctx.arc(ix, iy, 5 + pulse * 3, 0, Math.PI * 2);
+            s.ctx.fillStyle = 'rgba(' + BLUE.r + ',' + BLUE.g + ',' + BLUE.b + ',' + (alpha * pulse * 0.25) + ')';
+            s.ctx.fill();
+            s.ctx.beginPath(); s.ctx.arc(ix, iy, 1.5 + pulse * 1, 0, Math.PI * 2);
+            s.ctx.fillStyle = 'rgba(' + BLUE.r + ',' + BLUE.g + ',' + BLUE.b + ',' + (alpha * pulse) + ')';
+            s.ctx.fill();
+          }
+        }
+      }
+    });
+  })();
+
+})();
+
 // Product page gallery — nav buttons & dots
 (function() {
   var gallery = document.querySelector('.product-gallery');
