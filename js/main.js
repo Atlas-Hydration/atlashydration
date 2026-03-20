@@ -725,6 +725,7 @@ document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
       price: '$29.99',
       product: 'grapefruit',
       btnText: 'Buy Now',
+      tag: 'Pre-Order',
       cssClass: 'sticky-buy--grapefruit',
       thumb: 'https://cdn.shopify.com/s/files/1/0595/8133/3578/files/1_1a252c57-dc62-4c7b-a6b1-0f9677ce6b6f.jpg?v=1769181320'
     }
@@ -748,6 +749,20 @@ document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
     if (priceEl) priceEl.textContent = data.price;
     if (thumbEl) { thumbEl.src = data.thumb; thumbEl.alt = data.name; }
     if (btnEl) { btnEl.textContent = data.btnText; btnEl.setAttribute('data-product', data.product); }
+
+    // Show/hide pre-order tag
+    var tagEl = bar.querySelector('.sticky-buy__tag');
+    if (data.tag) {
+      if (!tagEl) {
+        tagEl = document.createElement('span');
+        tagEl.className = 'sticky-buy__tag';
+        var infoEl = bar.querySelector('.sticky-buy__info');
+        if (infoEl) infoEl.insertBefore(tagEl, priceEl);
+      }
+      tagEl.textContent = data.tag;
+    } else if (tagEl) {
+      tagEl.remove();
+    }
 
     // Update active flavor dot
     bar.querySelectorAll('.sticky-buy__flavor-dot').forEach(function(dot) {
