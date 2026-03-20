@@ -65,6 +65,7 @@
 
   <!-- Header -->
   <header class="header" role="navigation">
+    <canvas id="headerCanvas" class="header__canvas" aria-hidden="true"></canvas>
     <nav class="header__nav" aria-label="Main navigation">
       <a href="/" class="header__logo" aria-label="Atlas Hydration Home">
         <svg class="logo-icon" width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C10.5 4 7 8.5 7 12.5C7 15 8.5 17 10 17.5V20H9V22H15V20H14V17.5C15.5 17 17 15 17 12.5C17 8.5 13.5 4 12 2Z"/></svg>
@@ -406,6 +407,72 @@
       </div>
     </section>
 
+    <!-- Comparison Table -->
+    <section class="compare" id="compare" aria-label="How Atlas Compares">
+      <div class="container">
+        <div class="section-header">
+          <p class="section-eyebrow">Compare</p>
+          <h2 class="section-title">How Atlas Compares</h2>
+          <p class="section-subtitle">Atlas is a cleaner, modern upgrade with higher electrolytes plus vitamins and recovery support, all zero sugar.</p>
+        </div>
+        <div class="compare__table-wrap">
+          <table class="compare__table" role="table">
+            <thead>
+              <tr>
+                <th></th>
+                <th class="compare__brand compare__brand--atlas">
+                  <span class="compare__brand-name">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C10.5 4 7 8.5 7 12.5C7 15 8.5 17 10 17.5V20H9V22H15V20H14V17.5C15.5 17 17 15 17 12.5C17 8.5 13.5 4 12 2Z"/></svg>
+                    Atlas
+                  </span>
+                </th>
+                <th class="compare__brand"><span class="compare__brand-name">LMNT</span></th>
+                <th class="compare__brand"><span class="compare__brand-name">Liquid I.V.</span></th>
+                <th class="compare__brand"><span class="compare__brand-name">WaterBoy</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="compare__label">Electrolytes (Hydration)</td>
+                <td class="compare__value compare__value--atlas"><strong>1,769 MG</strong></td>
+                <td class="compare__value">1,260 MG</td>
+                <td class="compare__value">930 MG</td>
+                <td class="compare__value">1,540 MG</td>
+              </tr>
+              <tr>
+                <td class="compare__label">Vitamin B (Cellular)</td>
+                <td class="compare__value compare__value--atlas"><strong>38 MG</strong></td>
+                <td class="compare__value">0 MG</td>
+                <td class="compare__value">36 MG</td>
+                <td class="compare__value">0 MG</td>
+              </tr>
+              <tr>
+                <td class="compare__label">Vitamin C (Immunity)</td>
+                <td class="compare__value compare__value--atlas"><strong>90 MG</strong></td>
+                <td class="compare__value">0 MG</td>
+                <td class="compare__value">62 MG</td>
+                <td class="compare__value">0 MG</td>
+              </tr>
+              <tr>
+                <td class="compare__label">Amino Acids (Recovery)</td>
+                <td class="compare__value compare__value--atlas"><strong>1,200 MG</strong></td>
+                <td class="compare__value">0 MG</td>
+                <td class="compare__value">0 MG</td>
+                <td class="compare__value">0 MG</td>
+              </tr>
+              <tr>
+                <td class="compare__label">Sugar</td>
+                <td class="compare__value compare__value--atlas"><strong>0 G</strong></td>
+                <td class="compare__value">0 G</td>
+                <td class="compare__value">11 G</td>
+                <td class="compare__value">0 G</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
     <!-- How It Works -->
     <section class="how-it-works" aria-label="How to use Atlas Hydration">
       <div class="container">
@@ -539,8 +606,8 @@
         <div class="footer__links">
           <h4>Company</h4>
           <nav aria-label="Company links">
-            <a href="#science">Science</a>
-            <a href="#mission">Our Mission</a>
+            <a href="shipping.html">Shipping &amp; Returns</a>
+            <a href="privacy.html">Privacy Policy</a>
           </nav>
         </div>
         <div class="footer__links">
@@ -556,6 +623,23 @@
       </div>
     </div>
   </footer>
+
+  <!-- 10% Off Popup -->
+  <div class="popup-overlay" id="popupOverlay">
+    <div class="popup">
+      <button class="popup__close" id="popupClose" aria-label="Close">&times;</button>
+      <div class="popup__logo">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C10.5 4 7 8.5 7 12.5C7 15 8.5 17 10 17.5V20H9V22H15V20H14V17.5C15.5 17 17 15 17 12.5C17 8.5 13.5 4 12 2Z"/></svg>
+        <span>Atlas</span>
+      </div>
+      <div class="popup__heading">UNLOCK</div>
+      <div class="popup__percent">10% OFF</div>
+      <div class="popup__subheading">YOUR ORDER</div>
+      <input type="email" class="popup__input" id="popupEmail" placeholder="Enter your Email">
+      <button class="popup__btn" id="popupClaim">Claim 10% OFF</button>
+      <button class="popup__dismiss" id="popupDismiss">No Thanks, I'll pay full price</button>
+    </div>
+  </div>
 
   <!-- Shopify Buy SDK (CDN) -->
   <script src="https://sdks.shopifycdn.com/buy-button/latest/buy-button-storefront.min.js" defer></script>

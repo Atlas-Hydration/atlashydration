@@ -106,16 +106,16 @@ document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
   });
 });
 
-// Header background on scroll
+// Header background on scroll (matte black)
 (function() {
   var header = document.querySelector('.header');
   if (!header) return;
 
   window.addEventListener('scroll', function() {
     if (window.scrollY > 50) {
-      header.style.background = 'rgba(255, 255, 255, 0.98)';
+      header.style.background = 'rgba(30, 30, 30, 0.99)';
     } else {
-      header.style.background = 'rgba(255, 255, 255, 0.95)';
+      header.style.background = 'rgba(30, 30, 30, 0.97)';
     }
   }, { passive: true });
 })();
@@ -227,4 +227,114 @@ document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
     if (isNaN(val) || val < min) qtyInput.value = min;
     if (val > max) qtyInput.value = max;
   });
+})();
+
+// 10% Off Popup — 3 second delay, once per session
+(function() {
+  var overlay = document.getElementById('popupOverlay');
+  if (!overlay) return;
+  var closeBtn = document.getElementById('popupClose');
+  var dismissBtn = document.getElementById('popupDismiss');
+  var claimBtn = document.getElementById('popupClaim');
+  var emailInput = document.getElementById('popupEmail');
+
+  // Only show once per session
+  if (sessionStorage.getItem('atlas_popup_dismissed')) return;
+
+  setTimeout(function() {
+    overlay.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }, 3000);
+
+  function closePopup() {
+    overlay.classList.remove('active');
+    document.body.style.overflow = '';
+    sessionStorage.setItem('atlas_popup_dismissed', '1');
+  }
+
+  closeBtn.addEventListener('click', closePopup);
+  dismissBtn.addEventListener('click', closePopup);
+  overlay.addEventListener('click', function(e) {
+    if (e.target === overlay) closePopup();
+  });
+
+  claimBtn.addEventListener('click', function() {
+    var email = emailInput.value.trim();
+    if (email && email.indexOf('@') > -1) {
+      claimBtn.textContent = 'Code: ATLAS10';
+      claimBtn.style.background = '#22c55e';
+      setTimeout(closePopup, 2500);
+    } else {
+      emailInput.style.outline = '2px solid #ef4444';
+      emailInput.focus();
+      setTimeout(function() { emailInput.style.outline = ''; }, 1500);
+    }
+  });
+})();
+
+// Subtle WebGL-style particle animation in header
+(function() {
+  var canvas = document.getElementById('headerCanvas');
+  if (!canvas) return;
+
+  var ctx = canvas.getContext('2d');
+  var particles = [];
+  var count = 30;
+
+  function resize() {
+    canvas.width = canvas.offsetWidth;
+    canvas.height = canvas.offsetHeight;
+  }
+
+  function create() {
+    return {
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      vx: (Math.random() - 0.5) * 0.2,
+      vy: (Math.random() - 0.5) * 0.1,
+      r: Math.random() * 1.2 + 0.3,
+      o: Math.random() * 0.15 + 0.03
+    };
+  }
+
+  function init() {
+    resize();
+    for (var i = 0; i < count; i++) particles.push(create());
+    animate();
+  }
+
+  function animate() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    for (var i = 0; i < particles.length; i++) {
+      var p = particles[i];
+      p.x += p.vx;
+      p.y += p.vy;
+      if (p.x < -5 || p.x > canvas.width + 5) p.vx *= -1;
+      if (p.y < -5 || p.y > canvas.height + 5) p.vy *= -1;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(255, 255, 255, ' + p.o + ')';
+      ctx.fill();
+    }
+    // Draw subtle connections
+    for (var a = 0; a < particles.length; a++) {
+      for (var b = a + 1; b < particles.length; b++) {
+        var dx = particles[a].x - particles[b].x;
+        var dy = particles[a].y - particles[b].y;
+        var dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < 100) {
+          ctx.beginPath();
+          ctx.moveTo(particles[a].x, particles[a].y);
+          ctx.lineTo(particles[b].x, particles[b].y);
+          ctx.strokeStyle = 'rgba(255, 255, 255, ' + (0.03 * (1 - dist / 100)) + ')';
+          ctx.lineWidth = 0.5;
+          ctx.stroke();
+        }
+      }
+    }
+    requestAnimationFrame(animate);
+  }
+
+  window.addEventListener('resize', resize);
+  init();
 })();
