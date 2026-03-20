@@ -424,29 +424,22 @@ img {
   margin-bottom: 24px;
 }
 
-.hero__stars {
-  color: #ffffff;
-  font-size: 1rem;
-  letter-spacing: 2px;
+.hero__stars-manual {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+
+.hero__stars-manual svg {
+  display: block;
 }
 
 .hero__review-count {
   font-size: 0.85rem;
   color: rgba(255,255,255,0.85);
   font-weight: 400;
-}
-
-/* Force Junip stars white in hero */
-.hero__reviews .junip-product-summary,
-.hero__reviews .junip-product-summary *,
-.hero__reviews svg,
-.hero__reviews svg * {
-  color: #ffffff !important;
-  fill: #ffffff !important;
-  stroke: #ffffff !important;
-  --junip-star-color: #ffffff !important;
-  --junip-star-filled: #ffffff !important;
-  --junip-primary-color: #ffffff !important;
+  margin-left: 6px;
 }
 
 .hero__title {
@@ -3427,14 +3420,45 @@ img {
   opacity: 1;
 }
 
+.fp-gallery__arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 3;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255, 255, 255, 0.85);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  transition: background 0.2s ease, box-shadow 0.2s ease;
+  color: #1a1a1a;
+  padding: 0;
+}
+
+.fp-gallery__arrow:hover {
+  background: #ffffff;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.25);
+}
+
+.fp-gallery__arrow--prev { left: 12px; }
+.fp-gallery__arrow--next { right: 12px; }
+
 .fp-gallery__dots {
   position: absolute;
-  bottom: 20px;
+  bottom: 16px;
   left: 50%;
   transform: translateX(-50%);
   display: flex;
-  gap: 12px;
+  gap: 10px;
   z-index: 2;
+  background: rgba(0, 0, 0, 0.3);
+  padding: 6px 12px;
+  border-radius: 20px;
 }
 
 .fp-gallery__dot {
@@ -3454,7 +3478,7 @@ img {
 
 .fp-gallery__dot.active {
   background: #ffffff;
-  box-shadow: 0 0 8px rgba(255, 255, 255, 0.8), 0 0 20px rgba(255, 255, 255, 0.4);
+  box-shadow: 0 0 6px rgba(255, 255, 255, 0.8), 0 0 14px rgba(255, 255, 255, 0.4);
 }
 
 .featured-product__info {

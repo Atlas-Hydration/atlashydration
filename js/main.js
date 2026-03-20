@@ -1158,21 +1158,31 @@ document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
   compareObs.observe(section);
 })();
 
-// Featured product gallery dots
+// Featured product gallery
 (function() {
   var gallery = document.querySelector('.fp-gallery');
   if (!gallery) return;
 
   var slides = gallery.querySelectorAll('.fp-gallery__slide');
   var dots = gallery.querySelectorAll('.fp-gallery__dot');
+  var prevBtn = gallery.querySelector('.fp-gallery__arrow--prev');
+  var nextBtn = gallery.querySelector('.fp-gallery__arrow--next');
+  var current = 0;
+
+  function goTo(index) {
+    current = (index + slides.length) % slides.length;
+    slides.forEach(function(s) { s.classList.remove('active'); });
+    dots.forEach(function(d) { d.classList.remove('active'); });
+    slides[current].classList.add('active');
+    dots[current].classList.add('active');
+  }
 
   dots.forEach(function(dot) {
     dot.addEventListener('click', function() {
-      var index = parseInt(this.getAttribute('data-index'));
-      slides.forEach(function(s) { s.classList.remove('active'); });
-      dots.forEach(function(d) { d.classList.remove('active'); });
-      slides[index].classList.add('active');
-      dots[index].classList.add('active');
+      goTo(parseInt(this.getAttribute('data-index')));
     });
   });
+
+  if (prevBtn) prevBtn.addEventListener('click', function() { goTo(current - 1); });
+  if (nextBtn) nextBtn.addEventListener('click', function() { goTo(current + 1); });
 })();
