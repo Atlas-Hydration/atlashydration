@@ -476,19 +476,28 @@ img {
   border-top: 1px solid var(--color-border);
   border-bottom: 1px solid var(--color-border);
   padding: 32px 0;
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
+  overflow: hidden;
 }
 
-.vitamin-strip::-webkit-scrollbar {
-  display: none;
+.vitamin-strip__track {
+  display: flex;
+  width: max-content;
+  animation: marquee 40s linear infinite;
+}
+
+.vitamin-strip__track:hover {
+  animation-play-state: paused;
 }
 
 .vitamin-strip__scroll {
   display: flex;
   gap: 0;
-  min-width: max-content;
-  padding: 0 24px;
+  flex-shrink: 0;
+}
+
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
 }
 
 .vitamin-strip__card {
@@ -864,44 +873,57 @@ img {
 .science__accordion {
   background: var(--color-white);
   border-radius: var(--radius);
-  margin-bottom: 8px;
+  margin-bottom: 10px;
   overflow: hidden;
   border: 1px solid var(--color-border);
+  transition: box-shadow var(--transition);
+}
+
+.science__accordion:hover {
+  box-shadow: 0 4px 20px rgba(0,0,0,0.04);
 }
 
 .science__accordion-header {
   display: flex;
   align-items: center;
   gap: 16px;
-  padding: 16px 20px;
+  padding: 18px 24px;
   cursor: pointer;
-  background: #333;
+  background: var(--color-primary);
   color: #fff;
   border-radius: var(--radius);
+  transition: background var(--transition);
+}
+
+.science__accordion--open .science__accordion-header {
+  border-radius: var(--radius) var(--radius) 0 0;
 }
 
 .science__accordion-dose {
-  background: rgba(255,255,255,0.15);
+  background: rgba(255,255,255,0.12);
   padding: 8px 16px;
-  border-radius: 8px;
-  font-size: 0.95rem;
-  font-weight: 700;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  font-weight: 600;
   white-space: nowrap;
+  letter-spacing: -0.01em;
 }
 
 .science__accordion-title {
   flex: 1;
-  font-size: 0.95rem;
-  font-weight: 600;
+  font-size: 0.9rem;
+  font-weight: 500;
+  letter-spacing: 0.01em;
 }
 
 .science__accordion-toggle {
   display: flex;
   align-items: center;
-  gap: 4px;
-  font-size: 0.75rem;
+  gap: 6px;
+  font-size: 0.72rem;
   font-weight: 500;
-  opacity: 0.8;
+  opacity: 0.6;
+  letter-spacing: 0.02em;
 }
 
 .science__accordion-toggle svg {
@@ -2418,7 +2440,7 @@ main {
    Comparison Table
    ======================================== */
 .compare {
-  padding: 140px 0;
+  padding: 80px 0;
   background: var(--color-bg-light);
 }
 
@@ -2436,16 +2458,20 @@ main {
   overflow: hidden;
 }
 
+.compare .section-header {
+  margin-bottom: 40px;
+}
+
 .compare__table th,
 .compare__table td {
-  padding: 20px 24px;
+  padding: 14px 20px;
   text-align: center;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   border-bottom: 1px solid var(--color-border);
 }
 
 .compare__table thead th {
-  padding: 28px 24px;
+  padding: 20px 20px;
   vertical-align: bottom;
   background: var(--color-white);
 }
