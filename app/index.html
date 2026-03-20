@@ -64,21 +64,59 @@
 
     /* === DASHBOARD === */
     .app { display: none; }
-    .app.active { display: block; }
+    .app.active { display: flex; height: 100vh; overflow: hidden; }
+
+    /* === SIDEBAR === */
+    .sidebar {
+      width: 240px; min-width: 240px; background: var(--surface);
+      border-right: 1px solid var(--border); display: flex;
+      flex-direction: column; height: 100vh; position: sticky; top: 0;
+    }
+    .sidebar__brand {
+      padding: 20px 20px 16px; border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; gap: 12px;
+    }
+    .sidebar__brand-name { font-weight: 700; font-size: 1rem; letter-spacing: -0.02em; }
+    .sidebar__brand-badge {
+      font-size: 0.6rem; padding: 2px 6px; background: var(--accent-dim);
+      color: var(--accent); border-radius: 5px; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.04em;
+    }
+    .sidebar__nav { flex: 1; padding: 12px 10px; overflow-y: auto; }
+    .sidebar__section-label {
+      font-size: 0.65rem; color: var(--text-dim); text-transform: uppercase;
+      letter-spacing: 0.08em; padding: 12px 12px 6px; font-weight: 600;
+    }
+    .sidebar__link {
+      display: flex; align-items: center; gap: 10px; padding: 10px 12px;
+      border-radius: 8px; font-size: 0.82rem; font-weight: 500;
+      color: var(--text-dim); cursor: pointer; transition: all 0.15s;
+      border: none; background: none; width: 100%; text-align: left;
+      font-family: var(--font);
+    }
+    .sidebar__link:hover { background: var(--surface2); color: var(--text); }
+    .sidebar__link.active { background: var(--accent-dim); color: var(--accent); }
+    .sidebar__link svg { width: 18px; height: 18px; flex-shrink: 0; opacity: 0.7; }
+    .sidebar__link.active svg { opacity: 1; }
+    .sidebar__footer {
+      padding: 16px; border-top: 1px solid var(--border);
+      display: flex; flex-direction: column; gap: 8px;
+    }
+    .sidebar__footer-status { font-size: 0.7rem; color: var(--text-dim); }
+    .sidebar__footer-actions { display: flex; gap: 8px; }
+
+    /* === MAIN CONTENT === */
+    .app__main { flex: 1; overflow-y: auto; display: flex; flex-direction: column; }
 
     .topbar {
       position: sticky; top: 0; z-index: 100;
       background: rgba(10,10,11,0.85); backdrop-filter: blur(20px);
       border-bottom: 1px solid var(--border); padding: 0 32px; height: 56px;
       display: flex; align-items: center; justify-content: space-between;
+      flex-shrink: 0;
     }
     .topbar__left { display: flex; align-items: center; gap: 16px; }
-    .topbar__brand { font-weight: 700; font-size: 1rem; letter-spacing: -0.02em; }
-    .topbar__badge {
-      font-size: 0.65rem; padding: 3px 8px; background: var(--accent-dim);
-      color: var(--accent); border-radius: 6px; font-weight: 600;
-      text-transform: uppercase; letter-spacing: 0.05em;
-    }
+    .topbar__page-title { font-weight: 600; font-size: 0.95rem; }
     .topbar__right { display: flex; align-items: center; gap: 12px; }
     .topbar__refresh {
       background: var(--surface2); border: 1px solid var(--border);
@@ -100,7 +138,7 @@
       font-size: 0.72rem; color: var(--text-dim);
     }
 
-    .dashboard { max-width: 1400px; margin: 0 auto; padding: 32px; }
+    .dashboard { max-width: 1400px; margin: 0 auto; padding: 32px; width: 100%; }
 
     /* Stat Cards */
     .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 32px; }
@@ -233,21 +271,15 @@
     }
     .error-banner.visible { display: block; }
 
-    /* Tabs */
-    .tabs {
-      display: flex; gap: 4px; margin-bottom: 24px;
-      border-bottom: 1px solid var(--border); padding-bottom: 0;
-    }
-    .tab {
-      padding: 10px 18px; font-family: var(--font); font-size: 0.82rem;
-      font-weight: 500; color: var(--text-dim); background: none; border: none;
-      cursor: pointer; border-bottom: 2px solid transparent;
-      transition: all 0.2s; margin-bottom: -1px;
-    }
-    .tab:hover { color: var(--text); }
-    .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+    /* Tab content (driven by sidebar nav) */
     .tab-content { display: none; }
     .tab-content.active { display: block; }
+
+    /* Mobile sidebar toggle */
+    .sidebar-toggle {
+      display: none; background: none; border: none; color: var(--text);
+      cursor: pointer; padding: 4px;
+    }
 
     /* === SEO TAB === */
     .seo-header {
@@ -385,14 +417,74 @@
     .order-status-dot--cancelled { background: var(--red); }
     .order-status-dot--refunded { background: var(--text-dim); }
 
+    /* Animated BG */
+    .animated-bg {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      pointer-events: none; z-index: 0; overflow: hidden;
+    }
+    .animated-bg__orb {
+      position: absolute; border-radius: 50%; filter: blur(100px); opacity: 0.08;
+      animation: orbFloat 20s ease-in-out infinite;
+    }
+    .animated-bg__orb:nth-child(1) {
+      width: 500px; height: 500px; background: var(--accent);
+      top: -10%; left: -5%; animation-delay: 0s;
+    }
+    .animated-bg__orb:nth-child(2) {
+      width: 400px; height: 400px; background: #8b5cf6;
+      top: 50%; right: -10%; animation-delay: -7s; animation-duration: 25s;
+    }
+    .animated-bg__orb:nth-child(3) {
+      width: 350px; height: 350px; background: var(--green);
+      bottom: -5%; left: 30%; animation-delay: -14s; animation-duration: 22s;
+    }
+    @keyframes orbFloat {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      25% { transform: translate(30px, -40px) scale(1.1); }
+      50% { transform: translate(-20px, 20px) scale(0.95); }
+      75% { transform: translate(40px, 30px) scale(1.05); }
+    }
+
+    .app__main, .sidebar, .login-screen { position: relative; z-index: 1; }
+
+    /* SEO prompt box */
+    .seo-prompt {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 24px; margin-top: 32px;
+    }
+    .seo-prompt h3 { font-size: 0.95rem; font-weight: 600; margin-bottom: 8px; }
+    .seo-prompt p { font-size: 0.78rem; color: var(--text-dim); margin-bottom: 12px; line-height: 1.5; }
+    .seo-prompt__code {
+      background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 8px; padding: 16px; font-size: 0.78rem; color: var(--text);
+      line-height: 1.6; white-space: pre-wrap; word-break: break-word;
+      max-height: 200px; overflow-y: auto;
+    }
+    .seo-prompt__copy {
+      margin-top: 12px; background: var(--accent); color: #fff; border: none;
+      border-radius: 8px; padding: 10px 20px; font-family: var(--font);
+      font-weight: 600; font-size: 0.8rem; cursor: pointer; transition: opacity 0.2s;
+    }
+    .seo-prompt__copy:hover { opacity: 0.85; }
+
     /* Responsive */
     @media (max-width: 768px) {
+      .app.active { flex-direction: column; }
+      .sidebar {
+        width: 100%; min-width: 100%; height: auto; position: relative;
+        border-right: none; border-bottom: 1px solid var(--border);
+        max-height: 0; overflow: hidden; transition: max-height 0.3s ease;
+      }
+      .sidebar.open { max-height: 500px; }
+      .sidebar__nav { padding: 8px 10px; }
+      .sidebar__link { padding: 8px 12px; }
+      .sidebar-toggle { display: block; }
+      .app__main { height: auto; overflow-y: auto; }
       .dashboard { padding: 20px 16px; }
       .topbar { padding: 0 16px; }
       .stats { grid-template-columns: 1fr 1fr; }
       .table { font-size: 0.75rem; }
       .table th, .table td { padding: 10px 12px; }
-      .tabs { overflow-x: auto; }
       .seo-header { flex-direction: column; align-items: flex-start; }
       .orders-header { flex-direction: column; align-items: flex-start; }
     }
@@ -418,44 +510,88 @@
     </div>
   </div>
 
+  <!-- Animated Background -->
+  <div class="animated-bg">
+    <div class="animated-bg__orb"></div>
+    <div class="animated-bg__orb"></div>
+    <div class="animated-bg__orb"></div>
+  </div>
+
   <!-- Dashboard -->
   <div class="app" id="app">
-    <div class="topbar">
-      <div class="topbar__left">
-        <span class="topbar__brand">Atlas Platform</span>
-        <span class="topbar__badge">Storefront API</span>
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar__brand">
+        <img src="../logo.svg" alt="Atlas" style="width:28px;height:28px;">
+        <span class="sidebar__brand-name">Atlas Platform</span>
+        <span style="font-size:1.1rem;">&#x1F3F3;&#xFE0F;&#x200D;&#x26A7;&#xFE0F;</span>
       </div>
-      <div class="topbar__right">
-        <span class="topbar__status" id="lastUpdated"></span>
-        <button class="topbar__refresh" id="refreshBtn">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 2v6h-6"/><path d="M3 12a9 9 0 0115.36-6.36L21 8"/><path d="M3 22v-6h6"/><path d="M21 12a9 9 0 01-15.36 6.36L3 16"/></svg>
-          Refresh
+      <nav class="sidebar__nav" id="sidebarNav">
+        <div class="sidebar__section-label">Store</div>
+        <button class="sidebar__link active" data-tab="products">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+          Products
         </button>
-        <button class="topbar__logout" id="logoutBtn">Sign Out</button>
-      </div>
-    </div>
-
-    <div class="dashboard">
-      <div class="error-banner" id="errorBanner"></div>
-
-      <div id="loadingState" class="loading-overlay">
-        <div class="loading-spinner"></div>
-        <div>Fetching data from Shopify...</div>
-      </div>
-
-      <div id="dashboardContent" style="display:none;">
-        <!-- Stat cards -->
-        <div class="stats" id="statsGrid"></div>
-
-        <!-- Tabs -->
-        <div class="tabs" id="tabs">
-          <button class="tab active" data-tab="products">Products</button>
-          <button class="tab" data-tab="variants">Variants</button>
-          <button class="tab" data-tab="collections">Collections</button>
-          <button class="tab" data-tab="shop">Shop Info</button>
-          <button class="tab" data-tab="seo">SEO</button>
-          <button class="tab" data-tab="orders">Orders</button>
+        <button class="sidebar__link" data-tab="variants">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+          Variants
+        </button>
+        <button class="sidebar__link" data-tab="collections">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg>
+          Collections
+        </button>
+        <button class="sidebar__link" data-tab="orders">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+          Orders
+        </button>
+        <div class="sidebar__section-label">Tools</div>
+        <button class="sidebar__link" data-tab="seo">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          SEO
+        </button>
+        <button class="sidebar__link" data-tab="shop">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+          Shop Info
+        </button>
+      </nav>
+      <div class="sidebar__footer">
+        <div class="sidebar__footer-status" id="lastUpdated"></div>
+        <div class="sidebar__footer-actions">
+          <button class="topbar__refresh" id="refreshBtn" style="flex:1;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 2v6h-6"/><path d="M3 12a9 9 0 0115.36-6.36L21 8"/><path d="M3 22v-6h6"/><path d="M21 12a9 9 0 01-15.36 6.36L3 16"/></svg>
+            Refresh
+          </button>
+          <button class="topbar__logout" id="logoutBtn">Sign Out</button>
         </div>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="app__main">
+      <div class="topbar">
+        <div class="topbar__left">
+          <button class="sidebar-toggle" id="sidebarToggle">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+          </button>
+          <span class="topbar__page-title" id="pageTitle">Products</span>
+          <span class="topbar__status" id="topbarStatus"></span>
+        </div>
+        <div class="topbar__right">
+          <span class="sidebar__brand-badge" style="font-size:0.65rem;padding:3px 8px;background:var(--accent-dim);color:var(--accent);border-radius:6px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;">Storefront API</span>
+        </div>
+      </div>
+
+      <div class="dashboard">
+        <div class="error-banner" id="errorBanner"></div>
+
+        <div id="loadingState" class="loading-overlay">
+          <div class="loading-spinner"></div>
+          <div>Fetching data from Shopify...</div>
+        </div>
+
+        <div id="dashboardContent" style="display:none;">
+          <!-- Stat cards -->
+          <div class="stats" id="statsGrid"></div>
 
         <!-- Products Tab -->
         <div class="tab-content active" id="tab-products">
@@ -528,6 +664,12 @@
           <div id="seoChecks" class="seo-checks"></div>
           <div id="seoActions" class="seo-actions" style="display:none;"></div>
           <div id="seoSitemap" class="seo-sitemap" style="display:none;"></div>
+          <div id="seoPrompt" class="seo-prompt" style="display:none;">
+            <h3>Fix All Issues with Claude</h3>
+            <p>Copy the prompt below and paste it into Claude Code to automatically fix all SEO issues found in this scan.</p>
+            <div class="seo-prompt__code" id="seoPromptCode"></div>
+            <button class="seo-prompt__copy" id="seoPromptCopy">Copy Prompt</button>
+          </div>
         </div>
 
         <!-- Orders Tab -->
@@ -581,8 +723,9 @@
           </div>
         </div>
       </div>
-    </div>
-  </div>
+      </div>
+    </div><!-- /app__main -->
+  </div><!-- /app -->
 
 <script>
 (function() {
@@ -635,14 +778,31 @@
   }
 
   // =============================================
-  // TABS
+  // SIDEBAR NAV
   // =============================================
-  document.getElementById('tabs').addEventListener('click', function(e) {
-    if (!e.target.classList.contains('tab')) return;
-    document.querySelectorAll('.tab').forEach(function(t) { t.classList.remove('active'); });
+  var PAGE_TITLES = {
+    products: 'Products', variants: 'Variants', collections: 'Collections',
+    shop: 'Shop Info', seo: 'SEO', orders: 'Orders'
+  };
+
+  document.getElementById('sidebarNav').addEventListener('click', function(e) {
+    var link = e.target.closest('.sidebar__link');
+    if (!link) return;
+    var tab = link.getAttribute('data-tab');
+    document.querySelectorAll('.sidebar__link').forEach(function(l) { l.classList.remove('active'); });
     document.querySelectorAll('.tab-content').forEach(function(t) { t.classList.remove('active'); });
-    e.target.classList.add('active');
-    document.getElementById('tab-' + e.target.getAttribute('data-tab')).classList.add('active');
+    link.classList.add('active');
+    document.getElementById('tab-' + tab).classList.add('active');
+    document.getElementById('pageTitle').textContent = PAGE_TITLES[tab] || tab;
+    // auto-trigger
+    if (tab === 'orders') setTimeout(renderOrders, 10);
+    if (tab === 'seo' && document.getElementById('seoChecks').innerHTML === '') setTimeout(runSeoScan, 10);
+    // close mobile sidebar
+    document.getElementById('sidebar').classList.remove('open');
+  });
+
+  document.getElementById('sidebarToggle').addEventListener('click', function() {
+    document.getElementById('sidebar').classList.toggle('open');
   });
 
   // =============================================
@@ -1226,6 +1386,37 @@
     });
     sitemapEl.innerHTML = smHtml;
     sitemapEl.style.display = '';
+
+    // Generate Claude prompt
+    var promptEl = document.getElementById('seoPrompt');
+    var highActions = actions.filter(function(a) { return a.priority === 'high'; });
+    var medActions = actions.filter(function(a) { return a.priority === 'medium'; });
+    var promptText = 'Fix the following SEO issues on the Atlas Hydration website (https://rwb8771.github.io/atlashydration/):\n\n';
+    promptText += 'Current SEO Score: ' + score + '/100\n\n';
+    if (highActions.length) {
+      promptText += 'HIGH PRIORITY:\n';
+      highActions.forEach(function(a) { promptText += '- ' + a.text + '\n'; });
+      promptText += '\n';
+    }
+    if (medActions.length) {
+      promptText += 'MEDIUM PRIORITY:\n';
+      medActions.forEach(function(a) { promptText += '- ' + a.text + '\n'; });
+      promptText += '\n';
+    }
+    promptText += 'Pages scanned: ' + checks[0].desc + '\n';
+    promptText += 'Sitemap has ' + SITEMAP_URLS.length + ' URLs.\n\n';
+    promptText += 'For each issue, make the fix directly in the HTML files. Ensure all pages have: title tags (20-60 chars), meta descriptions (<160 chars), canonical URLs, Open Graph tags (og:title, og:description, og:image), a single H1 tag, alt text on all images, and viewport meta tags. Add JSON-LD structured data where appropriate (Product schema for product pages, Article schema for blog posts). After fixing, commit and push.';
+
+    document.getElementById('seoPromptCode').textContent = promptText;
+    promptEl.style.display = '';
+
+    document.getElementById('seoPromptCopy').onclick = function() {
+      navigator.clipboard.writeText(promptText).then(function() {
+        var btn = document.getElementById('seoPromptCopy');
+        btn.textContent = 'Copied!';
+        setTimeout(function() { btn.textContent = 'Copy Prompt'; }, 2000);
+      });
+    };
   }
 
   // =============================================
@@ -1359,20 +1550,9 @@
     document.getElementById('orderCount').textContent = filtered.length + ' orders';
   }
 
-  // Render orders on tab load and filter change
+  // Render orders on filter change
   document.getElementById('ordersDateFilter').addEventListener('change', renderOrders);
   document.getElementById('ordersStatusFilter').addEventListener('change', renderOrders);
-
-  // Auto-render orders when Orders tab is clicked
-  var origTabHandler = document.getElementById('tabs').onclick;
-  document.getElementById('tabs').addEventListener('click', function(e) {
-    if (e.target.getAttribute('data-tab') === 'orders') {
-      setTimeout(renderOrders, 10);
-    }
-    if (e.target.getAttribute('data-tab') === 'seo' && document.getElementById('seoChecks').innerHTML === '') {
-      setTimeout(runSeoScan, 10);
-    }
-  });
 
 })();
 </script>
