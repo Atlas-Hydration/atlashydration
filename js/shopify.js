@@ -166,7 +166,8 @@ var AtlasShop = (function() {
         slug: slug,
         title: VARIANTS[slug].title,
         price: parseFloat(VARIANTS[slug].price),
-        quantity: qty
+        quantity: qty,
+        image: VARIANTS[slug].image || null
       });
     }
     saveLocalCart();
@@ -295,8 +296,13 @@ var AtlasShop = (function() {
 
     var html = '';
     for (var k = 0; k < items.length; k++) {
+      var imgHtml = '';
+      if (items[k].image) {
+        imgHtml = '<div class="cart-item__image"><img src="' + items[k].image + '" alt="' + items[k].title + '"></div>';
+      }
       html +=
         '<div class="cart-item">' +
+          imgHtml +
           '<div class="cart-item__info">' +
             '<h4 class="cart-item__title">' + items[k].title + '</h4>' +
             '<p class="cart-item__price">$' + items[k].price.toFixed(2) + '</p>' +
@@ -352,10 +358,24 @@ var AtlasShop = (function() {
   function getCartItems() {
     if (checkout && checkout.lineItems && checkout.lineItems.length > 0) {
       return checkout.lineItems.map(function(item) {
+        var img = null;
+        if (item.variant && item.variant.image && item.variant.image.src) {
+          img = item.variant.image.src;
+        }
+        // Fallback to VARIANTS image
+        if (!img) {
+          for (var slug in VARIANTS) {
+            if (item.title && item.title.toLowerCase().indexOf(slug.replace('-', ' ').replace('-', ' ')) > -1) {
+              img = VARIANTS[slug].image;
+              break;
+            }
+          }
+        }
         return {
           title: item.title + (item.variant && item.variant.title !== 'Default Title' ? ' — ' + item.variant.title : ''),
           price: parseFloat(item.variant ? item.variant.price.amount || item.variant.price : 0),
-          quantity: item.quantity
+          quantity: item.quantity,
+          image: img
         };
       });
     }
