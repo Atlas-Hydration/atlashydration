@@ -3341,12 +3341,12 @@ img {
   display: inline-block;
 }
 
-.flavor-circle--strawberry .flavor-circle__dot {
-  background: #e85d75;
-}
+.flavor-circle--strawberry { --flavor: #e85d75; }
+.flavor-circle--grapefruit { --flavor: #f5a623; }
+.flavor-circle--lemon-lime { --flavor: #a3c853; }
 
-.flavor-circle--grapefruit .flavor-circle__dot {
-  background: #f5a623;
+.flavor-circle__dot {
+  background: var(--flavor, #888);
 }
 
 .flavor-circle:hover {
@@ -3357,15 +3357,11 @@ img {
 .flavor-circle.active {
   background: var(--color-primary);
   border-color: var(--color-primary);
-  color: #ffffff;
+  color: var(--flavor, #ffffff);
 }
 
-.flavor-circle--strawberry.active .flavor-circle__dot {
-  background: #f5f5f5;
-}
-
-.flavor-circle--grapefruit.active .flavor-circle__dot {
-  background: #f5f5f5;
+.flavor-circle.active .flavor-circle__dot {
+  background: var(--flavor, #ffffff);
 }
 
 .flavor-selector__label {
