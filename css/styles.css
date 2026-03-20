@@ -97,14 +97,21 @@ img {
    Header
    ======================================== */
 .header {
-  position: sticky;
+  position: fixed;
   top: 0;
+  left: 0;
+  right: 0;
   z-index: 100;
-  background: rgba(29, 29, 31, 0.92);
+  background: transparent;
+  border-bottom: 1px solid transparent;
+  transition: background 0.4s ease, border-color 0.4s ease, backdrop-filter 0.4s ease, transform 0.35s cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+
+.header--solid {
+  background: rgba(29, 29, 31, 0.95);
   backdrop-filter: saturate(180%) blur(20px);
   -webkit-backdrop-filter: saturate(180%) blur(20px);
-  border-bottom: 1px solid rgba(255,255,255,0.04);
-  transition: transform 0.35s cubic-bezier(0.25, 0.1, 0.25, 1);
+  border-bottom-color: rgba(255,255,255,0.04);
 }
 
 .header--hidden {
@@ -2076,6 +2083,19 @@ img {
   display: block;
 }
 
+.cart-spinner {
+  width: 48px;
+  height: 48px;
+  border: 4px solid;
+  border-radius: 50%;
+  margin: 0 auto 16px;
+  animation: cartSpin 0.8s linear infinite;
+}
+
+@keyframes cartSpin {
+  to { transform: rotate(360deg); }
+}
+
 .cart-drawer__empty p {
   margin-bottom: 20px;
   font-size: 0.95rem;
@@ -2179,6 +2199,73 @@ img {
   margin-top: 12px;
 }
 
+/* Cart promo banner */
+.cart-promo {
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  padding: 14px 16px;
+  margin-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.cart-promo__badge {
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #16a34a;
+}
+
+.cart-promo__detail {
+  font-size: 0.8rem;
+  color: #15803d;
+  font-weight: 500;
+}
+
+.cart-promo__savings {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #16a34a;
+}
+
+/* Gallery navigation arrow */
+.product-gallery__nav {
+  position: absolute;
+  top: 50%;
+  right: 16px;
+  transform: translateY(-50%);
+  width: 44px;
+  height: 44px;
+  background: rgba(255,255,255,0.9);
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 5;
+  transition: all 0.25s ease;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.product-gallery__nav:hover {
+  background: #ffffff;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+}
+
+.product-gallery__nav--prev {
+  right: auto;
+  left: 16px;
+}
+
+.product-gallery__nav svg {
+  width: 20px;
+  height: 20px;
+  color: var(--color-text);
+}
+
 /* ========================================
    Product Gallery
    ======================================== */
@@ -2190,8 +2277,8 @@ img {
 .product-gallery__main {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 8px;
-  margin-bottom: 12px;
+  gap: 0;
+  margin-bottom: 0;
   position: relative;
 }
 
@@ -2205,12 +2292,20 @@ img {
   border-radius: 0;
   overflow: hidden;
   background: var(--color-bg-light);
+  border: none;
 }
 
 .product-gallery__slide:first-child {
   grid-column: 1 / -1;
   aspect-ratio: 4 / 5;
   border-radius: 0;
+}
+
+.product-gallery__slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 }
 
 .product-gallery__slide.active {
@@ -2286,13 +2381,15 @@ img {
 
 /* Ingredients slide */
 .product-gallery__ingredients {
-  padding: 48px 40px;
+  padding: 32px 24px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 20px;
+  justify-content: center;
+  gap: 16px;
   text-align: center;
   width: 100%;
+  height: 100%;
 }
 
 .product-gallery__ingredients-title {
@@ -3613,28 +3710,41 @@ img {
   }
 
   .hero {
-    min-height: 80vh;
+    min-height: 100svh;
+    padding: 0;
   }
 
   .hero__content {
-    padding: 40px 20px;
+    padding: 80px 20px 40px;
+  }
+
+  .hero__reviews {
+    margin-bottom: 16px;
   }
 
   .hero__title {
     font-size: 2rem;
+    margin-bottom: 24px;
   }
 
   .hero__benefits {
-    gap: 12px;
+    gap: 10px;
+    margin-bottom: 28px;
   }
 
   .hero__benefit {
     font-size: 0.65rem;
+    gap: 4px;
+  }
+
+  .hero__benefit-icon {
+    width: 32px;
+    height: 32px;
   }
 
   .hero__benefit-icon svg {
-    width: 22px;
-    height: 22px;
+    width: 20px;
+    height: 20px;
   }
 
   .products__grid {
@@ -3709,9 +3819,8 @@ img {
     text-align: center;
   }
 
-  .announcement-bar__inner {
-    font-size: 0.7rem;
-    gap: 8px;
+  .announcement-bar {
+    display: none;
   }
 
   .product-hero__buy {
@@ -3865,25 +3974,33 @@ img {
 }
 
 @media (max-width: 480px) {
-  .hero {
-    min-height: 70vh;
+  .hero__content {
+    padding: 50px 16px 32px;
   }
 
   .hero__title {
     font-size: 1.7rem;
+    margin-bottom: 20px;
   }
 
   .hero__benefits {
-    gap: 8px;
+    gap: 6px;
+    margin-bottom: 24px;
   }
 
   .hero__benefit {
     font-size: 0.6rem;
+    gap: 3px;
+  }
+
+  .hero__benefit-icon {
+    width: 28px;
+    height: 28px;
   }
 
   .hero__benefit-icon svg {
-    width: 18px;
-    height: 18px;
+    width: 16px;
+    height: 16px;
   }
 
   .btn--hero {
@@ -3993,16 +4110,32 @@ img {
 
 /* Extra small phones (320-360px) */
 @media (max-width: 360px) {
+  .hero__content {
+    padding: 44px 12px 28px;
+  }
+
   .hero__title {
-    font-size: 1.5rem;
+    font-size: 1.4rem;
+    margin-bottom: 16px;
   }
 
   .hero__benefits {
-    gap: 6px;
+    gap: 4px;
+    margin-bottom: 20px;
   }
 
   .hero__benefit span {
-    font-size: 0.55rem;
+    font-size: 0.5rem;
+  }
+
+  .hero__benefit-icon {
+    width: 24px;
+    height: 24px;
+  }
+
+  .hero__benefit-icon svg {
+    width: 14px;
+    height: 14px;
   }
 
   .container {

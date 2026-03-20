@@ -274,9 +274,16 @@ var AtlasShop = (function() {
     if (!container) return;
 
     if (items.length === 0) {
+      // Detect flavor color from current page
+      var spinnerColor = '#4a90d9'; // default blue
+      if (document.querySelector('.flavor-circle--strawberry.active') || window.location.href.indexOf('strawberry') > -1) {
+        spinnerColor = '#e85d75';
+      } else if (document.querySelector('.flavor-circle--grapefruit.active') || window.location.href.indexOf('grapefruit') > -1) {
+        spinnerColor = '#f5a623';
+      }
       container.innerHTML =
         '<div class="cart-drawer__empty">' +
-          '<svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>' +
+          '<div class="cart-spinner" style="border-color: ' + spinnerColor + '22; border-top-color: ' + spinnerColor + ';"></div>' +
           '<p>Your cart is empty</p>' +
           '<a href="/#products" class="btn btn--outline btn--sm" onclick="AtlasShop.closeCart()">Shop Now</a>' +
         '</div>';
@@ -308,9 +315,38 @@ var AtlasShop = (function() {
     }
     container.innerHTML = html;
 
+    // Buy 3 Get 1 Free promo
+    var totalQty = 0;
+    for (var q = 0; q < items.length; q++) {
+      totalQty += items[q].quantity;
+    }
+    var freeItems = Math.floor(totalQty / 3);
+    var discount = 0;
+    if (freeItems > 0) {
+      // Find the cheapest item price for free item
+      var cheapest = Infinity;
+      for (var p = 0; p < items.length; p++) {
+        if (items[p].price < cheapest) cheapest = items[p].price;
+      }
+      discount = cheapest * freeItems;
+      html += '<div class="cart-promo">' +
+        '<span class="cart-promo__badge">BUY 3 GET 1 FREE</span>' +
+        '<span class="cart-promo__detail">' + freeItems + ' free item' + (freeItems > 1 ? 's' : '') + ' applied!</span>' +
+        '<span class="cart-promo__savings">You save $' + discount.toFixed(2) + '</span>' +
+      '</div>';
+    }
+    container.innerHTML = html;
+
     // Update subtotal
+    var finalTotal = subtotal - discount;
     var subtotalEl = document.getElementById('cartSubtotal');
-    if (subtotalEl) subtotalEl.textContent = '$' + subtotal.toFixed(2);
+    if (subtotalEl) {
+      if (discount > 0) {
+        subtotalEl.innerHTML = '<span style="text-decoration:line-through;color:#999;font-size:0.85em;">$' + subtotal.toFixed(2) + '</span> $' + finalTotal.toFixed(2);
+      } else {
+        subtotalEl.textContent = '$' + subtotal.toFixed(2);
+      }
+    }
   }
 
   function getCartItems() {
