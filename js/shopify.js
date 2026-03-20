@@ -634,25 +634,9 @@ var AtlasShop = (function() {
         ctaArt.innerHTML = '<img src="' + ctaImg + '" alt="Atlas Hydration" style="width:100%;height:100%;object-fit:contain;opacity:0.12;filter:brightness(1.2);">';
       }
 
-      // Founder section product image
-      var founderImg = document.getElementById('founderImage');
-      if (founderImg && !founderImg.dataset.filled) {
-        founderImg.dataset.filled = 'true';
-        var founderSrc = allImages.length > 2 ? allImages[2] : imgSrc;
-        founderImg.innerHTML = '<img src="' + founderSrc + '" alt="Atlas Hydration Product" style="width:100%;height:100%;object-fit:cover;border-radius:24px;">';
-      }
+      // Founder section — video embed, no image injection needed
 
-      // Science section art
-      var scienceLeft = document.querySelector('.science__left');
-      if (scienceLeft && !scienceLeft.dataset.artFilled && allImages.length > 2) {
-        scienceLeft.dataset.artFilled = 'true';
-        var artDiv = document.createElement('div');
-        artDiv.className = 'science__product-art';
-        artDiv.innerHTML = '<img src="' + allImages[allImages.length > 3 ? 3 : 0] + '" alt="Atlas Product" style="width:180px;height:auto;opacity:0.08;position:absolute;bottom:-20px;right:-30px;transform:rotate(-15deg);pointer-events:none;">';
-        scienceLeft.style.position = 'relative';
-        scienceLeft.style.overflow = 'hidden';
-        scienceLeft.appendChild(artDiv);
-      }
+      // Science section art removed — was overlapping content
     }
   }
 

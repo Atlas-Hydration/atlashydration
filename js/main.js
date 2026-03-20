@@ -793,7 +793,8 @@ document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
         'Enables nerve impulse transmission for muscle contractions',
         'Drives intestinal absorption of water and glucose',
         'Prevents hyponatremia during prolonged exercise'
-      ]
+      ],
+      goodFor: ['Hydration', 'Endurance', 'Nerve Function']
     },
     magnesium: {
       name: 'Magnesium',
@@ -804,7 +805,8 @@ document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
         'Relaxes smooth and skeletal muscle fibers, reducing cramps',
         'Regulates nervous system signaling and stress response',
         'Contributes to bone density and cardiovascular function'
-      ]
+      ],
+      goodFor: ['Muscle Recovery', 'Energy', 'Sleep']
     },
     potassium: {
       name: 'Potassium',
@@ -815,7 +817,8 @@ document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
         'Counterbalances sodium to regulate blood pressure',
         'Prevents muscle cramps and supports contraction strength',
         'Aids kidney function and fluid balance'
-      ]
+      ],
+      goodFor: ['Heart Health', 'Cramp Prevention', 'Blood Pressure']
     },
     vitaminb3: {
       name: 'Vitamin B3 (Niacin)',
@@ -826,7 +829,8 @@ document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
         'Supports healthy cholesterol metabolism',
         'Promotes DNA repair and cellular signaling',
         'Enhances skin barrier function and circulation'
-      ]
+      ],
+      goodFor: ['Energy', 'Cholesterol', 'Skin Health']
     },
     vitaminb5: {
       name: 'Vitamin B5 (Pantothenic Acid)',
@@ -837,7 +841,8 @@ document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
         'Metabolizes fats and carbohydrates for energy',
         'Supports adrenal gland function and stress hormones',
         'Aids in red blood cell production'
-      ]
+      ],
+      goodFor: ['Metabolism', 'Stress Response', 'Hormones']
     },
     vitaminb6: {
       name: 'Vitamin B6 (P-5-P)',
@@ -848,7 +853,8 @@ document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
         'Produces serotonin, dopamine, and GABA neurotransmitters',
         'Supports hemoglobin production for oxygen transport',
         'Regulates homocysteine levels for cardiovascular health'
-      ]
+      ],
+      goodFor: ['Brain Health', 'Mood', 'Muscle Growth']
     },
     vitaminb12: {
       name: 'Vitamin B12',
@@ -859,7 +865,8 @@ document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
         'Maintains myelin sheath protecting nerve fibers',
         'Required for DNA synthesis during cell division',
         'Prevents megaloblastic anemia and chronic fatigue'
-      ]
+      ],
+      goodFor: ['Energy', 'Focus', 'Nervous System']
     },
     vitaminc: {
       name: 'Vitamin C',
@@ -870,7 +877,8 @@ document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
         'Stimulates white blood cell production and function',
         'Required for collagen synthesis in joints and skin',
         'Enhances iron absorption from plant-based foods'
-      ]
+      ],
+      goodFor: ['Immunity', 'Skin & Joints', 'Antioxidant Protection']
     },
     glutamine: {
       name: 'L-Glutamine',
@@ -881,7 +889,8 @@ document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
         'Maintains intestinal barrier integrity (gut health)',
         'Prevents muscle protein breakdown during stress',
         'Supports glycogen replenishment after training'
-      ]
+      ],
+      goodFor: ['Gut Health', 'Recovery', 'Immune Support']
     },
     alanine: {
       name: 'L-Alanine',
@@ -892,7 +901,8 @@ document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
         'Provides substrate for gluconeogenesis (new glucose)',
         'Buffers acid buildup in muscles during high intensity',
         'Supports stable blood sugar during prolonged activity'
-      ]
+      ],
+      goodFor: ['Endurance', 'Blood Sugar', 'Detox']
     }
   };
 
@@ -911,6 +921,17 @@ document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
         li.textContent = effect;
         listEl.appendChild(li);
       });
+
+      // Good For section
+      var goodForEl = panel.querySelector('.sf-detail-panel__goodfor');
+      if (goodForEl && data.goodFor) {
+        var gfHtml = '';
+        data.goodFor.forEach(function(item) {
+          gfHtml += '<span class="sf-detail-panel__goodfor-tag">' + item + '</span>';
+        });
+        goodForEl.querySelector('.sf-detail-panel__goodfor-tags').innerHTML = gfHtml;
+        goodForEl.style.display = 'block';
+      }
 
       defaultView.style.display = 'none';
       contentView.style.display = 'block';
@@ -995,4 +1016,114 @@ document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
 
   window.addEventListener('resize', resize);
   init();
+})();
+
+// Science accordion dose count-up on scroll
+(function() {
+  var doses = document.querySelectorAll('.science__accordion-dose');
+  if (!doses.length) return;
+
+  var animated = false;
+
+  function parseNum(text) {
+    return parseInt(text.replace(/[^0-9]/g, ''), 10);
+  }
+
+  function formatNum(n, hasComma) {
+    if (hasComma && n >= 1000) return n.toLocaleString();
+    return n.toString();
+  }
+
+  function animateDoses() {
+    doses.forEach(function(el) {
+      var text = el.textContent.trim();
+      var suffix = text.replace(/[0-9,]/g, '');
+      var target = parseNum(text);
+      var hasComma = text.indexOf(',') > -1;
+      var duration = 1200;
+      var startTime = null;
+
+      function step(timestamp) {
+        if (!startTime) startTime = timestamp;
+        var progress = Math.min((timestamp - startTime) / duration, 1);
+        var eased = 1 - Math.pow(1 - progress, 3);
+        var current = Math.floor(eased * target);
+        el.textContent = formatNum(current, hasComma) + suffix;
+        if (progress < 1) requestAnimationFrame(step);
+        else el.textContent = formatNum(target, hasComma) + suffix;
+      }
+
+      el.textContent = '0' + suffix;
+      requestAnimationFrame(step);
+    });
+  }
+
+  var observer = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting && !animated) {
+        animated = true;
+        animateDoses();
+        observer.disconnect();
+      }
+    });
+  }, { threshold: 0.3 });
+
+  var scienceSection = document.querySelector('.science__right');
+  if (scienceSection) observer.observe(scienceSection);
+})();
+
+// Hydration ripple hover on science accordions
+(function() {
+  var accordions = document.querySelectorAll('.science__accordion');
+  accordions.forEach(function(acc) {
+    acc.addEventListener('mouseenter', function() {
+      acc.classList.add('science__accordion--ripple');
+    });
+    acc.addEventListener('mouseleave', function() {
+      acc.classList.remove('science__accordion--ripple');
+    });
+  });
+})();
+
+// Compare section animated water background
+(function() {
+  var section = document.querySelector('.compare');
+  if (!section) return;
+
+  var canvas = document.createElement('canvas');
+  canvas.className = 'compare__canvas';
+  section.style.position = 'relative';
+  section.insertBefore(canvas, section.firstChild);
+
+  var ctx = canvas.getContext('2d');
+  var time = 0;
+
+  function resize() {
+    canvas.width = section.offsetWidth;
+    canvas.height = section.offsetHeight;
+  }
+
+  function animate() {
+    time += 0.008;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    for (var w = 0; w < 4; w++) {
+      ctx.beginPath();
+      var yBase = canvas.height * (0.2 + w * 0.2);
+      for (var x = 0; x < canvas.width; x += 5) {
+        var y = yBase + Math.sin(x * 0.005 + time * (0.4 + w * 0.15)) * 30 + Math.sin(x * 0.01 + time * (0.6 + w * 0.1)) * 15;
+        if (x === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      }
+      ctx.strokeStyle = 'rgba(100, 170, 230, ' + (0.06 - w * 0.012) + ')';
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+    }
+
+    requestAnimationFrame(animate);
+  }
+
+  resize();
+  animate();
+  window.addEventListener('resize', resize);
 })();
