@@ -163,10 +163,11 @@
             <p class="product-hero__packs">16 Stick Packs</p>
             <p class="product-hero__desc">Clean, zero-sugar hydration with electrolytes, vitamins, and amino acids.</p>
 
-            <!-- Flavor Selector -->
-            <div class="flavor-selector">
-              <a href="strawberry-lemonade.html" class="flavor-selector__btn flavor-selector__btn--strawberry active">Strawberry Lemonade</a>
-              <a href="lemon-lime.html" class="flavor-selector__btn flavor-selector__btn--lemon">Lemon Lime</a>
+            <!-- Flavor Selector — Color Circles -->
+            <div class="flavor-selector--circles">
+              <a href="strawberry-lemonade.html" class="flavor-circle flavor-circle--strawberry active" title="Strawberry Lemonade"></a>
+              <a href="grapefruit.html" class="flavor-circle flavor-circle--grapefruit" title="Grapefruit"></a>
+              <span class="flavor-selector__label">Strawberry Lemonade</span>
             </div>
 
             <!-- Subscribe & Save -->
@@ -400,33 +401,80 @@
       </div>
     </section>
 
-    <!-- How to Use -->
-    <section class="how-it-works" aria-label="How to use">
+    <!-- Ingredient Cards -->
+    <section class="ingredients-grid" aria-label="Ingredients">
       <div class="container">
         <div class="section-header">
-          <p class="section-eyebrow">Directions</p>
-          <h2 class="section-title">How to Use</h2>
+          <h2 class="section-title">Clean. Delicious. Performance-Focused</h2>
+          <p class="section-subtitle">High sodium, on purpose. Built for heavy sweat and real performance. Not just "flavored water."</p>
         </div>
-        <div class="how-it-works__grid">
-          <div class="how-it-works__step">
-            <div class="how-it-works__number">01</div>
-            <h3>Tear</h3>
-            <p>Open one individually-wrapped stick pack</p>
+        <div class="ingredients-grid__cards">
+          <div class="ingredient-card">
+            <div class="ingredient-card__icon">+</div>
+            <div class="ingredient-card__dose">600 MG</div>
+            <div class="ingredient-card__name">Himalayan Pink Salt</div>
+            <div class="ingredient-card__desc">High-sodium for real sweat replacement</div>
           </div>
-          <div class="how-it-works__step">
-            <div class="how-it-works__number">02</div>
-            <h3>Pour</h3>
-            <p>Mix with 12–16 fl oz of cold water</p>
+          <div class="ingredient-card">
+            <div class="ingredient-card__icon">+</div>
+            <div class="ingredient-card__dose">500 MG</div>
+            <div class="ingredient-card__name">Potassium</div>
+            <div class="ingredient-card__desc">Helps muscle function & cramp resistance</div>
           </div>
-          <div class="how-it-works__step">
-            <div class="how-it-works__number">03</div>
-            <h3>Shake</h3>
-            <p>Shake well until fully dissolved</p>
+          <div class="ingredient-card">
+            <div class="ingredient-card__icon">+</div>
+            <div class="ingredient-card__dose">200 MG</div>
+            <div class="ingredient-card__name">Magnesium Malate</div>
+            <div class="ingredient-card__desc">Premium, easier-to-absorb magnesium</div>
           </div>
-          <div class="how-it-works__step">
-            <div class="how-it-works__number">04</div>
-            <h3>Thrive</h3>
-            <p>Enjoy superior hydration anytime, anywhere</p>
+          <div class="ingredient-card">
+            <div class="ingredient-card__icon">+</div>
+            <div class="ingredient-card__dose">1,000 MG</div>
+            <div class="ingredient-card__name">L-Glutamine</div>
+            <div class="ingredient-card__desc">Gut health & muscle recovery</div>
+          </div>
+          <div class="ingredient-card">
+            <div class="ingredient-card__icon">+</div>
+            <div class="ingredient-card__dose">No Added Sugar</div>
+            <div class="ingredient-card__name">Stevia & Allulose</div>
+            <div class="ingredient-card__desc">Natural sweetness, zero sugar</div>
+          </div>
+          <div class="ingredient-card">
+            <div class="ingredient-card__icon">+</div>
+            <div class="ingredient-card__dose">90 MG</div>
+            <div class="ingredient-card__name">Vitamin C</div>
+            <div class="ingredient-card__desc">Immune support and antioxidant protection</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="product-faq" aria-label="Frequently asked questions">
+      <div class="container">
+        <div class="section-header">
+          <h2 class="section-title">Frequently Asked Questions</h2>
+        </div>
+        <div class="product-faq__list">
+          <div class="product-faq__item">
+            <button class="product-faq__question">How much is the cost per stick?<span>+</span></button>
+            <div class="product-faq__answer"><p>Each stick pack works out to just $1.87 at full price, or $1.50 per stick with a subscription (20% off). That's less than most sugary sports drinks with far superior ingredients.</p></div>
+          </div>
+          <div class="product-faq__item">
+            <button class="product-faq__question">What's inside each stick?<span>+</span></button>
+            <div class="product-faq__answer"><p>Every stick contains 1,300mg of electrolytes (600mg Sodium, 500mg Potassium, 200mg Magnesium), B Vitamins (B3, B5, B6, B12), 90mg Vitamin C, and 1,200mg of recovery amino acids (L-Glutamine + L-Alanine). Zero sugar, 5 calories, naturally sweetened with stevia and allulose.</p></div>
+          </div>
+          <div class="product-faq__item">
+            <button class="product-faq__question">Why do I see floaties or clumps sometimes?<span>+</span></button>
+            <div class="product-faq__answer"><p>Totally normal. Our mineral-forward formula uses organic natural flavor ingredients and bamboo extract, which can take a bit longer to dissolve. Just shake or stir a little more — it won't affect taste or effectiveness.</p></div>
+          </div>
+          <div class="product-faq__item">
+            <button class="product-faq__question">Are "natural flavors" always bad?<span>+</span></button>
+            <div class="product-faq__answer"><p>Not at all. Our natural flavors are derived from real fruit extracts — grapefruit oil and real fruit essences. We use zero artificial flavors, colors, or sweeteners. Every ingredient is listed on the label with no proprietary blends.</p></div>
+          </div>
+          <div class="product-faq__item">
+            <button class="product-faq__question">What makes it different from other hydration mixes?<span>+</span></button>
+            <div class="product-faq__answer"><p>Atlas delivers more total electrolytes than LMNT, Liquid I.V., or WaterBoy — plus B vitamins, Vitamin C, and recovery amino acids that none of them include. All with zero sugar and only 5 calories. It's a cleaner, more complete formula built by a pilot who needed real hydration.</p></div>
           </div>
         </div>
       </div>
@@ -464,7 +512,7 @@
           <h4>Shop</h4>
           <nav aria-label="Shop links">
             <a href="strawberry-lemonade.html">Strawberry Lemonade</a>
-            <a href="lemon-lime.html">Lemon Lime</a>
+            <a href="grapefruit.html">Grapefruit</a>
           </nav>
         </div>
         <div class="footer__links">
@@ -487,6 +535,10 @@
       </div>
     </div>
   </footer>
+
+  <!-- Junip Reviews -->
+  <script async src="https://widgets.juniphq.com/v1/junip_shopify.js"></script>
+  <span class="junip-store-key" data-store-key="anLwjMqeGdCvG9w79wSpfM16" style="display:none"></span>
 
   <!-- Shopify Buy SDK (CDN) -->
   <script src="https://sdks.shopifycdn.com/buy-button/latest/buy-button-storefront.min.js" defer></script>

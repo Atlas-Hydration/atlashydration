@@ -31,7 +31,7 @@ var AtlasShop = (function() {
       comparePrice: '32.99',
       image: null
     },
-    'lemon-lime': {
+    'grapefruit': {
       id: 'gid://shopify/ProductVariant/41850457817162',
       title: 'Grapefruit — 16 Pack',
       price: '29.99',
@@ -430,7 +430,7 @@ var AtlasShop = (function() {
   // Product ID to slug mapping
   var PRODUCT_MAP = {
     7693950255178: 'strawberry-lemonade',
-    7862662103114: 'lemon-lime'
+    7862662103114: 'grapefruit'
   };
 
   function fetchProductImages() {
@@ -506,16 +506,66 @@ var AtlasShop = (function() {
   }
 
   function injectProductImage(slug, imgSrc, altText) {
+    var allImages = VARIANTS[slug].allImages || [imgSrc];
+
     // Update product card visuals on landing page
     var cards = document.querySelectorAll('.product-card__visual--' + getVisualClass(slug));
     for (var i = 0; i < cards.length; i++) {
       cards[i].innerHTML = '<img src="' + imgSrc + '" alt="' + (altText || slug) + '" style="width:100%;height:100%;object-fit:cover;">';
     }
 
-    // Update product hero image on product detail pages
-    var heroImages = document.querySelectorAll('.product-hero__image--' + getVisualClass(slug));
-    for (var j = 0; j < heroImages.length; j++) {
-      heroImages[j].innerHTML = '<img src="' + imgSrc + '" alt="' + (altText || slug) + '" style="width:100%;height:100%;object-fit:cover;border-radius:var(--radius-lg);">';
+    // Update featured product image on landing page
+    var featuredImg = document.querySelector('.featured-product__image .product-card__visual--' + getVisualClass(slug));
+    if (featuredImg) {
+      featuredImg.innerHTML = '<img src="' + imgSrc + '" alt="' + (altText || slug) + '" style="width:100%;height:100%;object-fit:cover;border-radius:24px;">';
+    }
+
+    // Update product gallery main slide on product detail pages
+    var gallerySlide = document.querySelector('.product-gallery__slide[data-slide="0"]');
+    if (gallerySlide) {
+      // Check if we're on the right product page
+      var addBtn = document.querySelector('.js-add-to-cart[data-product="' + slug + '"]');
+      if (addBtn && gallerySlide) {
+        gallerySlide.innerHTML = '<img src="' + imgSrc + '" alt="' + (altText || slug) + '" style="width:100%;height:100%;object-fit:contain;padding:20px;">';
+
+        // Update first thumbnail
+        var firstThumb = document.querySelector('.product-gallery__thumb[data-thumb="0"]');
+        if (firstThumb) {
+          firstThumb.innerHTML = '<img src="' + imgSrc + '" alt="Product" style="width:100%;height:100%;object-fit:cover;border-radius:8px;">';
+        }
+
+        // Inject additional images into other slides if available
+        if (allImages.length > 1) {
+          var brandSlide = document.querySelector('.product-gallery__slide[data-slide="1"]');
+          if (brandSlide) {
+            brandSlide.innerHTML = '<img src="' + allImages[1] + '" alt="' + (altText || slug) + '" style="width:100%;height:100%;object-fit:contain;padding:20px;">';
+          }
+          var brandThumb = document.querySelector('.product-gallery__thumb[data-thumb="1"]');
+          if (brandThumb) {
+            brandThumb.innerHTML = '<img src="' + allImages[1] + '" alt="Brand" style="width:100%;height:100%;object-fit:cover;border-radius:8px;">';
+          }
+        }
+        if (allImages.length > 2) {
+          var ingredSlide = document.querySelector('.product-gallery__slide[data-slide="2"]');
+          if (ingredSlide) {
+            ingredSlide.innerHTML = '<img src="' + allImages[2] + '" alt="' + (altText || slug) + '" style="width:100%;height:100%;object-fit:contain;padding:20px;">';
+          }
+          var ingredThumb = document.querySelector('.product-gallery__thumb[data-thumb="2"]');
+          if (ingredThumb) {
+            ingredThumb.innerHTML = '<img src="' + allImages[2] + '" alt="Facts" style="width:100%;height:100%;object-fit:cover;border-radius:8px;">';
+          }
+        }
+        if (allImages.length > 3) {
+          var lifeSlide = document.querySelector('.product-gallery__slide[data-slide="3"]');
+          if (lifeSlide) {
+            lifeSlide.innerHTML = '<img src="' + allImages[3] + '" alt="' + (altText || slug) + '" style="width:100%;height:100%;object-fit:contain;padding:20px;">';
+          }
+          var lifeThumb = document.querySelector('.product-gallery__thumb[data-thumb="3"]');
+          if (lifeThumb) {
+            lifeThumb.innerHTML = '<img src="' + allImages[3] + '" alt="Clean" style="width:100%;height:100%;object-fit:cover;border-radius:8px;">';
+          }
+        }
+      }
     }
 
     // Update hero right panel if on landing page (show first product found)
@@ -530,7 +580,7 @@ var AtlasShop = (function() {
 
   function getVisualClass(slug) {
     if (slug === 'strawberry-lemonade') return 'strawberry';
-    if (slug === 'lemon-lime') return 'lemon';
+    if (slug === 'grapefruit') return 'lemon';
     return slug;
   }
 

@@ -462,7 +462,7 @@ img {
   background: rgba(255,255,255,0.15);
   color: #ffffff;
   border: 1px solid rgba(255,255,255,0.3);
-  border-radius: 6px;
+  border-radius: 999px;
   cursor: pointer;
   transition: all var(--transition);
   backdrop-filter: blur(10px);
@@ -821,7 +821,26 @@ img {
 }
 
 .science__left {
-  padding-top: 40px;
+  padding-top: 0;
+  text-align: center;
+}
+
+.science__left .science__heading {
+  text-align: center;
+}
+
+.science__left .science__desc {
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+}
+
+.science__left .science__badges {
+  justify-content: center;
+}
+
+.science__left .science__usa {
+  align-items: center;
 }
 
 .science__heading {
@@ -1233,19 +1252,15 @@ img {
    Footer
    ======================================== */
 .footer {
-  min-height: 90vh;
-  padding: 80px 0 40px;
-  background: var(--color-primary);
+  padding: 80px 0 0;
+  background: #1a1a1c;
   color: #ffffff;
   border-top: none;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
 }
 
 .footer__grid {
   display: grid;
-  grid-template-columns: 2fr 1fr 1fr 1fr;
+  grid-template-columns: 1.5fr 1fr 1fr;
   gap: 48px;
   margin-bottom: 48px;
 }
@@ -2434,7 +2449,7 @@ img {
   background: linear-gradient(180deg, rgba(59, 165, 246, 0.5) 0%, rgba(30, 120, 220, 0.7) 100%);
   transition: height 0.5s cubic-bezier(0.4, 0, 0.2, 1);
   z-index: -1;
-  border-radius: 6px;
+  border-radius: 999px;
 }
 
 .btn--hero:hover::before {
@@ -2468,13 +2483,13 @@ main {
 }
 
 .hero,
-.products,
+.featured-product,
 .science,
-.how-it-works,
-.mission,
+.compare,
 .testimonials,
+.founder,
 .cta-section,
-.compare {
+.footer {
   scroll-snap-align: start;
 }
 
@@ -2779,6 +2794,556 @@ main {
 }
 
 /* ========================================
+   Vitamin Strip in Footer
+   ======================================== */
+.vitamin-strip--footer {
+  background: transparent;
+  border-top: 1px solid rgba(255,255,255,0.1);
+  border-bottom: none;
+  padding: 24px 0;
+}
+
+.vitamin-strip--footer .vitamin-strip__card {
+  background: rgba(255,255,255,0.06);
+  border-color: rgba(255,255,255,0.1);
+}
+
+.vitamin-strip--footer .vitamin-strip__dose {
+  color: rgba(255,255,255,0.9);
+}
+
+.vitamin-strip--footer .vitamin-strip__info h4 {
+  color: rgba(255,255,255,0.8);
+}
+
+.vitamin-strip--footer .vitamin-strip__info p {
+  color: rgba(255,255,255,0.4);
+}
+
+/* ========================================
+   Flavor Selector — Color Circles
+   ======================================== */
+.flavor-selector--circles {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 24px;
+  align-items: center;
+}
+
+.flavor-selector--circles .flavor-circle {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+  text-decoration: none;
+  display: block;
+}
+
+.flavor-circle--strawberry {
+  background: linear-gradient(135deg, #e85d75, #f0a0b0);
+}
+
+.flavor-circle--grapefruit {
+  background: linear-gradient(135deg, #f5a623, #f7c948);
+}
+
+.flavor-circle:hover {
+  transform: scale(1.1);
+}
+
+.flavor-circle.active {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 2px var(--color-bg), 0 0 0 4px var(--color-primary);
+}
+
+.flavor-selector__label {
+  font-size: 0.78rem;
+  color: var(--color-text-muted);
+  font-weight: 500;
+}
+
+/* ========================================
+   Featured Product Section (Landing)
+   ======================================== */
+.featured-product {
+  padding: 120px 0;
+  background: var(--color-bg-light);
+}
+
+.featured-product__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  align-items: center;
+}
+
+.featured-product__image {
+  position: relative;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background: linear-gradient(135deg, #fce4ec 0%, #f8bbd0 100%);
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.featured-product__image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: var(--radius-lg);
+}
+
+.featured-product__info {
+  max-width: 480px;
+}
+
+.featured-product__eyebrow {
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--color-text-dim);
+  margin-bottom: 8px;
+}
+
+.featured-product__title {
+  font-family: var(--font-sans);
+  font-size: clamp(1.8rem, 3vw, 2.4rem);
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  line-height: 1.1;
+  margin-bottom: 8px;
+}
+
+.featured-product__subtitle {
+  font-size: 0.9rem;
+  color: var(--color-text-muted);
+  margin-bottom: 20px;
+  line-height: 1.5;
+}
+
+.featured-product__price {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.featured-product__price-sub {
+  font-size: 0.78rem;
+  color: var(--color-text-dim);
+  margin-bottom: 24px;
+}
+
+.featured-product__badges {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+
+.featured-product__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-muted);
+}
+
+/* ========================================
+   Ingredient Cards Section (Product Page)
+   ======================================== */
+.ingredients-grid {
+  padding: 100px 0;
+  background: linear-gradient(180deg, #fdf6e3 0%, #fef9ef 100%);
+}
+
+.ingredients-grid__cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-top: 48px;
+}
+
+.ingredient-card {
+  background: var(--color-white);
+  border-radius: 16px;
+  padding: 28px 24px;
+  text-align: center;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.ingredient-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px rgba(0,0,0,0.08);
+}
+
+.ingredient-card__icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #c5d85a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 12px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.ingredient-card__dose {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 999px;
+  background: rgba(197, 216, 90, 0.2);
+  color: #7a8a2e;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 8px;
+}
+
+.ingredient-card__name {
+  font-size: 0.85rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 6px;
+  color: var(--color-text);
+}
+
+.ingredient-card__desc {
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+  line-height: 1.4;
+}
+
+/* ========================================
+   FAQ Accordion (Product Page)
+   ======================================== */
+.product-faq {
+  padding: 80px 0;
+  background: var(--color-bg-light);
+}
+
+.product-faq__list {
+  max-width: 800px;
+  margin: 48px auto 0;
+}
+
+.product-faq__item {
+  border-bottom: 2px solid var(--color-primary);
+}
+
+.product-faq__question {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 24px 0;
+  background: none;
+  border: none;
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--color-text);
+  cursor: pointer;
+  text-align: left;
+}
+
+.product-faq__question span {
+  font-size: 1.4rem;
+  font-weight: 300;
+  transition: transform 0.3s ease;
+}
+
+.product-faq__item.open .product-faq__question span {
+  transform: rotate(45deg);
+}
+
+.product-faq__answer {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s ease, padding 0.4s ease;
+}
+
+.product-faq__item.open .product-faq__answer {
+  max-height: 300px;
+  padding-bottom: 24px;
+}
+
+.product-faq__answer p {
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+  line-height: 1.6;
+}
+
+/* ========================================
+   Hero Canvas (WebGL Animation)
+   ======================================== */
+.hero__canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.global-water-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.4;
+}
+
+.hero__content {
+  z-index: 2;
+}
+
+/* ========================================
+   Popup Redesign — Full Width
+   ======================================== */
+.popup {
+  max-width: 720px;
+  padding: 60px 48px;
+  background: linear-gradient(135deg, #fce4ec 0%, #f5f0d0 50%, #e8f5e9 100%);
+  color: var(--color-text);
+}
+
+.popup__close {
+  color: var(--color-text-muted);
+}
+
+.popup__close:hover {
+  color: var(--color-text);
+}
+
+.popup__logo img {
+  filter: brightness(0);
+}
+
+.popup__heading {
+  color: var(--color-text);
+  font-size: 1.4rem;
+  font-weight: 800;
+  font-family: var(--font-sans);
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+}
+
+.popup__percent {
+  font-family: var(--font-sans);
+  font-size: 5rem;
+  font-weight: 900;
+  color: var(--color-text);
+  letter-spacing: -0.04em;
+}
+
+.popup__subheading {
+  color: var(--color-text);
+  font-size: 1rem;
+  margin-bottom: 20px;
+}
+
+.popup__choices {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.popup__choice {
+  width: 100%;
+  padding: 16px 24px;
+  border-radius: 999px;
+  border: none;
+  font-size: 0.85rem;
+  font-weight: 700;
+  font-family: var(--font-sans);
+  background: var(--color-primary);
+  color: #ffffff;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.popup__choice:hover {
+  background: #333;
+  transform: translateY(-1px);
+}
+
+.popup__dismiss {
+  color: var(--color-text-muted);
+}
+
+/* ========================================
+   Founder Section
+   ======================================== */
+.founder {
+  padding: 120px 0;
+  background: var(--color-bg-light);
+}
+
+.founder__grid {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: 80px;
+  align-items: center;
+}
+
+.founder__image {
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  aspect-ratio: 4/5;
+  background: linear-gradient(135deg, #1a3a5c 0%, #2c5f8a 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.founder__image-placeholder {
+  opacity: 0.4;
+}
+
+.founder__content .section-eyebrow {
+  text-align: left;
+}
+
+.founder__text {
+  margin-top: 20px;
+}
+
+.founder__text p {
+  font-size: 0.9rem;
+  color: var(--color-text-muted);
+  line-height: 1.7;
+  margin-bottom: 16px;
+}
+
+.founder__text p strong {
+  color: var(--color-text);
+}
+
+.founder__signature {
+  margin-top: 28px;
+  padding-top: 20px;
+  border-top: 1px solid var(--color-border);
+}
+
+.founder__name {
+  display: block;
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--color-text);
+  margin-bottom: 2px;
+}
+
+.founder__role {
+  display: block;
+  font-size: 0.78rem;
+  color: var(--color-text-dim);
+}
+
+/* ========================================
+   Footer Extras
+   ======================================== */
+.footer__logo-img {
+  height: 36px;
+}
+
+.footer__social {
+  display: flex;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.footer__social a {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255,255,255,0.7);
+  transition: all 0.2s;
+}
+
+.footer__social a:hover {
+  background: rgba(255,255,255,0.15);
+  color: #fff;
+}
+
+.footer__links nav {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.footer__links nav a {
+  font-size: 0.85rem;
+  color: rgba(255,255,255,0.6);
+  transition: color 0.2s;
+}
+
+.footer__links nav a:hover {
+  color: #fff;
+}
+
+.footer__divider {
+  height: 1px;
+  background: rgba(255,255,255,0.1);
+  margin-bottom: 24px;
+}
+
+.footer__bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 32px;
+}
+
+.footer__bottom p {
+  font-size: 0.78rem;
+  color: rgba(255,255,255,0.4);
+}
+
+.footer__payments {
+  display: flex;
+  gap: 8px;
+}
+
+.footer__payment-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 10px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 4px;
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: rgba(255,255,255,0.5);
+  letter-spacing: 0.02em;
+}
+
+/* ========================================
    Responsive
    ======================================== */
 @media (max-width: 1024px) {
@@ -2813,6 +3378,20 @@ main {
 
   .supplement-facts__grid {
     grid-template-columns: 1fr;
+  }
+
+  .featured-product__grid {
+    grid-template-columns: 1fr;
+    gap: 48px;
+  }
+
+  .founder__grid {
+    grid-template-columns: 1fr;
+    gap: 48px;
+  }
+
+  .ingredients-grid__cards {
+    grid-template-columns: repeat(2, 1fr);
   }
 }
 

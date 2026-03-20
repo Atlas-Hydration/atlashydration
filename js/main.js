@@ -263,16 +263,16 @@ document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
   });
 })();
 
-// 10% Off Popup — 3 second delay, once per session
+// 10% Off Popup — choice-based flow
 (function() {
   var overlay = document.getElementById('popupOverlay');
   if (!overlay) return;
   var closeBtn = document.getElementById('popupClose');
   var dismissBtn = document.getElementById('popupDismiss');
-  var claimBtn = document.getElementById('popupClaim');
   var emailInput = document.getElementById('popupEmail');
+  var emailSubmit = document.getElementById('popupEmailSubmit');
+  var choices = overlay.querySelectorAll('.popup__choice');
 
-  // Only show once per session
   if (sessionStorage.getItem('atlas_popup_dismissed')) return;
 
   setTimeout(function() {
@@ -292,17 +292,50 @@ document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
     if (e.target === overlay) closePopup();
   });
 
-  claimBtn.addEventListener('click', function() {
-    var email = emailInput.value.trim();
-    if (email && email.indexOf('@') > -1) {
-      claimBtn.textContent = 'Code: ATLAS10';
-      claimBtn.style.background = '#22c55e';
-      setTimeout(closePopup, 2500);
-    } else {
-      emailInput.style.outline = '2px solid #ef4444';
+  // When a choice is clicked, show email input
+  choices.forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var choicesContainer = overlay.querySelector('.popup__choices');
+      if (choicesContainer) choicesContainer.style.display = 'none';
+      emailInput.style.display = 'block';
+      emailSubmit.style.display = 'block';
       emailInput.focus();
-      setTimeout(function() { emailInput.style.outline = ''; }, 1500);
-    }
+    });
+  });
+
+  // Email submit
+  if (emailSubmit) {
+    emailSubmit.addEventListener('click', function() {
+      var email = emailInput.value.trim();
+      if (email && email.indexOf('@') > -1) {
+        emailSubmit.textContent = 'Code: ATLAS10';
+        emailSubmit.style.background = '#22c55e';
+        setTimeout(closePopup, 2500);
+      } else {
+        emailInput.style.outline = '2px solid #ef4444';
+        emailInput.focus();
+        setTimeout(function() { emailInput.style.outline = ''; }, 1500);
+      }
+    });
+  }
+})();
+
+// FAQ accordion toggle
+(function() {
+  var questions = document.querySelectorAll('.product-faq__question');
+  questions.forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var item = btn.parentElement;
+      var isOpen = item.classList.contains('open');
+      // Close all
+      document.querySelectorAll('.product-faq__item').forEach(function(i) {
+        i.classList.remove('open');
+      });
+      // Toggle clicked
+      if (!isOpen) {
+        item.classList.add('open');
+      }
+    });
   });
 })();
 
@@ -366,6 +399,194 @@ document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
         }
       }
     }
+    requestAnimationFrame(animate);
+  }
+
+  window.addEventListener('resize', resize);
+  init();
+})();
+
+// Subtle WebGL-style hydration animation in hero
+(function() {
+  var canvas = document.getElementById('heroCanvas');
+  if (!canvas) return;
+
+  var ctx = canvas.getContext('2d');
+  var drops = [];
+  var bubbles = [];
+  var time = 0;
+
+  function resize() {
+    canvas.width = canvas.parentElement.offsetWidth;
+    canvas.height = canvas.parentElement.offsetHeight;
+  }
+
+  function createDrop() {
+    return {
+      x: Math.random() * canvas.width,
+      y: -10,
+      speed: Math.random() * 0.3 + 0.1,
+      size: Math.random() * 1.5 + 0.5,
+      opacity: Math.random() * 0.08 + 0.02,
+      drift: (Math.random() - 0.5) * 0.15
+    };
+  }
+
+  function createBubble() {
+    return {
+      x: Math.random() * canvas.width,
+      y: canvas.height + 10,
+      speed: Math.random() * 0.2 + 0.05,
+      size: Math.random() * 3 + 1,
+      opacity: Math.random() * 0.06 + 0.01,
+      wobble: Math.random() * Math.PI * 2
+    };
+  }
+
+  function init() {
+    resize();
+    for (var i = 0; i < 40; i++) {
+      var d = createDrop();
+      d.y = Math.random() * canvas.height;
+      drops.push(d);
+    }
+    for (var j = 0; j < 12; j++) {
+      var b = createBubble();
+      b.y = Math.random() * canvas.height;
+      bubbles.push(b);
+    }
+    animate();
+  }
+
+  function animate() {
+    time += 0.01;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Subtle flowing water drops
+    for (var i = 0; i < drops.length; i++) {
+      var d = drops[i];
+      d.y += d.speed;
+      d.x += d.drift + Math.sin(time + i) * 0.05;
+      if (d.y > canvas.height + 10) {
+        drops[i] = createDrop();
+        continue;
+      }
+      ctx.beginPath();
+      ctx.arc(d.x, d.y, d.size, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(150, 200, 255, ' + d.opacity + ')';
+      ctx.fill();
+    }
+
+    // Rising bubbles
+    for (var j = 0; j < bubbles.length; j++) {
+      var b = bubbles[j];
+      b.y -= b.speed;
+      b.x += Math.sin(time * 2 + b.wobble) * 0.3;
+      if (b.y < -10) {
+        bubbles[j] = createBubble();
+        continue;
+      }
+      ctx.beginPath();
+      ctx.arc(b.x, b.y, b.size, 0, Math.PI * 2);
+      ctx.strokeStyle = 'rgba(180, 220, 255, ' + b.opacity + ')';
+      ctx.lineWidth = 0.5;
+      ctx.stroke();
+    }
+
+    // Subtle wave lines
+    ctx.beginPath();
+    for (var x = 0; x < canvas.width; x += 4) {
+      var y1 = canvas.height * 0.7 + Math.sin(x * 0.008 + time) * 20 + Math.sin(x * 0.015 + time * 1.5) * 10;
+      if (x === 0) ctx.moveTo(x, y1);
+      else ctx.lineTo(x, y1);
+    }
+    ctx.strokeStyle = 'rgba(150, 200, 255, 0.03)';
+    ctx.lineWidth = 1;
+    ctx.stroke();
+
+    ctx.beginPath();
+    for (var x2 = 0; x2 < canvas.width; x2 += 4) {
+      var y2 = canvas.height * 0.5 + Math.sin(x2 * 0.006 + time * 0.7) * 25 + Math.sin(x2 * 0.012 + time * 1.2) * 12;
+      if (x2 === 0) ctx.moveTo(x2, y2);
+      else ctx.lineTo(x2, y2);
+    }
+    ctx.strokeStyle = 'rgba(150, 200, 255, 0.02)';
+    ctx.stroke();
+
+    requestAnimationFrame(animate);
+  }
+
+  window.addEventListener('resize', resize);
+  init();
+})();
+
+// Global subtle water background animation
+(function() {
+  var canvas = document.getElementById('globalWaterCanvas');
+  if (!canvas) return;
+
+  var ctx = canvas.getContext('2d');
+  var time = 0;
+  var particles = [];
+
+  function resize() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+
+  function createParticle() {
+    return {
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      size: Math.random() * 2 + 0.5,
+      speedX: (Math.random() - 0.5) * 0.15,
+      speedY: Math.random() * -0.1 - 0.02,
+      opacity: Math.random() * 0.04 + 0.01,
+      phase: Math.random() * Math.PI * 2
+    };
+  }
+
+  function init() {
+    resize();
+    for (var i = 0; i < 50; i++) {
+      particles.push(createParticle());
+    }
+    animate();
+  }
+
+  function animate() {
+    time += 0.005;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Flowing wave lines across the viewport
+    for (var w = 0; w < 3; w++) {
+      ctx.beginPath();
+      var yBase = canvas.height * (0.3 + w * 0.2);
+      for (var x = 0; x < canvas.width; x += 6) {
+        var y = yBase + Math.sin(x * 0.004 + time * (0.5 + w * 0.3)) * 40 + Math.sin(x * 0.008 + time * (0.8 + w * 0.2)) * 20;
+        if (x === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      }
+      ctx.strokeStyle = 'rgba(100, 170, 230, ' + (0.015 - w * 0.003) + ')';
+      ctx.lineWidth = 1;
+      ctx.stroke();
+    }
+
+    // Floating particles
+    for (var i = 0; i < particles.length; i++) {
+      var p = particles[i];
+      p.x += p.speedX + Math.sin(time + p.phase) * 0.1;
+      p.y += p.speedY;
+      if (p.y < -10) { p.y = canvas.height + 10; p.x = Math.random() * canvas.width; }
+      if (p.x < -10) p.x = canvas.width + 10;
+      if (p.x > canvas.width + 10) p.x = -10;
+
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(100, 170, 230, ' + p.opacity + ')';
+      ctx.fill();
+    }
+
     requestAnimationFrame(animate);
   }
 

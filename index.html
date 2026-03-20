@@ -56,6 +56,9 @@
   <meta name="theme-color" content="#ffffff">
 </head>
 <body>
+  <!-- Global subtle hydration background -->
+  <canvas id="globalWaterCanvas" class="global-water-canvas" aria-hidden="true"></canvas>
+
   <!-- Announcement Bar -->
   <div class="announcement-bar" role="banner">
     <div class="announcement-bar__inner">
@@ -96,6 +99,7 @@
       <div class="hero__split">
         <div class="hero__left">
           <div class="hero__left-bg"></div>
+          <canvas id="heroCanvas" class="hero__canvas" aria-hidden="true"></canvas>
           <div class="hero__content">
             <div class="hero__reviews">
               <span class="hero__stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
@@ -143,121 +147,39 @@
       </div>
     </section>
 
-    <!-- Products Section -->
-    <section class="products" id="products" aria-label="Products">
+    <!-- Featured Product: Strawberry Lemonade -->
+    <section class="featured-product" id="products" aria-label="Featured Product">
       <div class="container">
-        <div class="section-header">
-          <p class="section-eyebrow">Shop</p>
-          <h2 class="section-title">Our Products</h2>
-          <p class="section-subtitle">Science-backed electrolyte drink mixes designed for peak performance and daily wellness.</p>
-        </div>
-
-        <div class="products__grid">
-          <!-- Product 1: Strawberry Lemonade -->
-          <article class="product-card" itemscope itemtype="https://schema.org/Product">
-            <a href="products/strawberry-lemonade.html" class="product-card__link">
-              <div class="product-card__image">
-                <div class="product-card__badge">Best Seller</div>
-                <div class="product-card__visual product-card__visual--strawberry">
-                  <div class="product-card__sachet">
-                    <div class="sachet">
-                      <div class="sachet__top"></div>
-                      <div class="sachet__body">
-                        <span class="sachet__brand">Atlas</span>
-                        <span class="sachet__flavor">Strawberry<br>Lemonade</span>
-                        <span class="sachet__info">Electrolyte Mix</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="product-card__info">
-                <h3 class="product-card__title" itemprop="name">Strawberry Lemonade</h3>
-                <p class="product-card__desc" itemprop="description">Zero-sugar electrolyte drink mix with 1,300mg electrolytes, B vitamins & Vitamin C</p>
-                <div class="product-card__meta">
-                  <span class="product-card__price" itemprop="offers" itemscope itemtype="https://schema.org/Offer">
-                    <span itemprop="price" content="29.99">$29.99</span>
-                    <meta itemprop="priceCurrency" content="USD">
-                    <meta itemprop="availability" content="https://schema.org/InStock">
-                  </span>
-                  <span class="product-card__size">16 Pack</span>
-                </div>
-              </div>
-            </a>
-            <div class="product-card__cart">
-              <button class="btn btn--primary btn--sm js-add-to-cart" data-product="strawberry-lemonade">Add to Cart</button>
-            </div>
-          </article>
-
-          <!-- Product 2: Lemon Lime -->
-          <article class="product-card" itemscope itemtype="https://schema.org/Product">
-            <a href="products/lemon-lime.html" class="product-card__link">
-              <div class="product-card__image">
-                <div class="product-card__badge product-card__badge--new">New Flavor</div>
-                <div class="product-card__visual product-card__visual--lemon">
-                  <div class="product-card__sachet">
-                    <div class="sachet">
-                      <div class="sachet__top sachet__top--lime"></div>
-                      <div class="sachet__body sachet__body--lime">
-                        <span class="sachet__brand">Atlas</span>
-                        <span class="sachet__flavor">Lemon<br>Lime</span>
-                        <span class="sachet__info">Electrolyte Mix</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="product-card__info">
-                <h3 class="product-card__title" itemprop="name">Lemon Lime</h3>
-                <p class="product-card__desc" itemprop="description">Crisp & refreshing electrolyte powder for athletes, travelers, and anyone on the go</p>
-                <div class="product-card__meta">
-                  <span class="product-card__price" itemprop="offers" itemscope itemtype="https://schema.org/Offer">
-                    <span itemprop="price" content="29.99">$29.99</span>
-                    <meta itemprop="priceCurrency" content="USD">
-                    <meta itemprop="availability" content="https://schema.org/InStock">
-                  </span>
-                  <span class="product-card__size">16 Pack</span>
-                </div>
-              </div>
-            </a>
-            <div class="product-card__cart">
-              <button class="btn btn--primary btn--sm js-add-to-cart" data-product="lemon-lime">Add to Cart</button>
-            </div>
-          </article>
-
-          <!-- Product 3: Variety Pack -->
-          <article class="product-card product-card--coming-soon" itemscope itemtype="https://schema.org/Product">
-            <div class="product-card__link">
-              <div class="product-card__image">
-                <div class="product-card__visual product-card__visual--variety">
-                  <div class="product-card__sachet product-card__sachet--duo">
-                    <div class="sachet sachet--small">
-                      <div class="sachet__top"></div>
-                      <div class="sachet__body">
-                        <span class="sachet__brand sachet__brand--sm">Atlas</span>
-                      </div>
-                    </div>
-                    <div class="sachet sachet--small">
-                      <div class="sachet__top sachet__top--lime"></div>
-                      <div class="sachet__body sachet__body--lime">
-                        <span class="sachet__brand sachet__brand--sm">Atlas</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="product-card__info">
-                <h3 class="product-card__title" itemprop="name">Variety Pack</h3>
-                <p class="product-card__desc" itemprop="description">Try all flavors — the perfect way to discover your favorite Atlas blend</p>
-                <div class="product-card__meta">
-                  <span class="product-card__price">Coming Soon</span>
+        <div class="featured-product__grid">
+          <div class="featured-product__image">
+            <div class="product-card__visual product-card__visual--strawberry" style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;">
+              <div class="sachet" style="transform:scale(1.5);">
+                <div class="sachet__top"></div>
+                <div class="sachet__body">
+                  <span class="sachet__brand">Atlas</span>
+                  <span class="sachet__flavor">Strawberry<br>Lemonade</span>
+                  <span class="sachet__info">Electrolyte Mix</span>
                 </div>
               </div>
             </div>
-            <div class="product-card__cart">
-              <button class="btn btn--outline btn--sm" disabled>Coming Soon</button>
+          </div>
+          <div class="featured-product__info">
+            <p class="featured-product__eyebrow">Best Seller</p>
+            <h2 class="featured-product__title">Strawberry Lemonade<br>Electrolyte Mix</h2>
+            <p class="featured-product__subtitle">Zero-sugar hydration with 1,300mg electrolytes, B vitamins, Vitamin C, and recovery amino acids. 16 stick packs per box.</p>
+            <div class="featured-product__badges">
+              <span class="featured-product__badge">Zero Sugar</span>
+              <span class="featured-product__badge">Non-GMO</span>
+              <span class="featured-product__badge">Made in USA</span>
+              <span class="featured-product__badge">5 Calories</span>
             </div>
-          </article>
+            <div class="featured-product__price">$29.99</div>
+            <p class="featured-product__price-sub">$1.87 / stick &bull; 16 pack</p>
+            <div style="display:flex;gap:12px;align-items:center;">
+              <button class="btn btn--primary btn--lg js-add-to-cart" data-product="strawberry-lemonade">Add to Cart</button>
+              <a href="products/strawberry-lemonade.html" class="btn btn--outline btn--lg">View Details</a>
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -368,7 +290,7 @@
                 <th></th>
                 <th class="compare__brand compare__brand--atlas">
                   <span class="compare__brand-name">
-                    <img src="logo.svg" alt="Atlas" height="18" style="display:inline-block;vertical-align:middle;">
+                    <img src="logo.svg" alt="Atlas" height="18" style="display:inline-block;vertical-align:middle;filter:brightness(0);">
                   </span>
                 </th>
                 <th class="compare__brand"><span class="compare__brand-name">LMNT</span></th>
@@ -454,6 +376,32 @@
       </div>
     </section>
 
+    <!-- Founder's Story -->
+    <section class="founder" id="founder" aria-label="Founder's Story">
+      <div class="container">
+        <div class="founder__grid">
+          <div class="founder__image">
+            <div class="founder__image-placeholder">
+              <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="1"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            </div>
+          </div>
+          <div class="founder__content">
+            <p class="section-eyebrow">Founder's Story</p>
+            <h2 class="section-title" style="text-align:left;">Created by a Pilot</h2>
+            <div class="founder__text">
+              <p>Atlas Hydration was born at 35,000 feet. As a commercial pilot, <strong>Garrett Ray</strong> experienced the harsh reality of chronic dehydration firsthand — dry cabin air, irregular schedules, and constant travel across time zones took a serious toll on his body and performance.</p>
+              <p>After years of searching for a hydration solution that actually worked without the sugar, artificial ingredients, or watered-down formulas, Garrett decided to create his own. He spent months researching electrolyte science, working with formulators, and testing blends until he developed the perfect ratio: 1,300mg of electrolytes, essential B vitamins, Vitamin C, and recovery amino acids — all with zero sugar.</p>
+              <p>The result is Atlas — a premium electrolyte mix built for pilots, athletes, travelers, and anyone who demands more from their hydration. Every stick pack is designed to help you perform at your best, wherever life takes you.</p>
+            </div>
+            <div class="founder__signature">
+              <span class="founder__name">Garrett Ray</span>
+              <span class="founder__role">Founder & CEO, Atlas Hydration</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <!-- Newsletter / CTA -->
     <section class="cta-section" aria-label="Call to action">
       <video class="cta-section__video" autoplay muted loop playsinline poster="">
@@ -470,99 +418,6 @@
         </div>
       </div>
     </section>
-    <!-- Vitamin Strip -->
-    <section class="vitamin-strip" aria-label="Key vitamins">
-      <div class="vitamin-strip__track">
-        <div class="vitamin-strip__scroll">
-          <div class="vitamin-strip__card">
-            <div class="vitamin-strip__dose">90mg</div>
-            <div class="vitamin-strip__info">
-              <h4>Vitamin C</h4>
-              <p>Provides antioxidant support and aids muscle recovery and immune function.</p>
-            </div>
-          </div>
-          <div class="vitamin-strip__card">
-            <div class="vitamin-strip__dose">24mg</div>
-            <div class="vitamin-strip__info">
-              <h4>Vitamin B3 <span>(as Niacin)</span></h4>
-              <p>Replenishes electrolytes and maintains fluid balance.</p>
-            </div>
-          </div>
-          <div class="vitamin-strip__card">
-            <div class="vitamin-strip__dose">12mg</div>
-            <div class="vitamin-strip__info">
-              <h4>Vitamin B5 <span>(as Pantethine)</span></h4>
-              <p>Supports muscles, hydration, and stress response.</p>
-            </div>
-          </div>
-          <div class="vitamin-strip__card">
-            <div class="vitamin-strip__dose">2mg</div>
-            <div class="vitamin-strip__info">
-              <h4>Vitamin B6 <span>(as Pyridoxal-5-phosphate)</span></h4>
-              <p>Aids energy metabolism and contributes to neurotransmitter balance.</p>
-            </div>
-          </div>
-          <div class="vitamin-strip__card">
-            <div class="vitamin-strip__dose">600mg</div>
-            <div class="vitamin-strip__info">
-              <h4>Sodium</h4>
-              <p>Essential for fluid balance and nerve function during exercise.</p>
-            </div>
-          </div>
-          <div class="vitamin-strip__card">
-            <div class="vitamin-strip__dose">500mg</div>
-            <div class="vitamin-strip__info">
-              <h4>Potassium</h4>
-              <p>Supports muscle contractions and prevents cramping.</p>
-            </div>
-          </div>
-        </div>
-        <div class="vitamin-strip__scroll" aria-hidden="true">
-          <div class="vitamin-strip__card">
-            <div class="vitamin-strip__dose">90mg</div>
-            <div class="vitamin-strip__info">
-              <h4>Vitamin C</h4>
-              <p>Provides antioxidant support and aids muscle recovery and immune function.</p>
-            </div>
-          </div>
-          <div class="vitamin-strip__card">
-            <div class="vitamin-strip__dose">24mg</div>
-            <div class="vitamin-strip__info">
-              <h4>Vitamin B3 <span>(as Niacin)</span></h4>
-              <p>Replenishes electrolytes and maintains fluid balance.</p>
-            </div>
-          </div>
-          <div class="vitamin-strip__card">
-            <div class="vitamin-strip__dose">12mg</div>
-            <div class="vitamin-strip__info">
-              <h4>Vitamin B5 <span>(as Pantethine)</span></h4>
-              <p>Supports muscles, hydration, and stress response.</p>
-            </div>
-          </div>
-          <div class="vitamin-strip__card">
-            <div class="vitamin-strip__dose">2mg</div>
-            <div class="vitamin-strip__info">
-              <h4>Vitamin B6 <span>(as Pyridoxal-5-phosphate)</span></h4>
-              <p>Aids energy metabolism and contributes to neurotransmitter balance.</p>
-            </div>
-          </div>
-          <div class="vitamin-strip__card">
-            <div class="vitamin-strip__dose">600mg</div>
-            <div class="vitamin-strip__info">
-              <h4>Sodium</h4>
-              <p>Essential for fluid balance and nerve function during exercise.</p>
-            </div>
-          </div>
-          <div class="vitamin-strip__card">
-            <div class="vitamin-strip__dose">500mg</div>
-            <div class="vitamin-strip__info">
-              <h4>Potassium</h4>
-              <p>Supports muscle contractions and prevents cramping.</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
   </main>
 
   <!-- Footer -->
@@ -570,41 +425,50 @@
     <div class="container">
       <div class="footer__grid">
         <div class="footer__brand">
-          <img src="logo.svg" alt="Atlas" class="footer__logo-img" height="24">
-          <p class="footer__tagline">Hydrate. Recover. Thrive.</p>
+          <img src="logo.svg" alt="Atlas" class="footer__logo-img" height="36">
+          <p class="footer__tagline">premium ingredients. third-party tested.</p>
           <div class="footer__social">
-            <a href="https://www.instagram.com/atlashydration" target="_blank" rel="noopener noreferrer" aria-label="Follow us on Instagram">
+            <a href="https://www.instagram.com/atlashydration" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
             </a>
-            <a href="https://www.tiktok.com/@atlashydration" target="_blank" rel="noopener noreferrer" aria-label="Follow us on TikTok">
+            <a href="https://www.tiktok.com/@atlashydration" target="_blank" rel="noopener noreferrer" aria-label="TikTok">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1v-3.5a6.37 6.37 0 00-.79-.05A6.34 6.34 0 003.15 15.2a6.34 6.34 0 0010.86 4.48V13a8.28 8.28 0 005.58 2.16V11.7a4.83 4.83 0 01-3.77-1.78V6.69h3.77z"/></svg>
+            </a>
+            <a href="https://x.com/atlashydration" target="_blank" rel="noopener noreferrer" aria-label="X">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
             </a>
           </div>
         </div>
         <div class="footer__links">
-          <h4>Shop</h4>
-          <nav aria-label="Shop links">
-            <a href="products/strawberry-lemonade.html">Strawberry Lemonade</a>
-            <a href="products/lemon-lime.html">Lemon Lime</a>
-          </nav>
-        </div>
-        <div class="footer__links">
-          <h4>Company</h4>
-          <nav aria-label="Company links">
-            <a href="shipping.html">Shipping &amp; Returns</a>
-            <a href="privacy.html">Privacy Policy</a>
-          </nav>
-        </div>
-        <div class="footer__links">
-          <h4>Support</h4>
           <nav aria-label="Support links">
-            <a href="mailto:support@atlas-hydration.com">Contact Us</a>
+            <a href="mailto:support@atlas-hydration.com">support</a>
+            <a href="products/strawberry-lemonade.html">shop</a>
+            <a href="#founder">about us</a>
+            <a href="products/strawberry-lemonade.html#supplement-facts">supplement facts</a>
+            <a href="#science">science</a>
+          </nav>
+        </div>
+        <div class="footer__links">
+          <nav aria-label="Policy links">
+            <a href="shipping.html">shipping policy</a>
+            <a href="shipping.html">refund policy</a>
+            <a href="privacy.html">privacy policy</a>
+            <a href="mailto:support@atlas-hydration.com">contact us</a>
           </nav>
         </div>
       </div>
+      <div class="footer__divider"></div>
       <div class="footer__bottom">
-        <p>&copy; 2026 Atlas Hydration. All rights reserved.</p>
-        <p>Non-GMO &bull; Made in USA &bull; Zero Sugar</p>
+        <p>&copy; 2026 Atlas Hydration. all rights reserved.</p>
+        <div class="footer__payments">
+          <span class="footer__payment-icon">Visa</span>
+          <span class="footer__payment-icon">MC</span>
+          <span class="footer__payment-icon">Amex</span>
+          <span class="footer__payment-icon">PayPal</span>
+          <span class="footer__payment-icon">GPay</span>
+          <span class="footer__payment-icon">Apple</span>
+          <span class="footer__payment-icon">Shop</span>
+        </div>
       </div>
     </div>
   </footer>
@@ -614,16 +478,26 @@
     <div class="popup">
       <button class="popup__close" id="popupClose" aria-label="Close">&times;</button>
       <div class="popup__logo">
-        <img src="logo.svg" alt="Atlas" height="32">
+        <img src="logo.svg" alt="Atlas" height="28">
       </div>
-      <div class="popup__heading">UNLOCK</div>
+      <div class="popup__heading">You've Got</div>
       <div class="popup__percent">10% OFF</div>
-      <div class="popup__subheading">YOUR ORDER</div>
-      <input type="email" class="popup__input" id="popupEmail" placeholder="Enter your Email">
-      <button class="popup__btn" id="popupClaim">Claim 10% OFF</button>
-      <button class="popup__dismiss" id="popupDismiss">No Thanks, I'll pay full price</button>
+      <div class="popup__subheading">What brings you here?</div>
+      <div class="popup__choices">
+        <button class="popup__choice" id="popupClaim" data-reason="training">I train hard and sweat a lot</button>
+        <button class="popup__choice" id="popupChoice2" data-reason="daily">I want cleaner hydration daily</button>
+        <button class="popup__choice" id="popupChoice3" data-reason="sugar">I'm done with sugary sports drinks</button>
+        <button class="popup__choice" id="popupChoice4" data-reason="travel">I travel and need better hydration</button>
+      </div>
+      <input type="email" class="popup__input" id="popupEmail" placeholder="Enter your email for the code" style="display:none;">
+      <button class="popup__btn" id="popupEmailSubmit" style="display:none;">Get My 10% Off Code</button>
+      <button class="popup__dismiss" id="popupDismiss">No thanks</button>
     </div>
   </div>
+
+  <!-- Junip Reviews -->
+  <script async src="https://widgets.juniphq.com/v1/junip_shopify.js"></script>
+  <span class="junip-store-key" data-store-key="anLwjMqeGdCvG9w79wSpfM16" style="display:none"></span>
 
   <!-- Shopify Buy SDK (CDN) -->
   <script src="https://sdks.shopifycdn.com/buy-button/latest/buy-button-storefront.min.js" defer></script>
