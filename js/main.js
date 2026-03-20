@@ -28,7 +28,7 @@
 // Scroll-based fade-in animations
 (function() {
   var targets = document.querySelectorAll(
-    '.science__card, .how-it-works__step, .testimonial, .product-card, .sf-highlight, .mission__content, .mission__visual'
+    '.science__card, .science__ingredient-card, .how-it-works__step, .testimonial, .product-card, .sf-highlight, .mission__content, .mission__visual, .compare__table-wrap'
   );
 
   targets.forEach(function(el) {
@@ -146,4 +146,109 @@ document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
     if (isNaN(val) || val < min) qtyInput.value = min;
     if (val > max) qtyInput.value = max;
   });
+})();
+
+// Ingredient card expand/collapse toggles
+(function() {
+  var toggles = document.querySelectorAll('.science__ingredient-toggle');
+  toggles.forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var card = btn.closest('.science__ingredient-card');
+      var detail = card.querySelector('.science__ingredient-detail');
+      if (!detail) return;
+
+      var expanded = btn.getAttribute('aria-expanded') === 'true';
+      btn.setAttribute('aria-expanded', !expanded);
+
+      if (expanded) {
+        detail.hidden = true;
+        btn.firstChild.textContent = 'Learn More ';
+      } else {
+        detail.hidden = false;
+        btn.firstChild.textContent = 'Show Less ';
+      }
+    });
+  });
+})();
+
+// Product gallery (product pages)
+(function() {
+  var thumbs = document.querySelectorAll('.product-gallery__thumb');
+  var slides = document.querySelectorAll('.product-gallery__slide');
+
+  if (!thumbs.length || !slides.length) return;
+
+  thumbs.forEach(function(thumb) {
+    thumb.addEventListener('click', function() {
+      var index = parseInt(thumb.getAttribute('data-thumb'), 10);
+
+      // Update active thumb
+      thumbs.forEach(function(t) { t.classList.remove('product-gallery__thumb--active'); });
+      thumb.classList.add('product-gallery__thumb--active');
+
+      // Update active slide
+      slides.forEach(function(s) { s.classList.remove('product-gallery__slide--active'); });
+      var target = document.querySelector('.product-gallery__slide[data-slide="' + index + '"]');
+      if (target) target.classList.add('product-gallery__slide--active');
+    });
+  });
+})();
+
+// Hero canvas — subtle particle effect
+(function() {
+  var canvas = document.getElementById('heroCanvas');
+  if (!canvas) return;
+
+  var ctx = canvas.getContext('2d');
+  var particles = [];
+  var particleCount = 50;
+
+  function resize() {
+    canvas.width = canvas.offsetWidth;
+    canvas.height = canvas.offsetHeight;
+  }
+
+  function createParticle() {
+    return {
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      vx: (Math.random() - 0.5) * 0.3,
+      vy: -Math.random() * 0.5 - 0.1,
+      radius: Math.random() * 2 + 0.5,
+      opacity: Math.random() * 0.3 + 0.05
+    };
+  }
+
+  function init() {
+    resize();
+    for (var i = 0; i < particleCount; i++) {
+      particles.push(createParticle());
+    }
+    animate();
+  }
+
+  function animate() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    for (var i = 0; i < particles.length; i++) {
+      var p = particles[i];
+      p.x += p.vx;
+      p.y += p.vy;
+
+      if (p.y < -10 || p.x < -10 || p.x > canvas.width + 10) {
+        particles[i] = createParticle();
+        particles[i].y = canvas.height + 10;
+      }
+
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(59, 130, 246, ' + p.opacity + ')';
+      ctx.fill();
+    }
+
+    requestAnimationFrame(animate);
+  }
+
+  window.addEventListener('resize', resize);
+  init();
 })();

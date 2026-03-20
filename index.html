@@ -46,20 +46,19 @@
   }
   </script>
 
-  <!-- Preconnect for performance -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="css/styles.css">
   <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#0a1628">
+  <meta name="theme-color" content="#1a1a1a">
 </head>
 <body>
   <!-- Announcement Bar -->
   <div class="announcement-bar" role="banner">
     <div class="announcement-bar__inner">
-      <span>Free Shipping Over $50</span>
+      <span>Free Shipping Over $40</span>
       <span class="announcement-bar__divider">|</span>
       <span>Subscribe & Save 20%</span>
       <span class="announcement-bar__divider">|</span>
@@ -70,12 +69,8 @@
   <!-- Header -->
   <header class="header" role="navigation">
     <nav class="header__nav" aria-label="Main navigation">
-      <div class="header__left">
-        <a href="#products" class="header__link">Shop</a>
-        <a href="#science" class="header__link">Science</a>
-        <a href="#mission" class="header__link">Mission</a>
-      </div>
-      <a href="/" class="header__logo" aria-label="Atlas Hydration Home">
+      <div class="header__left"></div>
+      <a href="index.html" class="header__logo" aria-label="Atlas Hydration Home">
         <span class="logo-text">Atlas</span>
       </a>
       <div class="header__right">
@@ -88,70 +83,77 @@
         <span></span><span></span><span></span>
       </button>
     </nav>
-
-    <!-- Mobile Menu -->
     <div class="mobile-menu" id="mobileMenu" aria-hidden="true">
-      <a href="#products">Shop</a>
-      <a href="#science">Science</a>
-      <a href="#mission">Mission</a>
       <a href="#" class="js-cart-toggle">Cart</a>
     </div>
   </header>
 
   <main>
     <!-- Hero Section -->
-    <section class="hero" aria-label="Hero">
-      <div class="hero__bg"></div>
+    <section class="hero snap-section" aria-label="Hero">
+      <canvas id="heroCanvas" class="hero__canvas" aria-hidden="true"></canvas>
       <div class="hero__content">
-        <p class="hero__eyebrow">Premium Electrolyte Drink Mixes</p>
-        <h1 class="hero__title">Hydrate. Recover.<br>Thrive.</h1>
-        <p class="hero__subtitle">Zero-sugar electrolyte drink mixes with 1,300mg electrolytes, B vitamins, and recovery amino acids for superior hydration.</p>
-        <div class="hero__actions">
-          <a href="#products" class="btn btn--primary">Shop Now</a>
-          <a href="#science" class="btn btn--outline">Learn the Science</a>
+        <div class="hero__reviews">
+          <span class="hero__stars" aria-label="5 stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
+          <span class="hero__review-count">13 Reviews</span>
         </div>
+        <h1 class="hero__title">All hydration. No sugar.</h1>
+        <div class="hero__tags">
+          <span class="hero__tag">Hydration</span>
+          <span class="hero__tag">Recovery</span>
+          <span class="hero__tag">Performance</span>
+          <span class="hero__tag">Immunity</span>
+          <span class="hero__tag">No Sugar</span>
+        </div>
+        <a href="#products" class="btn btn--primary btn--water-hover">Hydrate</a>
       </div>
-      <div class="hero__scroll-indicator" aria-hidden="true">
-        <span>Scroll</span>
-        <div class="hero__scroll-line"></div>
-      </div>
-    </section>
-
-    <!-- Stats Bar -->
-    <section class="stats-bar" aria-label="Key statistics">
-      <div class="container">
-        <div class="stats-bar__grid">
-          <div class="stat">
-            <span class="stat__number" data-count="1300">0</span><span class="stat__unit">mg</span>
-            <span class="stat__label">Electrolytes</span>
-          </div>
-          <div class="stat">
-            <span class="stat__number" data-count="0">0</span><span class="stat__unit">g</span>
-            <span class="stat__label">Sugar</span>
-          </div>
-          <div class="stat">
-            <span class="stat__number" data-count="6">0</span>
-            <span class="stat__label">Essential Vitamins</span>
-          </div>
-          <div class="stat">
-            <span class="stat__number">Made in</span>
-            <span class="stat__label">the USA</span>
-          </div>
+      <div class="hero__marquee" aria-hidden="true">
+        <div class="hero__marquee-track">
+          <span>1,300mg Electrolytes</span>
+          <span class="hero__marquee-dot">&bull;</span>
+          <span>Zero Sugar</span>
+          <span class="hero__marquee-dot">&bull;</span>
+          <span>5 Calories</span>
+          <span class="hero__marquee-dot">&bull;</span>
+          <span>B-Complex Vitamins</span>
+          <span class="hero__marquee-dot">&bull;</span>
+          <span>1,000mg L-Glutamine</span>
+          <span class="hero__marquee-dot">&bull;</span>
+          <span>Made in USA</span>
+          <span class="hero__marquee-dot">&bull;</span>
+          <span>Non-GMO</span>
+          <span class="hero__marquee-dot">&bull;</span>
+          <span>Naturally Sweetened</span>
+          <span class="hero__marquee-dot">&bull;</span>
+          <span>1,300mg Electrolytes</span>
+          <span class="hero__marquee-dot">&bull;</span>
+          <span>Zero Sugar</span>
+          <span class="hero__marquee-dot">&bull;</span>
+          <span>5 Calories</span>
+          <span class="hero__marquee-dot">&bull;</span>
+          <span>B-Complex Vitamins</span>
+          <span class="hero__marquee-dot">&bull;</span>
+          <span>1,000mg L-Glutamine</span>
+          <span class="hero__marquee-dot">&bull;</span>
+          <span>Made in USA</span>
+          <span class="hero__marquee-dot">&bull;</span>
+          <span>Non-GMO</span>
+          <span class="hero__marquee-dot">&bull;</span>
+          <span>Naturally Sweetened</span>
+          <span class="hero__marquee-dot">&bull;</span>
         </div>
       </div>
     </section>
 
     <!-- Products Section -->
-    <section class="products" id="products" aria-label="Products">
+    <section class="products snap-section" id="products" aria-label="Products">
       <div class="container">
         <div class="section-header">
-          <p class="section-eyebrow">Shop</p>
           <h2 class="section-title">Our Products</h2>
           <p class="section-subtitle">Science-backed electrolyte drink mixes designed for peak performance and daily wellness.</p>
         </div>
 
         <div class="products__grid">
-          <!-- Product 1: Strawberry Lemonade -->
           <article class="product-card" itemscope itemtype="https://schema.org/Product">
             <a href="products/strawberry-lemonade.html" class="product-card__link">
               <div class="product-card__image">
@@ -187,7 +189,6 @@
             </div>
           </article>
 
-          <!-- Product 2: Lemon Lime -->
           <article class="product-card" itemscope itemtype="https://schema.org/Product">
             <a href="products/lemon-lime.html" class="product-card__link">
               <div class="product-card__image">
@@ -223,7 +224,6 @@
             </div>
           </article>
 
-          <!-- Product 3: Variety Pack -->
           <article class="product-card product-card--coming-soon" itemscope itemtype="https://schema.org/Product">
             <div class="product-card__link">
               <div class="product-card__image">
@@ -260,119 +260,136 @@
       </div>
     </section>
 
-    <!-- Science Section -->
-    <section class="science" id="science" aria-label="The science behind Atlas Hydration">
+    <!-- Science / Formula Section -->
+    <section class="science snap-section" id="science" aria-label="Superior Hydration">
       <div class="container">
-        <div class="section-header">
-          <p class="section-eyebrow">The Science</p>
-          <h2 class="section-title">Evidence-Based Formula</h2>
-          <p class="section-subtitle">Real hydration. Built for performance. Every ingredient backed by science.</p>
-        </div>
-
-        <div class="science__grid">
-          <div class="science__card">
-            <div class="science__icon">
-              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2v6m0 0l-3-3m3 3l3-3M12 22v-6m0 0l3 3m-3-3l-3 3M2 12h6m0 0L5 9m3 3L5 15M22 12h-6m0 0l3-3m-3 3l3 3"/></svg>
+        <div class="science__split">
+          <div class="science__left">
+            <h2 class="science__headline">Superior Hydration<br>Designed with Purpose</h2>
+            <p class="science__desc">Atlas is a cleaner, modern upgrade with higher electrolytes plus vitamins and recovery support, all zero sugar.</p>
+            <div class="science__badges">
+              <div class="science__badge">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M8 8l8 8M16 8l-8 8"/></svg>
+                <span>No Sugar</span>
+              </div>
+              <div class="science__badge">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M9 17l-5-2.5"/><path d="M15 17l5-2.5"/></svg>
+                <span>Non-GMO</span>
+              </div>
             </div>
-            <h3 class="science__card-title">600mg Sodium</h3>
-            <p class="science__card-text">Essential for fluid balance and nerve function. Replaces what you lose through sweat during exercise.</p>
+            <div class="science__usa">
+              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><circle cx="12" cy="12" r="10"/><path d="M12 2v20M2 12h20"/></svg>
+              <span>Made in USA</span>
+            </div>
           </div>
-
-          <div class="science__card">
-            <div class="science__icon">
-              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="M12 6v6l4 2"/></svg>
+          <div class="science__right">
+            <div class="science__ingredient-card">
+              <div class="science__ingredient-amount">1300mg</div>
+              <div class="science__ingredient-info">
+                <span class="science__ingredient-name">Electrolytes</span>
+                <p class="science__ingredient-detail" hidden>600mg Sodium + 500mg Potassium + 200mg Magnesium for complete electrolyte replenishment and optimal hydration.</p>
+              </div>
+              <button class="science__ingredient-toggle" aria-expanded="false">Learn More <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></button>
             </div>
-            <h3 class="science__card-title">500mg Potassium</h3>
-            <p class="science__card-text">Supports muscle contractions, heart rhythm regulation, and prevents cramping during intense activity.</p>
-          </div>
-
-          <div class="science__card">
-            <div class="science__icon">
-              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 00-2.91-.09z"/><path d="M12 15l-3-3a22 22 0 012-3.95A12.88 12.88 0 0122 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 01-4 2z"/></svg>
+            <div class="science__ingredient-card">
+              <div class="science__ingredient-amount">116mg</div>
+              <div class="science__ingredient-info">
+                <span class="science__ingredient-name">Vitamins</span>
+                <p class="science__ingredient-detail" hidden>90mg Vitamin C plus B3, B5, B6, and B12 in premium bioavailable forms for energy, immunity, and cellular health.</p>
+              </div>
+              <button class="science__ingredient-toggle" aria-expanded="false">Learn More <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></button>
             </div>
-            <h3 class="science__card-title">200mg Magnesium</h3>
-            <p class="science__card-text">Crucial for energy production, muscle recovery, and over 300 enzymatic reactions in your body.</p>
-          </div>
-
-          <div class="science__card">
-            <div class="science__icon">
-              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 12l2 2 4-4"/><path d="M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9 9 4.03 9 9z"/></svg>
+            <div class="science__ingredient-card">
+              <div class="science__ingredient-amount">1200mg</div>
+              <div class="science__ingredient-info">
+                <span class="science__ingredient-name">Amino Acids</span>
+                <p class="science__ingredient-detail" hidden>1,000mg L-Glutamine and 200mg L-Alanine to support muscle recovery, gut health, and sustained performance.</p>
+              </div>
+              <button class="science__ingredient-toggle" aria-expanded="false">Learn More <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></button>
             </div>
-            <h3 class="science__card-title">B-Complex Vitamins</h3>
-            <p class="science__card-text">Premium bioavailable forms including P5P (B6) and Methylcobalamin (B12) for sustained energy and focus.</p>
-          </div>
-
-          <div class="science__card">
-            <div class="science__icon">
-              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
-            </div>
-            <h3 class="science__card-title">1,200mg Amino Acids</h3>
-            <p class="science__card-text">1,000mg L-Glutamine and 200mg L-Alanine support muscle recovery, gut health, and sustained performance.</p>
-          </div>
-
-          <div class="science__card">
-            <div class="science__icon">
-              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
-            </div>
-            <h3 class="science__card-title">Only 5 Calories</h3>
-            <p class="science__card-text">Zero sugar, naturally sweetened with stevia leaf extract and allulose. No artificial flavors, colors, or sweeteners.</p>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- How It Works -->
-    <section class="how-it-works" aria-label="How to use Atlas Hydration">
+    <!-- Comparison Table -->
+    <section class="compare snap-section" id="compare" aria-label="How Atlas Compares">
       <div class="container">
         <div class="section-header">
-          <p class="section-eyebrow">Simple</p>
-          <h2 class="section-title">How It Works</h2>
+          <h2 class="section-title">How Atlas Compares</h2>
+          <p class="section-subtitle">A cleaner, modern upgrade with higher electrolytes plus vitamins and recovery support, all zero sugar.</p>
         </div>
-        <div class="how-it-works__grid">
-          <div class="how-it-works__step">
-            <div class="how-it-works__number">01</div>
-            <h3>Tear</h3>
-            <p>Open one individually-wrapped sachet</p>
-          </div>
-          <div class="how-it-works__step">
-            <div class="how-it-works__number">02</div>
-            <h3>Pour</h3>
-            <p>Mix with 12-16 fl oz of cold water</p>
-          </div>
-          <div class="how-it-works__step">
-            <div class="how-it-works__number">03</div>
-            <h3>Shake</h3>
-            <p>Shake well until fully dissolved</p>
-          </div>
-          <div class="how-it-works__step">
-            <div class="how-it-works__number">04</div>
-            <h3>Thrive</h3>
-            <p>Enjoy superior hydration anytime</p>
-          </div>
+
+        <div class="compare__table-wrap">
+          <table class="compare__table" role="table">
+            <thead>
+              <tr>
+                <th></th>
+                <th class="compare__brand compare__brand--atlas"><span class="compare__brand-name">Atlas</span></th>
+                <th class="compare__brand"><span class="compare__brand-name compare__brand-name--competitor">LMNT</span></th>
+                <th class="compare__brand"><span class="compare__brand-name compare__brand-name--competitor">Liquid I.V.</span></th>
+                <th class="compare__brand"><span class="compare__brand-name compare__brand-name--competitor">WaterBoy</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="compare__label">Electrolytes (Hydration)</td>
+                <td class="compare__value compare__value--atlas"><strong>1,300 MG</strong></td>
+                <td class="compare__value">1,260 MG</td>
+                <td class="compare__value">930 MG</td>
+                <td class="compare__value">1,540 MG</td>
+              </tr>
+              <tr>
+                <td class="compare__label">Vitamin B (Cellular)</td>
+                <td class="compare__value compare__value--atlas"><strong>38 MG</strong></td>
+                <td class="compare__value">0 MG</td>
+                <td class="compare__value">36 MG</td>
+                <td class="compare__value">0 MG</td>
+              </tr>
+              <tr>
+                <td class="compare__label">Vitamin C (Immunity)</td>
+                <td class="compare__value compare__value--atlas"><strong>90 MG</strong></td>
+                <td class="compare__value">0 MG</td>
+                <td class="compare__value">62 MG</td>
+                <td class="compare__value">0 MG</td>
+              </tr>
+              <tr>
+                <td class="compare__label">Amino Acids (Recovery)</td>
+                <td class="compare__value compare__value--atlas"><strong>1,200 MG</strong></td>
+                <td class="compare__value">0 MG</td>
+                <td class="compare__value">0 MG</td>
+                <td class="compare__value">0 MG</td>
+              </tr>
+              <tr>
+                <td class="compare__label">Sugar</td>
+                <td class="compare__value compare__value--atlas"><strong>0 G</strong></td>
+                <td class="compare__value">0 G</td>
+                <td class="compare__value">11 G</td>
+                <td class="compare__value">0 G</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
     </section>
 
     <!-- Mission Section -->
-    <section class="mission" id="mission" aria-label="Our mission">
+    <section class="mission snap-section" id="mission" aria-label="Our mission">
       <div class="container">
         <div class="mission__grid">
           <div class="mission__content">
-            <p class="section-eyebrow">Our Mission</p>
             <h2 class="section-title">Every Sip Makes a Difference</h2>
             <p class="mission__text">When you choose Atlas Hydration, you're not just fueling your body — you're helping provide clean water to communities in need around the world.</p>
             <p class="mission__text">We donate a portion of every purchase to trusted charitable organizations focused on delivering clean, safe drinking water to underserved communities globally.</p>
             <a href="#products" class="btn btn--primary">Shop & Make a Difference</a>
           </div>
           <div class="mission__visual">
-            <div class="mission__globe">
-              <div class="globe">
-                <div class="globe__ring globe__ring--1"></div>
-                <div class="globe__ring globe__ring--2"></div>
-                <div class="globe__ring globe__ring--3"></div>
-                <div class="globe__drop">
-                  <svg width="48" height="48" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2c-5.33 8-8 12-8 16a8 8 0 0016 0c0-4-2.67-8-8-16z"/></svg>
-                </div>
+            <div class="globe">
+              <div class="globe__ring globe__ring--1"></div>
+              <div class="globe__ring globe__ring--2"></div>
+              <div class="globe__ring globe__ring--3"></div>
+              <div class="globe__drop">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2c-5.33 8-8 12-8 16a8 8 0 0016 0c0-4-2.67-8-8-16z"/></svg>
               </div>
             </div>
           </div>
@@ -381,10 +398,9 @@
     </section>
 
     <!-- Testimonials -->
-    <section class="testimonials" aria-label="Customer testimonials">
+    <section class="testimonials snap-section" aria-label="Customer testimonials">
       <div class="container">
         <div class="section-header">
-          <p class="section-eyebrow">Reviews</p>
           <h2 class="section-title">What Athletes Are Saying</h2>
         </div>
         <div class="testimonials__grid">
@@ -416,8 +432,8 @@
       </div>
     </section>
 
-    <!-- Newsletter / CTA -->
-    <section class="cta-section" aria-label="Call to action">
+    <!-- CTA -->
+    <section class="cta-section snap-section" aria-label="Call to action">
       <div class="container">
         <div class="cta-section__inner">
           <h2 class="cta-section__title">Ready to Elevate Your Hydration?</h2>
@@ -436,10 +452,10 @@
           <span class="logo-text logo-text--footer">Atlas</span>
           <p class="footer__tagline">Hydrate. Recover. Thrive.</p>
           <div class="footer__social">
-            <a href="https://www.instagram.com/atlashydration" target="_blank" rel="noopener noreferrer" aria-label="Follow us on Instagram">
+            <a href="https://www.instagram.com/atlashydration" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
             </a>
-            <a href="https://www.tiktok.com/@atlashydration" target="_blank" rel="noopener noreferrer" aria-label="Follow us on TikTok">
+            <a href="https://www.tiktok.com/@atlashydration" target="_blank" rel="noopener noreferrer" aria-label="TikTok">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1v-3.5a6.37 6.37 0 00-.79-.05A6.34 6.34 0 003.15 15.2a6.34 6.34 0 0010.86 4.48V13a8.28 8.28 0 005.58 2.16V11.7a4.83 4.83 0 01-3.77-1.78V6.69h3.77z"/></svg>
             </a>
           </div>
@@ -454,8 +470,8 @@
         <div class="footer__links">
           <h4>Company</h4>
           <nav aria-label="Company links">
-            <a href="#science">Science</a>
-            <a href="#mission">Our Mission</a>
+            <a href="shipping.html">Shipping & Returns</a>
+            <a href="privacy.html">Privacy Policy</a>
           </nav>
         </div>
         <div class="footer__links">
