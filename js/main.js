@@ -732,32 +732,155 @@ document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
   });
 })();
 
-// Supplement facts hover interaction (product pages)
+// Supplement facts — ingredient detail panel on hover
 (function() {
-  var rows = document.querySelectorAll('.sf-row--hoverable');
-  var highlights = document.querySelectorAll('.sf-highlight');
-  var container = document.querySelector('.supplement-facts__highlights');
-  if (!rows.length || !highlights.length) return;
+  var rows = document.querySelectorAll('.sf-row--hoverable[data-ingredient]');
+  var panel = document.getElementById('sfDetailPanel');
+  if (!rows.length || !panel) return;
+
+  var defaultView = panel.querySelector('.sf-detail-panel__default');
+  var contentView = panel.querySelector('.sf-detail-panel__content');
+  var nameEl = panel.querySelector('.sf-detail-panel__name');
+  var doseEl = panel.querySelector('.sf-detail-panel__dose');
+  var descEl = panel.querySelector('.sf-detail-panel__desc');
+  var listEl = panel.querySelector('.sf-detail-panel__list');
+
+  var ingredientData = {
+    sodium: {
+      name: 'Sodium',
+      dose: '600mg',
+      desc: 'Delivered as Sodium Citrate and Pink Himalayan Salt for optimal bioavailability. Sodium is the primary electrolyte lost in sweat and critical for hydration.',
+      effects: [
+        'Regulates fluid balance between cells and blood plasma',
+        'Enables nerve impulse transmission for muscle contractions',
+        'Drives intestinal absorption of water and glucose',
+        'Prevents hyponatremia during prolonged exercise'
+      ]
+    },
+    magnesium: {
+      name: 'Magnesium',
+      dose: '200mg',
+      desc: 'Provided as Magnesium Malate — one of the most bioavailable forms. Magnesium is involved in over 300 enzymatic reactions in the body.',
+      effects: [
+        'Supports ATP energy production at the cellular level',
+        'Relaxes smooth and skeletal muscle fibers, reducing cramps',
+        'Regulates nervous system signaling and stress response',
+        'Contributes to bone density and cardiovascular function'
+      ]
+    },
+    potassium: {
+      name: 'Potassium',
+      dose: '500mg',
+      desc: 'Delivered as Potassium Citrate for gentle absorption. Works alongside sodium to maintain your body\'s electrical gradient.',
+      effects: [
+        'Maintains cellular membrane potential for heart rhythm',
+        'Counterbalances sodium to regulate blood pressure',
+        'Prevents muscle cramps and supports contraction strength',
+        'Aids kidney function and fluid balance'
+      ]
+    },
+    vitaminb3: {
+      name: 'Vitamin B3 (Niacin)',
+      dose: '24mg — 150% DV',
+      desc: 'Niacin is essential for converting food into cellular energy. It supports over 400 enzymatic reactions as a precursor to NAD+.',
+      effects: [
+        'Converts carbohydrates, fats, and proteins into usable energy',
+        'Supports healthy cholesterol metabolism',
+        'Promotes DNA repair and cellular signaling',
+        'Enhances skin barrier function and circulation'
+      ]
+    },
+    vitaminb5: {
+      name: 'Vitamin B5 (Pantothenic Acid)',
+      dose: '5mg — 100% DV',
+      desc: 'A key component of Coenzyme A (CoA), which is involved in fatty acid synthesis, energy metabolism, and hormone production.',
+      effects: [
+        'Essential for synthesis of Coenzyme A (CoA)',
+        'Metabolizes fats and carbohydrates for energy',
+        'Supports adrenal gland function and stress hormones',
+        'Aids in red blood cell production'
+      ]
+    },
+    vitaminb6: {
+      name: 'Vitamin B6 (P-5-P)',
+      dose: '2mg — 118% DV',
+      desc: 'Provided as Pyridoxal-5-phosphate (P5P), the bioactive form that bypasses liver conversion. Critical for amino acid metabolism.',
+      effects: [
+        'Metabolizes amino acids for muscle protein synthesis',
+        'Produces serotonin, dopamine, and GABA neurotransmitters',
+        'Supports hemoglobin production for oxygen transport',
+        'Regulates homocysteine levels for cardiovascular health'
+      ]
+    },
+    vitaminb12: {
+      name: 'Vitamin B12',
+      dose: '8mcg — 333% DV',
+      desc: 'Premium Methylcobalamin form — the most bioavailable B12 that requires no conversion by the body. Essential for energy and nervous system health.',
+      effects: [
+        'Forms red blood cells that carry oxygen to muscles',
+        'Maintains myelin sheath protecting nerve fibers',
+        'Required for DNA synthesis during cell division',
+        'Prevents megaloblastic anemia and chronic fatigue'
+      ]
+    },
+    vitaminc: {
+      name: 'Vitamin C',
+      dose: '90mg — 100% DV',
+      desc: 'Ascorbic Acid — a powerful antioxidant that neutralizes free radicals generated during exercise and supports immune defense.',
+      effects: [
+        'Neutralizes exercise-induced oxidative stress',
+        'Stimulates white blood cell production and function',
+        'Required for collagen synthesis in joints and skin',
+        'Enhances iron absorption from plant-based foods'
+      ]
+    },
+    glutamine: {
+      name: 'L-Glutamine',
+      dose: '1,000mg',
+      desc: 'The most abundant amino acid in muscle tissue. Glutamine stores are rapidly depleted during intense exercise, making supplementation critical for recovery.',
+      effects: [
+        'Fuels rapidly dividing immune cells post-exercise',
+        'Maintains intestinal barrier integrity (gut health)',
+        'Prevents muscle protein breakdown during stress',
+        'Supports glycogen replenishment after training'
+      ]
+    },
+    alanine: {
+      name: 'L-Alanine',
+      dose: '200mg',
+      desc: 'A glucogenic amino acid that plays a key role in the glucose-alanine cycle between muscles and the liver during exercise.',
+      effects: [
+        'Transports nitrogen from muscles to liver for detox',
+        'Provides substrate for gluconeogenesis (new glucose)',
+        'Buffers acid buildup in muscles during high intensity',
+        'Supports stable blood sugar during prolonged activity'
+      ]
+    }
+  };
 
   rows.forEach(function(row) {
     row.addEventListener('mouseenter', function() {
-      var target = row.getAttribute('data-highlight');
-      if (!target) return;
-      if (container) container.classList.add('sf-has-hover');
-      highlights.forEach(function(h) {
-        if (h.getAttribute('data-highlight-target') === target) {
-          h.classList.add('sf-highlight--active');
-        } else {
-          h.classList.remove('sf-highlight--active');
-        }
+      var key = row.getAttribute('data-ingredient');
+      var data = ingredientData[key];
+      if (!data) return;
+
+      nameEl.textContent = data.name;
+      doseEl.textContent = data.dose;
+      descEl.textContent = data.desc;
+      listEl.innerHTML = '';
+      data.effects.forEach(function(effect) {
+        var li = document.createElement('li');
+        li.textContent = effect;
+        listEl.appendChild(li);
       });
+
+      defaultView.style.display = 'none';
+      contentView.style.display = 'block';
     });
 
     row.addEventListener('mouseleave', function() {
-      if (container) container.classList.remove('sf-has-hover');
-      highlights.forEach(function(h) {
-        h.classList.remove('sf-highlight--active');
-      });
+      defaultView.style.display = '';
+      contentView.style.display = 'none';
     });
   });
 })();
