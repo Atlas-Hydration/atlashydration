@@ -520,6 +520,47 @@ document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
   init();
 })();
 
+// Flavor selector → purchase option border color matching
+(function() {
+  var FLAVOR_COLORS = {
+    'strawberry': { color: 'rgba(232, 93, 117, 0.5)', shadow: 'rgba(232, 93, 117, 0.12)' },
+    'grapefruit': { color: 'rgba(245, 166, 35, 0.5)', shadow: 'rgba(245, 166, 35, 0.12)' }
+  };
+
+  function updatePurchaseColors() {
+    var active = document.querySelector('.flavor-circle.active');
+    if (!active) return;
+    var options = active.closest('.featured-product__info, .product-hero__info');
+    if (!options) options = document;
+    var purchaseOptions = options.querySelectorAll('.purchase-options');
+    if (!purchaseOptions.length) purchaseOptions = document.querySelectorAll('.purchase-options');
+
+    var flavor = null;
+    if (active.classList.contains('flavor-circle--strawberry')) flavor = 'strawberry';
+    else if (active.classList.contains('flavor-circle--grapefruit')) flavor = 'grapefruit';
+
+    var colors = FLAVOR_COLORS[flavor];
+    if (!colors) return;
+
+    purchaseOptions.forEach(function(container) {
+      container.style.setProperty('--flavor-color', colors.color);
+      container.style.setProperty('--flavor-shadow', colors.shadow);
+    });
+  }
+
+  // Run on load
+  updatePurchaseColors();
+
+  // Update when flavor circles are clicked (for SPA-style switching)
+  document.querySelectorAll('.flavor-circle').forEach(function(circle) {
+    circle.addEventListener('click', function() {
+      document.querySelectorAll('.flavor-circle').forEach(function(c) { c.classList.remove('active'); });
+      circle.classList.add('active');
+      updatePurchaseColors();
+    });
+  });
+})();
+
 // Ingredient popup for science accordions
 (function() {
   var INGREDIENT_DATA = {

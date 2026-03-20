@@ -1513,9 +1513,9 @@ img {
 }
 
 .purchase-option.active {
-  border: 2px solid rgba(44, 95, 138, 0.45);
+  border: 2px solid var(--flavor-color, rgba(44, 95, 138, 0.45));
   background: var(--color-white);
-  box-shadow: 0 2px 16px rgba(44, 95, 138, 0.1);
+  box-shadow: 0 2px 16px var(--flavor-shadow, rgba(44, 95, 138, 0.1));
 }
 
 .purchase-option__header {
@@ -2073,26 +2073,33 @@ img {
    Product Gallery
    ======================================== */
 .product-gallery {
-  position: sticky;
-  top: 120px;
+  position: relative;
 }
 
 .product-gallery__main {
-  aspect-ratio: 4 / 5;
-  border-radius: var(--radius-lg);
-  overflow: hidden;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
   margin-bottom: 12px;
   position: relative;
-  background: var(--color-bg-light);
 }
 
 .product-gallery__slide {
-  display: none;
+  display: flex;
   width: 100%;
-  height: 100%;
+  aspect-ratio: 1;
   align-items: center;
   justify-content: center;
   position: relative;
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: var(--color-bg-light);
+}
+
+.product-gallery__slide:first-child {
+  grid-column: 1 / -1;
+  aspect-ratio: 4 / 5;
+  border-radius: var(--radius-lg);
 }
 
 .product-gallery__slide.active {
@@ -2255,9 +2262,7 @@ img {
 
 /* Thumbnails */
 .product-gallery__thumbs {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 8px;
+  display: none;
 }
 
 .product-gallery__thumb {
@@ -2881,52 +2886,79 @@ main {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  padding: 10px 20px;
+  padding: 12px 24px;
   border-radius: 999px;
-  border: 1.5px solid var(--color-border);
+  border: none;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   position: relative;
   text-decoration: none;
-  font-size: 0.8rem;
-  font-weight: 500;
-  color: var(--color-text-muted);
-  background: var(--color-white);
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #fff;
+  background-size: 200% 200%;
   overflow: hidden;
+  letter-spacing: 0.01em;
 }
 
 .flavor-circle__dot {
-  width: 14px;
-  height: 14px;
-  border-radius: 50%;
-  flex-shrink: 0;
-  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  display: none;
 }
 
-.flavor-circle--strawberry .flavor-circle__dot {
-  background: linear-gradient(135deg, #e85d75, #f0a0b0);
+.flavor-circle--strawberry {
+  background: linear-gradient(135deg, #e85d75, #f0a0b0, #d94f6a, #f4b8c4, #e85d75);
+  background-size: 300% 300%;
+  background-position: 0% 50%;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1), background-position 0s;
 }
 
-.flavor-circle--grapefruit .flavor-circle__dot {
-  background: linear-gradient(135deg, #f5a623, #f7c948);
+.flavor-circle--strawberry:hover {
+  animation: liquidFlow 3s ease-in-out infinite;
+}
+
+.flavor-circle--grapefruit {
+  background: linear-gradient(135deg, #f5a623, #f7c948, #e8961e, #fad86b, #f5a623);
+  background-size: 300% 300%;
+  background-position: 0% 50%;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1), background-position 0s;
+}
+
+.flavor-circle--grapefruit:hover {
+  animation: liquidFlow 3s ease-in-out infinite;
+}
+
+@keyframes liquidFlow {
+  0% { background-position: 0% 50%; }
+  25% { background-position: 100% 25%; }
+  50% { background-position: 100% 50%; }
+  75% { background-position: 0% 75%; }
+  100% { background-position: 0% 50%; }
 }
 
 .flavor-circle:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 16px rgba(0,0,0,0.08);
-  border-color: var(--color-text-dim);
+  transform: translateY(-2px) scale(1.04);
+  box-shadow: 0 6px 24px rgba(0,0,0,0.15);
 }
 
-.flavor-circle:hover .flavor-circle__dot {
-  transform: scale(1.2);
+.flavor-circle--strawberry:hover {
+  box-shadow: 0 6px 24px rgba(232, 93, 117, 0.35);
+}
+
+.flavor-circle--grapefruit:hover {
+  box-shadow: 0 6px 24px rgba(245, 166, 35, 0.35);
 }
 
 .flavor-circle.active {
-  border-color: var(--color-primary);
-  background: rgba(44, 95, 138, 0.06);
-  color: var(--color-text);
-  font-weight: 600;
-  box-shadow: 0 2px 12px rgba(44, 95, 138, 0.12);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+  transform: scale(1.02);
+}
+
+.flavor-circle--strawberry.active {
+  box-shadow: 0 4px 20px rgba(232, 93, 117, 0.4);
+}
+
+.flavor-circle--grapefruit.active {
+  box-shadow: 0 4px 20px rgba(245, 166, 35, 0.4);
 }
 
 .flavor-selector__label {
