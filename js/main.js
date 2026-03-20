@@ -114,8 +114,16 @@ document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
   var lastScrollY = 0;
   var ticking = false;
 
+  // Offset header below announcement bar
+  var announcementBar = document.querySelector('.announcement-bar');
+  var barHeight = announcementBar ? announcementBar.offsetHeight : 0;
+
   function onScroll() {
     var currentScrollY = window.scrollY;
+
+    // Slide header up as announcement bar scrolls away
+    var offset = Math.max(0, barHeight - currentScrollY);
+    header.style.top = offset + 'px';
 
     if (currentScrollY > 80 && currentScrollY > lastScrollY) {
       header.classList.add('header--hidden');
