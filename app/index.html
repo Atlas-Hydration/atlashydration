@@ -325,7 +325,7 @@
     }
     .api-badge--connected { background: var(--green-dim); color: var(--green); }
     .api-badge--connected .api-badge__dot { background: var(--green); }
-    .api-badge--error { background: var(--red-dim); color: var(--red); }
+    .api-badge--error { background: var(--red-dim); color: var(--red); max-width: 320px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; cursor: help; }
     .api-badge--error .api-badge__dot { background: var(--red); }
     .api-badge--loading { background: var(--yellow-dim); color: var(--yellow); }
     .api-badge--loading .api-badge__dot { background: var(--yellow); animation: pulse 1s ease-in-out infinite; }
@@ -885,18 +885,22 @@
   // =============================================
   // API HEALTH BADGE
   // =============================================
-  function setApiBadge(status) {
+  function setApiBadge(status, errorMsg) {
     var badge = document.getElementById('apiBadge');
     badge.className = 'api-badge';
     if (status === 'connected') {
       badge.classList.add('api-badge--connected');
       badge.innerHTML = '<span class="api-badge__dot"></span>API Connected';
+      badge.title = '';
     } else if (status === 'error') {
       badge.classList.add('api-badge--error');
-      badge.innerHTML = '<span class="api-badge__dot"></span>API Error';
+      var short = errorMsg ? errorMsg.substring(0, 60) : 'Unknown error';
+      badge.innerHTML = '<span class="api-badge__dot"></span>API Error: ' + short;
+      badge.title = errorMsg || 'Unknown error';
     } else {
       badge.classList.add('api-badge--loading');
       badge.innerHTML = '<span class="api-badge__dot"></span>Connecting...';
+      badge.title = '';
     }
   }
 
@@ -969,8 +973,9 @@
       loading.style.display = 'none';
       content.style.display = '';
       refreshBtn.classList.remove('loading');
-      setApiBadge('error');
-      errorBanner.textContent = 'Failed to fetch data: ' + (err.message || err);
+      var errText = err.message || String(err);
+      setApiBadge('error', errText);
+      errorBanner.textContent = 'Failed to fetch data: ' + errText;
       errorBanner.classList.add('visible');
     });
   }
