@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Atlas Platform</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0a0a0b;
+      --surface: #141416;
+      --surface2: #1c1c1f;
+      --border: #2a2a2d;
+      --text: #e8e8ed;
+      --text-dim: #8e8e93;
+      --accent: #3b82f6;
+      --accent-dim: rgba(59,130,246,0.12);
+      --green: #34d399;
+      --green-dim: rgba(52,211,153,0.12);
+      --red: #f87171;
+      --red-dim: rgba(248,113,113,0.12);
+      --yellow: #fbbf24;
+      --yellow-dim: rgba(251,191,36,0.12);
+      --radius: 12px;
+      --font: 'Inter', -apple-system, system-ui, sans-serif;
+    }
+    body { font-family: var(--font); background: var(--bg); color: var(--text); min-height: 100vh; }
+
+    /* === LOGIN === */
+    .login-screen {
+      display: flex; align-items: center; justify-content: center;
+      min-height: 100vh; padding: 24px;
+    }
+    .login-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 16px; padding: 48px 40px; width: 100%; max-width: 380px;
+      text-align: center;
+    }
+    .login-card__logo { font-size: 1.5rem; font-weight: 700; margin-bottom: 8px; letter-spacing: -0.03em; }
+    .login-card__sub { font-size: 0.8rem; color: var(--text-dim); margin-bottom: 32px; }
+    .login-card__input {
+      width: 100%; padding: 14px 16px; background: var(--surface2);
+      border: 1px solid var(--border); border-radius: 10px; color: var(--text);
+      font-family: var(--font); font-size: 0.9rem; outline: none;
+      transition: border-color 0.2s;
+    }
+    .login-card__input:focus { border-color: var(--accent); }
+    .login-card__input::placeholder { color: var(--text-dim); }
+    .login-card__btn {
+      width: 100%; padding: 14px; margin-top: 12px; background: var(--accent);
+      color: #fff; border: none; border-radius: 10px; font-family: var(--font);
+      font-weight: 600; font-size: 0.9rem; cursor: pointer;
+      transition: opacity 0.2s;
+    }
+    .login-card__btn:hover { opacity: 0.85; }
+    .login-card__error {
+      margin-top: 12px; font-size: 0.78rem; color: var(--red);
+      display: none;
+    }
+    .login-card__error.visible { display: block; }
+
+    /* === DASHBOARD === */
+    .app { display: none; }
+    .app.active { display: block; }
+
+    .topbar {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(10,10,11,0.85); backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border); padding: 0 32px; height: 56px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .topbar__left { display: flex; align-items: center; gap: 16px; }
+    .topbar__brand { font-weight: 700; font-size: 1rem; letter-spacing: -0.02em; }
+    .topbar__badge {
+      font-size: 0.65rem; padding: 3px 8px; background: var(--accent-dim);
+      color: var(--accent); border-radius: 6px; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.05em;
+    }
+    .topbar__right { display: flex; align-items: center; gap: 12px; }
+    .topbar__refresh {
+      background: var(--surface2); border: 1px solid var(--border);
+      color: var(--text-dim); padding: 8px 14px; border-radius: 8px;
+      font-family: var(--font); font-size: 0.78rem; cursor: pointer;
+      transition: all 0.2s; display: flex; align-items: center; gap: 6px;
+    }
+    .topbar__refresh:hover { border-color: var(--accent); color: var(--text); }
+    .topbar__refresh.loading svg { animation: spin 1s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .topbar__logout {
+      background: none; border: 1px solid var(--border); color: var(--text-dim);
+      padding: 8px 14px; border-radius: 8px; font-family: var(--font);
+      font-size: 0.78rem; cursor: pointer; transition: all 0.2s;
+    }
+    .topbar__logout:hover { border-color: var(--red); color: var(--red); }
+
+    .topbar__status {
+      font-size: 0.72rem; color: var(--text-dim);
+    }
+
+    .dashboard { max-width: 1400px; margin: 0 auto; padding: 32px; }
+
+    /* Stat Cards */
+    .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 32px; }
+    .stat-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 24px;
+    }
+    .stat-card__label { font-size: 0.72rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 8px; }
+    .stat-card__value { font-size: 1.8rem; font-weight: 700; letter-spacing: -0.03em; }
+    .stat-card__sub { font-size: 0.75rem; color: var(--text-dim); margin-top: 4px; }
+    .stat-card__value--green { color: var(--green); }
+
+    /* Sections */
+    .section { margin-bottom: 32px; }
+    .section__header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 16px;
+    }
+    .section__title { font-size: 1rem; font-weight: 600; }
+    .section__badge {
+      font-size: 0.65rem; padding: 3px 8px; background: var(--surface2);
+      border: 1px solid var(--border); border-radius: 6px; color: var(--text-dim);
+    }
+
+    /* Tables */
+    .table-wrap {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); overflow: hidden;
+    }
+    .table {
+      width: 100%; border-collapse: collapse; font-size: 0.82rem;
+    }
+    .table th {
+      text-align: left; padding: 12px 20px; font-size: 0.7rem;
+      text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-dim);
+      border-bottom: 1px solid var(--border); font-weight: 600;
+      background: var(--surface2);
+    }
+    .table td {
+      padding: 14px 20px; border-bottom: 1px solid var(--border);
+      vertical-align: middle;
+    }
+    .table tr:last-child td { border-bottom: none; }
+    .table tr:hover td { background: rgba(255,255,255,0.02); }
+
+    .table__product {
+      display: flex; align-items: center; gap: 12px;
+    }
+    .table__product-img {
+      width: 44px; height: 44px; border-radius: 8px;
+      object-fit: cover; background: var(--surface2);
+    }
+    .table__product-info { display: flex; flex-direction: column; gap: 2px; }
+    .table__product-title { font-weight: 600; font-size: 0.85rem; }
+    .table__product-vendor { font-size: 0.72rem; color: var(--text-dim); }
+
+    .badge {
+      display: inline-flex; padding: 3px 10px; border-radius: 6px;
+      font-size: 0.7rem; font-weight: 600; text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .badge--active { background: var(--green-dim); color: var(--green); }
+    .badge--draft { background: var(--yellow-dim); color: var(--yellow); }
+    .badge--archived { background: var(--red-dim); color: var(--red); }
+    .badge--available { background: var(--green-dim); color: var(--green); }
+    .badge--oos { background: var(--red-dim); color: var(--red); }
+
+    .price { font-variant-numeric: tabular-nums; }
+    .price--compare { text-decoration: line-through; color: var(--text-dim); font-size: 0.78rem; margin-left: 6px; }
+
+    /* Variant grid */
+    .variant-cards {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 16px;
+    }
+    .variant-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 20px;
+    }
+    .variant-card__header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 12px;
+    }
+    .variant-card__title { font-weight: 600; font-size: 0.88rem; }
+    .variant-card__row {
+      display: flex; justify-content: space-between; padding: 6px 0;
+      font-size: 0.8rem;
+    }
+    .variant-card__label { color: var(--text-dim); }
+    .variant-card__value { font-weight: 500; font-variant-numeric: tabular-nums; }
+
+    /* Collections */
+    .collection-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 20px;
+    }
+    .collection-card__title { font-weight: 600; margin-bottom: 4px; }
+    .collection-card__desc { font-size: 0.8rem; color: var(--text-dim); margin-bottom: 8px; line-height: 1.5; }
+    .collection-card__meta { font-size: 0.72rem; color: var(--text-dim); }
+
+    /* Shop info */
+    .shop-info {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 16px;
+    }
+    .info-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 20px;
+    }
+    .info-card__label { font-size: 0.7rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 6px; }
+    .info-card__value { font-size: 0.9rem; font-weight: 500; word-break: break-all; }
+
+    /* Loading */
+    .loading-overlay {
+      display: flex; flex-direction: column; align-items: center;
+      justify-content: center; padding: 80px 20px; color: var(--text-dim);
+      gap: 16px;
+    }
+    .loading-spinner {
+      width: 32px; height: 32px; border: 3px solid var(--border);
+      border-top-color: var(--accent); border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    /* Error */
+    .error-banner {
+      background: var(--red-dim); border: 1px solid rgba(248,113,113,0.2);
+      border-radius: var(--radius); padding: 16px 20px; margin-bottom: 24px;
+      font-size: 0.82rem; color: var(--red); display: none;
+    }
+    .error-banner.visible { display: block; }
+
+    /* Tabs */
+    .tabs {
+      display: flex; gap: 4px; margin-bottom: 24px;
+      border-bottom: 1px solid var(--border); padding-bottom: 0;
+    }
+    .tab {
+      padding: 10px 18px; font-family: var(--font); font-size: 0.82rem;
+      font-weight: 500; color: var(--text-dim); background: none; border: none;
+      cursor: pointer; border-bottom: 2px solid transparent;
+      transition: all 0.2s; margin-bottom: -1px;
+    }
+    .tab:hover { color: var(--text); }
+    .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .dashboard { padding: 20px 16px; }
+      .topbar { padding: 0 16px; }
+      .stats { grid-template-columns: 1fr 1fr; }
+      .table { font-size: 0.75rem; }
+      .table th, .table td { padding: 10px 12px; }
+      .tabs { overflow-x: auto; }
+    }
+    @media (max-width: 480px) {
+      .stats { grid-template-columns: 1fr; }
+      .login-card { padding: 32px 24px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Login Screen -->
+  <div class="login-screen" id="loginScreen">
+    <div class="login-card">
+      <div class="login-card__logo">Atlas Platform</div>
+      <div class="login-card__sub">Internal dashboard</div>
+      <form id="loginForm">
+        <input type="password" class="login-card__input" id="loginPassword" placeholder="Password" autocomplete="current-password" autofocus>
+        <button type="submit" class="login-card__btn">Sign In</button>
+        <div class="login-card__error" id="loginError">Incorrect password</div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Dashboard -->
+  <div class="app" id="app">
+    <div class="topbar">
+      <div class="topbar__left">
+        <span class="topbar__brand">Atlas Platform</span>
+        <span class="topbar__badge">Storefront API</span>
+      </div>
+      <div class="topbar__right">
+        <span class="topbar__status" id="lastUpdated"></span>
+        <button class="topbar__refresh" id="refreshBtn">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 2v6h-6"/><path d="M3 12a9 9 0 0115.36-6.36L21 8"/><path d="M3 22v-6h6"/><path d="M21 12a9 9 0 01-15.36 6.36L3 16"/></svg>
+          Refresh
+        </button>
+        <button class="topbar__logout" id="logoutBtn">Sign Out</button>
+      </div>
+    </div>
+
+    <div class="dashboard">
+      <div class="error-banner" id="errorBanner"></div>
+
+      <div id="loadingState" class="loading-overlay">
+        <div class="loading-spinner"></div>
+        <div>Fetching data from Shopify...</div>
+      </div>
+
+      <div id="dashboardContent" style="display:none;">
+        <!-- Stat cards -->
+        <div class="stats" id="statsGrid"></div>
+
+        <!-- Tabs -->
+        <div class="tabs" id="tabs">
+          <button class="tab active" data-tab="products">Products</button>
+          <button class="tab" data-tab="variants">Variants</button>
+          <button class="tab" data-tab="collections">Collections</button>
+          <button class="tab" data-tab="shop">Shop Info</button>
+        </div>
+
+        <!-- Products Tab -->
+        <div class="tab-content active" id="tab-products">
+          <div class="section">
+            <div class="table-wrap">
+              <table class="table" id="productsTable">
+                <thead>
+                  <tr>
+                    <th>Product</th>
+                    <th>Status</th>
+                    <th>Type</th>
+                    <th>Variants</th>
+                    <th>Price Range</th>
+                    <th>Inventory</th>
+                  </tr>
+                </thead>
+                <tbody id="productsBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Variants Tab -->
+        <div class="tab-content" id="tab-variants">
+          <div class="section">
+            <div class="section__header">
+              <h2 class="section__title">All Variants</h2>
+              <span class="section__badge" id="variantCount"></span>
+            </div>
+            <div class="variant-cards" id="variantGrid"></div>
+          </div>
+        </div>
+
+        <!-- Collections Tab -->
+        <div class="tab-content" id="tab-collections">
+          <div class="section">
+            <div class="section__header">
+              <h2 class="section__title">Collections</h2>
+              <span class="section__badge" id="collectionCount"></span>
+            </div>
+            <div class="variant-cards" id="collectionsGrid"></div>
+          </div>
+        </div>
+
+        <!-- Shop Info Tab -->
+        <div class="tab-content" id="tab-shop">
+          <div class="section">
+            <div class="section__header">
+              <h2 class="section__title">Shop Details</h2>
+            </div>
+            <div class="shop-info" id="shopInfoGrid"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script>
+(function() {
+  'use strict';
+
+  // =============================================
+  // CONFIG
+  // =============================================
+  var PASSWORD = '123';
+  var SHOPIFY = {
+    domain: '7fa7b7-42.myshopify.com',
+    token: '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',
+    endpoint: 'https://7fa7b7-42.myshopify.com/api/2024-01/graphql.json'
+  };
+
+  // =============================================
+  // AUTH
+  // =============================================
+  var loginScreen = document.getElementById('loginScreen');
+  var app = document.getElementById('app');
+  var loginForm = document.getElementById('loginForm');
+  var loginError = document.getElementById('loginError');
+
+  if (sessionStorage.getItem('atlas_app_auth') === '1') {
+    showApp();
+  }
+
+  loginForm.addEventListener('submit', function(e) {
+    e.preventDefault();
+    var pw = document.getElementById('loginPassword').value;
+    if (pw === PASSWORD) {
+      sessionStorage.setItem('atlas_app_auth', '1');
+      showApp();
+    } else {
+      loginError.classList.add('visible');
+      document.getElementById('loginPassword').value = '';
+      document.getElementById('loginPassword').focus();
+    }
+  });
+
+  document.getElementById('logoutBtn').addEventListener('click', function() {
+    sessionStorage.removeItem('atlas_app_auth');
+    location.reload();
+  });
+
+  function showApp() {
+    loginScreen.style.display = 'none';
+    app.classList.add('active');
+    fetchAllData();
+  }
+
+  // =============================================
+  // TABS
+  // =============================================
+  document.getElementById('tabs').addEventListener('click', function(e) {
+    if (!e.target.classList.contains('tab')) return;
+    document.querySelectorAll('.tab').forEach(function(t) { t.classList.remove('active'); });
+    document.querySelectorAll('.tab-content').forEach(function(t) { t.classList.remove('active'); });
+    e.target.classList.add('active');
+    document.getElementById('tab-' + e.target.getAttribute('data-tab')).classList.add('active');
+  });
+
+  // =============================================
+  // SHOPIFY STOREFRONT API (GraphQL)
+  // =============================================
+  function gql(query) {
+    return fetch(SHOPIFY.endpoint, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Shopify-Storefront-Access-Token': SHOPIFY.token
+      },
+      body: JSON.stringify({ query: query })
+    }).then(function(r) { return r.json(); });
+  }
+
+  function fetchAllData() {
+    var loading = document.getElementById('loadingState');
+    var content = document.getElementById('dashboardContent');
+    var errorBanner = document.getElementById('errorBanner');
+    var refreshBtn = document.getElementById('refreshBtn');
+
+    loading.style.display = '';
+    content.style.display = 'none';
+    errorBanner.classList.remove('visible');
+    refreshBtn.classList.add('loading');
+
+    Promise.all([
+      fetchProducts(),
+      fetchCollections(),
+      fetchShopInfo()
+    ]).then(function(results) {
+      loading.style.display = 'none';
+      content.style.display = '';
+      refreshBtn.classList.remove('loading');
+      renderDashboard(results[0], results[1], results[2]);
+      document.getElementById('lastUpdated').textContent = 'Updated ' + new Date().toLocaleTimeString();
+    }).catch(function(err) {
+      loading.style.display = 'none';
+      content.style.display = '';
+      refreshBtn.classList.remove('loading');
+      errorBanner.textContent = 'Failed to fetch data: ' + (err.message || err);
+      errorBanner.classList.add('visible');
+    });
+  }
+
+  document.getElementById('refreshBtn').addEventListener('click', fetchAllData);
+
+  function fetchProducts() {
+    return gql('{\n\
+      products(first: 50) {\n\
+        edges {\n\
+          node {\n\
+            id\n\
+            title\n\
+            handle\n\
+            description\n\
+            productType\n\
+            vendor\n\
+            tags\n\
+            availableForSale\n\
+            createdAt\n\
+            updatedAt\n\
+            images(first: 1) { edges { node { url altText } } }\n\
+            options { name values }\n\
+            variants(first: 50) {\n\
+              edges {\n\
+                node {\n\
+                  id\n\
+                  title\n\
+                  price { amount currencyCode }\n\
+                  compareAtPrice { amount currencyCode }\n\
+                  availableForSale\n\
+                  quantityAvailable\n\
+                  sku\n\
+                  weight\n\
+                  weightUnit\n\
+                  selectedOptions { name value }\n\
+                }\n\
+              }\n\
+            }\n\
+            priceRange {\n\
+              minVariantPrice { amount currencyCode }\n\
+              maxVariantPrice { amount currencyCode }\n\
+            }\n\
+          }\n\
+        }\n\
+      }\n\
+    }').then(function(data) {
+      if (data.errors) throw new Error(data.errors[0].message);
+      return data.data.products.edges.map(function(e) { return e.node; });
+    });
+  }
+
+  function fetchCollections() {
+    return gql('{\n\
+      collections(first: 20) {\n\
+        edges {\n\
+          node {\n\
+            id\n\
+            title\n\
+            handle\n\
+            description\n\
+            updatedAt\n\
+            products(first: 5) {\n\
+              edges { node { title } }\n\
+            }\n\
+          }\n\
+        }\n\
+      }\n\
+    }').then(function(data) {
+      if (data.errors) throw new Error(data.errors[0].message);
+      return data.data.collections.edges.map(function(e) { return e.node; });
+    });
+  }
+
+  function fetchShopInfo() {
+    return gql('{\n\
+      shop {\n\
+        name\n\
+        description\n\
+        primaryDomain { host url }\n\
+        paymentSettings {\n\
+          currencyCode\n\
+          acceptedCardBrands\n\
+          enabledPresentmentCurrencies\n\
+        }\n\
+        shipsToCountries\n\
+      }\n\
+    }').then(function(data) {
+      if (data.errors) throw new Error(data.errors[0].message);
+      return data.data.shop;
+    });
+  }
+
+  // =============================================
+  // RENDER
+  // =============================================
+  function renderDashboard(products, collections, shop) {
+    renderStats(products, collections, shop);
+    renderProducts(products);
+    renderVariants(products);
+    renderCollections(collections);
+    renderShopInfo(shop);
+  }
+
+  function renderStats(products, collections, shop) {
+    var totalVariants = 0;
+    var totalAvailable = 0;
+    var prices = [];
+
+    products.forEach(function(p) {
+      p.variants.edges.forEach(function(v) {
+        totalVariants++;
+        if (v.node.availableForSale) totalAvailable++;
+        prices.push(parseFloat(v.node.price.amount));
+      });
+    });
+
+    var avgPrice = prices.length ? (prices.reduce(function(a, b) { return a + b; }, 0) / prices.length) : 0;
+    var currency = (products.length && products[0].variants.edges.length) ? products[0].variants.edges[0].node.price.currencyCode : 'USD';
+
+    var statsHtml = '';
+    statsHtml += statCard('Products', products.length, 'Active in storefront');
+    statsHtml += statCard('Variants', totalVariants, totalAvailable + ' available');
+    statsHtml += statCard('Collections', collections.length, 'Organized groups');
+    statsHtml += statCard('Avg Price', '$' + avgPrice.toFixed(2), currency);
+    statsHtml += statCard('Countries', shop.shipsToCountries ? shop.shipsToCountries.length : 0, 'Shipping destinations');
+    statsHtml += statCard('Currencies', shop.paymentSettings ? shop.paymentSettings.enabledPresentmentCurrencies.length : 0, 'Accepted');
+
+    document.getElementById('statsGrid').innerHTML = statsHtml;
+  }
+
+  function statCard(label, value, sub) {
+    return '<div class="stat-card">' +
+      '<div class="stat-card__label">' + label + '</div>' +
+      '<div class="stat-card__value">' + value + '</div>' +
+      '<div class="stat-card__sub">' + sub + '</div>' +
+    '</div>';
+  }
+
+  function renderProducts(products) {
+    var html = '';
+    products.forEach(function(p) {
+      var img = p.images.edges.length ? p.images.edges[0].node.url : '';
+      var imgTag = img
+        ? '<img class="table__product-img" src="' + img + '" alt="' + esc(p.title) + '">'
+        : '<div class="table__product-img" style="display:flex;align-items:center;justify-content:center;color:var(--text-dim);font-size:0.6rem;">No img</div>';
+
+      var status = p.availableForSale ? '<span class="badge badge--active">Active</span>' : '<span class="badge badge--draft">Unavailable</span>';
+      var variantCount = p.variants.edges.length;
+      var minPrice = p.priceRange.minVariantPrice.amount;
+      var maxPrice = p.priceRange.maxVariantPrice.amount;
+      var priceStr = minPrice === maxPrice
+        ? '<span class="price">$' + parseFloat(minPrice).toFixed(2) + '</span>'
+        : '<span class="price">$' + parseFloat(minPrice).toFixed(2) + ' – $' + parseFloat(maxPrice).toFixed(2) + '</span>';
+
+      var availableVariants = p.variants.edges.filter(function(v) { return v.node.availableForSale; }).length;
+      var inventoryBadge = availableVariants === variantCount
+        ? '<span class="badge badge--available">' + availableVariants + '/' + variantCount + ' In Stock</span>'
+        : availableVariants > 0
+          ? '<span class="badge badge--draft">' + availableVariants + '/' + variantCount + ' In Stock</span>'
+          : '<span class="badge badge--oos">Out of Stock</span>';
+
+      html += '<tr>' +
+        '<td><div class="table__product">' + imgTag + '<div class="table__product-info"><span class="table__product-title">' + esc(p.title) + '</span><span class="table__product-vendor">' + esc(p.vendor || '—') + '</span></div></div></td>' +
+        '<td>' + status + '</td>' +
+        '<td>' + esc(p.productType || '—') + '</td>' +
+        '<td>' + variantCount + '</td>' +
+        '<td>' + priceStr + '</td>' +
+        '<td>' + inventoryBadge + '</td>' +
+      '</tr>';
+    });
+    document.getElementById('productsBody').innerHTML = html || '<tr><td colspan="6" style="text-align:center;color:var(--text-dim);padding:40px;">No products found</td></tr>';
+  }
+
+  function renderVariants(products) {
+    var html = '';
+    var total = 0;
+
+    products.forEach(function(p) {
+      p.variants.edges.forEach(function(v) {
+        total++;
+        var vn = v.node;
+        var compareHtml = vn.compareAtPrice
+          ? '<span class="price--compare">$' + parseFloat(vn.compareAtPrice.amount).toFixed(2) + '</span>'
+          : '';
+        var statusBadge = vn.availableForSale
+          ? '<span class="badge badge--available">Available</span>'
+          : '<span class="badge badge--oos">Sold Out</span>';
+
+        html += '<div class="variant-card">' +
+          '<div class="variant-card__header"><span class="variant-card__title">' + esc(vn.title) + '</span>' + statusBadge + '</div>' +
+          '<div class="variant-card__row"><span class="variant-card__label">Product</span><span class="variant-card__value">' + esc(p.title) + '</span></div>' +
+          '<div class="variant-card__row"><span class="variant-card__label">Price</span><span class="variant-card__value"><span class="price">$' + parseFloat(vn.price.amount).toFixed(2) + '</span>' + compareHtml + '</span></div>' +
+          '<div class="variant-card__row"><span class="variant-card__label">SKU</span><span class="variant-card__value">' + esc(vn.sku || '—') + '</span></div>' +
+          (vn.quantityAvailable !== null ? '<div class="variant-card__row"><span class="variant-card__label">Qty Available</span><span class="variant-card__value">' + vn.quantityAvailable + '</span></div>' : '') +
+          (vn.weight ? '<div class="variant-card__row"><span class="variant-card__label">Weight</span><span class="variant-card__value">' + vn.weight + ' ' + (vn.weightUnit || '').toLowerCase() + '</span></div>' : '') +
+          '<div class="variant-card__row"><span class="variant-card__label">ID</span><span class="variant-card__value" style="font-size:0.68rem;color:var(--text-dim);word-break:break-all;">' + esc(vn.id) + '</span></div>' +
+        '</div>';
+      });
+    });
+
+    document.getElementById('variantGrid').innerHTML = html || '<div style="color:var(--text-dim);">No variants found</div>';
+    document.getElementById('variantCount').textContent = total + ' total';
+  }
+
+  function renderCollections(collections) {
+    var html = '';
+    collections.forEach(function(c) {
+      var productList = c.products.edges.map(function(e) { return e.node.title; }).join(', ');
+      html += '<div class="collection-card">' +
+        '<div class="collection-card__title">' + esc(c.title) + '</div>' +
+        (c.description ? '<div class="collection-card__desc">' + esc(c.description) + '</div>' : '') +
+        '<div class="collection-card__meta">Products: ' + (productList || 'None') + '</div>' +
+        '<div class="collection-card__meta" style="margin-top:4px;">Updated: ' + new Date(c.updatedAt).toLocaleDateString() + '</div>' +
+      '</div>';
+    });
+    document.getElementById('collectionsGrid').innerHTML = html || '<div style="color:var(--text-dim);">No collections found</div>';
+    document.getElementById('collectionCount').textContent = collections.length + ' total';
+  }
+
+  function renderShopInfo(shop) {
+    var html = '';
+    html += infoCard('Shop Name', shop.name || '—');
+    html += infoCard('Description', shop.description || '—');
+    html += infoCard('Primary Domain', shop.primaryDomain ? shop.primaryDomain.host : '—');
+    html += infoCard('Store URL', shop.primaryDomain ? shop.primaryDomain.url : '—');
+    html += infoCard('Currency', shop.paymentSettings ? shop.paymentSettings.currencyCode : '—');
+    html += infoCard('Accepted Cards', shop.paymentSettings ? shop.paymentSettings.acceptedCardBrands.join(', ') : '—');
+    html += infoCard('Presentment Currencies', shop.paymentSettings ? shop.paymentSettings.enabledPresentmentCurrencies.join(', ') : '—');
+    html += infoCard('Ships To', shop.shipsToCountries ? shop.shipsToCountries.length + ' countries' : '—');
+    document.getElementById('shopInfoGrid').innerHTML = html;
+  }
+
+  function infoCard(label, value) {
+    return '<div class="info-card">' +
+      '<div class="info-card__label">' + label + '</div>' +
+      '<div class="info-card__value">' + esc(String(value)) + '</div>' +
+    '</div>';
+  }
+
+  function esc(s) {
+    var d = document.createElement('div');
+    d.textContent = s;
+    return d.innerHTML;
+  }
+
+})();
+</script>
+</body>
+</html>
