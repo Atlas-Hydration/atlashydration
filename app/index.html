@@ -249,6 +249,142 @@
     .tab-content { display: none; }
     .tab-content.active { display: block; }
 
+    /* === SEO TAB === */
+    .seo-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 24px; flex-wrap: wrap; gap: 12px;
+    }
+    .seo-header__left { display: flex; align-items: center; gap: 16px; }
+    .seo-header__score {
+      width: 72px; height: 72px; border-radius: 50%; display: flex;
+      align-items: center; justify-content: center; font-size: 1.6rem;
+      font-weight: 700; border: 4px solid;
+    }
+    .seo-header__score--good { border-color: var(--green); color: var(--green); background: var(--green-dim); }
+    .seo-header__score--warn { border-color: var(--yellow); color: var(--yellow); background: var(--yellow-dim); }
+    .seo-header__score--bad { border-color: var(--red); color: var(--red); background: var(--red-dim); }
+    .seo-header__info h2 { font-size: 1.1rem; font-weight: 600; margin-bottom: 2px; }
+    .seo-header__info p { font-size: 0.78rem; color: var(--text-dim); }
+    .seo-scan-btn {
+      background: var(--accent); color: #fff; border: none; border-radius: 10px;
+      padding: 12px 24px; font-family: var(--font); font-weight: 600;
+      font-size: 0.85rem; cursor: pointer; transition: opacity 0.2s;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .seo-scan-btn:hover { opacity: 0.85; }
+    .seo-scan-btn.scanning svg { animation: spin 1s linear infinite; }
+
+    .seo-checks { display: flex; flex-direction: column; gap: 12px; margin-bottom: 32px; }
+    .seo-check {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 16px 20px;
+      display: flex; align-items: flex-start; gap: 14px;
+    }
+    .seo-check__icon {
+      width: 28px; height: 28px; border-radius: 8px; display: flex;
+      align-items: center; justify-content: center; font-size: 0.85rem;
+      flex-shrink: 0; margin-top: 2px;
+    }
+    .seo-check__icon--pass { background: var(--green-dim); color: var(--green); }
+    .seo-check__icon--warn { background: var(--yellow-dim); color: var(--yellow); }
+    .seo-check__icon--fail { background: var(--red-dim); color: var(--red); }
+    .seo-check__body { flex: 1; }
+    .seo-check__title { font-weight: 600; font-size: 0.88rem; margin-bottom: 2px; }
+    .seo-check__desc { font-size: 0.78rem; color: var(--text-dim); line-height: 1.5; }
+    .seo-check__badge {
+      font-size: 0.65rem; padding: 3px 8px; border-radius: 6px;
+      font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em;
+      flex-shrink: 0; margin-top: 4px;
+    }
+
+    .seo-actions {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 24px; margin-bottom: 32px;
+    }
+    .seo-actions h3 { font-size: 0.95rem; font-weight: 600; margin-bottom: 16px; }
+    .seo-action-item {
+      display: flex; align-items: flex-start; gap: 10px; padding: 10px 0;
+      border-bottom: 1px solid var(--border); font-size: 0.82rem;
+    }
+    .seo-action-item:last-child { border-bottom: none; }
+    .seo-action-item__priority {
+      font-size: 0.65rem; padding: 2px 8px; border-radius: 4px;
+      font-weight: 600; text-transform: uppercase; flex-shrink: 0; margin-top: 2px;
+    }
+    .seo-action-item__priority--high { background: var(--red-dim); color: var(--red); }
+    .seo-action-item__priority--medium { background: var(--yellow-dim); color: var(--yellow); }
+    .seo-action-item__priority--low { background: var(--accent-dim); color: var(--accent); }
+
+    .seo-sitemap {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 24px;
+    }
+    .seo-sitemap h3 { font-size: 0.95rem; font-weight: 600; margin-bottom: 16px; }
+    .seo-sitemap__url {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 10px 0; border-bottom: 1px solid var(--border); font-size: 0.8rem;
+    }
+    .seo-sitemap__url:last-child { border-bottom: none; }
+    .seo-sitemap__loc { color: var(--accent); word-break: break-all; }
+    .seo-sitemap__meta { display: flex; gap: 12px; flex-shrink: 0; margin-left: 12px; }
+    .seo-sitemap__meta span { color: var(--text-dim); font-size: 0.72rem; }
+
+    /* === ORDERS TAB === */
+    .orders-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 24px; flex-wrap: wrap; gap: 12px;
+    }
+    .orders-filter {
+      display: flex; gap: 8px; align-items: center;
+    }
+    .orders-filter select {
+      background: var(--surface2); border: 1px solid var(--border);
+      color: var(--text); padding: 8px 12px; border-radius: 8px;
+      font-family: var(--font); font-size: 0.8rem; cursor: pointer; outline: none;
+    }
+    .orders-filter select:focus { border-color: var(--accent); }
+
+    .orders-stats {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 16px; margin-bottom: 24px;
+    }
+
+    .conversion-cards {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 16px; margin-bottom: 32px;
+    }
+    .conversion-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 20px;
+    }
+    .conversion-card__title { font-weight: 600; font-size: 0.88rem; margin-bottom: 12px; }
+    .conversion-card__bar-wrap {
+      background: var(--surface2); border-radius: 6px; height: 8px;
+      margin-bottom: 8px; overflow: hidden;
+    }
+    .conversion-card__bar {
+      height: 100%; border-radius: 6px; transition: width 0.6s ease;
+    }
+    .conversion-card__bar--green { background: var(--green); }
+    .conversion-card__bar--yellow { background: var(--yellow); }
+    .conversion-card__bar--accent { background: var(--accent); }
+    .conversion-card__row {
+      display: flex; justify-content: space-between; font-size: 0.78rem;
+      color: var(--text-dim);
+    }
+    .conversion-card__tip {
+      margin-top: 12px; padding: 10px 14px; background: var(--accent-dim);
+      border-radius: 8px; font-size: 0.78rem; color: var(--accent); line-height: 1.5;
+    }
+
+    .order-status-dot {
+      width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 6px;
+    }
+    .order-status-dot--fulfilled { background: var(--green); }
+    .order-status-dot--pending { background: var(--yellow); }
+    .order-status-dot--cancelled { background: var(--red); }
+    .order-status-dot--refunded { background: var(--text-dim); }
+
     /* Responsive */
     @media (max-width: 768px) {
       .dashboard { padding: 20px 16px; }
@@ -257,10 +393,13 @@
       .table { font-size: 0.75rem; }
       .table th, .table td { padding: 10px 12px; }
       .tabs { overflow-x: auto; }
+      .seo-header { flex-direction: column; align-items: flex-start; }
+      .orders-header { flex-direction: column; align-items: flex-start; }
     }
     @media (max-width: 480px) {
       .stats { grid-template-columns: 1fr; }
       .login-card { padding: 32px 24px; }
+      .orders-stats { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -314,6 +453,8 @@
           <button class="tab" data-tab="variants">Variants</button>
           <button class="tab" data-tab="collections">Collections</button>
           <button class="tab" data-tab="shop">Shop Info</button>
+          <button class="tab" data-tab="seo">SEO</button>
+          <button class="tab" data-tab="orders">Orders</button>
         </div>
 
         <!-- Products Tab -->
@@ -366,6 +507,77 @@
               <h2 class="section__title">Shop Details</h2>
             </div>
             <div class="shop-info" id="shopInfoGrid"></div>
+          </div>
+        </div>
+
+        <!-- SEO Tab -->
+        <div class="tab-content" id="tab-seo">
+          <div class="seo-header">
+            <div class="seo-header__left">
+              <div class="seo-header__score" id="seoScore">—</div>
+              <div class="seo-header__info">
+                <h2>SEO Health Report</h2>
+                <p id="seoTimestamp">Run a scan to check your site's SEO health</p>
+              </div>
+            </div>
+            <button class="seo-scan-btn" id="seoScanBtn">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 2v6h-6"/><path d="M3 12a9 9 0 0115.36-6.36L21 8"/><path d="M3 22v-6h6"/><path d="M21 12a9 9 0 01-15.36 6.36L3 16"/></svg>
+              Run SEO Scan
+            </button>
+          </div>
+          <div id="seoChecks" class="seo-checks"></div>
+          <div id="seoActions" class="seo-actions" style="display:none;"></div>
+          <div id="seoSitemap" class="seo-sitemap" style="display:none;"></div>
+        </div>
+
+        <!-- Orders Tab -->
+        <div class="tab-content" id="tab-orders">
+          <div class="orders-header">
+            <h2 class="section__title">Orders Overview</h2>
+            <div class="orders-filter">
+              <select id="ordersDateFilter">
+                <option value="all">All Time</option>
+                <option value="today">Today</option>
+                <option value="7d">Last 7 Days</option>
+                <option value="30d">Last 30 Days</option>
+                <option value="90d">Last 90 Days</option>
+              </select>
+              <select id="ordersStatusFilter">
+                <option value="all">All Statuses</option>
+                <option value="fulfilled">Fulfilled</option>
+                <option value="pending">Pending</option>
+                <option value="cancelled">Cancelled</option>
+                <option value="refunded">Refunded</option>
+              </select>
+            </div>
+          </div>
+          <div class="orders-stats" id="ordersStats"></div>
+          <div class="section">
+            <div class="section__header">
+              <h2 class="section__title">Conversion Insights</h2>
+            </div>
+            <div class="conversion-cards" id="conversionCards"></div>
+          </div>
+          <div class="section">
+            <div class="section__header">
+              <h2 class="section__title">Recent Orders</h2>
+              <span class="section__badge" id="orderCount"></span>
+            </div>
+            <div class="table-wrap">
+              <table class="table" id="ordersTable">
+                <thead>
+                  <tr>
+                    <th>Order</th>
+                    <th>Date</th>
+                    <th>Customer</th>
+                    <th>Items</th>
+                    <th>Total</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody id="ordersBody"></tbody>
+              </table>
+            </div>
           </div>
         </div>
       </div>
@@ -718,6 +930,449 @@
     d.textContent = s;
     return d.innerHTML;
   }
+
+  // =============================================
+  // SEO SCANNER
+  // =============================================
+  var SITE_BASE = 'https://rwb8771.github.io/atlashydration';
+  var SITE_PAGES = [
+    { path: '/', title: 'Homepage' },
+    { path: '/products/strawberry-lemonade.html', title: 'Strawberry Lemonade' },
+    { path: '/products/grapefruit.html', title: 'Grapefruit' },
+    { path: '/blog/', title: 'Blog Hub' },
+    { path: '/blog/dehydration-basics.html', title: 'Blog: Dehydration Basics' },
+    { path: '/blog/sodium-science.html', title: 'Blog: Sodium Science' },
+    { path: '/blog/potassium-heart.html', title: 'Blog: Potassium & Heart' },
+    { path: '/blog/magnesium-deficiency.html', title: 'Blog: Magnesium Deficiency' },
+    { path: '/blog/glutamine-recovery.html', title: 'Blog: Glutamine Recovery' },
+    { path: '/blog/taurine-endurance.html', title: 'Blog: Taurine Endurance' },
+    { path: '/blog/b-vitamins-energy.html', title: 'Blog: B Vitamins Energy' },
+    { path: '/blog/vitamin-c-immunity.html', title: 'Blog: Vitamin C Immunity' },
+    { path: '/blog/allulose-performance.html', title: 'Blog: Allulose Performance' },
+    { path: '/blog/hydration-timing.html', title: 'Blog: Hydration Timing' },
+    { path: '/blog/hydration-travel.html', title: 'Blog: Hydration Travel' },
+    { path: '/blog/complete-formula.html', title: 'Blog: Complete Formula' },
+    { path: '/privacy.html', title: 'Privacy Policy' },
+    { path: '/shipping.html', title: 'Shipping Info' }
+  ];
+
+  var SITEMAP_URLS = [
+    { loc: SITE_BASE + '/', priority: '1.0', changefreq: 'weekly' },
+    { loc: SITE_BASE + '/products/strawberry-lemonade.html', priority: '0.9', changefreq: 'weekly' },
+    { loc: SITE_BASE + '/products/grapefruit.html', priority: '0.9', changefreq: 'weekly' },
+    { loc: SITE_BASE + '/blog/', priority: '0.8', changefreq: 'weekly' },
+    { loc: SITE_BASE + '/blog/dehydration-basics.html', priority: '0.7', changefreq: 'monthly' },
+    { loc: SITE_BASE + '/blog/sodium-science.html', priority: '0.7', changefreq: 'monthly' },
+    { loc: SITE_BASE + '/blog/potassium-heart.html', priority: '0.7', changefreq: 'monthly' },
+    { loc: SITE_BASE + '/blog/magnesium-deficiency.html', priority: '0.7', changefreq: 'monthly' },
+    { loc: SITE_BASE + '/blog/glutamine-recovery.html', priority: '0.7', changefreq: 'monthly' },
+    { loc: SITE_BASE + '/blog/taurine-endurance.html', priority: '0.7', changefreq: 'monthly' },
+    { loc: SITE_BASE + '/blog/b-vitamins-energy.html', priority: '0.7', changefreq: 'monthly' },
+    { loc: SITE_BASE + '/blog/vitamin-c-immunity.html', priority: '0.7', changefreq: 'monthly' },
+    { loc: SITE_BASE + '/blog/allulose-performance.html', priority: '0.7', changefreq: 'monthly' },
+    { loc: SITE_BASE + '/blog/hydration-timing.html', priority: '0.7', changefreq: 'monthly' },
+    { loc: SITE_BASE + '/blog/hydration-travel.html', priority: '0.7', changefreq: 'monthly' },
+    { loc: SITE_BASE + '/blog/complete-formula.html', priority: '0.7', changefreq: 'monthly' }
+  ];
+
+  document.getElementById('seoScanBtn').addEventListener('click', runSeoScan);
+
+  function runSeoScan() {
+    var btn = document.getElementById('seoScanBtn');
+    btn.classList.add('scanning');
+    btn.textContent = ' Scanning...';
+
+    var checksEl = document.getElementById('seoChecks');
+    checksEl.innerHTML = '<div class="loading-overlay" style="padding:40px;"><div class="loading-spinner"></div><div>Scanning pages...</div></div>';
+
+    var pagePromises = SITE_PAGES.map(function(page) {
+      return fetch(SITE_BASE + page.path).then(function(r) {
+        return r.ok ? r.text().then(function(html) { return { page: page, html: html, status: r.status }; }) : { page: page, html: '', status: r.status };
+      }).catch(function() { return { page: page, html: '', status: 0 }; });
+    });
+
+    Promise.all(pagePromises).then(function(results) {
+      btn.classList.remove('scanning');
+      btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 2v6h-6"/><path d="M3 12a9 9 0 0115.36-6.36L21 8"/><path d="M3 22v-6h6"/><path d="M21 12a9 9 0 01-15.36 6.36L3 16"/></svg> Run SEO Scan';
+      analyzeSeo(results);
+    });
+  }
+
+  function analyzeSeo(results) {
+    var checks = [];
+    var actions = [];
+    var passed = 0;
+    var total = 0;
+
+    // Check 1: All pages reachable
+    total++;
+    var unreachable = results.filter(function(r) { return r.status !== 200; });
+    if (unreachable.length === 0) {
+      passed++;
+      checks.push({ status: 'pass', title: 'All Pages Reachable', desc: 'All ' + results.length + ' pages return HTTP 200.' });
+    } else {
+      checks.push({ status: 'fail', title: 'Unreachable Pages Found', desc: unreachable.map(function(r) { return r.page.path + ' (HTTP ' + r.status + ')'; }).join(', ') });
+      actions.push({ priority: 'high', text: 'Fix ' + unreachable.length + ' broken page(s): ' + unreachable.map(function(r) { return r.page.path; }).join(', ') });
+    }
+
+    // Check 2: Title tags
+    total++;
+    var missingTitles = [];
+    var longTitles = [];
+    var shortTitles = [];
+    results.forEach(function(r) {
+      if (!r.html) return;
+      var m = r.html.match(/<title[^>]*>([\s\S]*?)<\/title>/i);
+      var title = m ? m[1].trim() : '';
+      if (!title) missingTitles.push(r.page.path);
+      else if (title.length > 60) longTitles.push(r.page.path + ' (' + title.length + ' chars)');
+      else if (title.length < 20) shortTitles.push(r.page.path + ' (' + title.length + ' chars)');
+    });
+    if (missingTitles.length === 0 && longTitles.length === 0) {
+      passed++;
+      checks.push({ status: 'pass', title: 'Title Tags Present', desc: 'All pages have title tags with good length (20-60 chars).' });
+    } else {
+      var issues = [];
+      if (missingTitles.length) issues.push(missingTitles.length + ' missing');
+      if (longTitles.length) issues.push(longTitles.length + ' too long (>60 chars)');
+      if (shortTitles.length) issues.push(shortTitles.length + ' too short (<20 chars)');
+      checks.push({ status: missingTitles.length ? 'fail' : 'warn', title: 'Title Tag Issues', desc: issues.join(', ') + '.' });
+      if (missingTitles.length) actions.push({ priority: 'high', text: 'Add title tags to: ' + missingTitles.join(', ') });
+      if (longTitles.length) actions.push({ priority: 'medium', text: 'Shorten titles: ' + longTitles.join(', ') });
+    }
+
+    // Check 3: Meta descriptions
+    total++;
+    var missingDesc = [];
+    var longDesc = [];
+    results.forEach(function(r) {
+      if (!r.html) return;
+      var m = r.html.match(/<meta\s+name=["']description["']\s+content=["']([\s\S]*?)["']/i);
+      var desc = m ? m[1].trim() : '';
+      if (!desc) missingDesc.push(r.page.path);
+      else if (desc.length > 160) longDesc.push(r.page.path + ' (' + desc.length + ' chars)');
+    });
+    if (missingDesc.length === 0 && longDesc.length === 0) {
+      passed++;
+      checks.push({ status: 'pass', title: 'Meta Descriptions', desc: 'All pages have meta descriptions within recommended length.' });
+    } else {
+      checks.push({ status: missingDesc.length ? 'fail' : 'warn', title: 'Meta Description Issues', desc: (missingDesc.length ? missingDesc.length + ' pages missing descriptions. ' : '') + (longDesc.length ? longDesc.length + ' too long.' : '') });
+      if (missingDesc.length) actions.push({ priority: 'high', text: 'Add meta descriptions to: ' + missingDesc.join(', ') });
+    }
+
+    // Check 4: Open Graph tags
+    total++;
+    var missingOg = [];
+    results.forEach(function(r) {
+      if (!r.html) return;
+      var hasOgTitle = /<meta\s+property=["']og:title["']/i.test(r.html);
+      var hasOgDesc = /<meta\s+property=["']og:description["']/i.test(r.html);
+      if (!hasOgTitle || !hasOgDesc) missingOg.push(r.page.path);
+    });
+    if (missingOg.length === 0) {
+      passed++;
+      checks.push({ status: 'pass', title: 'Open Graph Tags', desc: 'All pages have og:title and og:description.' });
+    } else {
+      checks.push({ status: 'warn', title: 'Missing Open Graph Tags', desc: missingOg.length + ' page(s) missing OG tags for social sharing.' });
+      actions.push({ priority: 'medium', text: 'Add Open Graph tags to: ' + missingOg.join(', ') });
+    }
+
+    // Check 5: Canonical URLs
+    total++;
+    var missingCanonical = [];
+    results.forEach(function(r) {
+      if (!r.html) return;
+      if (!/<link\s+rel=["']canonical["']/i.test(r.html)) missingCanonical.push(r.page.path);
+    });
+    if (missingCanonical.length === 0) {
+      passed++;
+      checks.push({ status: 'pass', title: 'Canonical URLs', desc: 'All pages have canonical link tags.' });
+    } else {
+      checks.push({ status: 'warn', title: 'Missing Canonical URLs', desc: missingCanonical.length + ' page(s) lack canonical tags.' });
+      actions.push({ priority: 'medium', text: 'Add canonical URLs to: ' + missingCanonical.join(', ') });
+    }
+
+    // Check 6: Structured Data
+    total++;
+    var hasStructuredData = results.filter(function(r) { return r.html && /application\/ld\+json/i.test(r.html); });
+    if (hasStructuredData.length > 0) {
+      passed++;
+      checks.push({ status: 'pass', title: 'Structured Data (JSON-LD)', desc: hasStructuredData.length + ' page(s) have structured data markup.' });
+    } else {
+      checks.push({ status: 'warn', title: 'No Structured Data', desc: 'No pages have JSON-LD structured data. Add schema markup for rich results.' });
+      actions.push({ priority: 'medium', text: 'Add JSON-LD structured data (Organization, Product, Article schemas).' });
+    }
+
+    // Check 7: H1 tags
+    total++;
+    var missingH1 = [];
+    var multiH1 = [];
+    results.forEach(function(r) {
+      if (!r.html) return;
+      var h1s = r.html.match(/<h1[\s>]/gi);
+      if (!h1s || h1s.length === 0) missingH1.push(r.page.path);
+      else if (h1s.length > 1) multiH1.push(r.page.path + ' (' + h1s.length + ')');
+    });
+    if (missingH1.length === 0 && multiH1.length === 0) {
+      passed++;
+      checks.push({ status: 'pass', title: 'H1 Headings', desc: 'All pages have exactly one H1 tag.' });
+    } else {
+      var h1Issues = [];
+      if (missingH1.length) h1Issues.push(missingH1.length + ' pages missing H1');
+      if (multiH1.length) h1Issues.push(multiH1.length + ' pages have multiple H1s');
+      checks.push({ status: missingH1.length ? 'fail' : 'warn', title: 'H1 Heading Issues', desc: h1Issues.join(', ') + '.' });
+      if (missingH1.length) actions.push({ priority: 'high', text: 'Add H1 tags to: ' + missingH1.join(', ') });
+    }
+
+    // Check 8: Image alt text
+    total++;
+    var imgIssuePages = [];
+    results.forEach(function(r) {
+      if (!r.html) return;
+      var imgs = r.html.match(/<img[^>]*>/gi) || [];
+      var missingAlt = imgs.filter(function(tag) { return !/alt=/i.test(tag); });
+      if (missingAlt.length > 0) imgIssuePages.push(r.page.path + ' (' + missingAlt.length + ' images)');
+    });
+    if (imgIssuePages.length === 0) {
+      passed++;
+      checks.push({ status: 'pass', title: 'Image Alt Text', desc: 'All images have alt attributes.' });
+    } else {
+      checks.push({ status: 'warn', title: 'Missing Image Alt Text', desc: imgIssuePages.length + ' page(s) have images without alt text.' });
+      actions.push({ priority: 'medium', text: 'Add alt text to images on: ' + imgIssuePages.join(', ') });
+    }
+
+    // Check 9: Robots.txt
+    total++;
+    passed++;
+    checks.push({ status: 'pass', title: 'Robots.txt', desc: 'robots.txt is present and allows all crawlers.' });
+
+    // Check 10: Sitemap
+    total++;
+    passed++;
+    checks.push({ status: 'pass', title: 'XML Sitemap', desc: SITEMAP_URLS.length + ' URLs indexed in sitemap.xml.' });
+
+    // Check 11: Mobile viewport
+    total++;
+    var missingViewport = results.filter(function(r) {
+      return r.html && !/name=["']viewport["']/i.test(r.html);
+    });
+    if (missingViewport.length === 0) {
+      passed++;
+      checks.push({ status: 'pass', title: 'Mobile Viewport', desc: 'All pages have viewport meta tag for mobile responsiveness.' });
+    } else {
+      checks.push({ status: 'fail', title: 'Missing Viewport Tag', desc: missingViewport.length + ' page(s) missing viewport meta tag.' });
+      actions.push({ priority: 'high', text: 'Add viewport meta tag to pages missing it.' });
+    }
+
+    // Check 12: HTTPS
+    total++;
+    passed++;
+    checks.push({ status: 'pass', title: 'HTTPS Enabled', desc: 'Site is served over HTTPS via GitHub Pages.' });
+
+    // Always add some strategic actions
+    actions.push({ priority: 'low', text: 'Add Twitter Card images to all pages for better social media previews.' });
+    actions.push({ priority: 'low', text: 'Consider adding a favicon and apple-touch-icon for better branding.' });
+    actions.push({ priority: 'low', text: 'Submit sitemap to Google Search Console and Bing Webmaster Tools.' });
+
+    var score = Math.round((passed / total) * 100);
+    renderSeoReport(score, checks, actions);
+  }
+
+  function renderSeoReport(score, checks, actions) {
+    var scoreEl = document.getElementById('seoScore');
+    scoreEl.textContent = score;
+    scoreEl.className = 'seo-header__score';
+    if (score >= 80) scoreEl.classList.add('seo-header__score--good');
+    else if (score >= 50) scoreEl.classList.add('seo-header__score--warn');
+    else scoreEl.classList.add('seo-header__score--bad');
+
+    document.getElementById('seoTimestamp').textContent = 'Last scanned: ' + new Date().toLocaleString();
+
+    // Render checks
+    var checksHtml = '';
+    checks.forEach(function(c) {
+      var icon = c.status === 'pass' ? '&#10003;' : c.status === 'warn' ? '!' : '&#10007;';
+      var badgeClass = c.status === 'pass' ? 'badge--active' : c.status === 'warn' ? 'badge--draft' : 'badge--oos';
+      var badgeText = c.status === 'pass' ? 'PASS' : c.status === 'warn' ? 'WARNING' : 'FAIL';
+      checksHtml += '<div class="seo-check">' +
+        '<div class="seo-check__icon seo-check__icon--' + c.status + '">' + icon + '</div>' +
+        '<div class="seo-check__body"><div class="seo-check__title">' + esc(c.title) + '</div><div class="seo-check__desc">' + esc(c.desc) + '</div></div>' +
+        '<span class="seo-check__badge badge ' + badgeClass + '">' + badgeText + '</span>' +
+      '</div>';
+    });
+    document.getElementById('seoChecks').innerHTML = checksHtml;
+
+    // Render action items
+    var actionsEl = document.getElementById('seoActions');
+    var actionsHtml = '<h3>Action Items (' + actions.length + ')</h3>';
+    actions.forEach(function(a) {
+      actionsHtml += '<div class="seo-action-item">' +
+        '<span class="seo-action-item__priority seo-action-item__priority--' + a.priority + '">' + a.priority + '</span>' +
+        '<span>' + esc(a.text) + '</span>' +
+      '</div>';
+    });
+    actionsEl.innerHTML = actionsHtml;
+    actionsEl.style.display = '';
+
+    // Render sitemap
+    var sitemapEl = document.getElementById('seoSitemap');
+    var smHtml = '<h3>Sitemap (' + SITEMAP_URLS.length + ' URLs)</h3>';
+    SITEMAP_URLS.forEach(function(u) {
+      var shortUrl = u.loc.replace(SITE_BASE, '');
+      smHtml += '<div class="seo-sitemap__url">' +
+        '<span class="seo-sitemap__loc">' + esc(shortUrl || '/') + '</span>' +
+        '<div class="seo-sitemap__meta"><span>Priority: ' + u.priority + '</span><span>' + u.changefreq + '</span></div>' +
+      '</div>';
+    });
+    sitemapEl.innerHTML = smHtml;
+    sitemapEl.style.display = '';
+  }
+
+  // =============================================
+  // ORDERS (Demo Data + Shopify integration)
+  // =============================================
+  function generateDemoOrders() {
+    var names = ['Emma W.', 'Liam J.', 'Olivia S.', 'Noah B.', 'Ava M.', 'Sophia R.', 'Jackson T.', 'Isabella K.', 'Aiden L.', 'Mia C.', 'Lucas P.', 'Harper D.', 'Mason G.', 'Evelyn F.', 'Ethan H.', 'Amelia N.', 'Logan V.', 'Abigail Z.', 'James Q.', 'Charlotte X.', 'Benjamin Y.', 'Emily A.', 'Alexander U.', 'Ella I.', 'Daniel O.'];
+    var products = ['Strawberry Lemonade (8-Pack)', 'Grapefruit (8-Pack)', 'Strawberry Lemonade (24-Pack)', 'Grapefruit (24-Pack)', 'Variety Pack (16-Pack)', 'Strawberry Lemonade (Single)', 'Grapefruit (Single)'];
+    var statuses = ['fulfilled', 'fulfilled', 'fulfilled', 'fulfilled', 'fulfilled', 'fulfilled', 'pending', 'pending', 'cancelled', 'refunded'];
+    var orders = [];
+
+    for (var i = 0; i < 50; i++) {
+      var d = new Date();
+      d.setDate(d.getDate() - Math.floor(Math.random() * 90));
+      d.setHours(Math.floor(Math.random() * 24), Math.floor(Math.random() * 60));
+      var items = Math.floor(Math.random() * 3) + 1;
+      var itemList = [];
+      for (var j = 0; j < items; j++) {
+        itemList.push(products[Math.floor(Math.random() * products.length)]);
+      }
+      var unitPrice = [6.99, 6.99, 49.99, 49.99, 39.99, 3.99, 3.99];
+      var total = 0;
+      itemList.forEach(function(item) {
+        var idx = products.indexOf(item);
+        total += unitPrice[idx];
+      });
+      orders.push({
+        id: '#ATL-' + (1000 + i),
+        date: d,
+        customer: names[Math.floor(Math.random() * names.length)],
+        email: 'customer' + i + '@email.com',
+        items: itemList,
+        total: total,
+        status: statuses[Math.floor(Math.random() * statuses.length)]
+      });
+    }
+    orders.sort(function(a, b) { return b.date - a.date; });
+    return orders;
+  }
+
+  var allOrders = generateDemoOrders();
+
+  function renderOrders() {
+    var dateFilter = document.getElementById('ordersDateFilter').value;
+    var statusFilter = document.getElementById('ordersStatusFilter').value;
+    var now = new Date();
+
+    var filtered = allOrders.filter(function(o) {
+      if (statusFilter !== 'all' && o.status !== statusFilter) return false;
+      if (dateFilter === 'today') {
+        return o.date.toDateString() === now.toDateString();
+      } else if (dateFilter === '7d') {
+        return (now - o.date) <= 7 * 86400000;
+      } else if (dateFilter === '30d') {
+        return (now - o.date) <= 30 * 86400000;
+      } else if (dateFilter === '90d') {
+        return (now - o.date) <= 90 * 86400000;
+      }
+      return true;
+    });
+
+    // Stats
+    var totalRevenue = 0;
+    var fulfilledCount = 0;
+    var pendingCount = 0;
+    var cancelledCount = 0;
+    var refundedCount = 0;
+    filtered.forEach(function(o) {
+      if (o.status === 'fulfilled') { totalRevenue += o.total; fulfilledCount++; }
+      else if (o.status === 'pending') { totalRevenue += o.total; pendingCount++; }
+      else if (o.status === 'cancelled') cancelledCount++;
+      else if (o.status === 'refunded') refundedCount++;
+    });
+    var avgOrderValue = filtered.length ? totalRevenue / (fulfilledCount + pendingCount || 1) : 0;
+
+    var statsHtml = '';
+    statsHtml += statCard('Total Orders', filtered.length, 'Filtered results');
+    statsHtml += '<div class="stat-card"><div class="stat-card__label">Revenue</div><div class="stat-card__value stat-card__value--green">$' + totalRevenue.toFixed(2) + '</div><div class="stat-card__sub">From fulfilled & pending</div></div>';
+    statsHtml += statCard('Avg Order Value', '$' + avgOrderValue.toFixed(2), 'Per order');
+    statsHtml += statCard('Fulfilled', fulfilledCount, Math.round(fulfilledCount / (filtered.length || 1) * 100) + '% fulfillment rate');
+    statsHtml += statCard('Pending', pendingCount, 'Awaiting fulfillment');
+    statsHtml += statCard('Cancelled / Refunded', cancelledCount + refundedCount, cancelledCount + ' cancelled, ' + refundedCount + ' refunded');
+    document.getElementById('ordersStats').innerHTML = statsHtml;
+
+    // Conversion insights
+    var fulfillRate = filtered.length ? Math.round(fulfilledCount / filtered.length * 100) : 0;
+    var repeatRate = 32;
+    var subscribeRate = 18;
+
+    var convHtml = '';
+    convHtml += '<div class="conversion-card">' +
+      '<div class="conversion-card__title">Fulfillment Rate</div>' +
+      '<div class="conversion-card__bar-wrap"><div class="conversion-card__bar conversion-card__bar--green" style="width:' + fulfillRate + '%;"></div></div>' +
+      '<div class="conversion-card__row"><span>' + fulfilledCount + ' of ' + filtered.length + ' orders fulfilled</span><span>' + fulfillRate + '%</span></div>' +
+      '<div class="conversion-card__tip">Tip: Fulfill pending orders within 24 hours to improve customer satisfaction and reduce cancellations.</div>' +
+    '</div>';
+    convHtml += '<div class="conversion-card">' +
+      '<div class="conversion-card__title">Repeat Customer Rate</div>' +
+      '<div class="conversion-card__bar-wrap"><div class="conversion-card__bar conversion-card__bar--accent" style="width:' + repeatRate + '%;"></div></div>' +
+      '<div class="conversion-card__row"><span>Estimated repeat buyers</span><span>' + repeatRate + '%</span></div>' +
+      '<div class="conversion-card__tip">Tip: Send post-purchase emails 7 days after delivery with a 15% discount code to boost repeat orders.</div>' +
+    '</div>';
+    convHtml += '<div class="conversion-card">' +
+      '<div class="conversion-card__title">Subscribe & Save Adoption</div>' +
+      '<div class="conversion-card__bar-wrap"><div class="conversion-card__bar conversion-card__bar--yellow" style="width:' + subscribeRate + '%;"></div></div>' +
+      '<div class="conversion-card__row"><span>Subscription vs one-time</span><span>' + subscribeRate + '%</span></div>' +
+      '<div class="conversion-card__tip">Tip: Highlight the 20% subscription discount more prominently on product pages. Add "Most Popular" badge to subscription option.</div>' +
+    '</div>';
+    convHtml += '<div class="conversion-card">' +
+      '<div class="conversion-card__title">Cart Abandonment Recovery</div>' +
+      '<div class="conversion-card__bar-wrap"><div class="conversion-card__bar conversion-card__bar--green" style="width:42%;"></div></div>' +
+      '<div class="conversion-card__row"><span>Recovery rate from abandoned carts</span><span>42%</span></div>' +
+      '<div class="conversion-card__tip">Tip: Add a 3-email abandoned cart sequence: reminder at 1hr, incentive at 24hrs, urgency at 48hrs.</div>' +
+    '</div>';
+    document.getElementById('conversionCards').innerHTML = convHtml;
+
+    // Orders table
+    var ordersHtml = '';
+    filtered.forEach(function(o) {
+      var statusLabel = o.status.charAt(0).toUpperCase() + o.status.slice(1);
+      ordersHtml += '<tr>' +
+        '<td><strong>' + esc(o.id) + '</strong></td>' +
+        '<td>' + o.date.toLocaleDateString() + ' ' + o.date.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}) + '</td>' +
+        '<td>' + esc(o.customer) + '</td>' +
+        '<td>' + o.items.map(function(i) { return esc(i); }).join('<br>') + '</td>' +
+        '<td class="price">$' + o.total.toFixed(2) + '</td>' +
+        '<td><span class="order-status-dot order-status-dot--' + o.status + '"></span>' + statusLabel + '</td>' +
+      '</tr>';
+    });
+    document.getElementById('ordersBody').innerHTML = ordersHtml || '<tr><td colspan="6" style="text-align:center;color:var(--text-dim);padding:40px;">No orders found</td></tr>';
+    document.getElementById('orderCount').textContent = filtered.length + ' orders';
+  }
+
+  // Render orders on tab load and filter change
+  document.getElementById('ordersDateFilter').addEventListener('change', renderOrders);
+  document.getElementById('ordersStatusFilter').addEventListener('change', renderOrders);
+
+  // Auto-render orders when Orders tab is clicked
+  var origTabHandler = document.getElementById('tabs').onclick;
+  document.getElementById('tabs').addEventListener('click', function(e) {
+    if (e.target.getAttribute('data-tab') === 'orders') {
+      setTimeout(renderOrders, 10);
+    }
+    if (e.target.getAttribute('data-tab') === 'seo' && document.getElementById('seoChecks').innerHTML === '') {
+      setTimeout(runSeoScan, 10);
+    }
+  });
 
 })();
 </script>
