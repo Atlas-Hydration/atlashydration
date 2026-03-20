@@ -131,7 +131,9 @@ document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
       header.classList.remove('header--hidden');
     }
 
-    if (currentScrollY > 50) {
+    // Only toggle solid bg on pages without a hero (product pages start solid)
+    var isAlwaysSolid = !document.querySelector('.hero');
+    if (currentScrollY > 50 || isAlwaysSolid) {
       header.classList.add('header--solid');
     } else {
       header.classList.remove('header--solid');

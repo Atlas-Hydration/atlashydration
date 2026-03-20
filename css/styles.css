@@ -883,7 +883,7 @@ img {
    ======================================== */
 .science {
   padding: 140px 0;
-  background: #ffffff;
+  background: #f5f5f5;
 }
 
 .science__layout {
@@ -1206,7 +1206,7 @@ img {
    ======================================== */
 .testimonials {
   padding: 140px 0;
-  background: #ffffff;
+  background: #f5f5f5;
 }
 
 .testimonials__grid {
@@ -2857,7 +2857,7 @@ img {
    ======================================== */
 .compare {
   padding: 80px 0;
-  background: #f5f5f5;
+  background: #ffffff;
   position: relative;
   overflow: hidden;
 }
@@ -3373,7 +3373,7 @@ img {
    ======================================== */
 .featured-product {
   padding: 120px 0;
-  background: #f5f5f5;
+  background: #ffffff;
 }
 
 .featured-product__grid {
@@ -3726,7 +3726,7 @@ img {
    ======================================== */
 .blog {
   padding: 100px 0;
-  background: #f5f5f5;
+  background: #ffffff;
 }
 
 .blog__grid {
@@ -3858,7 +3858,7 @@ img {
    ======================================== */
 .founder {
   padding: 120px 0;
-  background: #ffffff;
+  background: #f5f5f5;
 }
 
 .founder__grid {
