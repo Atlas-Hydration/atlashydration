@@ -113,9 +113,9 @@ document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
 
   window.addEventListener('scroll', function() {
     if (window.scrollY > 50) {
-      header.style.background = 'rgba(30, 30, 30, 0.99)';
+      header.style.background = 'rgba(29, 29, 31, 0.96)';
     } else {
-      header.style.background = 'rgba(30, 30, 30, 0.97)';
+      header.style.background = 'rgba(29, 29, 31, 0.92)';
     }
   }, { passive: true });
 })();
