@@ -477,21 +477,23 @@
   <div class="popup-overlay" id="popupOverlay">
     <div class="popup">
       <button class="popup__close" id="popupClose" aria-label="Close">&times;</button>
-      <div class="popup__logo">
-        <img src="logo.svg" alt="Atlas" height="28">
+      <div class="popup__inner">
+        <div class="popup__logo">
+          <img src="logo.svg" alt="Atlas" height="28">
+        </div>
+        <div class="popup__heading">You've Got</div>
+        <div class="popup__percent">10% OFF</div>
+        <div class="popup__subheading">What brings you here?</div>
+        <div class="popup__choices">
+          <button class="popup__choice" id="popupClaim" data-reason="training">I train hard and sweat a lot</button>
+          <button class="popup__choice" id="popupChoice2" data-reason="daily">I want cleaner hydration daily</button>
+          <button class="popup__choice" id="popupChoice3" data-reason="sugar">I'm done with sugary sports drinks</button>
+          <button class="popup__choice" id="popupChoice4" data-reason="travel">I travel and need better hydration</button>
+        </div>
+        <input type="email" class="popup__input" id="popupEmail" placeholder="Enter your email for the code" style="display:none;">
+        <button class="popup__btn" id="popupEmailSubmit" style="display:none;">Get My 10% Off Code</button>
+        <button class="popup__dismiss" id="popupDismiss">No thanks</button>
       </div>
-      <div class="popup__heading">You've Got</div>
-      <div class="popup__percent">10% OFF</div>
-      <div class="popup__subheading">What brings you here?</div>
-      <div class="popup__choices">
-        <button class="popup__choice" id="popupClaim" data-reason="training">I train hard and sweat a lot</button>
-        <button class="popup__choice" id="popupChoice2" data-reason="daily">I want cleaner hydration daily</button>
-        <button class="popup__choice" id="popupChoice3" data-reason="sugar">I'm done with sugary sports drinks</button>
-        <button class="popup__choice" id="popupChoice4" data-reason="travel">I travel and need better hydration</button>
-      </div>
-      <input type="email" class="popup__input" id="popupEmail" placeholder="Enter your email for the code" style="display:none;">
-      <button class="popup__btn" id="popupEmailSubmit" style="display:none;">Get My 10% Off Code</button>
-      <button class="popup__dismiss" id="popupDismiss">No thanks</button>
     </div>
   </div>
 
