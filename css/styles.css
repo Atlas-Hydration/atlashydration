@@ -4957,3 +4957,13 @@ img {
   text-transform: uppercase;
   letter-spacing: 0.18em;
 }
+
+/* Hide Junip branding badge */
+.junip-branding,
+.junip-powered-by,
+[class*="junip"] a[href*="juniphq"],
+.junip-review-section-wrapper > div > a,
+.junip-store-review-branding,
+.junip-product-review-branding {
+  display: none !important;
+}
