@@ -46,7 +46,6 @@
     }
     [data-theme="light"] .topbar { background: rgba(245,245,247,0.85); }
     [data-theme="light"] .table tr:hover td { background: rgba(0,0,0,0.02); }
-    [data-theme="light"] .animated-bg__orb { opacity: 0.05; }
     [data-theme="light"] .login-card__btn { color: #fff; }
     [data-theme="light"] .seo-scan-btn { color: #fff; }
     [data-theme="light"] .seo-prompt__copy { color: #fff; }
@@ -468,33 +467,66 @@
     .order-status-dot--cancelled { background: var(--red); }
     .order-status-dot--refunded { background: var(--text-dim); }
 
-    /* Animated BG */
+    /* Webflow-style animated gradient BG */
     .animated-bg {
       position: fixed; top: 0; left: 0; width: 100%; height: 100%;
       pointer-events: none; z-index: 0; overflow: hidden;
     }
-    .animated-bg__orb {
-      position: absolute; border-radius: 50%; filter: blur(100px); opacity: 0.08;
-      animation: orbFloat 20s ease-in-out infinite;
+    .animated-bg__gradient {
+      position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+      background:
+        radial-gradient(ellipse at 20% 50%, rgba(59,130,246,0.15) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 20%, rgba(139,92,246,0.12) 0%, transparent 50%),
+        radial-gradient(ellipse at 40% 80%, rgba(52,211,153,0.1) 0%, transparent 50%),
+        radial-gradient(ellipse at 70% 60%, rgba(236,72,153,0.08) 0%, transparent 50%),
+        radial-gradient(ellipse at 50% 30%, rgba(251,191,36,0.06) 0%, transparent 50%);
+      animation: meshDrift 30s ease-in-out infinite;
     }
-    .animated-bg__orb:nth-child(1) {
-      width: 500px; height: 500px; background: var(--accent);
-      top: -10%; left: -5%; animation-delay: 0s;
+    .animated-bg__gradient::after {
+      content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+      background:
+        radial-gradient(ellipse at 60% 40%, rgba(59,130,246,0.1) 0%, transparent 40%),
+        radial-gradient(ellipse at 30% 70%, rgba(168,85,247,0.08) 0%, transparent 45%),
+        radial-gradient(ellipse at 80% 80%, rgba(52,211,153,0.1) 0%, transparent 40%);
+      animation: meshDrift2 25s ease-in-out infinite;
     }
-    .animated-bg__orb:nth-child(2) {
-      width: 400px; height: 400px; background: #8b5cf6;
-      top: 50%; right: -10%; animation-delay: -7s; animation-duration: 25s;
+    @keyframes meshDrift {
+      0%, 100% { transform: translate(0, 0) rotate(0deg) scale(1); }
+      20% { transform: translate(2%, -3%) rotate(5deg) scale(1.02); }
+      40% { transform: translate(-3%, 2%) rotate(-3deg) scale(0.98); }
+      60% { transform: translate(3%, 3%) rotate(4deg) scale(1.01); }
+      80% { transform: translate(-2%, -2%) rotate(-5deg) scale(0.99); }
     }
-    .animated-bg__orb:nth-child(3) {
-      width: 350px; height: 350px; background: var(--green);
-      bottom: -5%; left: 30%; animation-delay: -14s; animation-duration: 22s;
+    @keyframes meshDrift2 {
+      0%, 100% { transform: translate(0, 0) rotate(0deg); }
+      25% { transform: translate(-3%, 4%) rotate(-8deg); }
+      50% { transform: translate(4%, -2%) rotate(6deg); }
+      75% { transform: translate(-2%, -3%) rotate(-4deg); }
     }
-    @keyframes orbFloat {
-      0%, 100% { transform: translate(0, 0) scale(1); }
-      25% { transform: translate(30px, -40px) scale(1.1); }
-      50% { transform: translate(-20px, 20px) scale(0.95); }
-      75% { transform: translate(40px, 30px) scale(1.05); }
+
+    /* Noise texture overlay */
+    .animated-bg__noise {
+      position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+      opacity: 0.03;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      background-size: 128px 128px;
     }
+
+    [data-theme="light"] .animated-bg__gradient {
+      background:
+        radial-gradient(ellipse at 20% 50%, rgba(59,130,246,0.08) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 20%, rgba(139,92,246,0.06) 0%, transparent 50%),
+        radial-gradient(ellipse at 40% 80%, rgba(52,211,153,0.05) 0%, transparent 50%),
+        radial-gradient(ellipse at 70% 60%, rgba(236,72,153,0.04) 0%, transparent 50%),
+        radial-gradient(ellipse at 50% 30%, rgba(251,191,36,0.03) 0%, transparent 50%);
+    }
+    [data-theme="light"] .animated-bg__gradient::after {
+      background:
+        radial-gradient(ellipse at 60% 40%, rgba(59,130,246,0.05) 0%, transparent 40%),
+        radial-gradient(ellipse at 30% 70%, rgba(168,85,247,0.04) 0%, transparent 45%),
+        radial-gradient(ellipse at 80% 80%, rgba(52,211,153,0.05) 0%, transparent 40%);
+    }
+    [data-theme="light"] .animated-bg__noise { opacity: 0.015; }
 
     .app__main, .sidebar, .login-screen { position: relative; z-index: 1; }
 
@@ -563,9 +595,8 @@
 
   <!-- Animated Background -->
   <div class="animated-bg">
-    <div class="animated-bg__orb"></div>
-    <div class="animated-bg__orb"></div>
-    <div class="animated-bg__orb"></div>
+    <div class="animated-bg__gradient"></div>
+    <div class="animated-bg__noise"></div>
   </div>
 
   <!-- Dashboard -->
