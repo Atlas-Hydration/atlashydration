@@ -1455,6 +1455,7 @@ img {
    ======================================== */
 .product-hero {
   padding: 110px 0 60px;
+  background: #ffffff;
 }
 
 .product-hero__grid {
@@ -1786,7 +1787,7 @@ img {
 /* Supplement Facts Table */
 .supplement-facts {
   padding: 80px 0;
-  background: var(--color-bg-light);
+  background: #ffffff;
 }
 
 .supplement-facts__grid {
@@ -2794,6 +2795,7 @@ img {
    ======================================== */
 .benefits-bar {
   padding: 60px 0;
+  background: #f5f5f5;
   border-top: 1px solid var(--color-border);
   border-bottom: 1px solid var(--color-border);
 }
@@ -3646,7 +3648,21 @@ img {
    ======================================== */
 .product-faq {
   padding: 80px 0;
-  background: var(--color-bg-light);
+  background: #ffffff;
+}
+
+/* Product page reviews section */
+.product-reviews {
+  padding: 80px 0;
+  background: #f5f5f5;
+}
+
+/* Grapefruit page: natural-flavors shifts the alternation */
+.natural-flavors + .supplement-facts {
+  background: #f5f5f5;
+}
+.natural-flavors + .supplement-facts + .product-reviews {
+  background: #ffffff;
 }
 
 .product-faq__list {
@@ -5257,7 +5273,7 @@ img {
 /* No Artificial Flavors Section */
 .natural-flavors {
   padding: 80px 0;
-  background: linear-gradient(180deg, #fefefe 0%, #f8f4f0 100%);
+  background: #ffffff;
   overflow: hidden;
 }
 

@@ -348,26 +348,31 @@ document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
       '  vec2 uv=gl_FragCoord.xy/r;',
       '  vec2 p=uv*2.0-1.0;',
       '  p.x*=r.x/r.y;',
-      // Layered horizontal waves
-      '  float w1=sin(uv.x*4.0-t*0.4+sin(uv.y*3.0+t*0.3)*0.8)*0.5+0.5;',
-      '  float w2=sin(uv.x*2.5+t*0.3+sin(uv.y*2.0-t*0.25)*1.2)*0.5+0.5;',
-      '  float w3=sin(uv.y*3.0+t*0.35+sin(uv.x*1.5+t*0.2)*0.6)*0.5+0.5;',
-      '  float w4=sin((uv.x+uv.y)*3.0-t*0.5)*0.5+0.5;',
-      '  float w5=sin(uv.x*6.0-t*0.6+uv.y*2.0)*0.5+0.5;',
-      '  float waves=w1*0.3+w2*0.25+w3*0.2+w4*0.15+w5*0.1;',
-      // Deep ocean color palette
-      '  vec3 deep=vec3(0.01,0.04,0.12);',
-      '  vec3 mid=vec3(0.04,0.12,0.28);',
-      '  vec3 light=vec3(0.08,0.22,0.42);',
-      '  vec3 crest=vec3(0.12,0.30,0.52);',
-      '  vec3 col=mix(deep,mid,waves);',
-      '  col=mix(col,light,smoothstep(0.4,0.7,waves));',
-      '  col=mix(col,crest,smoothstep(0.65,0.85,waves)*0.5);',
-      // Subtle caustic highlights
-      '  float c=sin(uv.x*8.0+t*0.7)*sin(uv.y*6.0-t*0.5)*0.04;',
-      '  col+=c*vec3(0.3,0.5,0.7);',
+      // Black base
+      '  vec3 col=vec3(0.02,0.02,0.03);',
+      // Horizontal ocean waves — multiple layers flowing left to right
+      '  float wave1=sin(uv.y*8.0+sin(uv.x*3.0-t*0.6)*1.5-t*0.3);',
+      '  float wave2=sin(uv.y*5.0+sin(uv.x*2.0+t*0.4)*2.0+t*0.25);',
+      '  float wave3=sin(uv.y*12.0+sin(uv.x*4.0-t*0.5)*1.0-t*0.4);',
+      '  float wave4=sin(uv.y*3.0+sin(uv.x*1.5+t*0.35)*2.5+t*0.2);',
+      // Sharp wave lines — hydration blue
+      '  vec3 blue=vec3(0.25,0.55,0.82);',
+      '  float line1=smoothstep(0.02,0.0,abs(wave1))*0.3;',
+      '  float line2=smoothstep(0.03,0.0,abs(wave2))*0.2;',
+      '  float line3=smoothstep(0.015,0.0,abs(wave3))*0.15;',
+      '  float line4=smoothstep(0.04,0.0,abs(wave4))*0.25;',
+      // Soft glow around wave lines
+      '  float glow1=smoothstep(0.3,0.0,abs(wave1))*0.06;',
+      '  float glow2=smoothstep(0.35,0.0,abs(wave2))*0.04;',
+      '  float glow3=smoothstep(0.25,0.0,abs(wave4))*0.05;',
+      '  float lines=line1+line2+line3+line4;',
+      '  float glows=glow1+glow2+glow3;',
+      '  col+=blue*(lines+glows);',
+      // Subtle white foam on wave crests
+      '  float foam=smoothstep(0.008,0.0,abs(wave1))*0.08+smoothstep(0.006,0.0,abs(wave2))*0.06;',
+      '  col+=vec3(foam);',
       // Gentle vignette
-      '  float v=1.0-length(p)*0.25;',
+      '  float v=1.0-length(p)*0.2;',
       '  col*=v;',
       '  gl_FragColor=vec4(col,1.0);',
       '}'
