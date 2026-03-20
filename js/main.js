@@ -424,8 +424,7 @@ document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
   closeBtn.addEventListener('click', closePopup);
   dismissBtn.addEventListener('click', closePopup);
   overlay.addEventListener('click', function(e) {
-    var inner = overlay.querySelector('.popup__inner');
-    if (inner && inner.contains(e.target)) return;
+    if (e.target === emailInput || e.target === emailSubmit) return;
     closePopup();
   });
 
