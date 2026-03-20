@@ -5782,18 +5782,111 @@ img {
    Sticky Buy Bar
    ======================================== */
 .sticky-buy {
+  --sticky-flavor: #e85d75;
   position: fixed;
   bottom: 0;
   left: 0;
   right: 0;
   z-index: 999;
-  background: rgba(29, 29, 31, 0.95);
-  backdrop-filter: saturate(180%) blur(20px);
-  -webkit-backdrop-filter: saturate(180%) blur(20px);
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  background: var(--sticky-flavor);
+  overflow: hidden;
   transform: translateY(100%);
   transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-  padding: 12px 0;
+  padding: 0 0 0 0;
+}
+
+.sticky-buy--strawberry { --sticky-flavor: #e85d75; }
+.sticky-buy--lemon-lime { --sticky-flavor: #5a9e2f; }
+.sticky-buy--grapefruit { --sticky-flavor: #e8922a; }
+
+/* Animated wave on top edge */
+.sticky-buy__wave {
+  position: absolute;
+  top: -18px;
+  left: 0;
+  width: 200%;
+  height: 24px;
+  pointer-events: none;
+  animation: stickyWaveSlide 6s linear infinite;
+}
+
+.sticky-buy__wave path {
+  fill: var(--sticky-flavor);
+}
+
+/* Second wave layer for depth */
+.sticky-buy__wave--back {
+  top: -12px;
+  opacity: 0.4;
+  animation: stickyWaveSlide 8s linear infinite reverse;
+}
+
+@keyframes stickyWaveSlide {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+/* Bubble particles */
+.sticky-buy__bubbles {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.sticky-buy__bubble {
+  position: absolute;
+  bottom: -6px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  animation: stickyBubbleRise 3s ease-in infinite;
+}
+
+.sticky-buy__bubble:nth-child(1) { left: 8%; animation-duration: 2.8s; animation-delay: 0s; width: 5px; height: 5px; }
+.sticky-buy__bubble:nth-child(2) { left: 22%; animation-duration: 3.4s; animation-delay: 0.8s; width: 4px; height: 4px; }
+.sticky-buy__bubble:nth-child(3) { left: 38%; animation-duration: 2.6s; animation-delay: 1.6s; width: 6px; height: 6px; }
+.sticky-buy__bubble:nth-child(4) { left: 55%; animation-duration: 3.1s; animation-delay: 0.4s; width: 3px; height: 3px; }
+.sticky-buy__bubble:nth-child(5) { left: 70%; animation-duration: 3.6s; animation-delay: 1.2s; width: 5px; height: 5px; }
+.sticky-buy__bubble:nth-child(6) { left: 85%; animation-duration: 2.9s; animation-delay: 2.0s; width: 4px; height: 4px; }
+.sticky-buy__bubble:nth-child(7) { left: 95%; animation-duration: 3.3s; animation-delay: 0.6s; width: 5px; height: 5px; }
+
+@keyframes stickyBubbleRise {
+  0% {
+    transform: translateY(0) scale(1);
+    opacity: 0.35;
+  }
+  60% {
+    opacity: 0.25;
+  }
+  100% {
+    transform: translateY(-55px) scale(0.4);
+    opacity: 0;
+  }
+}
+
+/* Shimmer light sweep */
+.sticky-buy::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(
+    105deg,
+    transparent 30%,
+    rgba(255, 255, 255, 0.12) 50%,
+    transparent 70%
+  );
+  animation: stickyShimmer 4s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes stickyShimmer {
+  0%, 100% { left: -100%; }
+  50% { left: 140%; }
 }
 
 .sticky-buy.visible {
@@ -5801,9 +5894,11 @@ img {
 }
 
 .sticky-buy__inner {
+  position: relative;
+  z-index: 2;
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0 24px;
+  padding: 14px 24px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -5818,20 +5913,22 @@ img {
 
 .sticky-buy__name {
   font-family: var(--font-sans);
-  font-weight: 600;
-  font-size: 0.9rem;
+  font-weight: 700;
+  font-size: 0.95rem;
   color: #ffffff;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
 }
 
 .sticky-buy__price {
   font-family: var(--font-sans);
   font-size: 0.85rem;
-  color: rgba(255, 255, 255, 0.6);
+  color: rgba(255, 255, 255, 0.85);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 }
 
 .sticky-buy__btn {
   background: #ffffff;
-  color: #1d1d1f;
+  color: var(--sticky-flavor);
   border: none;
   padding: 12px 32px;
   font-family: var(--font-sans);
@@ -5841,13 +5938,15 @@ img {
   text-transform: uppercase;
   border-radius: 8px;
   cursor: pointer;
-  transition: background 0.2s ease, transform 0.2s ease;
+  transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
   white-space: nowrap;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
 
 .sticky-buy__btn:hover {
-  background: #e8e8e8;
-  transform: scale(1.02);
+  background: #ffffff;
+  transform: scale(1.04);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
 }
 
 @media (max-width: 600px) {
