@@ -1185,3 +1185,47 @@ document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
   if (prevBtn) prevBtn.addEventListener('click', function() { goTo(current - 1); });
   if (nextBtn) nextBtn.addEventListener('click', function() { goTo(current + 1); });
 })();
+
+// Flavor splash screen transition
+(function() {
+  var splash = document.getElementById('flavorSplash');
+  var splashName = document.getElementById('flavorSplashName');
+  if (!splash) return;
+
+  var flavorColors = {
+    'strawberry-lemonade': '#e85d75',
+    'grapefruit': '#f5a623',
+    'lemon-lime': '#a3c853'
+  };
+
+  var flavorNames = {
+    'strawberry-lemonade': 'Strawberry Lemonade',
+    'grapefruit': 'Grapefruit',
+    'lemon-lime': 'Lemon Lime'
+  };
+
+  document.addEventListener('click', function(e) {
+    var link = e.target.closest('a[href*="products/"]');
+    if (!link) return;
+
+    var href = link.getAttribute('href');
+    var flavor = null;
+    Object.keys(flavorColors).forEach(function(key) {
+      if (href.indexOf(key) !== -1) flavor = key;
+    });
+    if (!flavor) return;
+
+    e.preventDefault();
+    splash.style.background = flavorColors[flavor];
+    splashName.textContent = flavorNames[flavor];
+    splash.classList.remove('fade-out');
+    splash.classList.add('active');
+
+    setTimeout(function() {
+      splash.classList.add('fade-out');
+      setTimeout(function() {
+        window.location.href = href;
+      }, 300);
+    }, 1000);
+  });
+})();

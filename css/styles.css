@@ -1335,18 +1335,22 @@ img {
   background-image: linear-gradient(
     180deg,
     #ffffff 0%,
-    #ffffff 40%,
-    rgba(150, 210, 255, 0.9) 40%,
-    rgba(100, 180, 240, 0.8) 100%
+    #ffffff 35%,
+    #e85d75 35%,
+    #f0899a 60%,
+    #e85d75 100%
   );
-  background-size: 100% 250%;
+  background-size: 100% 300%;
   background-position: 0% 0%;
-  animation: waveFill 3s ease-in-out infinite;
+  animation: waveFill 4s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite;
 }
 
 @keyframes waveFill {
-  0%, 100% { background-position: 0% 20%; }
-  50% { background-position: 0% 40%; }
+  0% { background-position: 0% 10%; }
+  25% { background-position: 0% 45%; }
+  50% { background-position: 0% 30%; }
+  75% { background-position: 0% 50%; }
+  100% { background-position: 0% 10%; }
 }
 
 .cta-section__text {
@@ -2878,7 +2882,7 @@ img {
   width: 100%;
   border-collapse: collapse;
   min-width: 600px;
-  background: var(--color-white);
+  background: transparent;
   border-radius: var(--radius);
   overflow: hidden;
 }
@@ -2898,7 +2902,7 @@ img {
 .compare__table thead th {
   padding: 20px 20px;
   vertical-align: bottom;
-  background: var(--color-white);
+  background: transparent;
 }
 
 .compare__brand-name {
@@ -2965,7 +2969,7 @@ img {
 .compare__value--atlas {
   color: var(--color-text);
   font-weight: 700;
-  background: rgba(0, 0, 0, 0.02);
+  background: transparent;
 }
 
 .compare__table tbody tr {
@@ -4889,4 +4893,43 @@ img {
   .ingredient-popup__card-top {
     flex-wrap: wrap;
   }
+}
+
+/* ========================================
+   Flavor Splash Screen
+   ======================================== */
+.flavor-splash {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.flavor-splash.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.flavor-splash.fade-out {
+  opacity: 0;
+}
+
+.flavor-splash__logo img {
+  filter: brightness(0) invert(1);
+}
+
+.flavor-splash__name {
+  font-family: var(--font-sans);
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: #ffffff;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
 }
