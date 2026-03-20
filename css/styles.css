@@ -82,8 +82,7 @@ img {
   letter-spacing: 0.08em;
   text-transform: uppercase;
   overflow: hidden;
-  position: sticky;
-  top: 0;
+  position: relative;
   z-index: 101;
 }
 
@@ -373,12 +372,7 @@ img {
 .hero {
   position: relative;
   overflow: hidden;
-}
-
-.hero {
-  position: relative;
-  overflow: hidden;
-  min-height: 100vh;
+  min-height: 85vh;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -4130,7 +4124,7 @@ img {
   }
 
   .hero {
-    min-height: 100svh;
+    min-height: 85svh;
     padding: 0;
   }
 
