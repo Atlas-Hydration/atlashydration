@@ -968,6 +968,82 @@ document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
       contentView.style.display = 'none';
     });
   });
+
+  // Mobile: tap ingredient row to open bottom sheet
+  var sheet = document.getElementById('ingredientSheet');
+  var sheetOverlay = document.getElementById('ingredientSheetOverlay');
+  if (sheet && sheetOverlay) {
+    var sheetName = document.getElementById('sheetName');
+    var sheetDose = document.getElementById('sheetDose');
+    var sheetDesc = document.getElementById('sheetDesc');
+    var sheetEffects = document.getElementById('sheetEffects');
+    var sheetTags = document.getElementById('sheetTags');
+
+    function openSheet(data) {
+      sheetName.textContent = data.name;
+      sheetDose.textContent = data.dose;
+      sheetDesc.textContent = data.desc;
+      sheetEffects.innerHTML = '';
+      data.effects.forEach(function(effect) {
+        var li = document.createElement('li');
+        li.textContent = effect;
+        sheetEffects.appendChild(li);
+      });
+      sheetTags.innerHTML = '';
+      if (data.goodFor) {
+        data.goodFor.forEach(function(tag) {
+          var span = document.createElement('span');
+          span.className = 'ingredient-sheet__tag';
+          span.textContent = tag;
+          sheetTags.appendChild(span);
+        });
+      }
+      sheet.classList.add('active');
+      sheetOverlay.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeSheet() {
+      sheet.classList.remove('active');
+      sheetOverlay.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    rows.forEach(function(row) {
+      row.addEventListener('click', function() {
+        if (window.innerWidth > 768) return;
+        var key = row.getAttribute('data-ingredient');
+        var data = ingredientData[key];
+        if (data) openSheet(data);
+      });
+    });
+
+    sheetOverlay.addEventListener('click', closeSheet);
+
+    // Swipe down to dismiss
+    var sheetStartY = 0, sheetDeltaY = 0, sheetDragging = false;
+    sheet.addEventListener('touchstart', function(e) {
+      sheetStartY = e.touches[0].clientY;
+      sheetDragging = true;
+      sheet.style.transition = 'none';
+    });
+    sheet.addEventListener('touchmove', function(e) {
+      if (!sheetDragging) return;
+      sheetDeltaY = e.touches[0].clientY - sheetStartY;
+      if (sheetDeltaY > 0) {
+        sheet.style.transform = 'translateY(' + sheetDeltaY + 'px)';
+      }
+    });
+    sheet.addEventListener('touchend', function() {
+      sheetDragging = false;
+      sheet.style.transition = '';
+      if (sheetDeltaY > 80) {
+        closeSheet();
+      }
+      sheet.style.transform = '';
+      sheetDeltaY = 0;
+    });
+  }
 })();
 
 // Global subtle water background animation
@@ -1166,6 +1242,53 @@ document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
   compareObs.observe(section);
 })();
 
+// Product page gallery — nav buttons & dots
+(function() {
+  var gallery = document.querySelector('.product-gallery');
+  if (!gallery) return;
+
+  var main = gallery.querySelector('.product-gallery__main');
+  var slides = gallery.querySelectorAll('.product-gallery__slide');
+  var dots = gallery.querySelectorAll('.product-gallery__dot');
+  var prevBtn = gallery.querySelector('.product-gallery__nav--prev');
+  var nextBtn = gallery.querySelector('.product-gallery__nav--next');
+  if (!slides.length || !dots.length) return;
+
+  var current = 0;
+
+  function goTo(index) {
+    current = Math.max(0, Math.min(index, slides.length - 1));
+    slides[current].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
+    dots.forEach(function(d) { d.classList.remove('active'); });
+    if (dots[current]) dots[current].classList.add('active');
+  }
+
+  if (prevBtn) prevBtn.addEventListener('click', function() { goTo(current - 1); });
+  if (nextBtn) nextBtn.addEventListener('click', function() { goTo(current + 1); });
+
+  dots.forEach(function(dot) {
+    dot.addEventListener('click', function() {
+      goTo(parseInt(this.getAttribute('data-index')));
+    });
+  });
+
+  // Sync dots on scroll
+  var scrollTimer;
+  main.addEventListener('scroll', function() {
+    clearTimeout(scrollTimer);
+    scrollTimer = setTimeout(function() {
+      var scrollLeft = main.scrollLeft;
+      var slideWidth = main.offsetWidth;
+      var idx = Math.round(scrollLeft / slideWidth);
+      if (idx !== current && idx >= 0 && idx < slides.length) {
+        current = idx;
+        dots.forEach(function(d) { d.classList.remove('active'); });
+        if (dots[current]) dots[current].classList.add('active');
+      }
+    }, 50);
+  });
+})();
+
 // Featured product gallery — horizontal swipe
 (function() {
   var gallery = document.querySelector('.fp-gallery');
@@ -1217,3 +1340,25 @@ document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
   });
 })();
 
+// Natural Flavors section — animate features on scroll
+(function() {
+  var features = document.querySelectorAll('.natural-flavors__feature');
+  if (!features.length) return;
+
+  var observer = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        var items = entry.target.querySelectorAll('.natural-flavors__feature');
+        items.forEach(function(item, i) {
+          setTimeout(function() {
+            item.classList.add('animated');
+          }, i * 150);
+        });
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.2 });
+
+  var section = document.querySelector('.natural-flavors__features');
+  if (section) observer.observe(section);
+})();

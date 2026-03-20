@@ -164,6 +164,20 @@
                 <img src="https://cdn.shopify.com/s/files/1/0595/8133/3578/files/4_b0347d0a-fc88-4c2b-b4a7-3946604c666e.jpg?v=1771507860" alt="Atlas Strawberry Lemonade active lifestyle" loading="lazy">
               </div>
             </div>
+            <button class="product-gallery__nav product-gallery__nav--prev" aria-label="Previous image">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+            </button>
+            <button class="product-gallery__nav product-gallery__nav--next" aria-label="Next image">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+            </button>
+            <div class="product-gallery__dots">
+              <span class="product-gallery__dot active" data-index="0"></span>
+              <span class="product-gallery__dot" data-index="1"></span>
+              <span class="product-gallery__dot" data-index="2"></span>
+              <span class="product-gallery__dot" data-index="3"></span>
+              <span class="product-gallery__dot" data-index="4"></span>
+              <span class="product-gallery__dot" data-index="5"></span>
+            </div>
           </div>
 
           <!-- Product Info -->
@@ -421,7 +435,7 @@
               <div class="sf-detail-panel__icon">
                 <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2C10 6 6 10 6 14a6 6 0 1012 0c0-4-4-8-6-12z"/></svg>
               </div>
-              <p class="sf-detail-panel__prompt">Hover over any ingredient to learn how it works in your body</p>
+              <p class="sf-detail-panel__prompt"><span class="desktop-only">Hover over</span><span class="mobile-only">Tap</span> any ingredient to learn how it works in your body</p>
             </div>
             <div class="sf-detail-panel__content" style="display:none;">
               <div class="sf-detail-panel__header">
@@ -551,5 +565,19 @@
   <script src="https://sdks.shopifycdn.com/buy-button/latest/buy-button-storefront.min.js" defer></script>
   <script src="../js/shopify.js" defer></script>
   <script src="../js/main.js" defer></script>
+
+  <!-- Mobile Ingredient Bottom Sheet -->
+  <div class="ingredient-sheet__overlay" id="ingredientSheetOverlay"></div>
+  <div class="ingredient-sheet" id="ingredientSheet">
+    <div class="ingredient-sheet__handle"><div class="ingredient-sheet__handle-bar"></div></div>
+    <div class="ingredient-sheet__name" id="sheetName"></div>
+    <div class="ingredient-sheet__dose" id="sheetDose"></div>
+    <div class="ingredient-sheet__desc" id="sheetDesc"></div>
+    <div class="ingredient-sheet__effects">
+      <h4>How it affects your body</h4>
+      <ul id="sheetEffects"></ul>
+    </div>
+    <div class="ingredient-sheet__tags" id="sheetTags"></div>
+  </div>
 </body>
 </html>
