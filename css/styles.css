@@ -340,7 +340,7 @@ img {
 .hero__split {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  min-height: 75vh;
+  min-height: 60vh;
 }
 
 .hero__left {
