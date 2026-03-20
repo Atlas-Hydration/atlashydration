@@ -369,6 +369,9 @@ document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
 
   closeBtn.addEventListener('click', closePopup);
   dismissBtn.addEventListener('click', closePopup);
+  overlay.addEventListener('click', function(e) {
+    if (e.target === overlay) closePopup();
+  });
 
   // Email submit
   if (emailSubmit) {
