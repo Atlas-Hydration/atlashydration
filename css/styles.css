@@ -3360,7 +3360,7 @@ img {
 .popup-overlay {
   position: fixed;
   inset: 0;
-  background: #0a1628;
+  background: #2a6fa8;
   z-index: 2000;
   display: flex;
   align-items: center;
@@ -3503,8 +3503,8 @@ img {
   font-size: 0.88rem;
   font-weight: 700;
   font-family: var(--font-sans);
-  background: #f5f5f5;
-  color: #0a1628;
+  background: #ffffff;
+  color: #1a5a8a;
   cursor: pointer;
   transition: all 0.25s;
   letter-spacing: 0.06em;
@@ -5903,6 +5903,16 @@ img {
   align-items: center;
   justify-content: space-between;
   gap: 16px;
+}
+
+.sticky-buy__thumb {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  object-fit: cover;
+  border: 2px solid rgba(255, 255, 255, 0.35);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  flex-shrink: 0;
 }
 
 .sticky-buy__info {

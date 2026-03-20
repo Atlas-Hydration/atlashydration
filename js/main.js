@@ -361,75 +361,67 @@ document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
       'uniform float t;',
       'uniform vec2 r;',
       '',
-      'float helix(vec2 uv, float cx, float amp, float freq, float speed, float phase){',
-      '  float y=uv.y*freq+t*speed;',
-      '  float strand1=cx+sin(y+phase)*amp;',
-      '  float strand2=cx+sin(y+phase+3.14159)*amp;',
-      '  float d1=abs(uv.x-strand1);',
-      '  float d2=abs(uv.x-strand2);',
-      '  float depth1=cos(y+phase)*0.5+0.5;',
-      '  float depth2=cos(y+phase+3.14159)*0.5+0.5;',
-      '  float w1=0.003+depth1*0.003;',
-      '  float w2=0.003+depth2*0.003;',
-      '  float s1=smoothstep(w1,0.0,d1)*(0.4+depth1*0.6);',
-      '  float s2=smoothstep(w2,0.0,d2)*(0.4+depth2*0.6);',
-      // Rungs connecting the two strands
-      '  float rungY=mod(y,0.8)-0.4;',
-      '  float rungSnap=smoothstep(0.04,0.0,abs(rungY));',
-      '  float minX=min(strand1,strand2);',
-      '  float maxX=max(strand1,strand2);',
-      '  float inRung=step(minX,uv.x)*step(uv.x,maxX);',
-      '  float rung=rungSnap*inRung*smoothstep(0.006,0.0,abs(rungY))*0.3;',
-      '  return s1+s2+rung;',
+      // Hash for pseudo-random bubbles
+      'float hash(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}',
+      '',
+      // Single bubble — returns rim highlight + specular
+      'float bubble(vec2 uv, vec2 center, float radius){',
+      '  float d=length(uv-center)/radius;',
+      '  if(d>1.0) return 0.0;',
+      '  float rim=smoothstep(0.85,0.95,d)*smoothstep(1.0,0.95,d)*0.8;',
+      '  float inner=smoothstep(0.6,0.0,d)*0.08;',
+      '  vec2 highlight=center+vec2(-0.3,0.3)*radius;',
+      '  float spec=smoothstep(0.25,0.0,length(uv-highlight)/radius)*0.6;',
+      '  return rim+inner+spec;',
       '}',
       '',
       'void main(){',
       '  vec2 uv=gl_FragCoord.xy/r;',
       '  vec2 p=uv*2.0-1.0;',
       '  p.x*=r.x/r.y;',
-      // Dark base
-      '  vec3 col=vec3(0.02,0.02,0.03);',
-      // Flowing water waves (background atmosphere)
-      '  float wave1=sin(uv.y*8.0+sin(uv.x*3.0-t*0.6)*1.5-t*0.3);',
-      '  float wave2=sin(uv.y*5.0+sin(uv.x*2.0+t*0.4)*2.0+t*0.25);',
-      '  float wave3=sin(uv.y*12.0+sin(uv.x*4.0-t*0.5)*1.0-t*0.4);',
-      '  float wave4=sin(uv.y*3.0+sin(uv.x*1.5+t*0.35)*2.5+t*0.2);',
-      '  vec3 blue=vec3(0.25,0.55,0.82);',
-      '  float line1=smoothstep(0.02,0.0,abs(wave1))*0.2;',
-      '  float line2=smoothstep(0.03,0.0,abs(wave2))*0.12;',
-      '  float line3=smoothstep(0.015,0.0,abs(wave3))*0.08;',
-      '  float line4=smoothstep(0.04,0.0,abs(wave4))*0.15;',
-      '  float glow1=smoothstep(0.3,0.0,abs(wave1))*0.03;',
-      '  float glow2=smoothstep(0.35,0.0,abs(wave2))*0.02;',
-      '  float glows=glow1+glow2;',
-      '  float waveLines=line1+line2+line3+line4;',
-      '  col+=blue*(waveLines+glows);',
       '',
-      // DNA helices
-      '  vec3 helixBlue=vec3(0.3,0.6,0.9);',
-      '  vec3 helixCyan=vec3(0.2,0.75,0.85);',
-      '  vec3 helixWhite=vec3(0.7,0.8,0.9);',
-      // Left helix
-      '  float h1=helix(uv,0.12,0.06,10.0,0.4,0.0);',
-      // Right helix
-      '  float h2=helix(uv,0.88,0.06,10.0,-0.35,2.0);',
-      // Smaller background helices for depth
-      '  float h3=helix(uv,0.25,0.03,14.0,0.3,1.0)*0.3;',
-      '  float h4=helix(uv,0.75,0.03,14.0,-0.25,3.5)*0.3;',
+      // Light aqua gradient base
+      '  vec3 topColor=vec3(0.42,0.75,0.92);',
+      '  vec3 botColor=vec3(0.22,0.50,0.78);',
+      '  vec3 col=mix(botColor,topColor,uv.y);',
       '',
-      '  col+=helixBlue*h1*0.7;',
-      '  col+=helixCyan*h2*0.7;',
-      '  col+=helixWhite*h3;',
-      '  col+=helixWhite*h4;',
+      // Soft caustic light patterns
+      '  float c1=sin(uv.x*12.0+t*0.5)*sin(uv.y*10.0-t*0.3);',
+      '  float c2=sin(uv.x*8.0-t*0.4+1.5)*sin(uv.y*14.0+t*0.35);',
+      '  float c3=sin(uv.x*15.0+t*0.3)*sin(uv.y*8.0-t*0.45+2.0);',
+      '  float caustic=(c1*c1+c2*c2+c3*c3)*0.12;',
+      '  col+=vec3(0.6,0.85,1.0)*caustic;',
       '',
-      // Glow around helices
-      '  float hglow1=smoothstep(0.15,0.0,abs(uv.x-0.12))*h1*0.1;',
-      '  float hglow2=smoothstep(0.15,0.0,abs(uv.x-0.88))*h2*0.1;',
-      '  col+=helixBlue*hglow1;',
-      '  col+=helixCyan*hglow2;',
+      // Gentle flowing waves
+      '  float wave1=sin(uv.y*6.0+sin(uv.x*3.0-t*0.5)*1.5-t*0.25);',
+      '  float wave2=sin(uv.y*4.0+sin(uv.x*2.0+t*0.3)*2.0+t*0.2);',
+      '  float line1=smoothstep(0.025,0.0,abs(wave1))*0.15;',
+      '  float line2=smoothstep(0.035,0.0,abs(wave2))*0.1;',
+      '  col+=vec3(0.7,0.9,1.0)*(line1+line2);',
       '',
-      // Gentle vignette
-      '  float v=1.0-length(p)*0.2;',
+      // Floating hydration bubbles — 20 layered bubbles
+      '  float bubbles=0.0;',
+      '  for(float i=0.0;i<20.0;i++){',
+      '    float id=i+1.0;',
+      '    float h1=hash(vec2(id,0.0));',
+      '    float h2=hash(vec2(0.0,id));',
+      '    float h3=hash(vec2(id,id));',
+      '    float speed=0.04+h3*0.06;',
+      '    float rad=0.015+h2*0.04;',
+      '    float cx=h1;',
+      '    float cy=mod(-0.1+t*speed+h2*6.28,1.4)-0.2;',
+      '    float wobble=sin(t*1.5+id*2.0)*0.02;',
+      '    vec2 bc=vec2(cx+wobble,cy);',
+      '    bubbles+=bubble(uv,bc,rad);',
+      '  }',
+      '  col+=vec3(0.85,0.95,1.0)*bubbles;',
+      '',
+      // Bright center glow for text readability
+      '  float centerGlow=smoothstep(0.7,0.0,length(p)*0.8)*0.15;',
+      '  col+=vec3(0.5,0.8,1.0)*centerGlow;',
+      '',
+      // Light vignette (darken edges slightly)
+      '  float v=1.0-length(p)*0.15;',
       '  col*=v;',
       '  gl_FragColor=vec4(col,1.0);',
       '}'
@@ -751,12 +743,58 @@ document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
   // Run on load
   updatePurchaseColors();
 
+  // Flavor data for sticky bar switching
+  var STICKY_FLAVORS = {
+    'strawberry': {
+      name: 'Strawberry Lemonade',
+      price: '$29.99',
+      product: 'strawberry-lemonade',
+      btnText: 'Hydrate Me',
+      cssClass: 'sticky-buy--strawberry',
+      thumb: 'https://cdn.shopify.com/s/files/1/0595/8133/3578/files/1_e4b7eae7-01d9-430c-9655-7949d910deb6.jpg?v=1771507844'
+    },
+    'grapefruit': {
+      name: 'Grapefruit',
+      price: '$29.99',
+      product: 'grapefruit',
+      btnText: 'Pre-Order',
+      cssClass: 'sticky-buy--grapefruit',
+      thumb: 'https://cdn.shopify.com/s/files/1/0595/8133/3578/files/1_1a252c57-dc62-4c7b-a6b1-0f9677ce6b6f.jpg?v=1769181320'
+    }
+  };
+
+  function updateStickyBar(flavor) {
+    var bar = document.getElementById('stickyBuy');
+    var data = STICKY_FLAVORS[flavor];
+    if (!bar || !data) return;
+
+    // Swap color class
+    bar.className = bar.className.replace(/sticky-buy--\S+/g, '');
+    bar.classList.add(data.cssClass);
+
+    // Update content
+    var nameEl = document.getElementById('stickyBuyName');
+    var priceEl = document.getElementById('stickyBuyPrice');
+    var thumbEl = document.getElementById('stickyBuyThumb');
+    var btnEl = document.getElementById('stickyBuyBtn');
+    if (nameEl) nameEl.textContent = data.name;
+    if (priceEl) priceEl.textContent = data.price;
+    if (thumbEl) { thumbEl.src = data.thumb; thumbEl.alt = data.name; }
+    if (btnEl) { btnEl.textContent = data.btnText; btnEl.setAttribute('data-product', data.product); }
+  }
+
   // Update when flavor circles are clicked (for SPA-style switching)
   document.querySelectorAll('.flavor-circle').forEach(function(circle) {
     circle.addEventListener('click', function() {
       document.querySelectorAll('.flavor-circle').forEach(function(c) { c.classList.remove('active'); });
       circle.classList.add('active');
       updatePurchaseColors();
+
+      // Update sticky bar on landing page
+      var flavor = null;
+      if (circle.classList.contains('flavor-circle--strawberry')) flavor = 'strawberry';
+      else if (circle.classList.contains('flavor-circle--grapefruit')) flavor = 'grapefruit';
+      if (flavor) updateStickyBar(flavor);
     });
   });
 })();
