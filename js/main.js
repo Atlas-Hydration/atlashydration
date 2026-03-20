@@ -523,8 +523,8 @@ document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
 // Flavor selector → purchase option border color matching
 (function() {
   var FLAVOR_COLORS = {
-    'strawberry': { color: 'rgba(232, 93, 117, 0.5)', shadow: 'rgba(232, 93, 117, 0.12)' },
-    'grapefruit': { color: 'rgba(245, 166, 35, 0.5)', shadow: 'rgba(245, 166, 35, 0.12)' }
+    'strawberry': { color: 'rgba(201, 80, 94, 0.45)', shadow: 'rgba(201, 80, 94, 0.1)' },
+    'grapefruit': { color: 'rgba(212, 146, 42, 0.45)', shadow: 'rgba(212, 146, 42, 0.1)' }
   };
 
   function updatePurchaseColors() {

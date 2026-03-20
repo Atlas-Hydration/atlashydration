@@ -2523,7 +2523,7 @@ img {
 /* ========================================
    Scroll Snap
    ======================================== */
-main {
+html {
   scroll-snap-type: y proximity;
 }
 
@@ -2534,6 +2534,11 @@ main {
 .testimonials,
 .founder,
 .cta-section,
+.cta-dark,
+.product-hero,
+.supplement-facts,
+.ingredients-grid,
+.product-faq,
 .footer {
   scroll-snap-align: start;
 }
@@ -2885,80 +2890,49 @@ main {
 .flavor-selector--circles .flavor-circle {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  padding: 12px 24px;
+  gap: 0;
+  padding: 8px 20px;
   border-radius: 999px;
   border: none;
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: all 0.25s ease;
   position: relative;
   text-decoration: none;
-  font-size: 0.82rem;
+  font-size: 0.72rem;
   font-weight: 600;
-  color: #fff;
-  background-size: 200% 200%;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  background: var(--color-bg-light);
   overflow: hidden;
-  letter-spacing: 0.01em;
 }
 
 .flavor-circle__dot {
   display: none;
 }
 
-.flavor-circle--strawberry {
-  background: linear-gradient(135deg, #e85d75, #f0a0b0, #d94f6a, #f4b8c4, #e85d75);
-  background-size: 300% 300%;
-  background-position: 0% 50%;
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1), background-position 0s;
-}
-
-.flavor-circle--strawberry:hover {
-  animation: liquidFlow 3s ease-in-out infinite;
-}
-
-.flavor-circle--grapefruit {
-  background: linear-gradient(135deg, #f5a623, #f7c948, #e8961e, #fad86b, #f5a623);
-  background-size: 300% 300%;
-  background-position: 0% 50%;
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1), background-position 0s;
-}
-
-.flavor-circle--grapefruit:hover {
-  animation: liquidFlow 3s ease-in-out infinite;
-}
-
-@keyframes liquidFlow {
-  0% { background-position: 0% 50%; }
-  25% { background-position: 100% 25%; }
-  50% { background-position: 100% 50%; }
-  75% { background-position: 0% 75%; }
-  100% { background-position: 0% 50%; }
-}
-
-.flavor-circle:hover {
-  transform: translateY(-2px) scale(1.04);
-  box-shadow: 0 6px 24px rgba(0,0,0,0.15);
-}
-
-.flavor-circle--strawberry:hover {
-  box-shadow: 0 6px 24px rgba(232, 93, 117, 0.35);
-}
-
-.flavor-circle--grapefruit:hover {
-  box-shadow: 0 6px 24px rgba(245, 166, 35, 0.35);
-}
-
-.flavor-circle.active {
-  box-shadow: 0 4px 20px rgba(0,0,0,0.2);
-  transform: scale(1.02);
-}
-
 .flavor-circle--strawberry.active {
-  box-shadow: 0 4px 20px rgba(232, 93, 117, 0.4);
+  color: #fff;
+  background: #c9505e;
 }
 
 .flavor-circle--grapefruit.active {
-  box-shadow: 0 4px 20px rgba(245, 166, 35, 0.4);
+  color: #fff;
+  background: #d4922a;
+}
+
+.flavor-circle:hover {
+  transform: translateY(-1px);
+}
+
+.flavor-circle--strawberry:hover {
+  color: #fff;
+  background: #c9505e;
+}
+
+.flavor-circle--grapefruit:hover {
+  color: #fff;
+  background: #d4922a;
 }
 
 .flavor-selector__label {
