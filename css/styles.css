@@ -1598,14 +1598,9 @@ img {
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 8px 0;
-  border-bottom: 1px solid var(--color-border);
+  padding: 6px 0;
   font-size: 0.75rem;
   color: var(--color-text);
-}
-
-.purchase-option__perk:last-child {
-  border-bottom: none;
 }
 
 .purchase-option__perk svg {
@@ -2105,11 +2100,11 @@ img {
 }
 
 .product-gallery__slide--strawberry {
-  background: linear-gradient(135deg, #fef2f4, #fce4e8, #fef2f4);
+  background: var(--color-bg-light);
 }
 
 .product-gallery__slide--lemon {
-  background: linear-gradient(135deg, #f5fce8, #eef9d6, #f5fce8);
+  background: var(--color-bg-light);
 }
 
 .product-gallery__slide--brand {
@@ -2865,44 +2860,66 @@ main {
    ======================================== */
 .flavor-selector--circles {
   display: flex;
-  gap: 12px;
+  gap: 10px;
   margin-bottom: 24px;
   align-items: center;
+  flex-wrap: wrap;
 }
 
 .flavor-selector--circles .flavor-circle {
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  border: 2px solid transparent;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  border-radius: 999px;
+  border: 1.5px solid var(--color-border);
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   position: relative;
   text-decoration: none;
-  display: block;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--color-text-muted);
+  background: var(--color-white);
+  overflow: hidden;
 }
 
-.flavor-circle--strawberry {
+.flavor-circle__dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.flavor-circle--strawberry .flavor-circle__dot {
   background: linear-gradient(135deg, #e85d75, #f0a0b0);
 }
 
-.flavor-circle--grapefruit {
+.flavor-circle--grapefruit .flavor-circle__dot {
   background: linear-gradient(135deg, #f5a623, #f7c948);
 }
 
 .flavor-circle:hover {
-  transform: scale(1.1);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+  border-color: var(--color-text-dim);
+}
+
+.flavor-circle:hover .flavor-circle__dot {
+  transform: scale(1.2);
 }
 
 .flavor-circle.active {
   border-color: var(--color-primary);
-  box-shadow: 0 0 0 2px var(--color-bg), 0 0 0 4px var(--color-primary);
+  background: rgba(44, 95, 138, 0.06);
+  color: var(--color-text);
+  font-weight: 600;
+  box-shadow: 0 2px 12px rgba(44, 95, 138, 0.12);
 }
 
 .flavor-selector__label {
-  font-size: 0.78rem;
-  color: var(--color-text-muted);
-  font-weight: 500;
+  display: none;
 }
 
 /* ========================================
@@ -2924,8 +2941,8 @@ main {
   position: relative;
   border-radius: var(--radius-lg);
   overflow: hidden;
-  background: linear-gradient(135deg, #fce4ec 0%, #f8bbd0 100%);
-  aspect-ratio: 1;
+  background: var(--color-bg-light);
+  aspect-ratio: 4 / 5;
   display: flex;
   align-items: center;
   justify-content: center;

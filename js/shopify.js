@@ -433,6 +433,11 @@ var AtlasShop = (function() {
     7862662103114: 'grapefruit'
   };
 
+  function preloadImage(src) {
+    var img = new Image();
+    img.src = src;
+  }
+
   function fetchProductImages() {
     fetch('https://' + CONFIG.domain + '/products.json')
       .then(function(res) { return res.json(); })
@@ -449,6 +454,12 @@ var AtlasShop = (function() {
             var imgSrc = images[0].src;
             VARIANTS[slug].image = imgSrc;
             VARIANTS[slug].allImages = images.map(function(img) { return img.src; });
+
+            // Preload all images into browser cache
+            for (var j = 0; j < images.length; j++) {
+              preloadImage(images[j].src);
+            }
+
             injectProductImage(slug, imgSrc, product.title);
           }
 
