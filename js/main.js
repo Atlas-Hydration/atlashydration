@@ -1155,3 +1155,22 @@ document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
   }, { threshold: 0.3 });
   compareObs.observe(section);
 })();
+
+// Featured product gallery dots
+(function() {
+  var gallery = document.querySelector('.fp-gallery');
+  if (!gallery) return;
+
+  var slides = gallery.querySelectorAll('.fp-gallery__slide');
+  var dots = gallery.querySelectorAll('.fp-gallery__dot');
+
+  dots.forEach(function(dot) {
+    dot.addEventListener('click', function() {
+      var index = parseInt(this.getAttribute('data-index'));
+      slides.forEach(function(s) { s.classList.remove('active'); });
+      dots.forEach(function(d) { d.classList.remove('active'); });
+      slides[index].classList.add('active');
+      dots[index].classList.add('active');
+    });
+  });
+})();
