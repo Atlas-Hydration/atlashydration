@@ -576,6 +576,37 @@ var AtlasShop = (function() {
       heroRight.style.backgroundSize = 'cover';
       heroRight.style.backgroundPosition = 'center';
     }
+
+    // Inject product art throughout the site
+    if (slug === 'strawberry-lemonade') {
+      // Dark CTA background art
+      var ctaArt = document.getElementById('ctaDarkArt');
+      if (ctaArt && !ctaArt.dataset.filled && allImages.length > 0) {
+        ctaArt.dataset.filled = 'true';
+        var ctaImg = allImages.length > 1 ? allImages[1] : imgSrc;
+        ctaArt.innerHTML = '<img src="' + ctaImg + '" alt="Atlas Hydration" style="width:100%;height:100%;object-fit:contain;opacity:0.12;filter:brightness(1.2);">';
+      }
+
+      // Founder section product image
+      var founderImg = document.getElementById('founderImage');
+      if (founderImg && !founderImg.dataset.filled) {
+        founderImg.dataset.filled = 'true';
+        var founderSrc = allImages.length > 2 ? allImages[2] : imgSrc;
+        founderImg.innerHTML = '<img src="' + founderSrc + '" alt="Atlas Hydration Product" style="width:100%;height:100%;object-fit:cover;border-radius:24px;">';
+      }
+
+      // Science section art
+      var scienceLeft = document.querySelector('.science__left');
+      if (scienceLeft && !scienceLeft.dataset.artFilled && allImages.length > 2) {
+        scienceLeft.dataset.artFilled = 'true';
+        var artDiv = document.createElement('div');
+        artDiv.className = 'science__product-art';
+        artDiv.innerHTML = '<img src="' + allImages[allImages.length > 3 ? 3 : 0] + '" alt="Atlas Product" style="width:180px;height:auto;opacity:0.08;position:absolute;bottom:-20px;right:-30px;transform:rotate(-15deg);pointer-events:none;">';
+        scienceLeft.style.position = 'relative';
+        scienceLeft.style.overflow = 'hidden';
+        scienceLeft.appendChild(artDiv);
+      }
+    }
   }
 
   function getVisualClass(slug) {

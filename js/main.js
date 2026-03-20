@@ -520,6 +520,133 @@ document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
   init();
 })();
 
+// Ingredient popup for science accordions
+(function() {
+  var INGREDIENT_DATA = {
+    electrolytes: {
+      title: 'Electrolytes',
+      dose: '1,300mg Total',
+      icon: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2C10 6 6 10 6 14a6 6 0 1012 0c0-4-4-8-6-12z"/></svg>',
+      items: [
+        { name: 'Sodium', form: 'as Sodium Citrate', dose: '600mg', icon: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M8 12h8M12 8v8"/></svg>', desc: 'Essential for fluid balance, nerve signaling, and preventing dehydration during exercise.' },
+        { name: 'Potassium', form: 'as Potassium Citrate', dose: '500mg', icon: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>', desc: 'Supports muscle contractions, heart rhythm, and helps regulate cellular fluid balance.' },
+        { name: 'Magnesium', form: 'as Magnesium Citrate', dose: '200mg', icon: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>', desc: 'Vital for muscle recovery, energy production, and reducing cramps and fatigue.' }
+      ]
+    },
+    vitamins: {
+      title: 'Vitamins',
+      dose: '116mg Total',
+      icon: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>',
+      items: [
+        { name: 'Vitamin C', form: 'Ascorbic Acid', dose: '90mg', icon: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l2 2"/></svg>', desc: 'Powerful antioxidant that supports immune function and aids muscle recovery.' },
+        { name: 'Vitamin B3', form: 'as Niacin', dose: '24mg', icon: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="4"/><path d="M8 12h8"/></svg>', desc: 'Converts food into energy and supports cardiovascular health.' },
+        { name: 'Vitamin B5', form: 'as Pantethine', dose: '12mg', icon: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4"/></svg>', desc: 'Supports adrenal function, stress response, and energy metabolism.' },
+        { name: 'Vitamin B6', form: 'as Pyridoxal-5-phosphate', dose: '2mg', icon: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>', desc: 'Aids neurotransmitter synthesis and energy metabolism from protein.' },
+        { name: 'Vitamin B12', form: 'as Methylcobalamin', dose: '8mcg', icon: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>', desc: 'Boosts natural energy levels, supports nerve function, and aids red blood cell formation.' }
+      ]
+    },
+    amino: {
+      title: 'Amino Acids',
+      dose: '1,200mg Total',
+      icon: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>',
+      items: [
+        { name: 'L-Glutamine', form: '', dose: '1,000mg', icon: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg>', desc: 'The most abundant amino acid in the body. Supports gut health, immune function, and muscle recovery after intense exercise.' },
+        { name: 'L-Taurine', form: '', dose: '200mg', icon: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>', desc: 'Supports cardiovascular function, exercise performance, and helps regulate hydration at the cellular level.' }
+      ]
+    }
+  };
+
+  var overlay = document.getElementById('ingredientPopupOverlay');
+  if (!overlay) return;
+
+  var closeBtn = document.getElementById('ingredientPopupClose');
+  var titleEl = document.getElementById('ingredientPopupTitle');
+  var doseEl = document.getElementById('ingredientPopupDose');
+  var badgeEl = document.getElementById('ingredientPopupBadge');
+  var gridEl = document.getElementById('ingredientPopupGrid');
+
+  // Bind science accordions on landing page
+  var accordions = document.querySelectorAll('.science__accordion[data-popup]');
+  accordions.forEach(function(acc) {
+    acc.addEventListener('click', function(e) {
+      e.preventDefault();
+      var key = acc.getAttribute('data-popup');
+      var data = INGREDIENT_DATA[key];
+      if (!data) return;
+      openIngredientPopup(data);
+    });
+  });
+
+  function openIngredientPopup(data) {
+    titleEl.textContent = data.title;
+    doseEl.textContent = data.dose;
+    badgeEl.innerHTML = data.icon;
+
+    var html = '';
+    for (var i = 0; i < data.items.length; i++) {
+      var item = data.items[i];
+      html += '<div class="ingredient-popup__card">' +
+        '<div class="ingredient-popup__card-icon">' + item.icon + '</div>' +
+        '<div class="ingredient-popup__card-content">' +
+          '<div class="ingredient-popup__card-top">' +
+            '<span class="ingredient-popup__card-name">' + item.name + '</span>' +
+            (item.form ? '<span class="ingredient-popup__card-form">' + item.form + '</span>' : '') +
+            '<span class="ingredient-popup__card-dose">' + item.dose + '</span>' +
+          '</div>' +
+          '<p class="ingredient-popup__card-desc">' + item.desc + '</p>' +
+        '</div>' +
+      '</div>';
+    }
+    gridEl.innerHTML = html;
+
+    overlay.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeIngredientPopup() {
+    overlay.classList.remove('active');
+    document.body.style.overflow = '';
+  }
+
+  closeBtn.addEventListener('click', closeIngredientPopup);
+  overlay.addEventListener('click', function(e) {
+    if (e.target === overlay) closeIngredientPopup();
+  });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && overlay.classList.contains('active')) closeIngredientPopup();
+  });
+})();
+
+// Supplement facts hover interaction (product pages)
+(function() {
+  var rows = document.querySelectorAll('.sf-row--hoverable');
+  var highlights = document.querySelectorAll('.sf-highlight');
+  var container = document.querySelector('.supplement-facts__highlights');
+  if (!rows.length || !highlights.length) return;
+
+  rows.forEach(function(row) {
+    row.addEventListener('mouseenter', function() {
+      var target = row.getAttribute('data-highlight');
+      if (!target) return;
+      if (container) container.classList.add('sf-has-hover');
+      highlights.forEach(function(h) {
+        if (h.getAttribute('data-highlight-target') === target) {
+          h.classList.add('sf-highlight--active');
+        } else {
+          h.classList.remove('sf-highlight--active');
+        }
+      });
+    });
+
+    row.addEventListener('mouseleave', function() {
+      if (container) container.classList.remove('sf-has-hover');
+      highlights.forEach(function(h) {
+        h.classList.remove('sf-highlight--active');
+      });
+    });
+  });
+})();
+
 // Global subtle water background animation
 (function() {
   var canvas = document.getElementById('globalWaterCanvas');

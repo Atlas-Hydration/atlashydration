@@ -147,6 +147,53 @@
       </div>
     </section>
 
+    <!-- Vitamin Strip -->
+    <div class="vitamin-strip" aria-label="Key nutrients">
+      <div class="vitamin-strip__track">
+        <span class="vitamin-strip__item">1,300mg Electrolytes</span>
+        <span class="vitamin-strip__divider">&bull;</span>
+        <span class="vitamin-strip__item">Vitamin C 90mg</span>
+        <span class="vitamin-strip__divider">&bull;</span>
+        <span class="vitamin-strip__item">Vitamin B3</span>
+        <span class="vitamin-strip__divider">&bull;</span>
+        <span class="vitamin-strip__item">Vitamin B5</span>
+        <span class="vitamin-strip__divider">&bull;</span>
+        <span class="vitamin-strip__item">Vitamin B6</span>
+        <span class="vitamin-strip__divider">&bull;</span>
+        <span class="vitamin-strip__item">Vitamin B12</span>
+        <span class="vitamin-strip__divider">&bull;</span>
+        <span class="vitamin-strip__item">L-Glutamine 1,000mg</span>
+        <span class="vitamin-strip__divider">&bull;</span>
+        <span class="vitamin-strip__item">L-Taurine 200mg</span>
+        <span class="vitamin-strip__divider">&bull;</span>
+        <span class="vitamin-strip__item">Zero Sugar</span>
+        <span class="vitamin-strip__divider">&bull;</span>
+        <span class="vitamin-strip__item">5 Calories</span>
+        <span class="vitamin-strip__divider">&bull;</span>
+        <!-- Duplicate for seamless loop -->
+        <span class="vitamin-strip__item">1,300mg Electrolytes</span>
+        <span class="vitamin-strip__divider">&bull;</span>
+        <span class="vitamin-strip__item">Vitamin C 90mg</span>
+        <span class="vitamin-strip__divider">&bull;</span>
+        <span class="vitamin-strip__item">Vitamin B3</span>
+        <span class="vitamin-strip__divider">&bull;</span>
+        <span class="vitamin-strip__item">Vitamin B5</span>
+        <span class="vitamin-strip__divider">&bull;</span>
+        <span class="vitamin-strip__item">Vitamin B6</span>
+        <span class="vitamin-strip__divider">&bull;</span>
+        <span class="vitamin-strip__item">Vitamin B12</span>
+        <span class="vitamin-strip__divider">&bull;</span>
+        <span class="vitamin-strip__item">L-Glutamine 1,000mg</span>
+        <span class="vitamin-strip__divider">&bull;</span>
+        <span class="vitamin-strip__item">L-Taurine 200mg</span>
+        <span class="vitamin-strip__divider">&bull;</span>
+        <span class="vitamin-strip__item">Zero Sugar</span>
+        <span class="vitamin-strip__divider">&bull;</span>
+        <span class="vitamin-strip__item">5 Calories</span>
+        <span class="vitamin-strip__divider">&bull;</span>
+      </div>
+    </div>
+
     <!-- Featured Product: Strawberry Lemonade -->
     <section class="featured-product" id="products" aria-label="Featured Product">
       <div class="container">
@@ -173,9 +220,65 @@
               <span class="featured-product__badge">Made in USA</span>
               <span class="featured-product__badge">5 Calories</span>
             </div>
-            <div class="featured-product__price">$29.99</div>
-            <p class="featured-product__price-sub">$1.87 / stick &bull; 16 pack</p>
-            <div style="display:flex;gap:12px;align-items:center;">
+            <!-- Flavor Selector -->
+            <div class="flavor-selector--circles">
+              <a href="products/strawberry-lemonade.html" class="flavor-circle flavor-circle--strawberry active" title="Strawberry Lemonade"></a>
+              <a href="products/grapefruit.html" class="flavor-circle flavor-circle--grapefruit" title="Grapefruit"></a>
+              <span class="flavor-selector__label">Strawberry Lemonade</span>
+            </div>
+
+            <!-- Purchase Options -->
+            <div class="purchase-options">
+              <label class="purchase-option purchase-option--subscribe active" data-option="subscribe">
+                <div class="purchase-option__header">
+                  <div class="purchase-option__radio">
+                    <input type="radio" name="fp-purchase-type" value="subscribe" checked>
+                    <span class="purchase-option__radio-custom"></span>
+                  </div>
+                  <span class="purchase-option__label">Subscribe &amp; Save</span>
+                  <div class="purchase-option__pricing">
+                    <span class="purchase-option__price">$23.99</span>
+                    <span class="purchase-option__per">$1.50 / Stick</span>
+                  </div>
+                </div>
+                <div class="purchase-option__details">
+                  <div class="purchase-option__perks">
+                    <div class="purchase-option__perk">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
+                      <span class="purchase-option__save-badge">Save 20%</span>
+                    </div>
+                    <div class="purchase-option__perk">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
+                      <strong>Free Shipping</strong>
+                    </div>
+                    <div class="purchase-option__perk">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
+                      <strong>Cancel Anytime</strong>
+                    </div>
+                  </div>
+                  <div class="frequency-selector">
+                    <button class="frequency-selector__btn active" data-frequency="2">2 Weeks</button>
+                    <button class="frequency-selector__btn" data-frequency="4">4 Weeks</button>
+                    <button class="frequency-selector__btn" data-frequency="6">6 Weeks</button>
+                  </div>
+                </div>
+              </label>
+              <label class="purchase-option purchase-option--onetime" data-option="onetime">
+                <div class="purchase-option__header">
+                  <div class="purchase-option__radio">
+                    <input type="radio" name="fp-purchase-type" value="onetime">
+                    <span class="purchase-option__radio-custom"></span>
+                  </div>
+                  <span class="purchase-option__label">One-time</span>
+                  <div class="purchase-option__pricing">
+                    <span class="purchase-option__price">$29.99</span>
+                    <span class="purchase-option__per">$1.87 / Stick</span>
+                  </div>
+                </div>
+              </label>
+            </div>
+
+            <div style="display:flex;gap:12px;align-items:center;margin-top:8px;">
               <button class="btn btn--primary btn--lg js-add-to-cart" data-product="strawberry-lemonade">Add to Cart</button>
               <a href="products/strawberry-lemonade.html" class="btn btn--outline btn--lg">View Details</a>
             </div>
@@ -208,7 +311,7 @@
           </div>
           <div class="science__right">
             <!-- Electrolytes accordion -->
-            <div class="science__accordion">
+            <div class="science__accordion" data-popup="electrolytes">
               <div class="science__accordion-header">
                 <div class="science__accordion-dose">1,300mg</div>
                 <span class="science__accordion-title">Electrolytes</span>
@@ -217,7 +320,7 @@
             </div>
 
             <!-- Vitamins accordion -->
-            <div class="science__accordion">
+            <div class="science__accordion" data-popup="vitamins">
               <div class="science__accordion-header">
                 <div class="science__accordion-dose">116mg</div>
                 <span class="science__accordion-title">Vitamins</span>
@@ -263,7 +366,7 @@
             </div>
 
             <!-- Amino Acids accordion -->
-            <div class="science__accordion">
+            <div class="science__accordion" data-popup="amino">
               <div class="science__accordion-header">
                 <div class="science__accordion-dose">1,200mg</div>
                 <span class="science__accordion-title">Amino Acids</span>
@@ -380,7 +483,7 @@
     <section class="founder" id="founder" aria-label="Founder's Story">
       <div class="container">
         <div class="founder__grid">
-          <div class="founder__image">
+          <div class="founder__image" id="founderImage">
             <div class="founder__image-placeholder">
               <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="1"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
             </div>
@@ -415,6 +518,18 @@
           <h2 class="cta-section__title">Every Sip Makes<br>a Difference</h2>
           <p class="cta-section__text">When you choose Atlas, you're not just fueling your body — you're helping provide clean water to communities in need around the world.</p>
           <a href="#products" class="btn btn--white btn--lg">Shop & Make a Difference</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Dark CTA — Buy Now -->
+    <section class="cta-dark" aria-label="Buy now">
+      <div class="cta-dark__product-art" id="ctaDarkArt"></div>
+      <div class="container">
+        <div class="cta-dark__inner">
+          <h2 class="cta-dark__title">Ready to Try<br>Strawberry Lemonade?</h2>
+          <p class="cta-dark__text">16 stick packs of clean, science-backed hydration. Zero sugar. Five calories. Full performance.</p>
+          <button class="cta-dark__btn js-add-to-cart" data-product="strawberry-lemonade">Add to Cart — $29.99</button>
         </div>
       </div>
     </section>
@@ -494,6 +609,23 @@
         <button class="popup__btn" id="popupEmailSubmit" style="display:none;">Get My 10% Off Code</button>
         <button class="popup__dismiss" id="popupDismiss">No thanks</button>
       </div>
+    </div>
+  </div>
+
+  <!-- Ingredient Popup (generated by JS) -->
+  <div class="ingredient-popup-overlay" id="ingredientPopupOverlay">
+    <div class="ingredient-popup">
+      <div class="ingredient-popup__header">
+        <div class="ingredient-popup__title-group">
+          <div class="ingredient-popup__icon-badge" id="ingredientPopupBadge"></div>
+          <div>
+            <div class="ingredient-popup__title" id="ingredientPopupTitle"></div>
+            <div class="ingredient-popup__dose" id="ingredientPopupDose"></div>
+          </div>
+        </div>
+        <button class="ingredient-popup__close" id="ingredientPopupClose" aria-label="Close">&times;</button>
+      </div>
+      <div class="ingredient-popup__grid" id="ingredientPopupGrid"></div>
     </div>
   </div>
 
