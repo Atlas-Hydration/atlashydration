@@ -626,10 +626,13 @@
 
   <!-- Flavor Splash Screen -->
   <div class="flavor-splash" id="flavorSplash">
-    <div class="flavor-splash__logo">
-      <img src="logo.svg" alt="Atlas Hydration" height="48">
+    <canvas class="flavor-splash__canvas" id="splashCanvas"></canvas>
+    <div class="flavor-splash__content">
+      <div class="flavor-splash__logo">
+        <img src="logo.svg" alt="Atlas" height="24">
+      </div>
+      <div class="flavor-splash__name" id="flavorSplashName"></div>
     </div>
-    <div class="flavor-splash__name" id="flavorSplashName"></div>
   </div>
 
   <!-- 10% Off Popup — Fullscreen with WebGL water -->

@@ -1189,46 +1189,164 @@ document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
   if (nextBtn) nextBtn.addEventListener('click', function() { goTo(current + 1); });
 })();
 
-// Flavor splash screen transition
+// Flavor splash screen transition with WebGL water
 (function() {
   var splash = document.getElementById('flavorSplash');
   var splashName = document.getElementById('flavorSplashName');
-  if (!splash) return;
+  var canvas = document.getElementById('splashCanvas');
+  if (!splash || !canvas) return;
 
-  var flavorColors = {
-    'strawberry-lemonade': '#e85d75',
-    'grapefruit': '#f5a623',
-    'lemon-lime': '#a3c853'
+  // Flavor configs: base RGB for the shader, display name
+  var flavors = {
+    'strawberry-lemonade': {
+      name: 'Strawberry Lemonade',
+      // pinks/reds
+      deep:  [0.35, 0.08, 0.14],
+      mid:   [0.72, 0.22, 0.32],
+      light: [0.91, 0.36, 0.46],
+      crest: [0.96, 0.55, 0.62]
+    },
+    'grapefruit': {
+      name: 'Grapefruit',
+      // warm orange/amber
+      deep:  [0.40, 0.18, 0.02],
+      mid:   [0.76, 0.42, 0.08],
+      light: [0.96, 0.65, 0.14],
+      crest: [1.00, 0.78, 0.35]
+    },
+    'lemon-lime': {
+      name: 'Lemon Lime',
+      // greens
+      deep:  [0.12, 0.28, 0.08],
+      mid:   [0.38, 0.58, 0.18],
+      light: [0.54, 0.76, 0.28],
+      crest: [0.70, 0.88, 0.42]
+    }
   };
 
-  var flavorNames = {
-    'strawberry-lemonade': 'Strawberry Lemonade',
-    'grapefruit': 'Grapefruit',
-    'lemon-lime': 'Lemon Lime'
-  };
+  var gl, program, tU, rU, c1U, c2U, c3U, c4U, startTime, animId;
+
+  function initGL(f) {
+    gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+    if (!gl) return;
+
+    var vs = 'attribute vec2 p;void main(){gl_Position=vec4(p,0,1);}';
+    var fs = [
+      'precision mediump float;',
+      'uniform float t;',
+      'uniform vec2 r;',
+      'uniform vec3 c1,c2,c3,c4;',
+      'void main(){',
+      '  vec2 uv=gl_FragCoord.xy/r;',
+      '  vec2 p=uv*2.0-1.0;',
+      '  p.x*=r.x/r.y;',
+      // Fluid organic waves - bendy and watery
+      '  float w1=sin(uv.x*3.0-t*0.8+sin(uv.y*4.0+t*0.5)*1.2)*0.5+0.5;',
+      '  float w2=sin(uv.y*2.5+t*0.6+cos(uv.x*3.5-t*0.4)*1.0)*0.5+0.5;',
+      '  float w3=sin((uv.x+uv.y)*2.0-t*0.7+sin(uv.x*2.0+t*0.3)*0.8)*0.5+0.5;',
+      '  float w4=sin(uv.x*5.0+uv.y*3.0-t*1.0)*0.5+0.5;',
+      '  float w5=sin(length(p)*3.0-t*0.9+sin(atan(p.y,p.x)*2.0+t*0.4)*0.6)*0.5+0.5;',
+      '  float waves=w1*0.28+w2*0.24+w3*0.22+w4*0.14+w5*0.12;',
+      // Mix flavor colors
+      '  vec3 col=mix(c1,c2,waves);',
+      '  col=mix(col,c3,smoothstep(0.35,0.65,waves));',
+      '  col=mix(col,c4,smoothstep(0.6,0.85,waves)*0.5);',
+      // Shimmering caustics
+      '  float ca=sin(uv.x*10.0+t*1.2)*sin(uv.y*8.0-t*0.8);',
+      '  float cb=sin(uv.x*7.0-t*0.9)*sin(uv.y*6.0+t*1.1);',
+      '  col+=((ca+cb)*0.02)*vec3(1.0,0.9,0.8);',
+      // Soft bright center
+      '  float spot=1.0-smoothstep(0.0,0.8,length(p*0.7));',
+      '  col=mix(col,c4,spot*0.15);',
+      // Gentle vignette
+      '  col*=1.0-length(p)*0.18;',
+      '  gl_FragColor=vec4(col,1.0);',
+      '}'
+    ].join('\n');
+
+    function sh(type, src) {
+      var s = gl.createShader(type);
+      gl.shaderSource(s, src);
+      gl.compileShader(s);
+      return s;
+    }
+    program = gl.createProgram();
+    gl.attachShader(program, sh(gl.VERTEX_SHADER, vs));
+    gl.attachShader(program, sh(gl.FRAGMENT_SHADER, fs));
+    gl.linkProgram(program);
+    gl.useProgram(program);
+
+    var buf = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1,1,-1,-1,1,1,1]), gl.STATIC_DRAW);
+    var pos = gl.getAttribLocation(program, 'p');
+    gl.enableVertexAttribArray(pos);
+    gl.vertexAttribPointer(pos, 2, gl.FLOAT, false, 0, 0);
+
+    tU = gl.getUniformLocation(program, 't');
+    rU = gl.getUniformLocation(program, 'r');
+    c1U = gl.getUniformLocation(program, 'c1');
+    c2U = gl.getUniformLocation(program, 'c2');
+    c3U = gl.getUniformLocation(program, 'c3');
+    c4U = gl.getUniformLocation(program, 'c4');
+
+    gl.uniform3fv(c1U, f.deep);
+    gl.uniform3fv(c2U, f.mid);
+    gl.uniform3fv(c3U, f.light);
+    gl.uniform3fv(c4U, f.crest);
+
+    startTime = Date.now();
+  }
+
+  function resize() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    if (gl) gl.viewport(0, 0, canvas.width, canvas.height);
+  }
+
+  function render() {
+    if (!gl) return;
+    gl.uniform1f(tU, (Date.now() - startTime) / 1000);
+    gl.uniform2f(rU, canvas.width, canvas.height);
+    gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+    animId = requestAnimationFrame(render);
+  }
 
   document.addEventListener('click', function(e) {
     var link = e.target.closest('a[href*="products/"]');
     if (!link) return;
 
     var href = link.getAttribute('href');
-    var flavor = null;
-    Object.keys(flavorColors).forEach(function(key) {
-      if (href.indexOf(key) !== -1) flavor = key;
+    var flavorKey = null;
+    Object.keys(flavors).forEach(function(key) {
+      if (href.indexOf(key) !== -1) flavorKey = key;
     });
-    if (!flavor) return;
+    if (!flavorKey) return;
 
     e.preventDefault();
-    splash.style.background = flavorColors[flavor];
-    splashName.textContent = flavorNames[flavor];
-    splash.classList.remove('fade-out');
-    splash.classList.add('active');
+    var f = flavors[flavorKey];
+    splashName.textContent = f.name;
 
+    // Init WebGL with flavor colors
+    initGL(f);
+    resize();
+    window.addEventListener('resize', resize);
+    render();
+
+    // Animate in
+    splash.classList.remove('exiting');
+    splash.classList.add('entering');
+
+    // Hold, then animate out and navigate
     setTimeout(function() {
-      splash.classList.add('fade-out');
+      splash.classList.add('exiting');
+      splash.classList.remove('entering');
       setTimeout(function() {
+        if (animId) cancelAnimationFrame(animId);
+        window.removeEventListener('resize', resize);
+        splash.classList.remove('exiting');
         window.location.href = href;
-      }, 300);
-    }, 1000);
+      }, 500);
+    }, 1200);
   });
 })();
