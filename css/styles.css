@@ -153,6 +153,10 @@ img {
   align-items: center;
   gap: 8px;
 }
+.header__logo-img {
+  height: 28px;
+  width: auto;
+}
 
 .logo-icon {
   color: #ffffff;
@@ -1195,6 +1199,10 @@ img {
 
 .footer .logo-text--footer {
   color: #ffffff;
+}
+.footer__logo-img {
+  height: 24px;
+  width: auto;
 }
 
 .footer__bottom {
