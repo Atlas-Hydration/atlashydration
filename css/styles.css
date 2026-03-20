@@ -3699,6 +3699,43 @@ img {
   padding: 48px 40px;
   border: 1px solid var(--color-border);
   border-radius: 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.founder__illustrations {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.founder__illus {
+  position: absolute;
+}
+
+.founder__illus--plane {
+  top: 20px;
+  right: 20px;
+  transform: rotate(-15deg);
+}
+
+.founder__illus--compass {
+  bottom: 60px;
+  right: 40px;
+}
+
+.founder__illus--wings {
+  bottom: 20px;
+  left: 20px;
+}
+
+.founder__content .section-eyebrow,
+.founder__content .section-title,
+.founder__text,
+.founder__signature {
+  position: relative;
+  z-index: 1;
 }
 
 .founder__content .section-eyebrow {
