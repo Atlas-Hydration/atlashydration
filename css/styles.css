@@ -1184,10 +1184,14 @@ img {
    Footer
    ======================================== */
 .footer {
+  min-height: 90vh;
   padding: 80px 0 40px;
   background: var(--color-primary);
   color: #ffffff;
   border-top: none;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .footer__grid {
