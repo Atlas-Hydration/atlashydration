@@ -263,7 +263,7 @@ document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
   });
 })();
 
-// 10% Off Popup — choice-based flow
+// 10% Off Popup — email signup with WebGL water background
 (function() {
   var overlay = document.getElementById('popupOverlay');
   if (!overlay) return;
@@ -271,37 +271,104 @@ document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
   var dismissBtn = document.getElementById('popupDismiss');
   var emailInput = document.getElementById('popupEmail');
   var emailSubmit = document.getElementById('popupEmailSubmit');
-  var choices = overlay.querySelectorAll('.popup__choice');
+  var canvas = document.getElementById('popupCanvas');
 
   if (sessionStorage.getItem('atlas_popup_dismissed')) return;
+
+  // --- WebGL fluid water shader ---
+  var gl, program, timeUniform, resUniform, startTime, animId;
+  function initWaterGL() {
+    if (!canvas) return;
+    gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+    if (!gl) return;
+
+    var vs = 'attribute vec2 p;void main(){gl_Position=vec4(p,0,1);}';
+    var fs = [
+      'precision mediump float;',
+      'uniform float t;',
+      'uniform vec2 r;',
+      'void main(){',
+      '  vec2 uv=(gl_FragCoord.xy/r)*2.0-1.0;',
+      '  uv.x*=r.x/r.y;',
+      '  float d=length(uv);',
+      '  float w=0.0;',
+      '  for(float i=1.0;i<6.0;i++){',
+      '    float s=i*1.2;',
+      '    w+=sin(uv.x*s+t*0.8+i*0.7)*0.12/i;',
+      '    w+=sin(uv.y*s*1.3-t*0.6+i*1.1)*0.10/i;',
+      '    w+=sin((uv.x+uv.y)*s*0.7+t*0.5)*0.08/i;',
+      '  }',
+      '  vec3 deep=vec3(0.035,0.07,0.14);',
+      '  vec3 mid=vec3(0.06,0.14,0.28);',
+      '  vec3 lite=vec3(0.12,0.25,0.42);',
+      '  vec3 col=mix(deep,mid,w+0.5);',
+      '  col=mix(col,lite,smoothstep(0.3,0.8,w+0.5)*0.5);',
+      '  float caustic=sin(uv.x*8.0+t)*sin(uv.y*6.0-t*0.7)*0.04;',
+      '  col+=caustic;',
+      '  col*=1.0-d*0.25;',
+      '  gl_FragColor=vec4(col,1);',
+      '}'
+    ].join('\n');
+
+    function sh(type, src) {
+      var s = gl.createShader(type);
+      gl.shaderSource(s, src);
+      gl.compileShader(s);
+      return s;
+    }
+    program = gl.createProgram();
+    gl.attachShader(program, sh(gl.VERTEX_SHADER, vs));
+    gl.attachShader(program, sh(gl.FRAGMENT_SHADER, fs));
+    gl.linkProgram(program);
+    gl.useProgram(program);
+
+    var buf = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1,1,-1,-1,1,1,1]), gl.STATIC_DRAW);
+    var pos = gl.getAttribLocation(program, 'p');
+    gl.enableVertexAttribArray(pos);
+    gl.vertexAttribPointer(pos, 2, gl.FLOAT, false, 0, 0);
+
+    timeUniform = gl.getUniformLocation(program, 't');
+    resUniform = gl.getUniformLocation(program, 'r');
+    startTime = Date.now();
+  }
+
+  function resizeCanvas() {
+    if (!canvas) return;
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    if (gl) gl.viewport(0, 0, canvas.width, canvas.height);
+  }
+
+  function renderWater() {
+    if (!gl) return;
+    var elapsed = (Date.now() - startTime) / 1000;
+    gl.uniform1f(timeUniform, elapsed);
+    gl.uniform2f(resUniform, canvas.width, canvas.height);
+    gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+    animId = requestAnimationFrame(renderWater);
+  }
 
   setTimeout(function() {
     overlay.classList.add('active');
     document.body.style.overflow = 'hidden';
+    initWaterGL();
+    resizeCanvas();
+    renderWater();
+    window.addEventListener('resize', resizeCanvas);
   }, 3000);
 
   function closePopup() {
     overlay.classList.remove('active');
     document.body.style.overflow = '';
     sessionStorage.setItem('atlas_popup_dismissed', '1');
+    if (animId) cancelAnimationFrame(animId);
+    window.removeEventListener('resize', resizeCanvas);
   }
 
   closeBtn.addEventListener('click', closePopup);
   dismissBtn.addEventListener('click', closePopup);
-  overlay.addEventListener('click', function(e) {
-    if (e.target === overlay) closePopup();
-  });
-
-  // When a choice is clicked, show email input
-  choices.forEach(function(btn) {
-    btn.addEventListener('click', function() {
-      var choicesContainer = overlay.querySelector('.popup__choices');
-      if (choicesContainer) choicesContainer.style.display = 'none';
-      emailInput.style.display = 'block';
-      emailSubmit.style.display = 'block';
-      emailInput.focus();
-    });
-  });
 
   // Email submit
   if (emailSubmit) {
@@ -310,12 +377,16 @@ document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
       if (email && email.indexOf('@') > -1) {
         emailSubmit.textContent = 'Code: ATLAS10';
         emailSubmit.style.background = '#22c55e';
+        emailSubmit.style.color = '#fff';
         setTimeout(closePopup, 2500);
       } else {
-        emailInput.style.outline = '2px solid #ef4444';
+        emailInput.style.borderColor = '#ef4444';
         emailInput.focus();
-        setTimeout(function() { emailInput.style.outline = ''; }, 1500);
+        setTimeout(function() { emailInput.style.borderColor = ''; }, 1500);
       }
+    });
+    emailInput.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') emailSubmit.click();
     });
   }
 })();
@@ -523,8 +594,8 @@ document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
 // Flavor selector → purchase option border color matching
 (function() {
   var FLAVOR_COLORS = {
-    'strawberry': { color: 'rgba(201, 80, 94, 0.45)', shadow: 'rgba(201, 80, 94, 0.1)' },
-    'grapefruit': { color: 'rgba(212, 146, 42, 0.45)', shadow: 'rgba(212, 146, 42, 0.1)' }
+    'strawberry': { color: 'rgba(232, 93, 117, 0.5)', shadow: 'rgba(232, 93, 117, 0.12)' },
+    'grapefruit': { color: 'rgba(245, 166, 35, 0.5)', shadow: 'rgba(245, 166, 35, 0.12)' }
   };
 
   function updatePurchaseColors() {

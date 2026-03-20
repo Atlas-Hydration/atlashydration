@@ -95,56 +95,51 @@
   </header>
 
   <main>
-    <!-- Hero Section -->
+    <!-- Hero Section — Full-width video background -->
     <section class="hero" aria-label="Hero">
-      <div class="hero__split">
-        <div class="hero__left">
-          <div class="hero__left-bg"></div>
-          <canvas id="heroCanvas" class="hero__canvas" aria-hidden="true"></canvas>
-          <div class="hero__content">
-            <div class="hero__reviews">
-              <span class="hero__stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
-              <span class="hero__review-count">13 Reviews</span>
+      <div class="hero__video-wrap">
+        <iframe class="hero__video-yt" src="https://www.youtube.com/embed/xbk0gcVGFOk?autoplay=1&mute=1&loop=1&playlist=xbk0gcVGFOk&controls=0&showinfo=0&rel=0&modestbranding=1&playsinline=1&start=2&enablejsapi=1&origin=https://rwb8771.github.io" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+        <div class="hero__video-overlay"></div>
+      </div>
+      <div class="hero__content">
+        <div class="hero__reviews">
+          <span class="hero__stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
+          <span class="hero__review-count">13 Reviews</span>
+        </div>
+        <h1 class="hero__title">All hydration.<br>No sugar.</h1>
+        <div class="hero__benefits">
+          <div class="hero__benefit">
+            <div class="hero__benefit-icon">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2C10 6 6 10 6 14a6 6 0 1012 0c0-4-4-8-6-12z"/></svg>
             </div>
-            <h1 class="hero__title">All hydration.<br>No sugar.</h1>
-            <div class="hero__benefits">
-              <div class="hero__benefit">
-                <div class="hero__benefit-icon">
-                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2C10 6 6 10 6 14a6 6 0 1012 0c0-4-4-8-6-12z"/></svg>
-                </div>
-                <span>Hydration</span>
-              </div>
-              <div class="hero__benefit">
-                <div class="hero__benefit-icon">
-                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
-                </div>
-                <span>Recovery</span>
-              </div>
-              <div class="hero__benefit">
-                <div class="hero__benefit-icon">
-                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
-                </div>
-                <span>Performance</span>
-              </div>
-              <div class="hero__benefit">
-                <div class="hero__benefit-icon">
-                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-                </div>
-                <span>Immunity</span>
-              </div>
-              <div class="hero__benefit">
-                <div class="hero__benefit-icon">
-                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M4.93 4.93l14.14 14.14"/></svg>
-                </div>
-                <span>No Sugar</span>
-              </div>
+            <span>Hydration</span>
+          </div>
+          <div class="hero__benefit">
+            <div class="hero__benefit-icon">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
             </div>
-            <a href="#products" class="btn btn--hero">Hydrate</a>
+            <span>Recovery</span>
+          </div>
+          <div class="hero__benefit">
+            <div class="hero__benefit-icon">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+            </div>
+            <span>Performance</span>
+          </div>
+          <div class="hero__benefit">
+            <div class="hero__benefit-icon">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            </div>
+            <span>Immunity</span>
+          </div>
+          <div class="hero__benefit">
+            <div class="hero__benefit-icon">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M4.93 4.93l14.14 14.14"/></svg>
+            </div>
+            <span>No Sugar</span>
           </div>
         </div>
-        <div class="hero__right">
-          <div class="hero__right-bg"></div>
-        </div>
+        <a href="#products" class="btn btn--hero">Hydrate</a>
       </div>
     </section>
 
@@ -155,13 +150,13 @@
         <span class="vitamin-strip__divider">&bull;</span>
         <span class="vitamin-strip__item">Vitamin C 90mg</span>
         <span class="vitamin-strip__divider">&bull;</span>
-        <span class="vitamin-strip__item">Vitamin B3</span>
+        <span class="vitamin-strip__item">Vitamin B3 24mg</span>
         <span class="vitamin-strip__divider">&bull;</span>
-        <span class="vitamin-strip__item">Vitamin B5</span>
+        <span class="vitamin-strip__item">Vitamin B5 12mg</span>
         <span class="vitamin-strip__divider">&bull;</span>
-        <span class="vitamin-strip__item">Vitamin B6</span>
+        <span class="vitamin-strip__item">Vitamin B6 2mg</span>
         <span class="vitamin-strip__divider">&bull;</span>
-        <span class="vitamin-strip__item">Vitamin B12</span>
+        <span class="vitamin-strip__item">Vitamin B12 8mcg</span>
         <span class="vitamin-strip__divider">&bull;</span>
         <span class="vitamin-strip__item">L-Glutamine 1,000mg</span>
         <span class="vitamin-strip__divider">&bull;</span>
@@ -176,13 +171,13 @@
         <span class="vitamin-strip__divider">&bull;</span>
         <span class="vitamin-strip__item">Vitamin C 90mg</span>
         <span class="vitamin-strip__divider">&bull;</span>
-        <span class="vitamin-strip__item">Vitamin B3</span>
+        <span class="vitamin-strip__item">Vitamin B3 24mg</span>
         <span class="vitamin-strip__divider">&bull;</span>
-        <span class="vitamin-strip__item">Vitamin B5</span>
+        <span class="vitamin-strip__item">Vitamin B5 12mg</span>
         <span class="vitamin-strip__divider">&bull;</span>
-        <span class="vitamin-strip__item">Vitamin B6</span>
+        <span class="vitamin-strip__item">Vitamin B6 2mg</span>
         <span class="vitamin-strip__divider">&bull;</span>
-        <span class="vitamin-strip__item">Vitamin B12</span>
+        <span class="vitamin-strip__item">Vitamin B12 8mcg</span>
         <span class="vitamin-strip__divider">&bull;</span>
         <span class="vitamin-strip__item">L-Glutamine 1,000mg</span>
         <span class="vitamin-strip__divider">&bull;</span>
@@ -278,9 +273,8 @@
               </label>
             </div>
 
-            <div style="display:flex;gap:12px;align-items:center;margin-top:8px;">
+            <div style="margin-top:8px;">
               <button class="btn btn--primary btn--lg js-add-to-cart" data-product="strawberry-lemonade">Add to Cart</button>
-              <a href="products/strawberry-lemonade.html" class="btn btn--outline btn--lg">View Details</a>
             </div>
           </div>
         </div>
@@ -507,10 +501,9 @@
 
     <!-- Newsletter / CTA -->
     <section class="cta-section" aria-label="Call to action">
-      <video class="cta-section__video" autoplay muted loop playsinline poster="">
-        <!-- Replace src with your video file, e.g. "videos/hero.mp4" -->
-        <source src="videos/cta-bg.mp4" type="video/mp4">
-      </video>
+      <div class="cta-section__video-wrap">
+        <iframe class="cta-section__video-yt" src="https://www.youtube.com/embed/8RaEv1SpMpc?autoplay=1&mute=1&loop=1&playlist=8RaEv1SpMpc&controls=0&showinfo=0&rel=0&modestbranding=1&playsinline=1&enablejsapi=1&origin=https://rwb8771.github.io" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+      </div>
       <div class="cta-section__overlay"></div>
       <div class="container">
         <div class="cta-section__inner">
@@ -524,6 +517,9 @@
 
     <!-- Dark CTA — Buy Now -->
     <section class="cta-dark" aria-label="Buy now">
+      <div class="cta-dark__video-wrap">
+        <iframe class="cta-dark__video-yt" src="https://www.youtube.com/embed/VYOGnsUqaRs?autoplay=1&mute=1&loop=1&playlist=VYOGnsUqaRs&controls=0&showinfo=0&rel=0&modestbranding=1&playsinline=1&start=5&enablejsapi=1&origin=https://rwb8771.github.io" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+      </div>
       <div class="cta-dark__product-art" id="ctaDarkArt"></div>
       <div class="container">
         <div class="cta-dark__inner">
@@ -588,25 +584,25 @@
     </div>
   </footer>
 
-  <!-- 10% Off Popup -->
+  <!-- 10% Off Popup — Fullscreen with WebGL water -->
   <div class="popup-overlay" id="popupOverlay">
+    <canvas class="popup__canvas" id="popupCanvas"></canvas>
+    <button class="popup__close" id="popupClose" aria-label="Close">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+    </button>
     <div class="popup">
-      <button class="popup__close" id="popupClose" aria-label="Close">&times;</button>
       <div class="popup__inner">
         <div class="popup__logo">
-          <img src="logo.svg" alt="Atlas" height="28">
+          <img src="logo.svg" alt="Atlas" height="36">
         </div>
-        <div class="popup__heading">You've Got</div>
-        <div class="popup__percent">10% OFF</div>
-        <div class="popup__subheading">What brings you here?</div>
-        <div class="popup__choices">
-          <button class="popup__choice" id="popupClaim" data-reason="training">I train hard and sweat a lot</button>
-          <button class="popup__choice" id="popupChoice2" data-reason="daily">I want cleaner hydration daily</button>
-          <button class="popup__choice" id="popupChoice3" data-reason="sugar">I'm done with sugary sports drinks</button>
-          <button class="popup__choice" id="popupChoice4" data-reason="travel">I travel and need better hydration</button>
+        <div class="popup__heading">Unlock</div>
+        <div class="popup__percent">10% Off</div>
+        <div class="popup__subheading">Join the hydration movement</div>
+        <div class="popup__form" id="popupForm">
+          <input type="email" class="popup__input" id="popupEmail" placeholder="Enter your email" autocomplete="email">
+          <button class="popup__btn" id="popupEmailSubmit">Get My Code</button>
         </div>
-        <input type="email" class="popup__input" id="popupEmail" placeholder="Enter your email for the code" style="display:none;">
-        <button class="popup__btn" id="popupEmailSubmit" style="display:none;">Get My 10% Off Code</button>
+        <p class="popup__fine">Zero spam. Unsubscribe anytime.</p>
         <button class="popup__dismiss" id="popupDismiss">No thanks</button>
       </div>
     </div>
