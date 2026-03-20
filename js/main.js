@@ -1207,13 +1207,10 @@ document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
     nuun:  { name: 'Nuun',        cls: 'compare__th-brand--nuun' }
   };
 
-  var CATS = {
-    electrolytes: {
-      label: 'Total Electrolytes',
-      unit: 'mg',
-      atlas: 1769,
-      lmnt: 1260, liv: 930, wb: 1540, drip: 1330, nuun: 900,
-      lowerBetter: false,
+  var CATS = [
+    {
+      key: 'electrolytes', label: 'Electrolytes', unit: 'mg', atlas: 1769,
+      lmnt: 1260, liv: 930, wb: 1540, drip: 1330, nuun: 900, lowerBetter: false,
       subs: {
         Sodium:    { atlas: 600, lmnt: 1000, liv: 500, wb: 950, drip: 330, nuun: 300 },
         Potassium: { atlas: 500, lmnt: 200,  liv: 380, wb: 390, drip: 400, nuun: 150 },
@@ -1221,12 +1218,9 @@ document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
         Chloride:  { atlas: 469, lmnt: 0,    liv: 0,   wb: 0,   drip: 600, nuun: 425 }
       }
     },
-    vitaminb: {
-      label: 'Vitamin B Complex',
-      unit: 'mg',
-      atlas: 38,
-      lmnt: 0, liv: 36, wb: 0, drip: 0, nuun: 0,
-      lowerBetter: false,
+    {
+      key: 'vitaminb', label: 'Vitamin B', unit: 'mg', atlas: 38,
+      lmnt: 0, liv: 36, wb: 0, drip: 0, nuun: 0, lowerBetter: false,
       subs: {
         'B3 (Niacin)': { atlas: 24, lmnt: 0, liv: 30, wb: 0, drip: 0, nuun: 0 },
         'B5':          { atlas: 5,  lmnt: 0, liv: 3,  wb: 0, drip: 0, nuun: 0 },
@@ -1234,72 +1228,35 @@ document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
         'B12 (mcg)':   { atlas: 8,  lmnt: 0, liv: 0,  wb: 0, drip: 0, nuun: 0 }
       }
     },
-    vitaminc: {
-      label: 'Vitamin C',
-      unit: 'mg',
-      atlas: 90,
-      lmnt: 0, liv: 62, wb: 0, drip: 0, nuun: 0,
-      lowerBetter: false
+    {
+      key: 'vitaminc', label: 'Vitamin C', unit: 'mg', atlas: 90,
+      lmnt: 0, liv: 62, wb: 0, drip: 0, nuun: 0, lowerBetter: false
     },
-    aminos: {
-      label: 'Amino Acids',
-      unit: 'mg',
-      atlas: 1200,
-      lmnt: 0, liv: 0, wb: 0, drip: 0, nuun: 0,
-      lowerBetter: false,
+    {
+      key: 'aminos', label: 'Amino Acids', unit: 'mg', atlas: 1200,
+      lmnt: 0, liv: 0, wb: 0, drip: 0, nuun: 0, lowerBetter: false,
       subs: {
         'L-Glutamine': { atlas: 1000, lmnt: 0, liv: 0, wb: 0, drip: 0, nuun: 0 },
         'L-Alanine':   { atlas: 200,  lmnt: 0, liv: 0, wb: 0, drip: 0, nuun: 0 }
       }
     },
-    sugar: {
-      label: 'Sugar',
-      unit: 'g',
-      atlas: 0,
-      lmnt: 0, liv: 11, wb: 0, drip: 6, nuun: 1,
-      lowerBetter: true
-    },
-    calories: {
-      label: 'Calories',
-      unit: '',
-      atlas: 5,
-      lmnt: 0, liv: 45, wb: 10, drip: 25, nuun: 10,
-      lowerBetter: true
-    },
-    sodium: {
-      label: 'Sodium',
-      unit: 'mg',
-      atlas: 600,
-      lmnt: 1000, liv: 500, wb: 950, drip: 330, nuun: 300,
-      lowerBetter: false
-    },
-    potassium: {
-      label: 'Potassium',
-      unit: 'mg',
-      atlas: 500,
-      lmnt: 200, liv: 380, wb: 390, drip: 400, nuun: 150,
-      lowerBetter: false
-    },
-    magnesium: {
-      label: 'Magnesium',
-      unit: 'mg',
-      atlas: 200,
-      lmnt: 60, liv: 50, wb: 200, drip: 0, nuun: 25,
-      lowerBetter: false
+    {
+      key: 'sugar', label: 'Sugar', unit: 'g', atlas: 0,
+      lmnt: 0, liv: 11, wb: 0, drip: 6, nuun: 1, lowerBetter: true
     }
-  };
+  ];
 
   // --- State ---
   var activeBrands = ['lmnt', 'liv', 'wb'];
-  var activeCats = ['electrolytes', 'vitaminb', 'vitaminc', 'aminos', 'sugar'];
 
   // --- Elements ---
   var thead = document.getElementById('compareHead');
   var tbody = document.getElementById('compareBody');
-  var breakdown = document.getElementById('compareBreakdown');
+  var modal = document.getElementById('compareModal');
   var breakdownClose = document.getElementById('breakdownClose');
+  var modalBackdrop = document.getElementById('modalBackdrop');
 
-  // --- Toggle buttons ---
+  // --- Brand toggles ---
   document.getElementById('brandToggles').addEventListener('click', function(e) {
     var btn = e.target.closest('.compare__toggle');
     if (!btn) return;
@@ -1311,211 +1268,155 @@ document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
     render();
   });
 
-  document.getElementById('catToggles').addEventListener('click', function(e) {
-    var btn = e.target.closest('.compare__toggle');
-    if (!btn) return;
-    btn.classList.toggle('active');
-    activeCats = [];
-    document.querySelectorAll('#catToggles .compare__toggle.active').forEach(function(b) {
-      activeCats.push(b.dataset.cat);
-    });
-    render();
-  });
-
   // --- Render table ---
   function render() {
-    // Head
     var headHTML = '<th></th><th class="compare__th-atlas"><img src="logo.svg" alt="Atlas" height="18"></th>';
     activeBrands.forEach(function(b) {
       headHTML += '<th><span class="compare__th-brand ' + BRANDS[b].cls + '">' + BRANDS[b].name + '</span></th>';
     });
     thead.innerHTML = headHTML;
 
-    // Body
     var bodyHTML = '';
-    activeCats.forEach(function(catKey) {
-      var cat = CATS[catKey];
-      bodyHTML += '<tr data-cat="' + catKey + '">';
+    CATS.forEach(function(cat) {
+      bodyHTML += '<tr data-cat="' + cat.key + '">';
       bodyHTML += '<td class="compare__label">' + cat.label + '</td>';
+      bodyHTML += '<td class="compare__value compare__value--atlas"><div class="compare__bar" style="--bar-width:100%"><strong>' + fmtVal(cat.atlas, cat.unit) + '</strong></div></td>';
 
-      // Atlas value
-      var atlasDisplay = formatVal(cat.atlas, cat.unit);
-      var atlasBarW = cat.lowerBetter ? 100 : 100;
-      bodyHTML += '<td class="compare__value compare__value--atlas"><div class="compare__bar" style="--bar-width:100%"><strong>' + atlasDisplay + '</strong></div></td>';
-
-      // Competitor values
       activeBrands.forEach(function(b) {
         var val = cat[b];
         if (val === 0 && !cat.lowerBetter) {
           bodyHTML += '<td class="compare__value"><span class="compare__zero">&#10005;</span></td>';
-        } else if (catKey === 'sugar' && val > 0) {
-          bodyHTML += '<td class="compare__value"><span class="compare__sugar-bad">' + formatVal(val, cat.unit) + '</span></td>';
+        } else if (cat.key === 'sugar' && val > 0) {
+          bodyHTML += '<td class="compare__value"><span class="compare__sugar-bad">' + fmtVal(val, cat.unit) + '</span></td>';
+        } else if (cat.key === 'sugar' && val === 0) {
+          bodyHTML += '<td class="compare__value"><div class="compare__check"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg> ' + fmtVal(val, cat.unit) + '</div></td>';
         } else {
-          var pct = cat.lowerBetter
-            ? (cat.atlas === 0 ? 100 : Math.min(100, (val / Math.max(cat.atlas, val, 1)) * 100))
-            : (cat.atlas === 0 ? 100 : Math.min(100, (val / cat.atlas) * 100));
-          var isWin = cat.lowerBetter ? val <= cat.atlas : val >= cat.atlas;
-          if (catKey === 'sugar' && val === 0) {
-            bodyHTML += '<td class="compare__value"><div class="compare__check"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg> ' + formatVal(val, cat.unit) + '</div></td>';
-          } else {
-            bodyHTML += '<td class="compare__value"><div class="compare__bar" style="--bar-width:' + Math.round(pct) + '%">' + formatVal(val, cat.unit) + '</div></td>';
-          }
+          var pct = cat.atlas === 0 ? 100 : Math.min(100, (val / cat.atlas) * 100);
+          bodyHTML += '<td class="compare__value"><div class="compare__bar" style="--bar-width:' + Math.round(pct) + '%">' + fmtVal(val, cat.unit) + '</div></td>';
         }
       });
       bodyHTML += '</tr>';
     });
     tbody.innerHTML = bodyHTML;
-
-    // Animate bars after a tick
-    requestAnimationFrame(function() {
-      section.classList.add('animated');
-    });
-
-    // Close breakdown on re-render
-    breakdown.style.display = 'none';
+    requestAnimationFrame(function() { section.classList.add('animated'); });
   }
 
-  function formatVal(val, unit) {
-    if (val >= 1000) return val.toLocaleString() + (unit ? ' ' + unit.toUpperCase() : '');
-    return val + (unit ? ' ' + unit.toUpperCase() : '');
+  function fmtVal(val, unit) {
+    return (val >= 1000 ? val.toLocaleString() : val) + (unit ? ' ' + unit.toUpperCase() : '');
   }
 
-  // --- Row click → breakdown ---
+  function getCat(key) {
+    for (var i = 0; i < CATS.length; i++) { if (CATS[i].key === key) return CATS[i]; }
+    return null;
+  }
+
+  // --- Row click → modal ---
   tbody.addEventListener('click', function(e) {
     var tr = e.target.closest('tr');
     if (!tr) return;
     var catKey = tr.dataset.cat;
     if (!catKey || activeBrands.length === 0) return;
 
-    // Find which brand column was clicked (if any), default to first
     var td = e.target.closest('td');
     var cellIndex = td ? Array.from(tr.children).indexOf(td) : -1;
-    var brandIndex = cellIndex - 2; // 0 = label, 1 = atlas, 2+ = brands
+    var brandIndex = cellIndex - 2;
     var rivalKey = (brandIndex >= 0 && brandIndex < activeBrands.length) ? activeBrands[brandIndex] : activeBrands[0];
 
-    showBreakdown(catKey, rivalKey);
+    openModal(catKey, rivalKey);
   });
 
-  breakdownClose.addEventListener('click', function() {
-    breakdown.style.display = 'none';
+  // Close modal
+  function closeModal() {
+    modal.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+  }
+  breakdownClose.addEventListener('click', closeModal);
+  modalBackdrop.addEventListener('click', closeModal);
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && modal.getAttribute('aria-hidden') === 'false') closeModal();
   });
 
-  function showBreakdown(catKey, rivalKey) {
-    var cat = CATS[catKey];
+  function openModal(catKey, rivalKey) {
+    var cat = getCat(catKey);
     var rival = BRANDS[rivalKey];
-    var atlasVal = cat.atlas;
-    var rivalVal = cat[rivalKey];
-    var maxVal = Math.max(atlasVal, rivalVal, 1);
+    var av = cat.atlas;
+    var rv = cat[rivalKey];
+    var maxVal = Math.max(av, rv, 1);
 
-    // Header
     document.getElementById('breakdownRival').textContent = rival.name;
     document.getElementById('breakdownCat').textContent = cat.label;
-
-    // Values
-    document.getElementById('breakdownAtlasVal').textContent = formatVal(atlasVal, cat.unit);
+    document.getElementById('breakdownAtlasVal').textContent = fmtVal(av, cat.unit);
     document.getElementById('breakdownRivalName').textContent = rival.name;
-    document.getElementById('breakdownRivalVal').textContent = formatVal(rivalVal, cat.unit);
+    document.getElementById('breakdownRivalVal').textContent = fmtVal(rv, cat.unit);
 
-    // Bars — animate
     var atlasBar = document.getElementById('breakdownAtlasBar');
     var rivalBar = document.getElementById('breakdownRivalBar');
     atlasBar.style.width = '0';
     rivalBar.style.width = '0';
 
-    breakdown.style.display = 'block';
-    breakdown.style.animation = 'none';
-    void breakdown.offsetHeight; // reflow
-    breakdown.style.animation = '';
+    // Show modal
+    modal.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
 
-    requestAnimationFrame(function() {
-      setTimeout(function() {
-        atlasBar.style.width = ((atlasVal / maxVal) * 100) + '%';
-        rivalBar.style.width = ((rivalVal / maxVal) * 100) + '%';
-      }, 50);
-    });
+    // Animate bars after transition starts
+    setTimeout(function() {
+      atlasBar.style.width = ((av / maxVal) * 100) + '%';
+      rivalBar.style.width = ((rv / maxVal) * 100) + '%';
+    }, 80);
 
     // Verdict
     var badge = document.getElementById('breakdownBadge');
     var detail = document.getElementById('breakdownDetail');
-    var atlasWins, isTie;
+    var atlasWins = cat.lowerBetter ? av < rv : av > rv;
+    var isTie = av === rv;
 
-    if (cat.lowerBetter) {
-      atlasWins = atlasVal < rivalVal;
-      isTie = atlasVal === rivalVal;
-    } else {
-      atlasWins = atlasVal > rivalVal;
-      isTie = atlasVal === rivalVal;
-    }
-
-    badge.className = 'compare__breakdown-badge';
+    badge.className = 'compare-modal__badge';
     if (isTie) {
       badge.textContent = 'Tie';
-      badge.classList.add('compare__breakdown-badge--tie');
-      detail.textContent = 'Both brands deliver ' + formatVal(atlasVal, cat.unit) + ' of ' + cat.label.toLowerCase() + '.';
+      badge.classList.add('compare-modal__badge--tie');
+      detail.textContent = 'Both deliver ' + fmtVal(av, cat.unit) + ' of ' + cat.label.toLowerCase() + '.';
     } else if (atlasWins) {
       badge.textContent = 'Atlas Wins';
-      badge.classList.add('compare__breakdown-badge--win');
+      badge.classList.add('compare-modal__badge--win');
       if (cat.lowerBetter) {
-        if (rivalVal === 0 && atlasVal === 0) {
-          detail.textContent = 'Both have zero ' + cat.label.toLowerCase() + '.';
-        } else {
-          detail.textContent = 'Atlas has ' + (rivalVal === 0 ? 'zero' : formatVal(atlasVal - rivalVal, cat.unit) + ' less') + ' ' + cat.label.toLowerCase() + ' than ' + rival.name + '.';
-        }
+        detail.textContent = 'Atlas has ' + (rv === 0 ? 'zero' : fmtVal(rv - av, cat.unit) + ' less') + ' ' + cat.label.toLowerCase() + ' than ' + rival.name + '.';
+      } else if (rv === 0) {
+        detail.textContent = rival.name + ' has no ' + cat.label.toLowerCase() + '. Atlas delivers ' + fmtVal(av, cat.unit) + '.';
       } else {
-        if (rivalVal === 0) {
-          detail.textContent = rival.name + ' has no ' + cat.label.toLowerCase() + '. Atlas delivers ' + formatVal(atlasVal, cat.unit) + '.';
-        } else {
-          var pctMore = Math.round(((atlasVal - rivalVal) / rivalVal) * 100);
-          detail.textContent = 'Atlas delivers ' + pctMore + '% more ' + cat.label.toLowerCase() + ' than ' + rival.name + ' (' + formatVal(atlasVal, cat.unit) + ' vs ' + formatVal(rivalVal, cat.unit) + ').';
-        }
+        var pct = Math.round(((av - rv) / rv) * 100);
+        detail.textContent = 'Atlas delivers ' + pct + '% more (' + fmtVal(av, cat.unit) + ' vs ' + fmtVal(rv, cat.unit) + ').';
       }
     } else {
-      badge.textContent = rival.name + ' Wins';
-      badge.classList.add('compare__breakdown-badge--lose');
+      badge.textContent = rival.name + ' Leads';
+      badge.classList.add('compare-modal__badge--lose');
       if (cat.lowerBetter) {
-        detail.textContent = rival.name + ' has ' + formatVal(rivalVal, cat.unit) + ' vs Atlas\u2019s ' + formatVal(atlasVal, cat.unit) + ' ' + cat.label.toLowerCase() + '.';
+        detail.textContent = rival.name + ' has ' + fmtVal(rv, cat.unit) + ' vs Atlas\u2019s ' + fmtVal(av, cat.unit) + '.';
       } else {
-        var pctMore = Math.round(((rivalVal - atlasVal) / atlasVal) * 100);
-        detail.textContent = rival.name + ' has ' + pctMore + '% more ' + cat.label.toLowerCase() + ' (' + formatVal(rivalVal, cat.unit) + ' vs ' + formatVal(atlasVal, cat.unit) + ').';
+        var pct = Math.round(((rv - av) / av) * 100);
+        detail.textContent = rival.name + ' has ' + pct + '% more (' + fmtVal(rv, cat.unit) + ' vs ' + fmtVal(av, cat.unit) + ').';
       }
     }
 
     // Sub-ingredients
     var subsEl = document.getElementById('breakdownSubs');
     if (cat.subs) {
-      var subsHTML = '<h4>Ingredient Breakdown</h4>';
-      var subKeys = Object.keys(cat.subs);
-      subKeys.forEach(function(sk) {
-        var av = cat.subs[sk].atlas;
-        var rv = cat.subs[sk][rivalKey];
-        var subMax = Math.max(av, rv, 1);
-        subsHTML += '<div class="compare__sub-row">';
-        subsHTML += '<span class="compare__sub-label">' + sk + '</span>';
-        subsHTML += '<div class="compare__sub-tracks">';
-        subsHTML += '<div class="compare__sub-track"><div class="compare__sub-fill compare__sub-fill--atlas" style="width:0" data-w="' + ((av / subMax) * 100) + '%"></div></div>';
-        subsHTML += '<div class="compare__sub-track"><div class="compare__sub-fill compare__sub-fill--rival" style="width:0" data-w="' + ((rv / subMax) * 100) + '%"></div></div>';
-        subsHTML += '</div>';
-        subsHTML += '<div class="compare__sub-vals">';
-        subsHTML += '<span class="compare__sub-val compare__sub-val--atlas">' + av + '</span>';
-        subsHTML += '<span class="compare__sub-val compare__sub-val--rival">' + rv + '</span>';
-        subsHTML += '</div>';
-        subsHTML += '</div>';
+      var html = '<h4>Ingredient Breakdown</h4>';
+      Object.keys(cat.subs).forEach(function(sk) {
+        var sa = cat.subs[sk].atlas;
+        var sr = cat.subs[sk][rivalKey];
+        var sm = Math.max(sa, sr, 1);
+        html += '<div class="compare__sub-row"><span class="compare__sub-label">' + sk + '</span><div class="compare__sub-tracks"><div class="compare__sub-track"><div class="compare__sub-fill compare__sub-fill--atlas" style="width:0" data-w="' + ((sa / sm) * 100) + '%"></div></div><div class="compare__sub-track"><div class="compare__sub-fill compare__sub-fill--rival" style="width:0" data-w="' + ((sr / sm) * 100) + '%"></div></div></div><div class="compare__sub-vals"><span class="compare__sub-val compare__sub-val--atlas">' + sa + '</span><span class="compare__sub-val compare__sub-val--rival">' + sr + '</span></div></div>';
       });
-      subsEl.innerHTML = subsHTML;
+      subsEl.innerHTML = html;
       subsEl.style.display = 'block';
-
-      // Animate sub bars
       setTimeout(function() {
         subsEl.querySelectorAll('.compare__sub-fill').forEach(function(bar) {
           bar.style.width = bar.dataset.w;
         });
-      }, 100);
+      }, 120);
     } else {
       subsEl.style.display = 'none';
     }
-
-    // Scroll to breakdown
-    breakdown.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   }
 
   // --- Water wave background ---

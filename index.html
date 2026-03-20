@@ -383,34 +383,17 @@
         <div class="section-header">
           <p class="section-eyebrow">Compare</p>
           <h2 class="section-title">How Atlas Compares</h2>
-          <p class="section-subtitle">Select brands and categories to see how Atlas stacks up. Click any row for a head-to-head breakdown.</p>
+          <p class="section-subtitle">Tap any row for a head-to-head breakdown.</p>
         </div>
 
-        <!-- Brand Selector -->
+        <!-- Brand Selector (single row) -->
         <div class="compare__controls">
-          <div class="compare__control-group">
-            <span class="compare__control-label">Compare against</span>
-            <div class="compare__brand-toggles" id="brandToggles">
-              <button class="compare__toggle active" data-brand="lmnt">LMNT</button>
-              <button class="compare__toggle active" data-brand="liv">Liquid I.V.</button>
-              <button class="compare__toggle active" data-brand="wb">WaterBoy</button>
-              <button class="compare__toggle" data-brand="drip">DripDrop</button>
-              <button class="compare__toggle" data-brand="nuun">Nuun</button>
-            </div>
-          </div>
-          <div class="compare__control-group">
-            <span class="compare__control-label">Categories</span>
-            <div class="compare__cat-toggles" id="catToggles">
-              <button class="compare__toggle compare__toggle--cat active" data-cat="electrolytes">Electrolytes</button>
-              <button class="compare__toggle compare__toggle--cat active" data-cat="vitaminb">Vitamin B</button>
-              <button class="compare__toggle compare__toggle--cat active" data-cat="vitaminc">Vitamin C</button>
-              <button class="compare__toggle compare__toggle--cat active" data-cat="aminos">Amino Acids</button>
-              <button class="compare__toggle compare__toggle--cat active" data-cat="sugar">Sugar</button>
-              <button class="compare__toggle compare__toggle--cat" data-cat="calories">Calories</button>
-              <button class="compare__toggle compare__toggle--cat" data-cat="sodium">Sodium</button>
-              <button class="compare__toggle compare__toggle--cat" data-cat="potassium">Potassium</button>
-              <button class="compare__toggle compare__toggle--cat" data-cat="magnesium">Magnesium</button>
-            </div>
+          <div class="compare__brand-toggles" id="brandToggles">
+            <button class="compare__toggle active" data-brand="lmnt">LMNT</button>
+            <button class="compare__toggle active" data-brand="liv">Liquid I.V.</button>
+            <button class="compare__toggle active" data-brand="wb">WaterBoy</button>
+            <button class="compare__toggle" data-brand="drip">DripDrop</button>
+            <button class="compare__toggle" data-brand="nuun">Nuun</button>
           </div>
         </div>
 
@@ -423,47 +406,49 @@
             <tbody id="compareBody"></tbody>
           </table>
         </div>
-
-        <!-- Head-to-Head Breakdown Panel -->
-        <div class="compare__breakdown" id="compareBreakdown" style="display:none;">
-          <button class="compare__breakdown-close" id="breakdownClose" aria-label="Close breakdown">&times;</button>
-          <div class="compare__breakdown-header">
-            <div class="compare__breakdown-vs">
-              <span class="compare__breakdown-brand compare__breakdown-brand--atlas">Atlas</span>
-              <span class="compare__breakdown-vs-text">vs</span>
-              <span class="compare__breakdown-brand compare__breakdown-brand--rival" id="breakdownRival">LMNT</span>
-            </div>
-            <p class="compare__breakdown-cat" id="breakdownCat">Electrolytes</p>
-          </div>
-          <div class="compare__breakdown-bars">
-            <div class="compare__breakdown-row">
-              <div class="compare__breakdown-label compare__breakdown-label--atlas">
-                <span class="compare__breakdown-name">Atlas</span>
-                <span class="compare__breakdown-val" id="breakdownAtlasVal">1,769 mg</span>
-              </div>
-              <div class="compare__breakdown-track">
-                <div class="compare__breakdown-fill compare__breakdown-fill--atlas" id="breakdownAtlasBar"></div>
-              </div>
-            </div>
-            <div class="compare__breakdown-row">
-              <div class="compare__breakdown-label">
-                <span class="compare__breakdown-name" id="breakdownRivalName">LMNT</span>
-                <span class="compare__breakdown-val" id="breakdownRivalVal">1,260 mg</span>
-              </div>
-              <div class="compare__breakdown-track">
-                <div class="compare__breakdown-fill compare__breakdown-fill--rival" id="breakdownRivalBar"></div>
-              </div>
-            </div>
-          </div>
-          <div class="compare__breakdown-verdict" id="breakdownVerdict">
-            <div class="compare__breakdown-badge" id="breakdownBadge">Atlas Wins</div>
-            <p class="compare__breakdown-detail" id="breakdownDetail"></p>
-          </div>
-          <!-- Sub-ingredient breakdown for compound categories -->
-          <div class="compare__breakdown-subs" id="breakdownSubs" style="display:none;"></div>
-        </div>
       </div>
     </section>
+
+    <!-- Breakdown Modal (outside section, full-page overlay) -->
+    <div class="compare-modal" id="compareModal" aria-hidden="true">
+      <div class="compare-modal__backdrop" id="modalBackdrop"></div>
+      <div class="compare-modal__card" id="modalCard">
+        <button class="compare-modal__close" id="breakdownClose" aria-label="Close">&times;</button>
+        <div class="compare-modal__header">
+          <div class="compare-modal__vs">
+            <span class="compare-modal__brand compare-modal__brand--atlas">Atlas</span>
+            <span class="compare-modal__vs-text">vs</span>
+            <span class="compare-modal__brand compare-modal__brand--rival" id="breakdownRival">LMNT</span>
+          </div>
+          <p class="compare-modal__cat" id="breakdownCat">Electrolytes</p>
+        </div>
+        <div class="compare-modal__bars">
+          <div class="compare-modal__row">
+            <div class="compare-modal__label compare-modal__label--atlas">
+              <span class="compare-modal__name">Atlas</span>
+              <span class="compare-modal__val" id="breakdownAtlasVal">1,769 mg</span>
+            </div>
+            <div class="compare-modal__track">
+              <div class="compare-modal__fill compare-modal__fill--atlas" id="breakdownAtlasBar"></div>
+            </div>
+          </div>
+          <div class="compare-modal__row">
+            <div class="compare-modal__label">
+              <span class="compare-modal__name" id="breakdownRivalName">LMNT</span>
+              <span class="compare-modal__val" id="breakdownRivalVal">1,260 mg</span>
+            </div>
+            <div class="compare-modal__track">
+              <div class="compare-modal__fill compare-modal__fill--rival" id="breakdownRivalBar"></div>
+            </div>
+          </div>
+        </div>
+        <div class="compare-modal__verdict">
+          <div class="compare-modal__badge" id="breakdownBadge">Atlas Wins</div>
+          <p class="compare-modal__detail" id="breakdownDetail"></p>
+        </div>
+        <div class="compare-modal__subs" id="breakdownSubs" style="display:none;"></div>
+      </div>
+    </div>
 
     <!-- Reviews (Junip) -->
     <section class="testimonials" id="reviews" aria-label="Customer reviews">
