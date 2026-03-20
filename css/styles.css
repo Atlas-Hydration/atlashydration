@@ -438,9 +438,15 @@ img {
 
 /* Force Junip stars white in hero */
 .hero__reviews .junip-product-summary,
-.hero__reviews .junip-product-summary * {
+.hero__reviews .junip-product-summary *,
+.hero__reviews svg,
+.hero__reviews svg * {
   color: #ffffff !important;
   fill: #ffffff !important;
+  stroke: #ffffff !important;
+  --junip-star-color: #ffffff !important;
+  --junip-star-filled: #ffffff !important;
+  --junip-primary-color: #ffffff !important;
 }
 
 .hero__title {
@@ -521,15 +527,19 @@ img {
 
 .btn--hero:hover::before {
   bottom: -20%;
-  animation: heroWaveIdle 2s ease-in-out infinite;
+  animation: heroWaveIdle 4s ease-in-out infinite;
 }
 
 @keyframes heroWaveIdle {
-  0% { border-radius: 45% 35% 0 0; transform: translateX(-5%); }
-  25% { border-radius: 35% 50% 0 0; transform: translateX(3%); }
-  50% { border-radius: 50% 30% 0 0; transform: translateX(-3%); }
-  75% { border-radius: 30% 45% 0 0; transform: translateX(5%); }
-  100% { border-radius: 45% 35% 0 0; transform: translateX(-5%); }
+  0%   { border-radius: 45% 35% 0 0; transform: translateX(-6%) translateY(0); }
+  12%  { border-radius: 38% 48% 0 0; transform: translateX(2%) translateY(-3%); }
+  25%  { border-radius: 50% 30% 0 0; transform: translateX(5%) translateY(1%); }
+  37%  { border-radius: 32% 52% 0 0; transform: translateX(1%) translateY(-2%); }
+  50%  { border-radius: 48% 32% 0 0; transform: translateX(-5%) translateY(2%); }
+  62%  { border-radius: 35% 45% 0 0; transform: translateX(-2%) translateY(-1%); }
+  75%  { border-radius: 30% 50% 0 0; transform: translateX(4%) translateY(3%); }
+  87%  { border-radius: 42% 38% 0 0; transform: translateX(-3%) translateY(-2%); }
+  100% { border-radius: 45% 35% 0 0; transform: translateX(-6%) translateY(0); }
 }
 
 .btn--hero:hover {
