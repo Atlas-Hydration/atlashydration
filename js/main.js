@@ -106,16 +106,37 @@ document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
   });
 });
 
-// Header background on scroll (matte black)
+// Header: hide on scroll down, show on scroll up
 (function() {
   var header = document.querySelector('.header');
   if (!header) return;
 
-  window.addEventListener('scroll', function() {
-    if (window.scrollY > 50) {
+  var lastScrollY = 0;
+  var ticking = false;
+
+  function onScroll() {
+    var currentScrollY = window.scrollY;
+
+    if (currentScrollY > 80 && currentScrollY > lastScrollY) {
+      header.classList.add('header--hidden');
+    } else {
+      header.classList.remove('header--hidden');
+    }
+
+    if (currentScrollY > 50) {
       header.style.background = 'rgba(29, 29, 31, 0.96)';
     } else {
       header.style.background = 'rgba(29, 29, 31, 0.92)';
+    }
+
+    lastScrollY = currentScrollY;
+    ticking = false;
+  }
+
+  window.addEventListener('scroll', function() {
+    if (!ticking) {
+      requestAnimationFrame(onScroll);
+      ticking = true;
     }
   }, { passive: true });
 })();

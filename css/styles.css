@@ -98,6 +98,11 @@ img {
   backdrop-filter: saturate(180%) blur(20px);
   -webkit-backdrop-filter: saturate(180%) blur(20px);
   border-bottom: 1px solid rgba(255,255,255,0.04);
+  transition: transform 0.35s cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+
+.header--hidden {
+  transform: translateY(-100%);
 }
 
 .header__nav {
