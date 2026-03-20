@@ -118,6 +118,9 @@ document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
   var announcementBar = document.querySelector('.announcement-bar');
   var barHeight = announcementBar ? announcementBar.offsetHeight : 0;
 
+  // Set initial position immediately so logo/cart are visible on load
+  header.style.top = barHeight + 'px';
+
   function onScroll() {
     var currentScrollY = window.scrollY;
 
