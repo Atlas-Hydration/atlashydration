@@ -2,6 +2,22 @@
    Atlas Hydration — Main JS
    ======================================== */
 
+// Wave text — split characters for wavy animation
+(function() {
+  var els = document.querySelectorAll('.wave-text');
+  els.forEach(function(el) {
+    var text = el.textContent;
+    el.innerHTML = '';
+    for (var i = 0; i < text.length; i++) {
+      var span = document.createElement('span');
+      span.className = 'wave-char';
+      span.textContent = text[i] === ' ' ? '\u00A0' : text[i];
+      span.style.animationDelay = (i * 0.06) + 's';
+      el.appendChild(span);
+    }
+  });
+})();
+
 // Mobile menu toggle
 (function() {
   var toggle = document.getElementById('menuToggle');
@@ -344,33 +360,74 @@ document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
       'precision mediump float;',
       'uniform float t;',
       'uniform vec2 r;',
+      '',
+      'float helix(vec2 uv, float cx, float amp, float freq, float speed, float phase){',
+      '  float y=uv.y*freq+t*speed;',
+      '  float strand1=cx+sin(y+phase)*amp;',
+      '  float strand2=cx+sin(y+phase+3.14159)*amp;',
+      '  float d1=abs(uv.x-strand1);',
+      '  float d2=abs(uv.x-strand2);',
+      '  float depth1=cos(y+phase)*0.5+0.5;',
+      '  float depth2=cos(y+phase+3.14159)*0.5+0.5;',
+      '  float w1=0.003+depth1*0.003;',
+      '  float w2=0.003+depth2*0.003;',
+      '  float s1=smoothstep(w1,0.0,d1)*(0.4+depth1*0.6);',
+      '  float s2=smoothstep(w2,0.0,d2)*(0.4+depth2*0.6);',
+      // Rungs connecting the two strands
+      '  float rungY=mod(y,0.8)-0.4;',
+      '  float rungSnap=smoothstep(0.04,0.0,abs(rungY));',
+      '  float minX=min(strand1,strand2);',
+      '  float maxX=max(strand1,strand2);',
+      '  float inRung=step(minX,uv.x)*step(uv.x,maxX);',
+      '  float rung=rungSnap*inRung*smoothstep(0.006,0.0,abs(rungY))*0.3;',
+      '  return s1+s2+rung;',
+      '}',
+      '',
       'void main(){',
       '  vec2 uv=gl_FragCoord.xy/r;',
       '  vec2 p=uv*2.0-1.0;',
       '  p.x*=r.x/r.y;',
-      // Black base
+      // Dark base
       '  vec3 col=vec3(0.02,0.02,0.03);',
-      // Horizontal ocean waves — multiple layers flowing left to right
+      // Flowing water waves (background atmosphere)
       '  float wave1=sin(uv.y*8.0+sin(uv.x*3.0-t*0.6)*1.5-t*0.3);',
       '  float wave2=sin(uv.y*5.0+sin(uv.x*2.0+t*0.4)*2.0+t*0.25);',
       '  float wave3=sin(uv.y*12.0+sin(uv.x*4.0-t*0.5)*1.0-t*0.4);',
       '  float wave4=sin(uv.y*3.0+sin(uv.x*1.5+t*0.35)*2.5+t*0.2);',
-      // Sharp wave lines — hydration blue
       '  vec3 blue=vec3(0.25,0.55,0.82);',
-      '  float line1=smoothstep(0.02,0.0,abs(wave1))*0.3;',
-      '  float line2=smoothstep(0.03,0.0,abs(wave2))*0.2;',
-      '  float line3=smoothstep(0.015,0.0,abs(wave3))*0.15;',
-      '  float line4=smoothstep(0.04,0.0,abs(wave4))*0.25;',
-      // Soft glow around wave lines
-      '  float glow1=smoothstep(0.3,0.0,abs(wave1))*0.06;',
-      '  float glow2=smoothstep(0.35,0.0,abs(wave2))*0.04;',
-      '  float glow3=smoothstep(0.25,0.0,abs(wave4))*0.05;',
-      '  float lines=line1+line2+line3+line4;',
-      '  float glows=glow1+glow2+glow3;',
-      '  col+=blue*(lines+glows);',
-      // Subtle white foam on wave crests
-      '  float foam=smoothstep(0.008,0.0,abs(wave1))*0.08+smoothstep(0.006,0.0,abs(wave2))*0.06;',
-      '  col+=vec3(foam);',
+      '  float line1=smoothstep(0.02,0.0,abs(wave1))*0.2;',
+      '  float line2=smoothstep(0.03,0.0,abs(wave2))*0.12;',
+      '  float line3=smoothstep(0.015,0.0,abs(wave3))*0.08;',
+      '  float line4=smoothstep(0.04,0.0,abs(wave4))*0.15;',
+      '  float glow1=smoothstep(0.3,0.0,abs(wave1))*0.03;',
+      '  float glow2=smoothstep(0.35,0.0,abs(wave2))*0.02;',
+      '  float glows=glow1+glow2;',
+      '  float waveLines=line1+line2+line3+line4;',
+      '  col+=blue*(waveLines+glows);',
+      '',
+      // DNA helices
+      '  vec3 helixBlue=vec3(0.3,0.6,0.9);',
+      '  vec3 helixCyan=vec3(0.2,0.75,0.85);',
+      '  vec3 helixWhite=vec3(0.7,0.8,0.9);',
+      // Left helix
+      '  float h1=helix(uv,0.12,0.06,10.0,0.4,0.0);',
+      // Right helix
+      '  float h2=helix(uv,0.88,0.06,10.0,-0.35,2.0);',
+      // Smaller background helices for depth
+      '  float h3=helix(uv,0.25,0.03,14.0,0.3,1.0)*0.3;',
+      '  float h4=helix(uv,0.75,0.03,14.0,-0.25,3.5)*0.3;',
+      '',
+      '  col+=helixBlue*h1*0.7;',
+      '  col+=helixCyan*h2*0.7;',
+      '  col+=helixWhite*h3;',
+      '  col+=helixWhite*h4;',
+      '',
+      // Glow around helices
+      '  float hglow1=smoothstep(0.15,0.0,abs(uv.x-0.12))*h1*0.1;',
+      '  float hglow2=smoothstep(0.15,0.0,abs(uv.x-0.88))*h2*0.1;',
+      '  col+=helixBlue*hglow1;',
+      '  col+=helixCyan*hglow2;',
+      '',
       // Gentle vignette
       '  float v=1.0-length(p)*0.2;',
       '  col*=v;',
@@ -712,9 +769,9 @@ document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
       dose: '1,300mg Total',
       icon: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2C10 6 6 10 6 14a6 6 0 1012 0c0-4-4-8-6-12z"/></svg>',
       items: [
-        { name: 'Sodium', form: 'as Sodium Citrate', dose: '600mg', icon: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M8 12h8M12 8v8"/></svg>', desc: 'Essential for fluid balance, nerve signaling, and preventing dehydration during exercise.' },
-        { name: 'Potassium', form: 'as Potassium Citrate', dose: '500mg', icon: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>', desc: 'Supports muscle contractions, heart rhythm, and helps regulate cellular fluid balance.' },
-        { name: 'Magnesium', form: 'as Magnesium Citrate', dose: '200mg', icon: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>', desc: 'Vital for muscle recovery, energy production, and reducing cramps and fatigue.' }
+        { name: 'Sodium', form: 'as Sodium Citrate', dose: '600mg', icon: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M8 12h8M12 8v8"/></svg>', desc: 'Essential for fluid balance, nerve signaling, and preventing dehydration during exercise.', link: 'blog/sodium-science.html' },
+        { name: 'Potassium', form: 'as Potassium Citrate', dose: '500mg', icon: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>', desc: 'Supports muscle contractions, heart rhythm, and helps regulate cellular fluid balance.', link: 'blog/potassium-heart.html' },
+        { name: 'Magnesium', form: 'as Magnesium Citrate', dose: '200mg', icon: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>', desc: 'Vital for muscle recovery, energy production, and reducing cramps and fatigue.', link: 'blog/magnesium-deficiency.html' }
       ]
     },
     vitamins: {
@@ -722,11 +779,11 @@ document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
       dose: '116mg Total',
       icon: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>',
       items: [
-        { name: 'Vitamin C', form: 'Ascorbic Acid', dose: '90mg', icon: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l2 2"/></svg>', desc: 'Powerful antioxidant that supports immune function and aids muscle recovery.' },
-        { name: 'Vitamin B3', form: 'as Niacin', dose: '24mg', icon: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="4"/><path d="M8 12h8"/></svg>', desc: 'Converts food into energy and supports cardiovascular health.' },
-        { name: 'Vitamin B5', form: 'as Pantethine', dose: '12mg', icon: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4"/></svg>', desc: 'Supports adrenal function, stress response, and energy metabolism.' },
-        { name: 'Vitamin B6', form: 'as Pyridoxal-5-phosphate', dose: '2mg', icon: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>', desc: 'Aids neurotransmitter synthesis and energy metabolism from protein.' },
-        { name: 'Vitamin B12', form: 'as Methylcobalamin', dose: '8mcg', icon: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>', desc: 'Boosts natural energy levels, supports nerve function, and aids red blood cell formation.' }
+        { name: 'Vitamin C', form: 'Ascorbic Acid', dose: '90mg', icon: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l2 2"/></svg>', desc: 'Powerful antioxidant that supports immune function and aids muscle recovery.', link: 'blog/vitamin-c-immunity.html' },
+        { name: 'Vitamin B3', form: 'as Niacin', dose: '24mg', icon: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="4"/><path d="M8 12h8"/></svg>', desc: 'Converts food into energy and supports cardiovascular health.', link: 'blog/b-vitamins-energy.html' },
+        { name: 'Vitamin B5', form: 'as Pantethine', dose: '12mg', icon: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4"/></svg>', desc: 'Supports adrenal function, stress response, and energy metabolism.', link: 'blog/b-vitamins-energy.html' },
+        { name: 'Vitamin B6', form: 'as Pyridoxal-5-phosphate', dose: '2mg', icon: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>', desc: 'Aids neurotransmitter synthesis and energy metabolism from protein.', link: 'blog/b-vitamins-energy.html' },
+        { name: 'Vitamin B12', form: 'as Methylcobalamin', dose: '8mcg', icon: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>', desc: 'Boosts natural energy levels, supports nerve function, and aids red blood cell formation.', link: 'blog/b-vitamins-energy.html' }
       ]
     },
     amino: {
@@ -734,8 +791,8 @@ document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
       dose: '1,200mg Total',
       icon: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>',
       items: [
-        { name: 'L-Glutamine', form: '', dose: '1,000mg', icon: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg>', desc: 'The most abundant amino acid in the body. Supports gut health, immune function, and muscle recovery after intense exercise.' },
-        { name: 'L-Taurine', form: '', dose: '200mg', icon: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>', desc: 'Supports cardiovascular function, exercise performance, and helps regulate hydration at the cellular level.' }
+        { name: 'L-Glutamine', form: '', dose: '1,000mg', icon: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg>', desc: 'The most abundant amino acid in the body. Supports gut health, immune function, and muscle recovery after intense exercise.', link: 'blog/glutamine-recovery.html' },
+        { name: 'L-Taurine', form: '', dose: '200mg', icon: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>', desc: 'Supports cardiovascular function, exercise performance, and helps regulate hydration at the cellular level.', link: 'blog/taurine-endurance.html' }
       ]
     }
   };
@@ -769,7 +826,10 @@ document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
     var html = '';
     for (var i = 0; i < data.items.length; i++) {
       var item = data.items[i];
-      html += '<div class="ingredient-popup__card">' +
+      var basePath = window.location.pathname.indexOf('/products/') !== -1 ? '../' : '';
+      var tag = item.link ? 'a' : 'div';
+      var linkAttr = item.link ? ' href="' + basePath + item.link + '"' : '';
+      html += '<' + tag + ' class="ingredient-popup__card"' + linkAttr + '>' +
         '<div class="ingredient-popup__card-icon">' + item.icon + '</div>' +
         '<div class="ingredient-popup__card-content">' +
           '<div class="ingredient-popup__card-top">' +
@@ -778,8 +838,9 @@ document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
             '<span class="ingredient-popup__card-dose">' + item.dose + '</span>' +
           '</div>' +
           '<p class="ingredient-popup__card-desc">' + item.desc + '</p>' +
+          (item.link ? '<div class="ingredient-popup__card-link">Learn more <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>' : '') +
         '</div>' +
-      '</div>';
+      '</' + tag + '>';
     }
     gridEl.innerHTML = html;
 
@@ -1796,6 +1857,63 @@ document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
     });
   })();
 
+  // --- 8. Footer: Flowing particle constellation (on #1a1a1c) ---
+  (function() {
+    var s = addCanvas('.footer');
+    if (!s) return;
+    var alpha = 0.12;
+    var particles = [];
+    var count = 40;
+    function initParticles() {
+      particles = [];
+      for (var i = 0; i < count; i++) {
+        particles.push({
+          x: Math.random(), y: Math.random(),
+          vx: (Math.random() - 0.5) * 0.0003,
+          vy: (Math.random() - 0.5) * 0.0003,
+          r: 1.5 + Math.random() * 1.5
+        });
+      }
+    }
+    initParticles();
+    onVisible(s.el, function(t) {
+      var w = s.w(), h = s.h();
+      s.resize();
+      // Update particles
+      for (var i = 0; i < particles.length; i++) {
+        var p = particles[i];
+        p.x += p.vx; p.y += p.vy;
+        if (p.x < 0) p.x = 1; if (p.x > 1) p.x = 0;
+        if (p.y < 0) p.y = 1; if (p.y > 1) p.y = 0;
+      }
+      // Draw connections
+      for (var i = 0; i < particles.length; i++) {
+        for (var j = i + 1; j < particles.length; j++) {
+          var dx = (particles[i].x - particles[j].x) * w;
+          var dy = (particles[i].y - particles[j].y) * h;
+          var dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < 120) {
+            var lineAlpha = alpha * (1 - dist / 120) * 0.5;
+            s.ctx.beginPath();
+            s.ctx.moveTo(particles[i].x * w, particles[i].y * h);
+            s.ctx.lineTo(particles[j].x * w, particles[j].y * h);
+            s.ctx.strokeStyle = 'rgba(' + BLUE.r + ',' + BLUE.g + ',' + BLUE.b + ',' + lineAlpha + ')';
+            s.ctx.lineWidth = 0.5;
+            s.ctx.stroke();
+          }
+        }
+      }
+      // Draw particles
+      for (var i = 0; i < particles.length; i++) {
+        var p = particles[i];
+        s.ctx.beginPath();
+        s.ctx.arc(p.x * w, p.y * h, p.r, 0, Math.PI * 2);
+        s.ctx.fillStyle = 'rgba(' + BLUE.r + ',' + BLUE.g + ',' + BLUE.b + ',' + alpha + ')';
+        s.ctx.fill();
+      }
+    });
+  })();
+
 })();
 
 // Product page gallery — nav buttons & dots
@@ -1917,4 +2035,21 @@ document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
 
   var section = document.querySelector('.natural-flavors__features');
   if (section) observer.observe(section);
+})();
+
+// Sticky Buy Now bar — show after scrolling past the hero
+(function() {
+  var bar = document.getElementById('stickyBuy');
+  if (!bar) return;
+  var shown = false;
+  function checkScroll() {
+    var shouldShow = window.scrollY > window.innerHeight * 0.6;
+    if (shouldShow !== shown) {
+      shown = shouldShow;
+      if (shown) bar.classList.add('visible');
+      else bar.classList.remove('visible');
+    }
+  }
+  window.addEventListener('scroll', checkScroll, { passive: true });
+  checkScroll();
 })();
