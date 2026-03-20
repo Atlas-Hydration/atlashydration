@@ -52,6 +52,11 @@ body {
 a {
   color: inherit;
   text-decoration: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+button {
+  -webkit-tap-highlight-color: transparent;
 }
 
 img {
@@ -3584,6 +3589,7 @@ img {
 
   .header__nav {
     justify-content: space-between;
+    padding: 0 16px;
   }
 
   .hero {
@@ -3591,7 +3597,7 @@ img {
   }
 
   .hero__content {
-    padding: 40px 24px;
+    padding: 40px 20px;
   }
 
   .hero__title {
@@ -3599,7 +3605,16 @@ img {
   }
 
   .hero__benefits {
-    gap: 16px;
+    gap: 12px;
+  }
+
+  .hero__benefit {
+    font-size: 0.65rem;
+  }
+
+  .hero__benefit-icon svg {
+    width: 22px;
+    height: 22px;
   }
 
   .products__grid {
@@ -3631,9 +3646,21 @@ img {
     align-items: center;
   }
 
+  .how-it-works {
+    padding: 80px 0;
+  }
+
   .how-it-works__grid {
     grid-template-columns: repeat(2, 1fr);
     gap: 24px;
+  }
+
+  .how-it-works__number {
+    font-size: 2.5rem;
+  }
+
+  .how-it-works__step h3 {
+    font-size: 1rem;
   }
 
   .mission__grid {
@@ -3683,19 +3710,305 @@ img {
   .cart-drawer__panel {
     width: 100%;
   }
+
+  /* Compare table — card layout on mobile */
+  .compare__table {
+    min-width: 0;
+  }
+
+  .compare__table th,
+  .compare__table td {
+    padding: 10px 8px;
+    font-size: 0.72rem;
+  }
+
+  .compare__brand-name {
+    font-size: 0.7rem;
+  }
+
+  .compare__brand--atlas .compare__brand-name {
+    font-size: 0.8rem;
+  }
+
+  /* CTA sections */
+  .cta-section {
+    padding: 100px 0;
+    min-height: 60vh;
+  }
+
+  .cta-section__title {
+    font-size: 1.8rem;
+  }
+
+  .cta-dark {
+    min-height: 70vh;
+  }
+
+  .cta-dark__title {
+    font-size: 2rem;
+  }
+
+  .cta-dark__inner {
+    padding: 80px 20px;
+  }
+
+  /* Featured product */
+  .featured-product__visual {
+    min-height: 300px;
+  }
+
+  /* Flavor selector */
+  .flavor-selector--circles {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .flavor-selector--circles .flavor-circle {
+    font-size: 0.75rem;
+    padding: 10px 18px;
+  }
+
+  /* Purchase options */
+  .purchase-option {
+    padding: 14px 16px;
+  }
+
+  .purchase-option__pricing {
+    flex-wrap: wrap;
+  }
+
+  /* Product gallery */
+  .product-gallery__main {
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+  }
+
+  .product-gallery__slide .sachet {
+    width: 140px;
+  }
+
+  .product-gallery__slide .sachet__body {
+    min-height: 160px;
+    padding: 16px 12px;
+  }
+
+  .product-gallery__slide .sachet__brand {
+    font-size: 1.2rem;
+  }
+
+  .product-gallery__ingredients {
+    padding: 24px 16px;
+  }
+
+  .product-gallery__ingredients-title {
+    font-size: 1rem;
+  }
+
+  .product-gallery__lifestyle {
+    padding: 24px 16px;
+  }
+
+  .product-gallery__lifestyle-text {
+    font-size: 1.1rem;
+  }
+
+  /* Popup */
+  .popup__percent {
+    font-size: 4rem;
+  }
+
+  .popup {
+    padding: 0 20px;
+  }
+
+  .popup__close {
+    top: 16px;
+    right: 16px;
+  }
+
+  /* Supplement facts */
+  .supplement-facts__table th,
+  .supplement-facts__table td {
+    padding: 8px 12px;
+    font-size: 0.78rem;
+  }
+
+  /* Ingredients grid */
+  .ingredients-grid__cards {
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  .ingredients-grid__card {
+    padding: 20px 16px;
+  }
 }
 
 @media (max-width: 480px) {
+  .hero {
+    min-height: 70vh;
+  }
+
   .hero__title {
-    font-size: 2rem;
+    font-size: 1.7rem;
+  }
+
+  .hero__benefits {
+    gap: 8px;
+  }
+
+  .hero__benefit {
+    font-size: 0.6rem;
+  }
+
+  .hero__benefit-icon svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .btn--hero {
+    padding: 14px 40px;
+    font-size: 0.85rem;
   }
 
   .how-it-works__grid {
     grid-template-columns: 1fr;
   }
 
+  .how-it-works__number {
+    font-size: 2rem;
+  }
+
   .stats-bar__grid {
     grid-template-columns: 1fr;
+  }
+
+  .section-title {
+    font-size: 1.8rem;
+  }
+
+  .cta-section__title {
+    font-size: 1.5rem;
+  }
+
+  .cta-dark__title {
+    font-size: 1.6rem;
+  }
+
+  /* Compare table stacks on small phones */
+  .compare__table th,
+  .compare__table td {
+    padding: 8px 6px;
+    font-size: 0.65rem;
+  }
+
+  /* Product gallery single column on small phones */
+  .product-gallery__main {
+    grid-template-columns: 1fr;
+  }
+
+  .product-gallery__slide:first-child {
+    aspect-ratio: 1;
+  }
+
+  .product-gallery__slide .sachet {
+    width: 160px;
+  }
+
+  .product-gallery__slide .sachet__body {
+    min-height: 180px;
+  }
+
+  /* Flavor pills stack */
+  .flavor-selector--circles .flavor-circle {
+    font-size: 0.7rem;
+    padding: 9px 16px;
+  }
+
+  /* Purchase options compact */
+  .purchase-option__header {
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+
+  /* Ingredients grid single column */
+  .ingredients-grid__cards {
+    grid-template-columns: 1fr;
+  }
+
+  /* Footer compact */
+  .footer {
+    padding: 48px 0 24px;
+  }
+
+  /* Announcement bar */
+  .announcement-bar__inner {
+    font-size: 0.65rem;
+  }
+
+  /* Popup */
+  .popup__percent {
+    font-size: 3.2rem;
+  }
+
+  .popup__heading {
+    font-size: 0.75rem;
+  }
+
+  .popup__subheading {
+    font-size: 0.85rem;
+    margin-bottom: 28px;
+  }
+
+  .popup__input {
+    padding: 14px 18px;
+    font-size: 0.9rem;
+  }
+
+  .popup__btn {
+    padding: 14px 20px;
+    font-size: 0.9rem;
+  }
+}
+
+/* Extra small phones (320-360px) */
+@media (max-width: 360px) {
+  .hero__title {
+    font-size: 1.5rem;
+  }
+
+  .hero__benefits {
+    gap: 6px;
+  }
+
+  .hero__benefit span {
+    font-size: 0.55rem;
+  }
+
+  .container {
+    padding: 0 16px;
+  }
+
+  .section-title {
+    font-size: 1.5rem;
+  }
+
+  .product-hero__title {
+    font-size: 1.5rem;
+  }
+
+  .cta-section__title,
+  .cta-dark__title {
+    font-size: 1.3rem;
+  }
+
+  .popup__percent {
+    font-size: 2.8rem;
+  }
+
+  .flavor-selector--circles .flavor-circle {
+    font-size: 0.65rem;
+    padding: 8px 14px;
   }
 }
 
