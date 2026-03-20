@@ -3361,7 +3361,7 @@ img {
 .popup-overlay {
   position: fixed;
   inset: 0;
-  background: #2a6fa8;
+  background: #e8706a;
   z-index: 2000;
   display: flex;
   align-items: center;
@@ -3505,7 +3505,7 @@ img {
   font-weight: 700;
   font-family: var(--font-sans);
   background: #ffffff;
-  color: #1a5a8a;
+  color: #d94f4f;
   cursor: pointer;
   transition: all 0.25s;
   letter-spacing: 0.06em;
