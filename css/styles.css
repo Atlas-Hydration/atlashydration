@@ -83,7 +83,7 @@ img {
   text-transform: uppercase;
   overflow: hidden;
   position: relative;
-  z-index: 101;
+  z-index: 1001;
 }
 
 .announcement-bar__inner {
@@ -103,7 +103,7 @@ img {
   top: 36px;
   left: 0;
   right: 0;
-  z-index: 100;
+  z-index: 1000;
   background: transparent;
   border-bottom: 1px solid transparent;
   transition: background 0.4s ease, border-color 0.4s ease, backdrop-filter 0.4s ease, transform 0.35s cubic-bezier(0.25, 0.1, 0.25, 1);
