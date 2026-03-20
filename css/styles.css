@@ -436,6 +436,13 @@ img {
   font-weight: 400;
 }
 
+/* Force Junip stars white in hero */
+.hero__reviews .junip-product-summary,
+.hero__reviews .junip-product-summary * {
+  color: #ffffff !important;
+  fill: #ffffff !important;
+}
+
 .hero__title {
   font-family: var(--font-sans);
   font-size: clamp(2.6rem, 5vw, 4rem);
@@ -863,7 +870,7 @@ img {
    ======================================== */
 .science {
   padding: 140px 0;
-  background: var(--color-white);
+  background: #f5f5f5;
 }
 
 .science__layout {
@@ -1186,7 +1193,7 @@ img {
    ======================================== */
 .testimonials {
   padding: 140px 0;
-  background: var(--color-white);
+  background: #ffffff;
 }
 
 .testimonials__grid {
@@ -2837,7 +2844,7 @@ img {
    ======================================== */
 .compare {
   padding: 80px 0;
-  background: var(--color-bg-light);
+  background: #f5f5f5;
   position: relative;
   overflow: hidden;
 }
@@ -3357,7 +3364,7 @@ img {
    ======================================== */
 .featured-product {
   padding: 120px 0;
-  background: var(--color-bg-light);
+  background: #ffffff;
 }
 
 .featured-product__grid {
@@ -3710,7 +3717,7 @@ img {
    ======================================== */
 .blog {
   padding: 100px 0;
-  background: var(--color-white);
+  background: #f5f5f5;
 }
 
 .blog__grid {
@@ -3842,7 +3849,7 @@ img {
    ======================================== */
 .founder {
   padding: 120px 0;
-  background: var(--color-bg-light);
+  background: #ffffff;
 }
 
 .founder__grid {
