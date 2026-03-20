@@ -2716,7 +2716,7 @@ img {
 .product-accordion__header {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  gap: 10px;
   width: 100%;
   padding: 20px 0;
   background: none;
@@ -2724,6 +2724,15 @@ img {
   cursor: pointer;
   font-family: inherit;
   outline: none;
+}
+
+.product-accordion__icon {
+  flex-shrink: 0;
+  color: #666;
+}
+
+.product-accordion__chevron {
+  margin-left: auto;
 }
 
 .product-accordion__header:focus-visible {
@@ -4477,6 +4486,103 @@ img {
   .ingredients-grid__card {
     padding: 20px 16px;
   }
+
+  /* Mobile section padding reduction */
+  .featured-product {
+    padding: 48px 0;
+  }
+
+  .featured-product__grid {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+
+  .science {
+    padding: 48px 0;
+  }
+
+  .how-it-works {
+    padding: 48px 0;
+  }
+
+  .how-it-works__grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  .mission {
+    padding: 48px 0;
+  }
+
+  .testimonials {
+    padding: 48px 0;
+  }
+
+  .compare {
+    padding: 48px 0;
+  }
+
+  .blog {
+    padding: 48px 0;
+  }
+
+  .founder {
+    padding: 48px 0;
+  }
+
+  .founder__grid {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+
+  .cta-section {
+    padding: 60px 0;
+    min-height: auto;
+  }
+
+  .cta-dark {
+    min-height: auto;
+  }
+
+  .cta-dark__inner {
+    padding: 60px 20px;
+  }
+
+  .section-header {
+    margin-bottom: 28px;
+  }
+
+  .section-title {
+    font-size: 1.6rem;
+  }
+
+  /* Mobile product gallery — swipeable carousel */
+  .product-gallery__main {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    gap: 0;
+    scrollbar-width: none;
+  }
+
+  .product-gallery__main::-webkit-scrollbar {
+    display: none;
+  }
+
+  .product-gallery__slide {
+    flex: 0 0 100%;
+    scroll-snap-align: start;
+    aspect-ratio: 4 / 5;
+  }
+
+  .product-hero {
+    padding: 100px 0 48px;
+  }
+
+  .product-hero__grid {
+    gap: 24px;
+  }
 }
 
 @media (max-width: 480px) {
@@ -4956,6 +5062,17 @@ img {
   color: rgba(255, 255, 255, 0.9);
   text-transform: uppercase;
   letter-spacing: 0.18em;
+}
+
+/* FAQ Section */
+.faq {
+  padding: 80px 0;
+  background: #ffffff;
+}
+
+.faq__list {
+  max-width: 720px;
+  margin: 0 auto;
 }
 
 /* Hide Junip branding badge */
