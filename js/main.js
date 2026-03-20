@@ -120,6 +120,7 @@ document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
 
   // Set initial position immediately so logo/cart are visible on load
   header.style.top = barHeight + 'px';
+  document.documentElement.style.setProperty('--sticky-top', (barHeight + header.offsetHeight + 16) + 'px');
 
   function onScroll() {
     var currentScrollY = window.scrollY;
@@ -128,11 +129,16 @@ document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
     var offset = Math.max(0, barHeight - currentScrollY);
     header.style.top = offset + 'px';
 
-    if (currentScrollY > 80 && currentScrollY > lastScrollY) {
+    var headerHidden = currentScrollY > 80 && currentScrollY > lastScrollY;
+    if (headerHidden) {
       header.classList.add('header--hidden');
     } else {
       header.classList.remove('header--hidden');
     }
+
+    // Sync product info sticky top with header position
+    var stickyTop = headerHidden ? 16 : (offset + header.offsetHeight + 16);
+    document.documentElement.style.setProperty('--sticky-top', stickyTop + 'px');
 
     // Only toggle solid bg on pages without a hero (product pages start solid)
     var isAlwaysSolid = !document.querySelector('.hero');

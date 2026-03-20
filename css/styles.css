@@ -1466,7 +1466,8 @@ img {
 
 .product-hero__info {
   position: sticky;
-  top: 16px;
+  top: var(--sticky-top, 90px);
+  transition: top 0.35s cubic-bezier(0.25, 0.1, 0.25, 1);
 }
 
 .product-hero__image {
