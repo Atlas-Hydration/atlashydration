@@ -2192,6 +2192,55 @@ img {
 }
 
 /* ========================================
+   Product Accordion (Description & Ingredients)
+   ======================================== */
+.product-accordion {
+  width: 100%;
+}
+.product-accordion__divider {
+  height: 1px;
+  background: #e5e5e5;
+}
+.product-accordion__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 20px 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+}
+.product-accordion__title {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: #1a1a1a;
+}
+.product-accordion__chevron {
+  transition: transform 0.3s ease;
+  color: #666;
+}
+.product-accordion__header[aria-expanded="true"] .product-accordion__chevron {
+  transform: rotate(180deg);
+}
+.product-accordion__body {
+  overflow: hidden;
+}
+.product-accordion__content {
+  padding: 0 0 20px;
+}
+.product-accordion__content p {
+  font-size: 0.9rem;
+  color: #555;
+  line-height: 1.7;
+  margin-bottom: 12px;
+}
+.product-accordion__content p:last-child {
+  margin-bottom: 0;
+}
+
+/* ========================================
    Benefits Bar
    ======================================== */
 .benefits-bar {

@@ -153,6 +153,19 @@ document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
   });
 })();
 
+// Product description accordion toggle
+(function() {
+  var headers = document.querySelectorAll('.product-accordion__header');
+  headers.forEach(function(header) {
+    header.addEventListener('click', function() {
+      var expanded = header.getAttribute('aria-expanded') === 'true';
+      header.setAttribute('aria-expanded', !expanded);
+      var body = header.nextElementSibling;
+      if (body) body.style.display = expanded ? 'none' : 'block';
+    });
+  });
+})();
+
 // Product gallery thumbnail switching
 (function() {
   var gallery = document.querySelector('.product-gallery');
