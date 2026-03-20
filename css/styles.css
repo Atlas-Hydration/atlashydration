@@ -36,6 +36,7 @@
 html {
   scroll-behavior: smooth;
   -webkit-font-smoothing: antialiased;
+  background: var(--color-primary);
 }
 
 body {
@@ -5893,6 +5894,11 @@ img {
   transform: translateY(0);
 }
 
+/* Hide on scroll down */
+.sticky-buy.visible.sticky-buy--hidden {
+  transform: translateY(100%);
+}
+
 .sticky-buy__inner {
   position: relative;
   z-index: 2;
@@ -5901,8 +5907,15 @@ img {
   padding: 14px 24px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
   gap: 16px;
+}
+
+.sticky-buy__left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+  min-width: 0;
 }
 
 .sticky-buy__thumb {
@@ -5936,27 +5949,102 @@ img {
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 }
 
+/* Flavor switcher dots in sticky bar */
+.sticky-buy__flavors {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: 8px;
+}
+
+.sticky-buy__flavor-dot {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  cursor: pointer;
+  transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+  position: relative;
+  padding: 0;
+}
+
+.sticky-buy__flavor-dot--strawberry { background: #e85d75; }
+.sticky-buy__flavor-dot--grapefruit { background: #f5a623; }
+.sticky-buy__flavor-dot--lemon-lime { background: #8bc34a; }
+
+.sticky-buy__flavor-dot.active {
+  border-color: #ffffff;
+  transform: scale(1.15);
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.4);
+}
+
+.sticky-buy__flavor-dot:hover:not(.active) {
+  transform: scale(1.1);
+  border-color: rgba(255, 255, 255, 0.7);
+}
+
+/* Buy Now button — bold with animated gradient border */
 .sticky-buy__btn {
+  position: relative;
   background: #ffffff;
   color: var(--sticky-flavor);
   border: none;
-  padding: 12px 32px;
+  padding: 14px 36px;
   font-family: var(--font-sans);
-  font-weight: 700;
-  font-size: 0.85rem;
-  letter-spacing: 0.08em;
+  font-weight: 800;
+  font-size: 0.9rem;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
-  border-radius: 8px;
+  border-radius: 50px;
   cursor: pointer;
-  transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
   white-space: nowrap;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  z-index: 1;
+  flex-shrink: 0;
+}
+
+.sticky-buy__btn::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: 52px;
+  background: linear-gradient(135deg, rgba(255,255,255,0.8), rgba(255,255,255,0.2), rgba(255,255,255,0.8));
+  background-size: 200% 200%;
+  animation: btnShine 3s ease-in-out infinite;
+  z-index: -1;
+}
+
+.sticky-buy__btn::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+  animation: btnGlint 3s ease-in-out infinite;
+  z-index: 1;
+}
+
+@keyframes btnShine {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+@keyframes btnGlint {
+  0%, 80% { left: -100%; }
+  100% { left: 200%; }
 }
 
 .sticky-buy__btn:hover {
-  background: #ffffff;
-  transform: scale(1.04);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+  transform: scale(1.06);
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.3);
+}
+
+.sticky-buy__btn:active {
+  transform: scale(0.97);
 }
 
 @media (max-width: 600px) {
@@ -5964,7 +6052,10 @@ img {
     font-size: 0.8rem;
   }
   .sticky-buy__btn {
-    padding: 10px 24px;
+    padding: 12px 24px;
     font-size: 0.8rem;
+  }
+  .sticky-buy__flavors {
+    display: none;
   }
 }

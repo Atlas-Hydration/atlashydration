@@ -749,7 +749,7 @@ document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
       name: 'Strawberry Lemonade',
       price: '$29.99',
       product: 'strawberry-lemonade',
-      btnText: 'Hydrate Me',
+      btnText: 'Buy Now',
       cssClass: 'sticky-buy--strawberry',
       thumb: 'https://cdn.shopify.com/s/files/1/0595/8133/3578/files/1_e4b7eae7-01d9-430c-9655-7949d910deb6.jpg?v=1771507844'
     },
@@ -757,7 +757,7 @@ document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
       name: 'Grapefruit',
       price: '$29.99',
       product: 'grapefruit',
-      btnText: 'Pre-Order',
+      btnText: 'Buy Now',
       cssClass: 'sticky-buy--grapefruit',
       thumb: 'https://cdn.shopify.com/s/files/1/0595/8133/3578/files/1_1a252c57-dc62-4c7b-a6b1-0f9677ce6b6f.jpg?v=1769181320'
     }
@@ -769,7 +769,7 @@ document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
     if (!bar || !data) return;
 
     // Swap color class
-    bar.className = bar.className.replace(/sticky-buy--\S+/g, '');
+    bar.className = bar.className.replace(/sticky-buy--(?:strawberry|lemon-lime|grapefruit)/g, '');
     bar.classList.add(data.cssClass);
 
     // Update content
@@ -781,7 +781,28 @@ document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
     if (priceEl) priceEl.textContent = data.price;
     if (thumbEl) { thumbEl.src = data.thumb; thumbEl.alt = data.name; }
     if (btnEl) { btnEl.textContent = data.btnText; btnEl.setAttribute('data-product', data.product); }
+
+    // Update active flavor dot
+    bar.querySelectorAll('.sticky-buy__flavor-dot').forEach(function(dot) {
+      dot.classList.toggle('active', dot.getAttribute('data-sticky-flavor') === flavor);
+    });
+
+    // Also sync the main flavor circles if they exist
+    var mainCircle = document.querySelector('.flavor-circle--' + flavor);
+    if (mainCircle && !mainCircle.classList.contains('active')) {
+      document.querySelectorAll('.flavor-circle').forEach(function(c) { c.classList.remove('active'); });
+      mainCircle.classList.add('active');
+      updatePurchaseColors();
+    }
   }
+
+  // Sticky bar flavor dot click handler
+  document.querySelectorAll('.sticky-buy__flavor-dot').forEach(function(dot) {
+    dot.addEventListener('click', function() {
+      var flavor = dot.getAttribute('data-sticky-flavor');
+      if (flavor) updateStickyBar(flavor);
+    });
+  });
 
   // Update when flavor circles are clicked (for SPA-style switching)
   document.querySelectorAll('.flavor-circle').forEach(function(circle) {
@@ -2075,18 +2096,37 @@ document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
   if (section) observer.observe(section);
 })();
 
-// Sticky Buy Now bar — show after scrolling past the hero
+// Sticky Buy Now bar — show after hero, hide on scroll down, show on scroll up
 (function() {
   var bar = document.getElementById('stickyBuy');
   if (!bar) return;
   var shown = false;
+  var lastScrollY = window.scrollY;
+  var scrollingDown = false;
+
   function checkScroll() {
-    var shouldShow = window.scrollY > window.innerHeight * 0.6;
+    var currentY = window.scrollY;
+    var shouldShow = currentY > window.innerHeight * 0.6;
+    var isDown = currentY > lastScrollY + 5;
+    var isUp = currentY < lastScrollY - 5;
+
     if (shouldShow !== shown) {
       shown = shouldShow;
       if (shown) bar.classList.add('visible');
       else bar.classList.remove('visible');
     }
+
+    if (shown) {
+      if (isDown && !scrollingDown) {
+        scrollingDown = true;
+        bar.classList.add('sticky-buy--hidden');
+      } else if (isUp && scrollingDown) {
+        scrollingDown = false;
+        bar.classList.remove('sticky-buy--hidden');
+      }
+    }
+
+    lastScrollY = currentY;
   }
   window.addEventListener('scroll', checkScroll, { passive: true });
   checkScroll();

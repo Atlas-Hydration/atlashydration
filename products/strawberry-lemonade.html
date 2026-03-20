@@ -579,12 +579,18 @@
       <span class="sticky-buy__bubble"></span>
     </div>
     <div class="sticky-buy__inner">
-      <img class="sticky-buy__thumb" src="https://cdn.shopify.com/s/files/1/0595/8133/3578/files/1_e4b7eae7-01d9-430c-9655-7949d910deb6.jpg?v=1771507844" alt="Strawberry Lemonade" width="44" height="44">
-      <div class="sticky-buy__info">
-        <span class="sticky-buy__name">Strawberry Lemonade</span>
-        <span class="sticky-buy__price">$29.99</span>
+      <div class="sticky-buy__left">
+        <img class="sticky-buy__thumb" id="stickyBuyThumb" src="https://cdn.shopify.com/s/files/1/0595/8133/3578/files/1_e4b7eae7-01d9-430c-9655-7949d910deb6.jpg?v=1771507844" alt="Strawberry Lemonade" width="44" height="44">
+        <div class="sticky-buy__info">
+          <span class="sticky-buy__name" id="stickyBuyName">Strawberry Lemonade</span>
+          <span class="sticky-buy__price" id="stickyBuyPrice">$29.99</span>
+        </div>
+        <div class="sticky-buy__flavors">
+          <button class="sticky-buy__flavor-dot sticky-buy__flavor-dot--strawberry active" data-sticky-flavor="strawberry" aria-label="Strawberry Lemonade"></button>
+          <button class="sticky-buy__flavor-dot sticky-buy__flavor-dot--grapefruit" data-sticky-flavor="grapefruit" aria-label="Grapefruit"></button>
+        </div>
       </div>
-      <button class="sticky-buy__btn js-add-to-cart" data-product="strawberry-lemonade">Hydrate Me</button>
+      <button class="sticky-buy__btn js-add-to-cart" id="stickyBuyBtn" data-product="strawberry-lemonade">Buy Now</button>
     </div>
   </div>
 
