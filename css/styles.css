@@ -1454,7 +1454,7 @@ img {
    Product Page Styles
    ======================================== */
 .product-hero {
-  padding: 110px 0 80px;
+  padding: 110px 0 60px;
 }
 
 .product-hero__grid {
@@ -1466,7 +1466,7 @@ img {
 
 .product-hero__info {
   position: sticky;
-  top: 110px;
+  top: 16px;
 }
 
 .product-hero__image {
