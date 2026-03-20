@@ -1454,7 +1454,7 @@ img {
    Product Page Styles
    ======================================== */
 .product-hero {
-  padding: 140px 0 80px;
+  padding: 110px 0 80px;
 }
 
 .product-hero__grid {
@@ -1466,7 +1466,7 @@ img {
 
 .product-hero__info {
   position: sticky;
-  top: 140px;
+  top: 110px;
 }
 
 .product-hero__image {
@@ -3402,26 +3402,21 @@ img {
   position: relative;
   width: 100%;
   height: 100%;
+  overflow: hidden;
 }
 
-.fp-gallery__slides {
-  position: relative;
+.fp-gallery__track {
+  display: flex;
   width: 100%;
   height: 100%;
+  transition: transform 0.45s cubic-bezier(0.25, 0.1, 0.25, 1);
 }
 
 .fp-gallery__slide {
-  position: absolute;
-  inset: 0;
+  flex: 0 0 100%;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  opacity: 0;
-  transition: opacity 0.5s ease;
-}
-
-.fp-gallery__slide.active {
-  opacity: 1;
 }
 
 .fp-gallery__arrow {

@@ -1160,11 +1160,12 @@ document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
   compareObs.observe(section);
 })();
 
-// Featured product gallery
+// Featured product gallery — horizontal swipe
 (function() {
   var gallery = document.querySelector('.fp-gallery');
   if (!gallery) return;
 
+  var track = gallery.querySelector('.fp-gallery__track');
   var slides = gallery.querySelectorAll('.fp-gallery__slide');
   var dots = gallery.querySelectorAll('.fp-gallery__dot');
   var prevBtn = gallery.querySelector('.fp-gallery__arrow--prev');
@@ -1173,10 +1174,9 @@ document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
 
   function goTo(index) {
     current = (index + slides.length) % slides.length;
-    slides.forEach(function(s) { s.classList.remove('active'); });
+    track.style.transform = 'translateX(-' + (current * 100) + '%)';
     dots.forEach(function(d) { d.classList.remove('active'); });
-    slides[current].classList.add('active');
-    dots[current].classList.add('active');
+    if (dots[current]) dots[current].classList.add('active');
   }
 
   dots.forEach(function(dot) {
@@ -1187,6 +1187,28 @@ document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
 
   if (prevBtn) prevBtn.addEventListener('click', function() { goTo(current - 1); });
   if (nextBtn) nextBtn.addEventListener('click', function() { goTo(current + 1); });
+
+  // Touch swipe support
+  var startX = 0, deltaX = 0, dragging = false;
+  gallery.addEventListener('touchstart', function(e) {
+    startX = e.touches[0].clientX;
+    dragging = true;
+    track.style.transition = 'none';
+  });
+  gallery.addEventListener('touchmove', function(e) {
+    if (!dragging) return;
+    deltaX = e.touches[0].clientX - startX;
+    var offset = -(current * 100) + (deltaX / gallery.offsetWidth) * 100;
+    track.style.transform = 'translateX(' + offset + '%)';
+  });
+  gallery.addEventListener('touchend', function() {
+    dragging = false;
+    track.style.transition = '';
+    if (deltaX > 50) goTo(current - 1);
+    else if (deltaX < -50) goTo(current + 1);
+    else goTo(current);
+    deltaX = 0;
+  });
 })();
 
 // Flavor splash screen transition with WebGL water
