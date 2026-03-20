@@ -10,9 +10,9 @@
 }
 
 :root {
-  --color-bg: #fafafa;
-  --color-bg-light: #f5f5f7;
-  --color-bg-card: #ffffff;
+  --color-bg: #f5f5f5;
+  --color-bg-light: #f5f5f5;
+  --color-bg-card: #f5f5f5;
   --color-surface: #efefef;
   --color-primary: #1d1d1f;
   --color-primary-light: #424245;
@@ -24,7 +24,7 @@
   --color-border: rgba(0,0,0,0.08);
   --color-strawberry: #e85d75;
   --color-lemon: #8bc34a;
-  --color-white: #ffffff;
+  --color-white: #f5f5f5;
   --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
   --font-serif: 'Playfair Display', Georgia, serif;
   --container: 1120px;
@@ -82,6 +82,9 @@ img {
   letter-spacing: 0.08em;
   text-transform: uppercase;
   overflow: hidden;
+  position: sticky;
+  top: 0;
+  z-index: 101;
 }
 
 .announcement-bar__inner {
@@ -156,11 +159,30 @@ img {
   left: 0;
   width: 0;
   height: 2px;
-  background: #ffffff;
+  background: #f5f5f5;
   transition: width var(--transition);
 }
 
 .header__link:hover {
+  color: #ffffff;
+}
+
+.header__links {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+}
+
+.header__links a {
+  font-size: 0.85rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  color: rgba(255,255,255,0.7);
+  text-decoration: none;
+  transition: color var(--transition);
+}
+
+.header__links a:hover {
   color: #ffffff;
 }
 
@@ -240,7 +262,7 @@ img {
   display: block;
   width: 22px;
   height: 2px;
-  background: #ffffff;
+  background: #f5f5f5;
   transition: var(--transition);
 }
 
@@ -487,23 +509,23 @@ img {
   content: '';
   position: absolute;
   left: -10%;
-  bottom: -100%;
+  bottom: -200%;
   width: 120%;
   height: 200%;
   background: linear-gradient(180deg, #3b82f6 0%, #1d4ed8 50%, #1e40af 100%);
   border-radius: 40% 40% 0 0;
   transition: bottom 0.6s cubic-bezier(0.25, 0.1, 0.25, 1);
   z-index: -1;
+}
+
+.btn--hero:hover::before {
+  bottom: -20%;
   animation: heroWaveIdle 3s ease-in-out infinite;
 }
 
 @keyframes heroWaveIdle {
   0%, 100% { border-radius: 42% 38% 0 0; }
   50% { border-radius: 38% 42% 0 0; }
-}
-
-.btn--hero:hover::before {
-  bottom: -20%;
 }
 
 .btn--hero:hover {
@@ -1315,33 +1337,9 @@ img {
   animation: waveFill 3s ease-in-out infinite;
 }
 
-.wave-text::before {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: -10%;
-  width: 120%;
-  height: 100%;
-  background:
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 120'%3E%3Cpath d='M0 60 C200 20 400 100 600 60 C800 20 1000 100 1200 60 L1200 120 L0 120Z' fill='rgba(255,255,255,0.08)'/%3E%3C/svg%3E")
-    repeat-x;
-  background-size: 600px 40px;
-  background-position: 0 bottom;
-  animation: waveSlide 2s linear infinite;
-  pointer-events: none;
-  mix-blend-mode: overlay;
-}
-
 @keyframes waveFill {
   0%, 100% { background-position: 0% 20%; }
   50% { background-position: 0% 40%; }
-}
-
-@keyframes waveSlide {
-  0% { background-position: 0 bottom; }
-  100% { background-position: 600px bottom; }
-  line-height: 1.08;
-  color: #ffffff;
 }
 
 .cta-section__text {
@@ -1352,7 +1350,7 @@ img {
 }
 
 .btn--white {
-  background: #ffffff;
+  background: #f5f5f5;
   color: var(--color-primary);
   border-color: #ffffff;
 }
@@ -1453,6 +1451,11 @@ img {
   grid-template-columns: 1fr 1fr;
   gap: 80px;
   align-items: start;
+}
+
+.product-hero__info {
+  position: sticky;
+  top: 120px;
 }
 
 .product-hero__image {
@@ -2386,7 +2389,7 @@ img {
 }
 
 .product-gallery__nav:hover {
-  background: #ffffff;
+  background: #f5f5f5;
   box-shadow: 0 4px 16px rgba(0,0,0,0.15);
 }
 
@@ -2412,7 +2415,7 @@ img {
 .product-gallery__main {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 4px;
+  gap: 0;
   margin-bottom: 0;
   position: relative;
 }
@@ -3201,7 +3204,7 @@ img {
   font-size: 0.88rem;
   font-weight: 700;
   font-family: var(--font-sans);
-  background: #ffffff;
+  background: #f5f5f5;
   color: #0a1628;
   cursor: pointer;
   transition: all 0.25s;
@@ -3382,11 +3385,11 @@ img {
 }
 
 .flavor-circle--strawberry.active .flavor-circle__dot {
-  background: #ffffff;
+  background: #f5f5f5;
 }
 
 .flavor-circle--grapefruit.active .flavor-circle__dot {
-  background: #ffffff;
+  background: #f5f5f5;
 }
 
 .flavor-selector__label {
@@ -3727,7 +3730,7 @@ img {
 }
 
 .cta-dark__btn:hover {
-  background: #ffffff;
+  background: #f5f5f5;
   color: var(--color-primary);
 }
 
@@ -4122,7 +4125,8 @@ img {
     gap: 40px;
   }
 
-  .product-hero__image {
+  .product-hero__image,
+  .product-hero__info {
     position: static;
     max-width: 500px;
     margin: 0 auto;
@@ -4149,7 +4153,8 @@ img {
 
 @media (max-width: 768px) {
   .header__center,
-  .header__right {
+  .header__right,
+  .header__links {
     display: none;
   }
 
@@ -4656,7 +4661,7 @@ img {
 }
 
 .ingredient-popup {
-  background: #fff;
+  background: #f5f5f5;
   border-radius: 24px;
   width: 90%;
   max-width: 560px;

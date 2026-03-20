@@ -1044,13 +1044,14 @@ document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
       var suffix = text.replace(/[0-9,]/g, '');
       var target = parseNum(text);
       var hasComma = text.indexOf(',') > -1;
-      var duration = 1200;
+      var duration = 2500;
       var startTime = null;
 
       function step(timestamp) {
         if (!startTime) startTime = timestamp;
         var progress = Math.min((timestamp - startTime) / duration, 1);
-        var eased = 1 - Math.pow(1 - progress, 3);
+        // Smooth ease-out-quart for a gentle landing
+        var eased = 1 - Math.pow(1 - progress, 4);
         var current = Math.floor(eased * target);
         el.textContent = formatNum(current, hasComma) + suffix;
         if (progress < 1) requestAnimationFrame(step);
