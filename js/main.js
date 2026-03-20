@@ -330,20 +330,24 @@ document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
       '  uv.x*=r.x/r.y;',
       '  float d=length(uv);',
       '  float w=0.0;',
-      '  for(float i=1.0;i<6.0;i++){',
-      '    float s=i*1.2;',
-      '    w+=sin(uv.x*s+t*0.8+i*0.7)*0.12/i;',
-      '    w+=sin(uv.y*s*1.3-t*0.6+i*1.1)*0.10/i;',
-      '    w+=sin((uv.x+uv.y)*s*0.7+t*0.5)*0.08/i;',
+      '  for(float i=1.0;i<8.0;i++){',
+      '    float s=i*1.0;',
+      '    w+=sin(uv.x*s+t*1.2+i*0.7)*0.15/i;',
+      '    w+=sin(uv.y*s*1.5-t*0.9+i*1.1)*0.13/i;',
+      '    w+=sin((uv.x+uv.y)*s*0.8+t*0.7)*0.10/i;',
+      '    w+=cos(uv.x*s*0.6-uv.y*s*0.9+t*1.1+i)*0.06/i;',
       '  }',
-      '  vec3 deep=vec3(0.035,0.07,0.14);',
-      '  vec3 mid=vec3(0.06,0.14,0.28);',
-      '  vec3 lite=vec3(0.12,0.25,0.42);',
+      '  vec3 deep=vec3(0.02,0.06,0.15);',
+      '  vec3 mid=vec3(0.05,0.15,0.35);',
+      '  vec3 lite=vec3(0.15,0.35,0.55);',
       '  vec3 col=mix(deep,mid,w+0.5);',
-      '  col=mix(col,lite,smoothstep(0.3,0.8,w+0.5)*0.5);',
-      '  float caustic=sin(uv.x*8.0+t)*sin(uv.y*6.0-t*0.7)*0.04;',
-      '  col+=caustic;',
-      '  col*=1.0-d*0.25;',
+      '  col=mix(col,lite,smoothstep(0.2,0.7,w+0.5)*0.6);',
+      '  float c1=sin(uv.x*10.0+t*1.3)*sin(uv.y*8.0-t*0.9)*0.06;',
+      '  float c2=sin(uv.x*6.0-t*0.8+2.0)*sin(uv.y*12.0+t*1.1)*0.04;',
+      '  col+=c1+c2;',
+      '  float ripple=sin(d*12.0-t*2.0)*0.03*smoothstep(1.5,0.0,d);',
+      '  col+=ripple;',
+      '  col*=1.0-d*0.2;',
       '  gl_FragColor=vec4(col,1);',
       '}'
     ].join('\n');
@@ -1126,4 +1130,15 @@ document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
   resize();
   animate();
   window.addEventListener('resize', resize);
+
+  // Animate bars on scroll
+  var compareObs = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('animated');
+        compareObs.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.3 });
+  compareObs.observe(section);
 })();

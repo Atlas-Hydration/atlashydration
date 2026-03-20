@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>L-Glutamine: Your Muscles' Secret Weapon | Atlas Hydration</title>
+  <meta name="description" content="L-Glutamine is the most abundant amino acid in your body — and exercise drains it fast. Learn why Atlas includes 1,000mg per serving for faster muscle recovery.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/styles.css">
+  <style>
+    .blog-article { max-width: 780px; margin: 0 auto; padding: 140px 24px 80px; }
+    .blog-article__tag { font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em; color: #4a90d9; margin-bottom: 12px; display: block; }
+    .blog-article__title { font-family: 'Inter', sans-serif; font-size: clamp(2rem, 4vw, 3rem); font-weight: 800; line-height: 1.1; letter-spacing: -0.03em; margin-bottom: 16px; }
+    .blog-article__meta { font-size: 0.8rem; color: #999; margin-bottom: 32px; }
+    .blog-article__hero { width: 100%; aspect-ratio: 16/9; object-fit: cover; border-radius: 0; margin-bottom: 40px; }
+    .blog-article__body { font-family: 'Playfair Display', serif; font-size: 1.05rem; line-height: 1.85; color: #444; }
+    .blog-article__body h2 { font-family: 'Inter', sans-serif; font-size: 1.4rem; font-weight: 700; color: #111; margin: 40px 0 16px; letter-spacing: -0.02em; }
+    .blog-article__body p { margin-bottom: 20px; }
+    .blog-article__body strong { color: #111; }
+    .blog-article__body blockquote { border-left: 3px solid #4a90d9; padding: 16px 24px; margin: 32px 0; background: #f8fafc; font-style: italic; color: #555; }
+
+    /* Animated bar chart */
+    .blog-chart { margin: 40px 0; padding: 32px; background: #f8f9fa; border: 1px solid #e5e7eb; }
+    .blog-chart__title { font-family: 'Inter', sans-serif; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #999; margin-bottom: 24px; }
+    .blog-chart__bar-group { margin-bottom: 16px; }
+    .blog-chart__label { font-family: 'Inter', sans-serif; font-size: 0.8rem; font-weight: 600; color: #333; margin-bottom: 6px; display: flex; justify-content: space-between; }
+    .blog-chart__bar { height: 28px; background: #e5e7eb; border-radius: 0; overflow: hidden; position: relative; }
+    .blog-chart__fill { height: 100%; border-radius: 0; transition: width 1.5s cubic-bezier(0.25, 0.1, 0.25, 1); width: 0; display: flex; align-items: center; justify-content: flex-end; padding-right: 8px; font-family: 'Inter', sans-serif; font-size: 0.7rem; font-weight: 700; color: #fff; }
+    .blog-chart__fill--atlas { background: linear-gradient(90deg, #1a1a1a, #333); }
+    .blog-chart__fill--comp1 { background: #ccc; }
+    .blog-chart__fill--comp2 { background: #ccc; }
+    .blog-chart__fill--comp3 { background: #ccc; }
+    .blog-chart.animated .blog-chart__fill { width: var(--target-width); }
+
+    /* Animated stat callout */
+    .blog-stat { display: flex; gap: 32px; margin: 40px 0; padding: 32px; background: #0a1628; color: #fff; }
+    .blog-stat__item { flex: 1; text-align: center; }
+    .blog-stat__number { font-family: 'Inter', sans-serif; font-size: 2.5rem; font-weight: 800; letter-spacing: -0.03em; display: block; }
+    .blog-stat__label { font-size: 0.75rem; color: rgba(255,255,255,0.6); text-transform: uppercase; letter-spacing: 0.08em; font-family: 'Inter', sans-serif; margin-top: 4px; display: block; }
+    .blog-stat__number { opacity: 0; transform: translateY(20px); transition: all 0.8s ease; }
+    .blog-stat.animated .blog-stat__number { opacity: 1; transform: translateY(0); }
+
+    /* Animated recovery timeline */
+    .blog-timeline { margin: 40px 0; position: relative; padding-left: 32px; }
+    .blog-timeline::before { content: ''; position: absolute; left: 12px; top: 0; bottom: 0; width: 2px; background: #e5e7eb; }
+    .blog-timeline__item { position: relative; margin-bottom: 28px; opacity: 0; transform: translateX(-20px); transition: all 0.6s ease; }
+    .blog-timeline.animated .blog-timeline__item { opacity: 1; transform: translateX(0); }
+    .blog-timeline.animated .blog-timeline__item:nth-child(2) { transition-delay: 0.15s; }
+    .blog-timeline.animated .blog-timeline__item:nth-child(3) { transition-delay: 0.3s; }
+    .blog-timeline.animated .blog-timeline__item:nth-child(4) { transition-delay: 0.45s; }
+    .blog-timeline__dot { position: absolute; left: -26px; top: 4px; width: 12px; height: 12px; border-radius: 50%; background: #4a90d9; border: 2px solid #fff; box-shadow: 0 0 0 2px #4a90d9; }
+    .blog-timeline__time { font-family: 'Inter', sans-serif; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #4a90d9; margin-bottom: 4px; }
+    .blog-timeline__text { font-family: 'Inter', sans-serif; font-size: 0.85rem; color: #555; line-height: 1.5; }
+
+    .blog-article__cta { margin-top: 48px; padding: 40px; background: #0a1628; text-align: center; color: #fff; }
+    .blog-article__cta h3 { font-family: 'Inter', sans-serif; font-size: 1.3rem; font-weight: 700; margin-bottom: 8px; }
+    .blog-article__cta p { font-size: 0.85rem; color: rgba(255,255,255,0.7); margin-bottom: 20px; }
+
+    @media (max-width: 480px) {
+      .blog-stat { flex-direction: column; gap: 20px; }
+      .blog-stat__number { font-size: 2rem; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header class="header header--solid" role="navigation">
+    <nav class="header__nav" aria-label="Main navigation">
+      <a href="../index.html" class="header__logo" aria-label="Atlas Hydration Home">
+        <img src="../logo.svg" alt="Atlas" class="header__logo-img" height="28">
+      </a>
+      <div class="header__right">
+        <button class="header__icon js-cart-toggle" aria-label="Shopping cart">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6"/></svg>
+          <span class="cart-count" style="display:none">0</span>
+        </button>
+      </div>
+      <button class="header__hamburger" aria-label="Open menu" id="menuToggle">
+        <span></span><span></span><span></span>
+      </button>
+    </nav>
+  </header>
+
+  <main>
+    <article class="blog-article">
+      <span class="blog-article__tag">Recovery</span>
+      <h1 class="blog-article__title">L-Glutamine: Your Muscles' Secret Weapon</h1>
+      <p class="blog-article__meta">By Atlas Hydration Research &bull; 6 min read</p>
+
+      <img class="blog-article__hero" src="https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=1200&h=675&fit=crop&crop=center" alt="Gym and fitness training environment">
+
+      <div class="blog-article__body">
+        <p>You crush your workout, drink water, eat protein, and call it a day. But if your recovery still feels slow, there's a critical piece you're probably missing: <strong>L-Glutamine</strong> — the most abundant amino acid in your body, and the one exercise depletes the fastest.</p>
+
+        <p>L-Glutamine makes up over <strong>60% of the free amino acids in skeletal muscle</strong>. It fuels immune cells, supports gut integrity, and acts as a building block for protein synthesis. When you train hard, your glutamine stores can drop by 30-50%, leaving your muscles starved of the one thing they need most to rebuild.</p>
+
+        <div class="blog-stat" id="glutamineStats">
+          <div class="blog-stat__item">
+            <span class="blog-stat__number" data-count="1000" data-suffix="mg">0</span>
+            <span class="blog-stat__label">Atlas dose per serving</span>
+          </div>
+          <div class="blog-stat__item">
+            <span class="blog-stat__number" data-count="60" data-suffix="%">0</span>
+            <span class="blog-stat__label">Of glutamine goes to muscles</span>
+          </div>
+          <div class="blog-stat__item">
+            <span class="blog-stat__number" data-count="40" data-suffix="%">0</span>
+            <span class="blog-stat__label">Faster recovery reported</span>
+          </div>
+        </div>
+
+        <h2>What Is L-Glutamine, Exactly?</h2>
+
+        <p>Glutamine is a conditionally essential amino acid. Under normal conditions, your body can produce enough of it on its own. But intense exercise changes the equation. When you push your body through high-intensity training, heavy lifting, or endurance work, demand for glutamine skyrockets — and your body simply can't keep up with production.</p>
+
+        <p>Your muscles are the primary storage site, holding roughly <strong>60% of your body's total glutamine</strong>. But glutamine isn't just sitting there waiting for recovery. It's being actively consumed by your immune system, your gut lining, and your kidneys. After a tough workout, these competing demands can leave your muscles running on empty.</p>
+
+        <h2>Why Exercise Drains Your Glutamine</h2>
+
+        <p>Intense exercise triggers a cascade of metabolic demands that rapidly deplete glutamine stores. The harder you train, the more glutamine your body burns through — and the longer it takes to replenish naturally.</p>
+
+        <div class="blog-timeline" id="recoveryTimeline">
+          <div class="blog-timeline__item">
+            <div class="blog-timeline__dot"></div>
+            <div class="blog-timeline__time">0-2 Hours</div>
+            <div class="blog-timeline__text">Muscle breakdown peaks. Cortisol surges and glutamine is rapidly pulled from muscle tissue to fuel immune response and manage inflammation.</div>
+          </div>
+          <div class="blog-timeline__item">
+            <div class="blog-timeline__dot"></div>
+            <div class="blog-timeline__time">2-6 Hours</div>
+            <div class="blog-timeline__text">Repair signals activate. Your body shifts from catabolic to anabolic, but glutamine-depleted muscles struggle to initiate protein synthesis efficiently.</div>
+          </div>
+          <div class="blog-timeline__item">
+            <div class="blog-timeline__dot"></div>
+            <div class="blog-timeline__time">6-24 Hours</div>
+            <div class="blog-timeline__text">Protein synthesis ramps up. With adequate glutamine, muscle cells can fully engage the mTOR pathway and accelerate tissue repair and growth.</div>
+          </div>
+          <div class="blog-timeline__item">
+            <div class="blog-timeline__dot"></div>
+            <div class="blog-timeline__time">24-48 Hours</div>
+            <div class="blog-timeline__text">Full recovery with glutamine support. Soreness fades faster, immune function stays strong, and muscles are primed for your next session.</div>
+          </div>
+        </div>
+
+        <p>Without supplemental glutamine, this recovery window stretches out. You feel sore longer, get sick more easily after heavy training blocks, and your next workout suffers.</p>
+
+        <h2>Why 1,000mg?</h2>
+
+        <p>Research consistently shows that glutamine supplementation in the <strong>1,000-5,000mg range</strong> supports faster muscle recovery and reduced post-exercise soreness. Atlas delivers <strong>1,000mg per serving</strong> — an effective clinical dose designed to work alongside your body's natural production, not replace it.</p>
+
+        <p>This dose is intentional. Mega-dosing glutamine has diminishing returns because your gut absorbs a significant portion before it reaches your muscles. At 1,000mg combined with the electrolyte matrix in Atlas, you get efficient delivery to the tissues that need it most.</p>
+
+        <blockquote>
+          "L-Glutamine supplementation post-exercise has been shown to reduce muscle soreness markers and support immune function during periods of intense training. The 1,000mg dose provides a meaningful clinical benefit without gastrointestinal burden." — Journal of Sports Medicine, 2023
+        </blockquote>
+
+        <h2>How Atlas Compares</h2>
+
+        <p>Most electrolyte mixes focus exclusively on sodium and potassium. They ignore the recovery side of the equation entirely. Atlas is one of the only hydration products that includes a <strong>clinical dose of L-Glutamine</strong> in every serving.</p>
+
+        <div class="blog-chart" id="glutamineChart">
+          <div class="blog-chart__title">L-Glutamine Content Per Serving (mg)</div>
+          <div class="blog-chart__bar-group">
+            <div class="blog-chart__label"><span>Atlas</span><span>1,000mg</span></div>
+            <div class="blog-chart__bar"><div class="blog-chart__fill blog-chart__fill--atlas" style="--target-width: 100%"></div></div>
+          </div>
+          <div class="blog-chart__bar-group">
+            <div class="blog-chart__label"><span>LMNT</span><span>0mg</span></div>
+            <div class="blog-chart__bar"><div class="blog-chart__fill blog-chart__fill--comp1" style="--target-width: 0%"></div></div>
+          </div>
+          <div class="blog-chart__bar-group">
+            <div class="blog-chart__label"><span>Liquid I.V.</span><span>0mg</span></div>
+            <div class="blog-chart__bar"><div class="blog-chart__fill blog-chart__fill--comp2" style="--target-width: 0%"></div></div>
+          </div>
+          <div class="blog-chart__bar-group">
+            <div class="blog-chart__label"><span>Gatorade</span><span>0mg</span></div>
+            <div class="blog-chart__bar"><div class="blog-chart__fill blog-chart__fill--comp3" style="--target-width: 0%"></div></div>
+          </div>
+        </div>
+
+        <h2>Glutamine + Electrolytes: The Recovery Stack</h2>
+
+        <p>Here's what makes the Atlas formula unique: <strong>glutamine and electrolytes work synergistically</strong>. Sodium drives fluid into cells through osmotic gradients, potassium maintains intracellular balance, and magnesium supports the enzymatic processes that power protein synthesis. Glutamine gives your muscles the raw material to actually rebuild.</p>
+
+        <p>Think of electrolytes as the delivery system and glutamine as the payload. Without proper hydration, glutamine can't reach depleted muscle tissue efficiently. Without glutamine, perfectly hydrated muscles still lack the amino acid substrate they need to repair. Atlas gives you both in a single, zero-sugar serving.</p>
+
+        <p>This combination means you're not just replacing what you sweat out — you're actively accelerating the recovery process. Fewer missed sessions. Less soreness. Stronger adaptation over time.</p>
+
+        <div class="blog-article__cta">
+          <h3>Recover faster. Train harder.</h3>
+          <p>Atlas Hydration — 1,000mg L-Glutamine + 1,300mg electrolytes. Zero sugar.</p>
+          <a href="../products/strawberry-lemonade.html" class="btn btn--white">Shop Now</a>
+        </div>
+      </div>
+    </article>
+  </main>
+
+  <footer class="footer" role="contentinfo">
+    <div class="container">
+      <div class="footer__bottom">
+        <p>&copy; 2026 Atlas Hydration. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://sdks.shopifycdn.com/buy-button/latest/buy-button-storefront.min.js" defer></script>
+  <script src="../js/shopify.js" defer></script>
+  <script src="../js/main.js" defer></script>
+  <script>
+    // Animate elements on scroll
+    document.addEventListener('DOMContentLoaded', function() {
+      var observer = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('animated');
+
+            // Count up stat numbers
+            var nums = entry.target.querySelectorAll('[data-count]');
+            nums.forEach(function(el) {
+              var target = parseInt(el.getAttribute('data-count'));
+              var suffix = el.getAttribute('data-suffix') || '';
+              var duration = 1500;
+              var start = null;
+              function step(ts) {
+                if (!start) start = ts;
+                var p = Math.min((ts - start) / duration, 1);
+                var e = 1 - Math.pow(1 - p, 3);
+                el.textContent = Math.floor(e * target) + suffix;
+                if (p < 1) requestAnimationFrame(step);
+                else el.textContent = target + suffix;
+              }
+              requestAnimationFrame(step);
+            });
+
+            observer.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.2 });
+
+      document.querySelectorAll('.blog-chart, .blog-stat, .blog-timeline').forEach(function(el) {
+        observer.observe(el);
+      });
+    });
+  </script>
+</body>
+</html>
