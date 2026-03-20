@@ -1688,10 +1688,9 @@ document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
   })();
 
   // --- 5. CTA Dark: Electrolyte Pulse Grid (on #0a0a0a) ---
-  (function() {
-    var s = addCanvas('.cta-dark');
+  function initPulseGrid(selector, alpha) {
+    var s = addCanvas(selector);
     if (!s) return;
-    var alpha = 0.06;
     var cellSize = 50;
     onVisible(s.el, function(t) {
       var w = s.w(), h = s.h();
@@ -1699,7 +1698,6 @@ document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
       var time = t * 0.001;
       var cols = Math.ceil(w / cellSize) + 1;
       var rows = Math.ceil(h / cellSize) + 1;
-      // Grid lines
       for (var r = 0; r <= rows; r++) {
         s.ctx.beginPath(); s.ctx.moveTo(0, r * cellSize); s.ctx.lineTo(w, r * cellSize);
         s.ctx.strokeStyle = 'rgba(' + BLUE.r + ',' + BLUE.g + ',' + BLUE.b + ',' + (alpha * 0.2) + ')';
@@ -1710,7 +1708,6 @@ document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
         s.ctx.strokeStyle = 'rgba(' + BLUE.r + ',' + BLUE.g + ',' + BLUE.b + ',' + (alpha * 0.2) + ')';
         s.ctx.lineWidth = 0.5; s.ctx.stroke();
       }
-      // Pulses
       for (var r = 0; r <= rows; r++) {
         for (var c = 0; c <= cols; c++) {
           var ix = c * cellSize, iy = r * cellSize;
@@ -1725,6 +1722,75 @@ document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
             s.ctx.fillStyle = 'rgba(' + BLUE.r + ',' + BLUE.g + ',' + BLUE.b + ',' + (alpha * pulse) + ')';
             s.ctx.fill();
           }
+        }
+      }
+    });
+  }
+  initPulseGrid('.cta-dark', 0.06);
+  initPulseGrid('.cta-section', 0.06);
+
+  // --- 6. Featured Product: Ocean Waves (on #ffffff) ---
+  (function() {
+    var s = addCanvas('.featured-product');
+    if (!s) return;
+    var alpha = 0.04;
+    onVisible(s.el, function(t) {
+      var w = s.w(), h = s.h();
+      s.resize();
+      var time = t * 0.0003;
+      for (var wi = 0; wi < 6; wi++) {
+        var baseY = h * 0.12 + (h * 0.76) * (wi / 5);
+        var amp = 18 + Math.sin(wi * 0.8) * 10;
+        var freq = 0.004 + wi * 0.0007;
+        var speed = (wi % 2 === 0 ? 1 : -1) * (0.8 + wi * 0.12);
+        s.ctx.beginPath();
+        for (var x = -10; x <= w + 10; x += 4) {
+          var y = baseY + Math.sin(x * freq + time * speed + wi) * amp + Math.sin(x * freq * 2.3 + time * speed * 0.7 + wi * 3) * amp * 0.3;
+          if (x === -10) s.ctx.moveTo(x, y); else s.ctx.lineTo(x, y);
+        }
+        s.ctx.strokeStyle = 'rgba(' + BLUE.r + ',' + BLUE.g + ',' + BLUE.b + ',' + (alpha * (0.4 + 0.6 * Math.sin(wi * 0.5 + 0.5))) + ')';
+        s.ctx.lineWidth = 1.2; s.ctx.stroke();
+      }
+    });
+  })();
+
+  // --- 7. Blog: DNA Helix (on #ffffff, subtle) ---
+  (function() {
+    var s = addCanvas('.blog');
+    if (!s) return;
+    var alpha = 0.04;
+    onVisible(s.el, function(t) {
+      var w = s.w(), h = s.h();
+      s.resize();
+      var time = t * 0.0004;
+      var helixCount = 3;
+      var spacing = w / (helixCount + 1);
+      for (var hi = 0; hi < helixCount; hi++) {
+        var cx = spacing * (hi + 1);
+        var amp = 30 + hi * 6;
+        var phase = hi * 2.1;
+        var steps = 60;
+        for (var i = 0; i < steps; i++) {
+          if (i % 4 !== 0) continue;
+          var yy = (i / steps) * (h + 40) - 20;
+          var tt = (i / steps) * Math.PI * 6 + time + phase;
+          var x1 = cx + Math.sin(tt) * amp;
+          var x2 = cx + Math.sin(tt + Math.PI) * amp;
+          var depth = (Math.cos(tt) + 1) * 0.5;
+          s.ctx.beginPath(); s.ctx.moveTo(x1, yy); s.ctx.lineTo(x2, yy);
+          s.ctx.strokeStyle = 'rgba(' + BLUE.r + ',' + BLUE.g + ',' + BLUE.b + ',' + (alpha * 0.35 * depth) + ')';
+          s.ctx.lineWidth = 1; s.ctx.stroke();
+        }
+        for (var strand = 0; strand < 2; strand++) {
+          s.ctx.beginPath();
+          for (var i = 0; i < steps; i++) {
+            var yy = (i / steps) * (h + 40) - 20;
+            var tt = (i / steps) * Math.PI * 6 + time + phase;
+            var xx = cx + Math.sin(tt + strand * Math.PI) * amp;
+            if (i === 0) s.ctx.moveTo(xx, yy); else s.ctx.lineTo(xx, yy);
+          }
+          s.ctx.strokeStyle = 'rgba(' + BLUE.r + ',' + BLUE.g + ',' + BLUE.b + ',' + alpha + ')';
+          s.ctx.lineWidth = 1; s.ctx.stroke();
         }
       }
     });
