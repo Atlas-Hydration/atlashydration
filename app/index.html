@@ -4852,9 +4852,15 @@
   // EQUITY TAB
   // =============================================
   var equityCurrentStage = 'foundation';
-  var equityCustomInvestors = [];
 
   var EQUITY_COLORS = ['#3b82f6','#a855f7','#ec4899','#f43f5e','#34d399','#fbbf24','#f97316','#06b6d4','#8b5cf6','#10b981','#ef4444','#6366f1'];
+
+  // Round configuration for computed stages
+  var ROUND_CONFIG = {
+    seed:    { investment: 2500000,  preMoney: 12500000,  label: 'Seed Investor',     type: 'Seed' },
+    seriesA: { investment: 7500000,  preMoney: 50000000,  label: 'Series A Investor',  type: 'SeriesA' },
+    seriesB: { investment: 15000000, preMoney: 150000000, label: 'Series B Investor',  type: 'SeriesB' }
+  };
 
   // Persist equity edits to localStorage
   function getEquityEdits() {
@@ -4862,19 +4868,6 @@
   }
   function saveEquityEdits(data) {
     localStorage.setItem('atlas_equity_edits', JSON.stringify(data));
-  }
-  function applyEquityEdits() {
-    var edits = getEquityEdits();
-    Object.keys(edits).forEach(function(stageKey) {
-      if (!EQUITY_DATA[stageKey]) return;
-      var stageEdits = edits[stageKey];
-      if (stageEdits.rows) {
-        EQUITY_DATA[stageKey].rows = stageEdits.rows;
-      }
-      if (stageEdits.future) {
-        EQUITY_DATA[stageKey].future = stageEdits.future;
-      }
-    });
   }
   function saveStageToStorage(stageKey) {
     var edits = getEquityEdits();
@@ -4884,8 +4877,17 @@
     };
     saveEquityEdits(edits);
   }
-  function recalcSummary(stageKey) {
-    var stage = EQUITY_DATA[stageKey];
+  function applyEquityEdits() {
+    var edits = getEquityEdits();
+    if (edits.foundation) {
+      if (edits.foundation.rows) EQUITY_DATA.foundation.rows = edits.foundation.rows;
+      if (edits.foundation.future) EQUITY_DATA.foundation.future = edits.foundation.future;
+    }
+  }
+
+  // Recompute summary for foundation (the only stored stage)
+  function recalcSummary() {
+    var stage = EQUITY_DATA.foundation;
     var totalShares = 0;
     var founderShares = 0;
     var investorShares = 0;
@@ -4902,25 +4904,104 @@
       futureShares += (f.shares || 0);
     });
     stage.totalShares = totalShares;
-    // Recalc percentages for founders
+    // Recalc percentages for all rows
     stage.rows.forEach(function(r) {
-      if (r.type === 'Founder' && r.shares) {
+      if (r.shares) {
         r.pct = (r.shares / totalShares * 100);
       }
     });
     stage.founderPct = totalShares ? (founderShares / totalShares * 100) : 0;
     stage.investorPct = totalShares ? (investorShares / totalShares * 100) : 0;
-    // Update summary cards for foundation
-    if (stageKey === 'foundation') {
-      stage.summaryCards = [
-        { label: 'Total Shares', value: totalShares.toLocaleString(), cls: '' },
-        { label: 'Founder Shares', value: founderShares.toLocaleString(), cls: '--accent' },
-        { label: 'Investor Shares', value: investorShares.toLocaleString(), cls: '--green' },
-        { label: 'Valuation Cap', value: valCap ? '$' + valCap.toLocaleString() : 'N/A', cls: '' },
-        { label: 'Future Pools', value: futureShares.toLocaleString(), cls: '' }
-      ];
-    }
+    stage.summaryCards = [
+      { label: 'Total Shares', value: totalShares.toLocaleString(), cls: '' },
+      { label: 'Founder Shares', value: founderShares.toLocaleString(), cls: '--accent' },
+      { label: 'Investor Shares', value: investorShares.toLocaleString(), cls: '--green' },
+      { label: 'Valuation Cap', value: valCap ? '$' + valCap.toLocaleString() : 'N/A', cls: '' },
+      { label: 'Future Pools', value: futureShares.toLocaleString(), cls: '' }
+    ];
   }
+
+  // Compute a funding round from a base cap table using C-Corp dilution math
+  function computeStage(baseRows, roundInvestment, preMoney, roundLabel, roundType) {
+    var preRoundShares = 0;
+    baseRows.forEach(function(r) { preRoundShares += (r.shares || 0); });
+
+    var pricePerShare = preMoney / preRoundShares;
+    var newShares = Math.round(roundInvestment / pricePerShare);
+    var postMoney = preMoney + roundInvestment;
+    var totalShares = preRoundShares + newShares;
+
+    var rows = [];
+    baseRows.forEach(function(r) {
+      var valuation = r.shares ? r.shares * pricePerShare : null;
+      rows.push({
+        type: r.type, name: r.name,
+        investment: r.investment || null,
+        valuation: valuation ? parseFloat(valuation.toFixed(2)) : null,
+        shares: r.shares,
+        pct: r.shares ? parseFloat((r.shares / totalShares * 100).toFixed(2)) : null
+      });
+    });
+
+    rows.push({
+      type: roundType, name: roundLabel,
+      investment: roundInvestment, valuation: null,
+      shares: newShares,
+      pct: parseFloat((newShares / totalShares * 100).toFixed(2))
+    });
+
+    var founderShares = 0, investorShares = 0;
+    rows.forEach(function(r) {
+      if (r.type === 'Founder') founderShares += (r.shares || 0);
+      else investorShares += (r.shares || 0);
+    });
+    var founderPct = totalShares ? parseFloat((founderShares / totalShares * 100).toFixed(2)) : 0;
+    var investorPct = totalShares ? parseFloat((investorShares / totalShares * 100).toFixed(2)) : 0;
+
+    var fmtMoney = function(v) {
+      if (v >= 1000000) return '$' + (v / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
+      return '$' + v.toLocaleString();
+    };
+
+    return {
+      rows: rows, future: [], totalShares: totalShares,
+      preMoney: preMoney, postMoney: postMoney,
+      pricePerShare: parseFloat(pricePerShare.toFixed(2)),
+      founderPct: founderPct, investorPct: investorPct,
+      summaryCards: [
+        { label: 'Pre-Money', value: fmtMoney(preMoney), cls: '' },
+        { label: 'Post-Money', value: fmtMoney(postMoney), cls: '--accent' },
+        { label: 'Price/Share', value: '$' + pricePerShare.toFixed(2), cls: '--green' },
+        { label: 'Total Shares', value: totalShares.toLocaleString(), cls: '' },
+        { label: 'Founders', value: founderPct.toFixed(2) + '%', cls: '' },
+        { label: 'Investors', value: investorPct.toFixed(2) + '%', cls: '' }
+      ]
+    };
+  }
+
+  // Build cap table for any stage by chaining from foundation
+  function getStageData(stageKey) {
+    if (stageKey === 'foundation') return EQUITY_DATA.foundation;
+
+    var foundation = EQUITY_DATA.foundation;
+    var baseRows = foundation.rows.slice();
+    foundation.future.forEach(function(f) {
+      baseRows.push({ type: 'Pool', name: f.name, investment: null, valuation: null, shares: f.shares, pct: null });
+    });
+
+    var stages = ['seed', 'seriesA', 'seriesB'];
+    var currentBase = baseRows;
+    var result = null;
+
+    for (var i = 0; i < stages.length; i++) {
+      var cfg = ROUND_CONFIG[stages[i]];
+      result = computeStage(currentBase, cfg.investment, cfg.preMoney, cfg.label, cfg.type);
+      if (stages[i] === stageKey) return result;
+      currentBase = result.rows;
+    }
+    return result;
+  }
+
   var EQUITY_DATA = {
     foundation: {
       label: 'Foundation',
@@ -4947,90 +5028,40 @@
         { label: 'Valuation Cap', value: '$600,000', cls: '' },
         { label: 'Future Pools', value: '600,000', cls: '' }
       ]
-    },
-    seed: {
-      label: 'Seed',
-      preMoney: 12500000, postMoney: 15000000, pricePerShare: 2.72,
-      totalShares: 5520000,
-      founderPct: 54.35, poolPct: 10.87, investorPct: 34.78,
-      rows: [
-        { type: 'Founder', name: 'Garrett Ray', investment: null, valuation: 8152173.91, shares: 3000000, pct: 65.22 },
-        { type: 'Pool', name: 'Influencer Pool', investment: null, valuation: 1086956.52, shares: 400000, pct: 8.70 },
-        { type: 'Pool', name: 'Employee Pool', investment: null, valuation: 543478.26, shares: 200000, pct: 4.35 },
-        { type: 'Founder', name: 'Worrell Burton LLC', investment: null, valuation: 2038043.48, shares: 750000, pct: 16.30 },
-        { type: 'Investor', name: 'Sundown Investments', investment: 20000, valuation: 339673.91, shares: 125000, pct: 2.72 },
-        { type: 'Investor', name: 'Nigel', investment: 10000, valuation: 169836.96, shares: 62500, pct: 1.36 },
-        { type: 'Investor', name: 'James Ray', investment: 10000, valuation: 169836.96, shares: 62500, pct: 1.36 },
-        { type: 'Seed', name: 'Seed Investor', investment: 2500000, valuation: null, shares: 920000, pct: 16.67 }
-      ],
-      future: [],
-      summaryCards: [
-        { label: 'Pre-Money', value: '$12.5M', cls: '' },
-        { label: 'Post-Money', value: '$15M', cls: '--accent' },
-        { label: 'Price/Share', value: '$2.72', cls: '--green' },
-        { label: 'Total Shares', value: '5,520,000', cls: '' },
-        { label: 'Founders', value: '54.35%', cls: '' },
-        { label: 'Investors', value: '34.78%', cls: '' }
-      ]
-    },
-    seriesA: {
-      label: 'Series A',
-      preMoney: 50000000, postMoney: 57500000, pricePerShare: 9.06,
-      totalShares: 6348000,
-      founderPct: 47.26, poolPct: 9.45, investorPct: 43.29,
-      rows: [
-        { type: 'Founder', name: 'Garrett Ray', investment: null, valuation: null, shares: 3000000, pct: 47.26 },
-        { type: 'Pool', name: 'Influencer Pool', investment: null, valuation: null, shares: 400000, pct: 6.30 },
-        { type: 'Pool', name: 'Employee Pool', investment: null, valuation: null, shares: 200000, pct: 3.15 },
-        { type: 'Founder', name: 'Worrell Burton LLC', investment: null, valuation: null, shares: 750000, pct: 11.81 },
-        { type: 'Investor', name: 'Sundown Investments', investment: 20000, valuation: null, shares: 125000, pct: 1.97 },
-        { type: 'Investor', name: 'Nigel', investment: 10000, valuation: null, shares: 62500, pct: 0.98 },
-        { type: 'Investor', name: 'James Ray', investment: 10000, valuation: null, shares: 62500, pct: 0.98 },
-        { type: 'Seed', name: 'Seed Investor', investment: 2500000, valuation: null, shares: 920000, pct: 14.49 },
-        { type: 'SeriesA', name: 'Series A Investor', investment: 7500000, valuation: null, shares: 828000, pct: 13.04 }
-      ],
-      future: [],
-      summaryCards: [
-        { label: 'Pre-Money', value: '$50M', cls: '' },
-        { label: 'Post-Money', value: '$57.5M', cls: '--accent' },
-        { label: 'Price/Share', value: '$9.06', cls: '--green' },
-        { label: 'Total Shares', value: '6,348,000', cls: '' },
-        { label: 'Founders', value: '47.26%', cls: '' },
-        { label: 'Investors', value: '43.29%', cls: '' }
-      ]
-    },
-    seriesB: {
-      label: 'Series B',
-      preMoney: 150000000, postMoney: 165000000, pricePerShare: 23.63,
-      totalShares: 6982800,
-      founderPct: 42.96, poolPct: 8.59, investorPct: 48.44,
-      rows: [
-        { type: 'Founder', name: 'Garrett Ray', investment: null, valuation: null, shares: 3000000, pct: 42.96 },
-        { type: 'Pool', name: 'Influencer Pool', investment: null, valuation: null, shares: 400000, pct: 5.73 },
-        { type: 'Pool', name: 'Employee Pool', investment: null, valuation: null, shares: 200000, pct: 2.86 },
-        { type: 'Founder', name: 'Worrell Burton LLC', investment: null, valuation: null, shares: 750000, pct: 10.74 },
-        { type: 'Investor', name: 'Sundown Investments', investment: 20000, valuation: null, shares: 125000, pct: 1.79 },
-        { type: 'Investor', name: 'Nigel', investment: 10000, valuation: null, shares: 62500, pct: 0.90 },
-        { type: 'Investor', name: 'James Ray', investment: 10000, valuation: null, shares: 62500, pct: 0.90 },
-        { type: 'Seed', name: 'Seed Investor', investment: 2500000, valuation: null, shares: 920000, pct: 13.17 },
-        { type: 'SeriesA', name: 'Series A Investor', investment: 7500000, valuation: null, shares: 828000, pct: 11.86 },
-        { type: 'SeriesB', name: 'Series B Investor', investment: 15000000, valuation: null, shares: 634800, pct: 9.09 }
-      ],
-      future: [],
-      summaryCards: [
-        { label: 'Pre-Money', value: '$150M', cls: '' },
-        { label: 'Post-Money', value: '$165M', cls: '--accent' },
-        { label: 'Price/Share', value: '$23.63', cls: '--green' },
-        { label: 'Total Shares', value: '6,982,800', cls: '' },
-        { label: 'Founders', value: '42.96%', cls: '' },
-        { label: 'Investors', value: '48.44%', cls: '' }
-      ]
     }
   };
 
+  // Apply saved edits from localStorage on load
+  applyEquityEdits();
+  recalcSummary();
+
+  // Inline cell editing for foundation stage
+  function makeEditable(td, value, onSave) {
+    if (td.querySelector('input')) return;
+    var original = value;
+    var input = document.createElement('input');
+    input.type = 'text';
+    input.value = value === null || value === undefined ? '' : value;
+    td.textContent = '';
+    td.appendChild(input);
+    input.focus();
+    input.select();
+
+    function save() {
+      var newVal = input.value.trim();
+      onSave(newVal, original);
+    }
+    input.addEventListener('blur', save);
+    input.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') { e.preventDefault(); input.blur(); }
+      if (e.key === 'Escape') { input.value = original !== null && original !== undefined ? String(original) : ''; input.blur(); }
+    });
+  }
+
   function renderEquity() {
-    var stage = EQUITY_DATA[equityCurrentStage];
+    var stage = getStageData(equityCurrentStage);
     if (!stage) return;
+    var isFoundation = equityCurrentStage === 'foundation';
 
     // Summary cards
     var summaryEl = document.getElementById('equitySummary');
@@ -5040,32 +5071,152 @@
 
     // Table
     var tbody = document.getElementById('equityTableBody');
-    var allRows = stage.rows.concat(equityCustomInvestors);
-    tbody.innerHTML = allRows.map(function(r) {
+    var allRows = stage.rows;
+    tbody.innerHTML = allRows.map(function(r, idx) {
       var typeCls = r.type.toLowerCase().replace(/\s/g,'');
       var inv = r.investment ? '$' + r.investment.toLocaleString() : 'N/A';
       var val = r.valuation ? '$' + r.valuation.toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2}) : 'N/A';
       var shares = r.shares ? r.shares.toLocaleString() : 'N/A';
-      var pct = r.pct !== null ? r.pct.toFixed(2) + '%' : 'N/A';
-      return '<tr><td><span class="equity-type-badge equity-type-badge--' + typeCls + '">' + r.type + '</span></td><td>' + r.name + '</td><td>' + inv + '</td><td>' + val + '</td><td>' + shares + '</td><td>' + pct + '</td></tr>';
+      var pct = r.pct !== null && r.pct !== undefined ? r.pct.toFixed(2) + '%' : 'N/A';
+
+      if (isFoundation) {
+        var deleteBtn = '<button class="equity-table__delete" data-delete="' + idx + '" title="Remove">&times;</button>';
+        return '<tr>' +
+          '<td><span class="equity-type-badge equity-type-badge--' + typeCls + '">' + r.type + '</span>' + deleteBtn + '</td>' +
+          '<td data-editable="name" data-row="' + idx + '">' + r.name + '</td>' +
+          '<td data-editable="investment" data-row="' + idx + '">' + inv + '</td>' +
+          '<td data-editable="valuation" data-row="' + idx + '">' + val + '</td>' +
+          '<td data-editable="shares" data-row="' + idx + '">' + shares + '</td>' +
+          '<td>' + pct + '</td></tr>';
+      } else {
+        return '<tr><td><span class="equity-type-badge equity-type-badge--' + typeCls + '">' + r.type + '</span></td><td>' + r.name + '</td><td>' + inv + '</td><td>' + val + '</td><td>' + shares + '</td><td>' + pct + '</td></tr>';
+      }
     }).join('');
 
     // Future pools
     if (stage.future && stage.future.length) {
-      tbody.innerHTML += stage.future.map(function(f) {
-        return '<tr style="opacity:0.6;"><td><span class="equity-type-badge equity-type-badge--pool">Future</span></td><td>' + f.name + '</td><td>N/A</td><td>N/A</td><td>' + f.shares.toLocaleString() + '</td><td>Reserved</td></tr>';
+      tbody.innerHTML += stage.future.map(function(f, fi) {
+        if (isFoundation) {
+          var deleteBtn = '<button class="equity-table__delete" data-delete-future="' + fi + '" title="Remove">&times;</button>';
+          return '<tr style="opacity:0.6;"><td><span class="equity-type-badge equity-type-badge--pool">Future</span>' + deleteBtn + '</td><td data-editable="future-name" data-future="' + fi + '">' + f.name + '</td><td>N/A</td><td>N/A</td><td data-editable="future-shares" data-future="' + fi + '">' + f.shares.toLocaleString() + '</td><td>Reserved</td></tr>';
+        } else {
+          return '<tr style="opacity:0.6;"><td><span class="equity-type-badge equity-type-badge--pool">Future</span></td><td>' + f.name + '</td><td>N/A</td><td>N/A</td><td>' + f.shares.toLocaleString() + '</td><td>Reserved</td></tr>';
+        }
       }).join('');
+    }
+
+    // Attach click handlers for editable cells (foundation only)
+    if (isFoundation) {
+      tbody.querySelectorAll('td[data-editable]').forEach(function(td) {
+        td.addEventListener('click', function() {
+          var field = td.getAttribute('data-editable');
+          var rowIdx = td.getAttribute('data-row');
+          var futureIdx = td.getAttribute('data-future');
+
+          if (futureIdx !== null && futureIdx !== undefined && futureIdx !== '') {
+            var fi = parseInt(futureIdx);
+            var pool = EQUITY_DATA.foundation.future[fi];
+            if (!pool) return;
+            if (field === 'future-name') {
+              makeEditable(td, pool.name, function(val) {
+                pool.name = val || pool.name;
+                saveStageToStorage('foundation');
+                recalcSummary();
+                renderEquity();
+              });
+            } else if (field === 'future-shares') {
+              makeEditable(td, pool.shares, function(val) {
+                var num = parseInt(String(val).replace(/[^0-9]/g, ''));
+                if (!isNaN(num) && num >= 0) pool.shares = num;
+                saveStageToStorage('foundation');
+                recalcSummary();
+                renderEquity();
+              });
+            }
+          } else if (rowIdx !== null && rowIdx !== undefined && rowIdx !== '') {
+            var ri = parseInt(rowIdx);
+            var row = EQUITY_DATA.foundation.rows[ri];
+            if (!row) return;
+
+            if (field === 'name') {
+              makeEditable(td, row.name, function(val) {
+                row.name = val || row.name;
+                saveStageToStorage('foundation');
+                renderEquity();
+              });
+            } else if (field === 'investment') {
+              makeEditable(td, row.investment, function(val) {
+                var num = parseFloat(String(val).replace(/[^0-9.]/g, ''));
+                row.investment = isNaN(num) ? null : num;
+                saveStageToStorage('foundation');
+                recalcSummary();
+                renderEquity();
+              });
+            } else if (field === 'valuation') {
+              makeEditable(td, row.valuation, function(val) {
+                var num = parseFloat(String(val).replace(/[^0-9.]/g, ''));
+                row.valuation = isNaN(num) ? null : num;
+                saveStageToStorage('foundation');
+                recalcSummary();
+                renderEquity();
+              });
+            } else if (field === 'shares') {
+              makeEditable(td, row.shares, function(val) {
+                var num = parseInt(String(val).replace(/[^0-9]/g, ''));
+                if (!isNaN(num) && num >= 0) row.shares = num;
+                saveStageToStorage('foundation');
+                recalcSummary();
+                renderEquity();
+              });
+            }
+          }
+        });
+      });
+
+      // Delete buttons for rows
+      tbody.querySelectorAll('[data-delete]').forEach(function(btn) {
+        btn.addEventListener('click', function(e) {
+          e.stopPropagation();
+          var idx = parseInt(btn.getAttribute('data-delete'));
+          EQUITY_DATA.foundation.rows.splice(idx, 1);
+          saveStageToStorage('foundation');
+          recalcSummary();
+          renderEquity();
+        });
+      });
+      // Delete buttons for future pools
+      tbody.querySelectorAll('[data-delete-future]').forEach(function(btn) {
+        btn.addEventListener('click', function(e) {
+          e.stopPropagation();
+          var idx = parseInt(btn.getAttribute('data-delete-future'));
+          EQUITY_DATA.foundation.future.splice(idx, 1);
+          saveStageToStorage('foundation');
+          recalcSummary();
+          renderEquity();
+        });
+      });
     }
 
     // Pie chart
     var pieData = [];
     var grouped = {};
     allRows.forEach(function(r) {
-      if (r.pct !== null && r.pct > 0) {
+      if (r.pct !== null && r.pct !== undefined && r.pct > 0) {
         if (!grouped[r.name]) grouped[r.name] = { name: r.name, pct: 0, type: r.type };
         grouped[r.name].pct += r.pct;
       }
     });
+    // Include future pools in pie for foundation
+    if (isFoundation && stage.future) {
+      var fTotalShares = stage.totalShares || 1;
+      stage.future.forEach(function(f) {
+        if (f.shares > 0) {
+          var fpct = f.shares / fTotalShares * 100;
+          if (!grouped[f.name]) grouped[f.name] = { name: f.name, pct: 0, type: 'Pool' };
+          grouped[f.name].pct += fpct;
+        }
+      });
+    }
     var keys = Object.keys(grouped);
     keys.forEach(function(k) { pieData.push(grouped[k]); });
     pieData.sort(function(a,b) { return b.pct - a.pct; });
@@ -5083,8 +5234,8 @@
     });
 
     var pie = document.getElementById('equityPie');
-    pie.style.background = 'conic-gradient(' + gradientParts.join(', ') + ')';
-    document.getElementById('equityPieTotal').textContent = stage.totalShares.toLocaleString();
+    pie.style.background = gradientParts.length ? 'conic-gradient(' + gradientParts.join(', ') + ')' : 'var(--surface2)';
+    document.getElementById('equityPieTotal').textContent = stage.totalShares ? stage.totalShares.toLocaleString() : '0';
 
     // Legend
     var legendEl = document.getElementById('equityLegend');
@@ -5100,15 +5251,19 @@
     var investment = parseFloat(document.getElementById('dilutionInvestment').value) || 0;
     var preMoney = parseFloat(document.getElementById('dilutionValuation').value) || 0;
     var stageKey = document.getElementById('dilutionStage').value;
-    var stage = EQUITY_DATA[stageKey];
-    if (!stage || !investment || !preMoney) return;
+    var stage = getStageData(stageKey);
+    if (!stage || !investment || !preMoney || !stage.totalShares) return;
 
     var postMoney = preMoney + investment;
     var pps = preMoney / stage.totalShares;
     var newShares = Math.round(investment / pps);
     var newTotalShares = stage.totalShares + newShares;
     var newInvestorPct = (newShares / newTotalShares * 100);
-    var founderShares = 3000000 + 750000;
+
+    var founderShares = 0;
+    stage.rows.forEach(function(r) {
+      if (r.type === 'Founder') founderShares += (r.shares || 0);
+    });
     var founderPctDiluted = (founderShares / newTotalShares * 100);
 
     document.getElementById('dilResShares').textContent = newShares.toLocaleString();
@@ -5125,7 +5280,6 @@
     equityCurrentStage = tab.getAttribute('data-stage');
     document.querySelectorAll('.equity-stage-tab').forEach(function(t) { t.classList.remove('active'); });
     tab.classList.add('active');
-    equityCustomInvestors = [];
     renderEquity();
   });
 
@@ -5152,14 +5306,14 @@
     var shares = parseFloat(document.getElementById('modalInvestorShares').value) || 0;
     if (!name) return;
 
-    var stage = EQUITY_DATA[equityCurrentStage];
-    var totalWithNew = stage.totalShares + shares;
-    var pct = shares > 0 ? (shares / totalWithNew * 100) : null;
-
-    equityCustomInvestors.push({
+    // Add directly to foundation rows
+    EQUITY_DATA.foundation.rows.push({
       type: type, name: name, investment: amount || null,
-      valuation: valCap || null, shares: shares, pct: pct
+      valuation: valCap || null, shares: shares, pct: null
     });
+
+    recalcSummary();
+    saveStageToStorage('foundation');
 
     document.getElementById('equityModal').classList.add('hidden');
     document.getElementById('modalInvestorName').value = '';
