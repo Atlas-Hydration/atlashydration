@@ -1137,6 +1137,110 @@
       .topbar__status { display: none; }
       .table { min-width: 400px; }
     }
+
+    /* ============ EQUITY TAB ============ */
+    .equity-container { max-width: 1400px; margin: 0 auto; }
+    .equity-stage-tabs { display: flex; gap: 6px; margin-bottom: 28px; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 4px; width: fit-content; }
+    .equity-stage-tab { padding: 8px 20px; border-radius: 8px; border: none; background: none; font-family: var(--font); font-size: 0.8rem; font-weight: 500; color: var(--text-dim); cursor: pointer; transition: all 0.2s; white-space: nowrap; }
+    .equity-stage-tab:hover { color: var(--text); background: var(--surface2); }
+    .equity-stage-tab.active { background: var(--accent); color: #fff; }
+    .equity-summary-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 14px; margin-bottom: 28px; }
+    .equity-summary-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; }
+    .equity-summary-card__label { font-size: 0.68rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 6px; }
+    .equity-summary-card__value { font-size: 1.5rem; font-weight: 700; letter-spacing: -0.02em; }
+    .equity-summary-card__value--accent { color: var(--accent); }
+    .equity-summary-card__value--green { color: var(--green); }
+    .equity-layout { display: grid; grid-template-columns: 1fr 320px; gap: 24px; margin-bottom: 28px; }
+    @media (max-width: 900px) { .equity-layout { grid-template-columns: 1fr; } }
+    .equity-table-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+    .equity-table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
+    .equity-table th { text-align: left; padding: 12px 16px; font-weight: 600; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-dim); border-bottom: 1px solid var(--border); background: var(--surface2); }
+    .equity-table td { padding: 11px 16px; border-bottom: 1px solid var(--border); transition: background 0.15s; }
+    .equity-table tr:hover td { background: var(--surface2); }
+    .equity-table tr:last-child td { border-bottom: none; }
+    .equity-type-badge { display: inline-block; padding: 2px 8px; border-radius: 5px; font-size: 0.68rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.03em; }
+    .equity-type-badge--founder { background: var(--accent-dim); color: var(--accent); }
+    .equity-type-badge--investor { background: var(--green-dim); color: var(--green); }
+    .equity-type-badge--pool { background: var(--yellow-dim); color: var(--yellow); }
+    .equity-type-badge--seed { background: rgba(168,85,247,0.12); color: #a855f7; }
+    .equity-type-badge--seriesa { background: rgba(236,72,153,0.12); color: #ec4899; }
+    .equity-type-badge--seriesb { background: rgba(244,63,94,0.12); color: #f43f5e; }
+    .equity-chart-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; display: flex; flex-direction: column; align-items: center; }
+    .equity-chart-wrap h3 { font-size: 0.85rem; font-weight: 600; margin-bottom: 20px; }
+    .equity-pie { width: 220px; height: 220px; border-radius: 50%; position: relative; margin-bottom: 20px; }
+    .equity-pie__center { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); width: 100px; height: 100px; border-radius: 50%; background: var(--surface); display: flex; align-items: center; justify-content: center; flex-direction: column; }
+    .equity-pie__center-val { font-size: 1.1rem; font-weight: 700; }
+    .equity-pie__center-lbl { font-size: 0.65rem; color: var(--text-dim); }
+    .equity-legend { width: 100%; }
+    .equity-legend-item { display: flex; align-items: center; gap: 8px; padding: 4px 0; font-size: 0.75rem; }
+    .equity-legend-dot { width: 10px; height: 10px; border-radius: 3px; flex-shrink: 0; }
+    .equity-legend-name { flex: 1; color: var(--text-dim); }
+    .equity-legend-pct { font-weight: 600; }
+    .equity-dilution { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; margin-bottom: 28px; }
+    .equity-dilution h3 { font-size: 0.9rem; font-weight: 600; margin-bottom: 16px; }
+    .equity-dilution__row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; align-items: end; margin-bottom: 16px; }
+    .equity-dilution__field label { display: block; font-size: 0.72rem; color: var(--text-dim); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.04em; }
+    .equity-dilution__field input, .equity-dilution__field select { width: 100%; padding: 10px 14px; background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-family: var(--font); font-size: 0.85rem; outline: none; }
+    .equity-dilution__field input:focus, .equity-dilution__field select:focus { border-color: var(--accent); }
+    .equity-dilution__result { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 16px; display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; }
+    .equity-dilution__result-item label { font-size: 0.68rem; color: var(--text-dim); display: block; margin-bottom: 2px; }
+    .equity-dilution__result-item span { font-size: 1rem; font-weight: 600; }
+    .equity-add-btn { background: var(--accent); color: #fff; border: none; padding: 10px 20px; border-radius: 8px; font-family: var(--font); font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: opacity 0.2s; margin-bottom: 28px; }
+    .equity-add-btn:hover { opacity: 0.85; }
+    .equity-modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 1000; display: flex; align-items: center; justify-content: center; padding: 24px; }
+    .equity-modal-overlay.hidden { display: none; }
+    .equity-modal { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 32px; width: 100%; max-width: 480px; }
+    .equity-modal h3 { font-size: 1rem; font-weight: 600; margin-bottom: 20px; }
+    .equity-modal__field { margin-bottom: 14px; }
+    .equity-modal__field label { display: block; font-size: 0.72rem; color: var(--text-dim); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.04em; }
+    .equity-modal__field input, .equity-modal__field select { width: 100%; padding: 10px 14px; background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-family: var(--font); font-size: 0.85rem; outline: none; }
+    .equity-modal__actions { display: flex; gap: 10px; margin-top: 20px; }
+    .equity-modal__actions button { flex: 1; padding: 10px; border-radius: 8px; font-family: var(--font); font-size: 0.82rem; font-weight: 600; cursor: pointer; border: none; }
+    .equity-modal__cancel { background: var(--surface2); color: var(--text); border: 1px solid var(--border) !important; }
+    .equity-modal__save { background: var(--accent); color: #fff; }
+    @media (max-width: 600px) { .equity-dilution__row { grid-template-columns: 1fr; } .equity-summary-cards { grid-template-columns: 1fr 1fr; } }
+
+    /* ============ DECK TAB ============ */
+    .deck-container { height: calc(100vh - 56px); overflow-y: auto; scroll-snap-type: y mandatory; scroll-behavior: smooth; position: relative; }
+    .deck-slide { height: 100vh; min-height: 100vh; scroll-snap-align: start; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; padding: 60px 48px; }
+    .deck-slide__bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; opacity: 0.3; }
+    .deck-slide__content { position: relative; z-index: 1; max-width: 900px; width: 100%; text-align: center; }
+    .deck-slide__num { font-size: 0.65rem; color: var(--accent); text-transform: uppercase; letter-spacing: 0.12em; font-weight: 600; margin-bottom: 16px; }
+    .deck-slide__title { font-size: clamp(2rem, 5vw, 3.2rem); font-weight: 700; letter-spacing: -0.03em; line-height: 1.15; margin-bottom: 24px; }
+    .deck-slide__subtitle { font-size: 1.1rem; color: var(--text-dim); line-height: 1.6; max-width: 640px; margin: 0 auto 32px; }
+    .deck-stats-row { display: flex; gap: 24px; justify-content: center; flex-wrap: wrap; margin-top: 28px; }
+    .deck-stat { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px 32px; min-width: 160px; }
+    .deck-stat__val { font-size: 1.8rem; font-weight: 700; color: var(--accent); letter-spacing: -0.02em; }
+    .deck-stat__lbl { font-size: 0.72rem; color: var(--text-dim); margin-top: 4px; }
+    .deck-bullets { text-align: left; display: inline-block; margin: 0 auto; }
+    .deck-bullets li { font-size: 0.95rem; color: var(--text-dim); line-height: 2; list-style: none; padding-left: 24px; position: relative; }
+    .deck-bullets li::before { content: ''; position: absolute; left: 0; top: 50%; transform: translateY(-50%); width: 8px; height: 8px; background: var(--accent); border-radius: 2px; }
+    .deck-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; text-align: left; margin-top: 24px; }
+    .deck-grid-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; }
+    .deck-grid-card__icon { font-size: 1.8rem; margin-bottom: 12px; }
+    .deck-grid-card__title { font-size: 0.9rem; font-weight: 600; margin-bottom: 6px; }
+    .deck-grid-card__desc { font-size: 0.78rem; color: var(--text-dim); line-height: 1.5; }
+    .deck-compare-table { width: 100%; border-collapse: collapse; font-size: 0.8rem; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; margin-top: 24px; text-align: left; }
+    .deck-compare-table th { padding: 12px 16px; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-dim); border-bottom: 1px solid var(--border); background: var(--surface2); font-weight: 600; }
+    .deck-compare-table td { padding: 10px 16px; border-bottom: 1px solid var(--border); }
+    .deck-compare-table tr:last-child td { border-bottom: none; }
+    .deck-compare-table .deck-highlight { color: var(--accent); font-weight: 600; }
+    .deck-team-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 32px; max-width: 480px; margin: 0 auto; }
+    .deck-team-card__name { font-size: 1.3rem; font-weight: 700; margin-bottom: 4px; }
+    .deck-team-card__role { font-size: 0.85rem; color: var(--accent); margin-bottom: 16px; }
+    .deck-team-card__bio { font-size: 0.85rem; color: var(--text-dim); line-height: 1.7; }
+    .deck-funds-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 14px; margin-top: 24px; text-align: left; }
+    .deck-fund-item { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; }
+    .deck-fund-item__pct { font-size: 1.5rem; font-weight: 700; color: var(--accent); }
+    .deck-fund-item__lbl { font-size: 0.78rem; color: var(--text-dim); margin-top: 4px; }
+    .deck-cta-contact { margin-top: 32px; font-size: 0.85rem; color: var(--text-dim); }
+    .deck-cta-contact a { color: var(--accent); text-decoration: none; }
+    .deck-cta-contact a:hover { text-decoration: underline; }
+    .deck-nav { position: fixed; right: 24px; top: 50%; transform: translateY(-50%); z-index: 50; display: none; flex-direction: column; gap: 8px; }
+    .deck-nav.visible { display: flex; }
+    .deck-nav__dot { width: 10px; height: 10px; border-radius: 50%; background: var(--border); border: none; cursor: pointer; transition: all 0.2s; padding: 0; }
+    .deck-nav__dot.active { background: var(--accent); transform: scale(1.3); }
+    @media (max-width: 600px) { .deck-slide { padding: 40px 20px; } .deck-stat { min-width: 120px; padding: 16px 20px; } .deck-nav { display: none !important; } }
   </style>
 </head>
 <body>
@@ -1471,6 +1575,352 @@
           <div id="roadmapPhases"></div>
         </div>
 
+        <!-- Equity Tab -->
+        <div class="tab-content" id="tab-equity">
+          <div class="equity-container">
+            <div class="equity-stage-tabs" id="equityStages">
+              <button class="equity-stage-tab active" data-stage="foundation">Foundation</button>
+              <button class="equity-stage-tab" data-stage="seed">Seed</button>
+              <button class="equity-stage-tab" data-stage="seriesA">Series A</button>
+              <button class="equity-stage-tab" data-stage="seriesB">Series B</button>
+            </div>
+            <div class="equity-summary-cards" id="equitySummary"></div>
+            <div class="equity-layout">
+              <div class="equity-table-wrap">
+                <table class="equity-table">
+                  <thead>
+                    <tr>
+                      <th>Type</th>
+                      <th>Name</th>
+                      <th>Investment</th>
+                      <th>Valuation / Equity</th>
+                      <th>Shares</th>
+                      <th>Ownership %</th>
+                    </tr>
+                  </thead>
+                  <tbody id="equityTableBody"></tbody>
+                </table>
+              </div>
+              <div class="equity-chart-wrap">
+                <h3>Ownership Distribution</h3>
+                <div class="equity-pie" id="equityPie">
+                  <div class="equity-pie__center">
+                    <div class="equity-pie__center-val" id="equityPieTotal"></div>
+                    <div class="equity-pie__center-lbl">Total Shares</div>
+                  </div>
+                </div>
+                <div class="equity-legend" id="equityLegend"></div>
+              </div>
+            </div>
+            <button class="equity-add-btn" id="equityAddBtn">+ Add Investor</button>
+            <div class="equity-dilution">
+              <h3>Dilution Calculator</h3>
+              <div class="equity-dilution__row">
+                <div class="equity-dilution__field">
+                  <label>New Investment ($)</label>
+                  <input type="number" id="dilutionInvestment" value="1000000" min="0" step="50000">
+                </div>
+                <div class="equity-dilution__field">
+                  <label>Pre-Money Valuation ($)</label>
+                  <input type="number" id="dilutionValuation" value="12500000" min="0" step="500000">
+                </div>
+                <div class="equity-dilution__field">
+                  <label>Based on Stage</label>
+                  <select id="dilutionStage">
+                    <option value="foundation">Foundation</option>
+                    <option value="seed" selected>Seed</option>
+                    <option value="seriesA">Series A</option>
+                    <option value="seriesB">Series B</option>
+                  </select>
+                </div>
+              </div>
+              <div class="equity-dilution__result" id="dilutionResult">
+                <div class="equity-dilution__result-item"><label>New Shares Issued</label><span id="dilResShares">--</span></div>
+                <div class="equity-dilution__result-item"><label>New Investor Ownership</label><span id="dilResOwnership">--</span></div>
+                <div class="equity-dilution__result-item"><label>Post-Money Valuation</label><span id="dilResPostMoney">--</span></div>
+                <div class="equity-dilution__result-item"><label>Price Per Share</label><span id="dilResPPS">--</span></div>
+                <div class="equity-dilution__result-item"><label>Founder Diluted To</label><span id="dilResFounder">--</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="equity-modal-overlay hidden" id="equityModal">
+            <div class="equity-modal">
+              <h3>Add Investor</h3>
+              <div class="equity-modal__field">
+                <label>Name</label>
+                <input type="text" id="modalInvestorName" placeholder="Investor name">
+              </div>
+              <div class="equity-modal__field">
+                <label>Type</label>
+                <select id="modalInvestorType">
+                  <option value="Investor">Investor</option>
+                  <option value="Founder">Founder</option>
+                  <option value="Pool">Pool</option>
+                </select>
+              </div>
+              <div class="equity-modal__field">
+                <label>Investment ($)</label>
+                <input type="number" id="modalInvestorAmount" placeholder="10000" min="0">
+              </div>
+              <div class="equity-modal__field">
+                <label>Valuation Cap ($)</label>
+                <input type="number" id="modalInvestorValCap" placeholder="600000" min="0">
+              </div>
+              <div class="equity-modal__field">
+                <label>Shares</label>
+                <input type="number" id="modalInvestorShares" placeholder="62500" min="0">
+              </div>
+              <div class="equity-modal__actions">
+                <button class="equity-modal__cancel" id="modalCancel">Cancel</button>
+                <button class="equity-modal__save" id="modalSave">Add Investor</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Deck Tab -->
+        <div class="tab-content" id="tab-deck">
+          <div class="deck-container" id="deckContainer">
+            <canvas class="deck-slide__bg" id="deckCanvas"></canvas>
+
+            <!-- Slide 1: Title -->
+            <div class="deck-slide" data-slide="0">
+              <div class="deck-slide__content">
+                <div class="deck-slide__num">Atlas Hydration</div>
+                <div class="deck-slide__title">Zero-Sugar<br>Electrolyte Mixes</div>
+                <div class="deck-slide__subtitle">Premium hydration engineered for peak performance. No sugar. No compromises.</div>
+                <div class="deck-stats-row">
+                  <div class="deck-stat"><div class="deck-stat__val">Seed Round</div><div class="deck-stat__lbl">March 2026</div></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Slide 2: Problem -->
+            <div class="deck-slide" data-slide="1">
+              <div class="deck-slide__content">
+                <div class="deck-slide__num">Slide 02 &mdash; The Problem</div>
+                <div class="deck-slide__title">Dehydration Is the #1 Silent Performance Killer</div>
+                <div class="deck-slide__subtitle">75% of Americans are chronically dehydrated. Existing solutions are loaded with sugar, artificial ingredients, or overpriced for what you get.</div>
+                <div class="deck-stats-row">
+                  <div class="deck-stat"><div class="deck-stat__val">75%</div><div class="deck-stat__lbl">Chronically Dehydrated</div></div>
+                  <div class="deck-stat"><div class="deck-stat__val">$45B</div><div class="deck-stat__lbl">Lost Productivity/yr</div></div>
+                  <div class="deck-stat"><div class="deck-stat__val">2-3x</div><div class="deck-stat__lbl">Sugar in Leading Brands</div></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Slide 3: Solution -->
+            <div class="deck-slide" data-slide="2">
+              <div class="deck-slide__content">
+                <div class="deck-slide__num">Slide 03 &mdash; The Solution</div>
+                <div class="deck-slide__title">Atlas Hydration</div>
+                <div class="deck-slide__subtitle">Premium electrolyte drink mixes with zero sugar, clean ingredients, and science-backed formulations for real hydration.</div>
+                <ul class="deck-bullets">
+                  <li>Zero sugar, zero artificial sweeteners</li>
+                  <li>1,000mg electrolytes per serving</li>
+                  <li>Added Vitamins B &amp; C for immunity</li>
+                  <li>Clean, transparent ingredient list</li>
+                  <li>Convenient single-serve stick packs</li>
+                </ul>
+              </div>
+            </div>
+
+            <!-- Slide 4: Market -->
+            <div class="deck-slide" data-slide="3">
+              <div class="deck-slide__content">
+                <div class="deck-slide__num">Slide 04 &mdash; Market Opportunity</div>
+                <div class="deck-slide__title">A Massive &amp; Growing Market</div>
+                <div class="deck-slide__subtitle">The global hydration and sports drink market is expanding rapidly, driven by health-conscious consumers shifting away from sugary beverages.</div>
+                <div class="deck-stats-row">
+                  <div class="deck-stat"><div class="deck-stat__val">$32B</div><div class="deck-stat__lbl">Global Sports Drink Market</div></div>
+                  <div class="deck-stat"><div class="deck-stat__val">$8.4B</div><div class="deck-stat__lbl">US Electrolyte Market</div></div>
+                  <div class="deck-stat"><div class="deck-stat__val">12.4%</div><div class="deck-stat__lbl">CAGR Through 2030</div></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Slide 5: Product Line -->
+            <div class="deck-slide" data-slide="4">
+              <div class="deck-slide__content">
+                <div class="deck-slide__num">Slide 05 &mdash; Product Line</div>
+                <div class="deck-slide__title">Our Products</div>
+                <div class="deck-slide__subtitle">Launching with bold flavors backed by real science.</div>
+                <div class="deck-grid">
+                  <div class="deck-grid-card">
+                    <div class="deck-grid-card__icon">&#127827;</div>
+                    <div class="deck-grid-card__title">Strawberry Lemonade</div>
+                    <div class="deck-grid-card__desc">Our flagship flavor. Refreshing, clean taste with full electrolyte profile. Now shipping.</div>
+                  </div>
+                  <div class="deck-grid-card">
+                    <div class="deck-grid-card__icon">&#127818;</div>
+                    <div class="deck-grid-card__title">Lemon Lime</div>
+                    <div class="deck-grid-card__desc">Classic citrus hydration. Zero sugar with a crisp, natural flavor. Now shipping.</div>
+                  </div>
+                  <div class="deck-grid-card">
+                    <div class="deck-grid-card__icon">&#127815;</div>
+                    <div class="deck-grid-card__title">Grapefruit (Coming Soon)</div>
+                    <div class="deck-grid-card__desc">Tangy and bold. Next in the lineup for Q2 2026 launch.</div>
+                  </div>
+                  <div class="deck-grid-card">
+                    <div class="deck-grid-card__icon">&#127819;</div>
+                    <div class="deck-grid-card__title">More Flavors</div>
+                    <div class="deck-grid-card__desc">Tropical Mango, Mixed Berry, and Watermelon planned for 2026-2027 expansion.</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Slide 6: Business Model -->
+            <div class="deck-slide" data-slide="5">
+              <div class="deck-slide__content">
+                <div class="deck-slide__num">Slide 06 &mdash; Business Model</div>
+                <div class="deck-slide__title">How We Make Money</div>
+                <div class="deck-slide__subtitle">Multi-channel DTC-first approach with strong unit economics.</div>
+                <div class="deck-grid">
+                  <div class="deck-grid-card">
+                    <div class="deck-grid-card__title">DTC Website</div>
+                    <div class="deck-grid-card__desc">Shopify-powered. Highest margins (65-70%). Direct customer relationship &amp; data.</div>
+                  </div>
+                  <div class="deck-grid-card">
+                    <div class="deck-grid-card__title">Amazon FBA</div>
+                    <div class="deck-grid-card__desc">Massive reach and discovery. 45-50% margins. Leveraging Amazon advertising.</div>
+                  </div>
+                  <div class="deck-grid-card">
+                    <div class="deck-grid-card__title">Retail (2027)</div>
+                    <div class="deck-grid-card__desc">Target GNC, Vitamin Shoppe, grocery chains. 35-40% margins at scale.</div>
+                  </div>
+                  <div class="deck-grid-card">
+                    <div class="deck-grid-card__title">Subscriptions</div>
+                    <div class="deck-grid-card__desc">Subscribe &amp; save model for recurring revenue. 20% discount drives LTV.</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Slide 7: Traction -->
+            <div class="deck-slide" data-slide="6">
+              <div class="deck-slide__content">
+                <div class="deck-slide__num">Slide 07 &mdash; Traction</div>
+                <div class="deck-slide__title">Early Momentum</div>
+                <div class="deck-slide__subtitle">Building a community-first brand from day one.</div>
+                <div class="deck-stats-row">
+                  <div class="deck-stat"><div class="deck-stat__val">2</div><div class="deck-stat__lbl">SKUs Launched</div></div>
+                  <div class="deck-stat"><div class="deck-stat__val">Live</div><div class="deck-stat__lbl">Amazon + DTC</div></div>
+                  <div class="deck-stat"><div class="deck-stat__val">Growing</div><div class="deck-stat__lbl">Social Community</div></div>
+                </div>
+                <ul class="deck-bullets" style="margin-top:32px;">
+                  <li>Product live on Amazon and atlashydration.com</li>
+                  <li>Influencer partnership pipeline activated</li>
+                  <li>TikTok Shop integration in progress</li>
+                  <li>First batch of UGC content produced</li>
+                </ul>
+              </div>
+            </div>
+
+            <!-- Slide 8: Go-to-Market -->
+            <div class="deck-slide" data-slide="7">
+              <div class="deck-slide__content">
+                <div class="deck-slide__num">Slide 08 &mdash; Go-to-Market</div>
+                <div class="deck-slide__title">Growth Engine</div>
+                <div class="deck-slide__subtitle">A UGC-first content engine combined with strategic influencer partnerships and paid amplification.</div>
+                <div class="deck-grid">
+                  <div class="deck-grid-card">
+                    <div class="deck-grid-card__title">UGC Content Engine</div>
+                    <div class="deck-grid-card__desc">Scalable creator-driven content production for TikTok, Instagram Reels, and YouTube Shorts.</div>
+                  </div>
+                  <div class="deck-grid-card">
+                    <div class="deck-grid-card__title">TikTok Shop</div>
+                    <div class="deck-grid-card__desc">Native commerce integration. Viral potential with zero-friction checkout.</div>
+                  </div>
+                  <div class="deck-grid-card">
+                    <div class="deck-grid-card__title">Influencer Partnerships</div>
+                    <div class="deck-grid-card__desc">Micro and macro influencers in fitness, wellness, and lifestyle verticals.</div>
+                  </div>
+                  <div class="deck-grid-card">
+                    <div class="deck-grid-card__title">Paid Amplification</div>
+                    <div class="deck-grid-card__desc">Meta, TikTok, Google ads to scale winning creatives with proven ROAS.</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Slide 9: Competitive Landscape -->
+            <div class="deck-slide" data-slide="8">
+              <div class="deck-slide__content">
+                <div class="deck-slide__num">Slide 09 &mdash; Competitive Landscape</div>
+                <div class="deck-slide__title">Why Atlas Wins</div>
+                <div class="deck-slide__subtitle">We compete on clean ingredients, zero sugar, and honest branding.</div>
+                <table class="deck-compare-table">
+                  <thead>
+                    <tr><th>Feature</th><th>Liquid IV</th><th>LMNT</th><th>Drip Drop</th><th class="deck-highlight">Atlas</th></tr>
+                  </thead>
+                  <tbody>
+                    <tr><td>Sugar</td><td>11g</td><td>0g</td><td>6g</td><td class="deck-highlight">0g</td></tr>
+                    <tr><td>Price/Serving</td><td>$1.50</td><td>$1.60</td><td>$1.25</td><td class="deck-highlight">$1.33</td></tr>
+                    <tr><td>Vitamins B &amp; C</td><td>Yes</td><td>No</td><td>Yes</td><td class="deck-highlight">Yes</td></tr>
+                    <tr><td>Clean Label</td><td>No</td><td>Yes</td><td>No</td><td class="deck-highlight">Yes</td></tr>
+                    <tr><td>DTC + Amazon</td><td>Yes</td><td>Yes</td><td>Yes</td><td class="deck-highlight">Yes</td></tr>
+                    <tr><td>TikTok Shop</td><td>No</td><td>No</td><td>No</td><td class="deck-highlight">Yes</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- Slide 10: Team -->
+            <div class="deck-slide" data-slide="9">
+              <div class="deck-slide__content">
+                <div class="deck-slide__num">Slide 10 &mdash; The Team</div>
+                <div class="deck-slide__title">Built by Operators</div>
+                <div class="deck-team-card">
+                  <div class="deck-team-card__name">Garrett Ray</div>
+                  <div class="deck-team-card__role">Founder &amp; CEO</div>
+                  <div class="deck-team-card__bio">Commercial airline pilot turned entrepreneur. Garrett experienced the hydration problem firsthand at 35,000 feet and built Atlas to solve it. Combines disciplined operational thinking with a passion for health and wellness. Hands-on across product development, branding, and go-to-market strategy.</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Slide 11: Financials -->
+            <div class="deck-slide" data-slide="10">
+              <div class="deck-slide__content">
+                <div class="deck-slide__num">Slide 11 &mdash; Financials</div>
+                <div class="deck-slide__title">Revenue Projections</div>
+                <div class="deck-slide__subtitle">Clear milestones with capital-efficient growth.</div>
+                <div class="deck-stats-row">
+                  <div class="deck-stat"><div class="deck-stat__val">$1M</div><div class="deck-stat__lbl">Year 1 Target</div></div>
+                  <div class="deck-stat"><div class="deck-stat__val">$10M</div><div class="deck-stat__lbl">Year 3 Target</div></div>
+                  <div class="deck-stat"><div class="deck-stat__val">$100M</div><div class="deck-stat__lbl">Year 5+ Vision</div></div>
+                </div>
+                <ul class="deck-bullets" style="margin-top:32px;">
+                  <li>65-70% gross margins on DTC channel</li>
+                  <li>Path to profitability by end of Year 2</li>
+                  <li>Subscription model drives 40%+ repeat rate</li>
+                  <li>Retail expansion unlocks exponential growth in Year 3+</li>
+                </ul>
+              </div>
+            </div>
+
+            <!-- Slide 12: The Ask -->
+            <div class="deck-slide" data-slide="11">
+              <div class="deck-slide__content">
+                <div class="deck-slide__num">Slide 12 &mdash; The Ask</div>
+                <div class="deck-slide__title">$2.5M Seed Round</div>
+                <div class="deck-slide__subtitle">Fueling the next phase of growth. Pre-money valuation: $12.5M.</div>
+                <div class="deck-funds-row">
+                  <div class="deck-fund-item"><div class="deck-fund-item__pct">40%</div><div class="deck-fund-item__lbl">Marketing &amp; Customer Acquisition</div></div>
+                  <div class="deck-fund-item"><div class="deck-fund-item__pct">25%</div><div class="deck-fund-item__lbl">Inventory &amp; Supply Chain</div></div>
+                  <div class="deck-fund-item"><div class="deck-fund-item__pct">20%</div><div class="deck-fund-item__lbl">Team &amp; Operations</div></div>
+                  <div class="deck-fund-item"><div class="deck-fund-item__pct">15%</div><div class="deck-fund-item__lbl">Product Development</div></div>
+                </div>
+                <div class="deck-cta-contact">
+                  <p style="margin-top:32px;font-size:1.1rem;color:var(--text);font-weight:600;">Let's build the future of hydration together.</p>
+                  <p style="margin-top:12px;">garrett@atlashydration.com</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="deck-nav" id="deckNav"></div>
+        </div>
+
         <!-- Orders Tab -->
         <div class="tab-content" id="tab-orders">
           <div class="orders-header">
@@ -1631,7 +2081,7 @@
   var PAGE_TITLES = {
     products: 'Products', variants: 'Variants', collections: 'Collections',
     shop: 'Shop Info', seo: 'SEO', geo: 'GEO', orders: 'Orders', customers: 'Customers',
-    landing: 'Landing Page', roadmap: 'Roadmap'
+    landing: 'Landing Page', roadmap: 'Roadmap', equity: 'Equity', deck: 'Pitch Deck'
   };
 
   document.getElementById('sidebarNav').addEventListener('click', function(e) {
@@ -1650,6 +2100,8 @@
     if (tab === 'geo' && document.getElementById('geoChecks').innerHTML === '') setTimeout(runGeoScan, 10);
     if (tab === 'landing') setTimeout(renderLanding, 10);
     if (tab === 'roadmap') setTimeout(renderRoadmap, 10);
+    if (tab === 'equity') setTimeout(renderEquity, 10);
+    if (tab === 'deck') setTimeout(initDeck, 10);
     // close mobile sidebar
     document.getElementById('sidebar').classList.remove('open');
   });
@@ -4038,6 +4490,414 @@
       this.classList.toggle('roadmap-header__scene--collapsed');
     });
   }
+
+  // =============================================
+  // EQUITY TAB
+  // =============================================
+  var equityCurrentStage = 'foundation';
+  var equityCustomInvestors = [];
+
+  var EQUITY_COLORS = ['#3b82f6','#a855f7','#ec4899','#f43f5e','#34d399','#fbbf24','#f97316','#06b6d4','#8b5cf6','#10b981','#ef4444','#6366f1'];
+
+  var EQUITY_DATA = {
+    foundation: {
+      label: 'Foundation',
+      preMoney: null, postMoney: null, pricePerShare: null,
+      totalShares: 4000000,
+      founderPct: 80.00, poolPct: 0, investorPct: 20.00,
+      rows: [
+        { type: 'Founder', name: 'Garrett Ray', investment: null, valuation: null, shares: 3000000, pct: 80.00 },
+        { type: 'Founder', name: 'Worrell Burton LLC', investment: null, valuation: null, shares: 750000, pct: 20.00 },
+        { type: 'Investor', name: 'Sundown Investments, LLC', investment: 20000, valuation: 600000, shares: 125000, pct: null },
+        { type: 'Investor', name: 'Nigel', investment: 10000, valuation: 600000, shares: 62500, pct: null },
+        { type: 'Investor', name: 'James Ray', investment: 10000, valuation: 600000, shares: 62500, pct: null },
+        { type: 'Investor', name: 'Alex Costa', investment: 10000, valuation: 600000, shares: 62500, pct: null },
+        { type: 'Investor', name: 'Dane Hagy', investment: 10000, valuation: 600000, shares: 62500, pct: null }
+      ],
+      future: [
+        { name: 'Influencer Pool', shares: 400000 },
+        { name: 'Employee Pool', shares: 200000 }
+      ],
+      summaryCards: [
+        { label: 'Total Shares', value: '4,000,000', cls: '' },
+        { label: 'Founder Shares', value: '3,750,000', cls: '--accent' },
+        { label: 'Investor Shares', value: '375,000', cls: '--green' },
+        { label: 'Valuation Cap', value: '$600,000', cls: '' },
+        { label: 'Future Pools', value: '600,000', cls: '' }
+      ]
+    },
+    seed: {
+      label: 'Seed',
+      preMoney: 12500000, postMoney: 15000000, pricePerShare: 2.72,
+      totalShares: 5520000,
+      founderPct: 54.35, poolPct: 10.87, investorPct: 34.78,
+      rows: [
+        { type: 'Founder', name: 'Garrett Ray', investment: null, valuation: 8152173.91, shares: 3000000, pct: 65.22 },
+        { type: 'Pool', name: 'Influencer Pool', investment: null, valuation: 1086956.52, shares: 400000, pct: 8.70 },
+        { type: 'Pool', name: 'Employee Pool', investment: null, valuation: 543478.26, shares: 200000, pct: 4.35 },
+        { type: 'Founder', name: 'Worrell Burton LLC', investment: null, valuation: 2038043.48, shares: 750000, pct: 16.30 },
+        { type: 'Investor', name: 'Sundown Investments', investment: 20000, valuation: 339673.91, shares: 125000, pct: 2.72 },
+        { type: 'Investor', name: 'Nigel', investment: 10000, valuation: 169836.96, shares: 62500, pct: 1.36 },
+        { type: 'Investor', name: 'James Ray', investment: 10000, valuation: 169836.96, shares: 62500, pct: 1.36 },
+        { type: 'Seed', name: 'Seed Investor', investment: 2500000, valuation: null, shares: 920000, pct: 16.67 }
+      ],
+      future: [],
+      summaryCards: [
+        { label: 'Pre-Money', value: '$12.5M', cls: '' },
+        { label: 'Post-Money', value: '$15M', cls: '--accent' },
+        { label: 'Price/Share', value: '$2.72', cls: '--green' },
+        { label: 'Total Shares', value: '5,520,000', cls: '' },
+        { label: 'Founders', value: '54.35%', cls: '' },
+        { label: 'Investors', value: '34.78%', cls: '' }
+      ]
+    },
+    seriesA: {
+      label: 'Series A',
+      preMoney: 50000000, postMoney: 57500000, pricePerShare: 9.06,
+      totalShares: 6348000,
+      founderPct: 47.26, poolPct: 9.45, investorPct: 43.29,
+      rows: [
+        { type: 'Founder', name: 'Garrett Ray', investment: null, valuation: null, shares: 3000000, pct: 47.26 },
+        { type: 'Pool', name: 'Influencer Pool', investment: null, valuation: null, shares: 400000, pct: 6.30 },
+        { type: 'Pool', name: 'Employee Pool', investment: null, valuation: null, shares: 200000, pct: 3.15 },
+        { type: 'Founder', name: 'Worrell Burton LLC', investment: null, valuation: null, shares: 750000, pct: 11.81 },
+        { type: 'Investor', name: 'Sundown Investments', investment: 20000, valuation: null, shares: 125000, pct: 1.97 },
+        { type: 'Investor', name: 'Nigel', investment: 10000, valuation: null, shares: 62500, pct: 0.98 },
+        { type: 'Investor', name: 'James Ray', investment: 10000, valuation: null, shares: 62500, pct: 0.98 },
+        { type: 'Seed', name: 'Seed Investor', investment: 2500000, valuation: null, shares: 920000, pct: 14.49 },
+        { type: 'SeriesA', name: 'Series A Investor', investment: 7500000, valuation: null, shares: 828000, pct: 13.04 }
+      ],
+      future: [],
+      summaryCards: [
+        { label: 'Pre-Money', value: '$50M', cls: '' },
+        { label: 'Post-Money', value: '$57.5M', cls: '--accent' },
+        { label: 'Price/Share', value: '$9.06', cls: '--green' },
+        { label: 'Total Shares', value: '6,348,000', cls: '' },
+        { label: 'Founders', value: '47.26%', cls: '' },
+        { label: 'Investors', value: '43.29%', cls: '' }
+      ]
+    },
+    seriesB: {
+      label: 'Series B',
+      preMoney: 150000000, postMoney: 165000000, pricePerShare: 23.63,
+      totalShares: 6982800,
+      founderPct: 42.96, poolPct: 8.59, investorPct: 48.44,
+      rows: [
+        { type: 'Founder', name: 'Garrett Ray', investment: null, valuation: null, shares: 3000000, pct: 42.96 },
+        { type: 'Pool', name: 'Influencer Pool', investment: null, valuation: null, shares: 400000, pct: 5.73 },
+        { type: 'Pool', name: 'Employee Pool', investment: null, valuation: null, shares: 200000, pct: 2.86 },
+        { type: 'Founder', name: 'Worrell Burton LLC', investment: null, valuation: null, shares: 750000, pct: 10.74 },
+        { type: 'Investor', name: 'Sundown Investments', investment: 20000, valuation: null, shares: 125000, pct: 1.79 },
+        { type: 'Investor', name: 'Nigel', investment: 10000, valuation: null, shares: 62500, pct: 0.90 },
+        { type: 'Investor', name: 'James Ray', investment: 10000, valuation: null, shares: 62500, pct: 0.90 },
+        { type: 'Seed', name: 'Seed Investor', investment: 2500000, valuation: null, shares: 920000, pct: 13.17 },
+        { type: 'SeriesA', name: 'Series A Investor', investment: 7500000, valuation: null, shares: 828000, pct: 11.86 },
+        { type: 'SeriesB', name: 'Series B Investor', investment: 15000000, valuation: null, shares: 634800, pct: 9.09 }
+      ],
+      future: [],
+      summaryCards: [
+        { label: 'Pre-Money', value: '$150M', cls: '' },
+        { label: 'Post-Money', value: '$165M', cls: '--accent' },
+        { label: 'Price/Share', value: '$23.63', cls: '--green' },
+        { label: 'Total Shares', value: '6,982,800', cls: '' },
+        { label: 'Founders', value: '42.96%', cls: '' },
+        { label: 'Investors', value: '48.44%', cls: '' }
+      ]
+    }
+  };
+
+  function renderEquity() {
+    var stage = EQUITY_DATA[equityCurrentStage];
+    if (!stage) return;
+
+    // Summary cards
+    var summaryEl = document.getElementById('equitySummary');
+    summaryEl.innerHTML = stage.summaryCards.map(function(c) {
+      return '<div class="equity-summary-card"><div class="equity-summary-card__label">' + c.label + '</div><div class="equity-summary-card__value equity-summary-card__value' + c.cls + '">' + c.value + '</div></div>';
+    }).join('');
+
+    // Table
+    var tbody = document.getElementById('equityTableBody');
+    var allRows = stage.rows.concat(equityCustomInvestors);
+    tbody.innerHTML = allRows.map(function(r) {
+      var typeCls = r.type.toLowerCase().replace(/\s/g,'');
+      var inv = r.investment ? '$' + r.investment.toLocaleString() : 'N/A';
+      var val = r.valuation ? '$' + r.valuation.toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2}) : 'N/A';
+      var shares = r.shares ? r.shares.toLocaleString() : 'N/A';
+      var pct = r.pct !== null ? r.pct.toFixed(2) + '%' : 'N/A';
+      return '<tr><td><span class="equity-type-badge equity-type-badge--' + typeCls + '">' + r.type + '</span></td><td>' + r.name + '</td><td>' + inv + '</td><td>' + val + '</td><td>' + shares + '</td><td>' + pct + '</td></tr>';
+    }).join('');
+
+    // Future pools
+    if (stage.future && stage.future.length) {
+      tbody.innerHTML += stage.future.map(function(f) {
+        return '<tr style="opacity:0.6;"><td><span class="equity-type-badge equity-type-badge--pool">Future</span></td><td>' + f.name + '</td><td>N/A</td><td>N/A</td><td>' + f.shares.toLocaleString() + '</td><td>Reserved</td></tr>';
+      }).join('');
+    }
+
+    // Pie chart
+    var pieData = [];
+    var grouped = {};
+    allRows.forEach(function(r) {
+      if (r.pct !== null && r.pct > 0) {
+        if (!grouped[r.name]) grouped[r.name] = { name: r.name, pct: 0, type: r.type };
+        grouped[r.name].pct += r.pct;
+      }
+    });
+    var keys = Object.keys(grouped);
+    keys.forEach(function(k) { pieData.push(grouped[k]); });
+    pieData.sort(function(a,b) { return b.pct - a.pct; });
+
+    var totalPct = 0;
+    pieData.forEach(function(d) { totalPct += d.pct; });
+
+    var gradientParts = [];
+    var cumulative = 0;
+    pieData.forEach(function(d, i) {
+      var start = (cumulative / totalPct) * 100;
+      cumulative += d.pct;
+      var end = (cumulative / totalPct) * 100;
+      gradientParts.push(EQUITY_COLORS[i % EQUITY_COLORS.length] + ' ' + start.toFixed(2) + '% ' + end.toFixed(2) + '%');
+    });
+
+    var pie = document.getElementById('equityPie');
+    pie.style.background = 'conic-gradient(' + gradientParts.join(', ') + ')';
+    document.getElementById('equityPieTotal').textContent = stage.totalShares.toLocaleString();
+
+    // Legend
+    var legendEl = document.getElementById('equityLegend');
+    legendEl.innerHTML = pieData.map(function(d, i) {
+      return '<div class="equity-legend-item"><div class="equity-legend-dot" style="background:' + EQUITY_COLORS[i % EQUITY_COLORS.length] + '"></div><span class="equity-legend-name">' + d.name + '</span><span class="equity-legend-pct">' + d.pct.toFixed(2) + '%</span></div>';
+    }).join('');
+
+    // Dilution calculator
+    updateDilution();
+  }
+
+  function updateDilution() {
+    var investment = parseFloat(document.getElementById('dilutionInvestment').value) || 0;
+    var preMoney = parseFloat(document.getElementById('dilutionValuation').value) || 0;
+    var stageKey = document.getElementById('dilutionStage').value;
+    var stage = EQUITY_DATA[stageKey];
+    if (!stage || !investment || !preMoney) return;
+
+    var postMoney = preMoney + investment;
+    var pps = preMoney / stage.totalShares;
+    var newShares = Math.round(investment / pps);
+    var newTotalShares = stage.totalShares + newShares;
+    var newInvestorPct = (newShares / newTotalShares * 100);
+    var founderShares = 3000000 + 750000;
+    var founderPctDiluted = (founderShares / newTotalShares * 100);
+
+    document.getElementById('dilResShares').textContent = newShares.toLocaleString();
+    document.getElementById('dilResOwnership').textContent = newInvestorPct.toFixed(2) + '%';
+    document.getElementById('dilResPostMoney').textContent = '$' + (postMoney / 1000000).toFixed(1) + 'M';
+    document.getElementById('dilResPPS').textContent = '$' + pps.toFixed(2);
+    document.getElementById('dilResFounder').textContent = founderPctDiluted.toFixed(2) + '%';
+  }
+
+  // Equity stage tabs
+  document.getElementById('equityStages').addEventListener('click', function(e) {
+    var tab = e.target.closest('.equity-stage-tab');
+    if (!tab) return;
+    equityCurrentStage = tab.getAttribute('data-stage');
+    document.querySelectorAll('.equity-stage-tab').forEach(function(t) { t.classList.remove('active'); });
+    tab.classList.add('active');
+    equityCustomInvestors = [];
+    renderEquity();
+  });
+
+  // Dilution inputs
+  document.getElementById('dilutionInvestment').addEventListener('input', updateDilution);
+  document.getElementById('dilutionValuation').addEventListener('input', updateDilution);
+  document.getElementById('dilutionStage').addEventListener('change', updateDilution);
+
+  // Add investor modal
+  document.getElementById('equityAddBtn').addEventListener('click', function() {
+    document.getElementById('equityModal').classList.remove('hidden');
+  });
+  document.getElementById('modalCancel').addEventListener('click', function() {
+    document.getElementById('equityModal').classList.add('hidden');
+  });
+  document.getElementById('equityModal').addEventListener('click', function(e) {
+    if (e.target === this) this.classList.add('hidden');
+  });
+  document.getElementById('modalSave').addEventListener('click', function() {
+    var name = document.getElementById('modalInvestorName').value.trim();
+    var type = document.getElementById('modalInvestorType').value;
+    var amount = parseFloat(document.getElementById('modalInvestorAmount').value) || 0;
+    var valCap = parseFloat(document.getElementById('modalInvestorValCap').value) || 0;
+    var shares = parseFloat(document.getElementById('modalInvestorShares').value) || 0;
+    if (!name) return;
+
+    var stage = EQUITY_DATA[equityCurrentStage];
+    var totalWithNew = stage.totalShares + shares;
+    var pct = shares > 0 ? (shares / totalWithNew * 100) : null;
+
+    equityCustomInvestors.push({
+      type: type, name: name, investment: amount || null,
+      valuation: valCap || null, shares: shares, pct: pct
+    });
+
+    document.getElementById('equityModal').classList.add('hidden');
+    document.getElementById('modalInvestorName').value = '';
+    document.getElementById('modalInvestorAmount').value = '';
+    document.getElementById('modalInvestorValCap').value = '';
+    document.getElementById('modalInvestorShares').value = '';
+    renderEquity();
+  });
+
+  // =============================================
+  // DECK TAB
+  // =============================================
+  var deckInitialized = false;
+  var deckAnimFrame = null;
+
+  function initDeck() {
+    // Build nav dots
+    var nav = document.getElementById('deckNav');
+    var slides = document.querySelectorAll('#deckContainer .deck-slide');
+    if (nav.children.length === 0) {
+      for (var i = 0; i < slides.length; i++) {
+        var dot = document.createElement('button');
+        dot.className = 'deck-nav__dot' + (i === 0 ? ' active' : '');
+        dot.setAttribute('data-slide', i);
+        nav.appendChild(dot);
+      }
+    }
+    nav.classList.add('visible');
+
+    // Nav dot clicks
+    nav.addEventListener('click', function(e) {
+      var dot = e.target.closest('.deck-nav__dot');
+      if (!dot) return;
+      var idx = parseInt(dot.getAttribute('data-slide'));
+      slides[idx].scrollIntoView({ behavior: 'smooth' });
+    });
+
+    // Scroll observer for active dot
+    var container = document.getElementById('deckContainer');
+    container.addEventListener('scroll', function() {
+      var scrollTop = container.scrollTop;
+      var slideH = container.clientHeight;
+      var current = Math.round(scrollTop / slideH);
+      nav.querySelectorAll('.deck-nav__dot').forEach(function(d, i) {
+        d.classList.toggle('active', i === current);
+      });
+    });
+
+    // WebGL-like animated gradient background on canvas
+    if (!deckInitialized) {
+      deckInitialized = true;
+      initDeckCanvas();
+    }
+  }
+
+  function initDeckCanvas() {
+    var canvas = document.getElementById('deckCanvas');
+    if (!canvas) return;
+    var ctx = canvas.getContext('2d');
+    var container = document.getElementById('deckContainer');
+
+    function resize() {
+      canvas.width = container.clientWidth;
+      canvas.height = container.scrollHeight;
+      canvas.style.position = 'absolute';
+      canvas.style.top = '0';
+      canvas.style.left = '0';
+      canvas.style.width = '100%';
+      canvas.style.height = container.scrollHeight + 'px';
+      canvas.style.pointerEvents = 'none';
+      canvas.style.zIndex = '0';
+    }
+    resize();
+
+    var particles = [];
+    for (var i = 0; i < 60; i++) {
+      particles.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        r: Math.random() * 3 + 1,
+        dx: (Math.random() - 0.5) * 0.5,
+        dy: (Math.random() - 0.5) * 0.5,
+        alpha: Math.random() * 0.4 + 0.1
+      });
+    }
+
+    var time = 0;
+    function animate() {
+      time += 0.005;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // Animated gradient blobs
+      var numBlobs = 4;
+      for (var b = 0; b < numBlobs; b++) {
+        var bx = canvas.width * (0.3 + 0.4 * Math.sin(time + b * 1.5));
+        var by = canvas.height * (0.2 + 0.1 * b + 0.05 * Math.cos(time * 0.7 + b));
+        var grad = ctx.createRadialGradient(bx, by, 0, bx, by, 300);
+        var hue = 220 + b * 30;
+        grad.addColorStop(0, 'hsla(' + hue + ',70%,50%,0.08)');
+        grad.addColorStop(1, 'hsla(' + hue + ',70%,50%,0)');
+        ctx.fillStyle = grad;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+      }
+
+      // Particles
+      var accentColor = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || '#3b82f6';
+      particles.forEach(function(p) {
+        p.x += p.dx;
+        p.y += p.dy;
+        if (p.x < 0) p.x = canvas.width;
+        if (p.x > canvas.width) p.x = 0;
+        if (p.y < 0) p.y = canvas.height;
+        if (p.y > canvas.height) p.y = 0;
+
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = accentColor.replace(')', ',' + p.alpha + ')').replace('rgb(', 'rgba(');
+        if (accentColor.charAt(0) === '#') {
+          var r = parseInt(accentColor.slice(1,3),16);
+          var g = parseInt(accentColor.slice(3,5),16);
+          var bl = parseInt(accentColor.slice(5,7),16);
+          ctx.fillStyle = 'rgba(' + r + ',' + g + ',' + bl + ',' + p.alpha + ')';
+        }
+        ctx.fill();
+      });
+
+      deckAnimFrame = requestAnimationFrame(animate);
+    }
+    animate();
+
+    // Resize on window resize
+    window.addEventListener('resize', function() {
+      resize();
+    });
+
+    // Stop animation when not visible
+    var observer = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (!entry.isIntersecting && deckAnimFrame) {
+          cancelAnimationFrame(deckAnimFrame);
+          deckAnimFrame = null;
+        } else if (entry.isIntersecting && !deckAnimFrame) {
+          animate();
+        }
+      });
+    });
+    observer.observe(canvas);
+  }
+
+  // Hide deck nav when not on deck tab
+  var origSidebarClick = document.getElementById('sidebarNav');
+  origSidebarClick.addEventListener('click', function() {
+    var nav = document.getElementById('deckNav');
+    if (nav) {
+      var deckTab = document.getElementById('tab-deck');
+      if (!deckTab.classList.contains('active')) {
+        nav.classList.remove('visible');
+      }
+    }
+  });
 
 })();
 </script>
