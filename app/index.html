@@ -882,13 +882,16 @@
     .roadmap-canvas-card__col-dot--inprogress { background: var(--accent); }
     .roadmap-canvas-card__col-dot--completed { background: var(--green); }
     .roadmap-canvas-card__connector {
-      position: absolute; width: 12px; height: 12px; border-radius: 50%;
+      position: absolute; width: 16px; height: 16px; border-radius: 50%;
       background: var(--accent); border: 2px solid var(--surface);
-      cursor: crosshair; z-index: 3; opacity: 0; transition: opacity 0.15s;
+      cursor: crosshair; z-index: 3; opacity: 0; transition: opacity 0.15s, transform 0.15s;
     }
     .roadmap-canvas-card:hover .roadmap-canvas-card__connector { opacity: 1; }
-    .roadmap-canvas-card__connector--right { right: -6px; top: 50%; transform: translateY(-50%); }
-    .roadmap-canvas-card__connector--left { left: -6px; top: 50%; transform: translateY(-50%); }
+    .roadmap-canvas-card__connector:hover { transform: translateY(-50%) scale(1.3); box-shadow: 0 0 8px var(--accent); }
+    .roadmap-canvas-card__connector--right { right: -8px; top: 50%; transform: translateY(-50%); }
+    .roadmap-canvas-card__connector--left { left: -8px; top: 50%; transform: translateY(-50%); }
+    .roadmap-canvas-card.connect-target { outline: 2px solid var(--accent); outline-offset: 2px; }
+    .roadmap-canvas__preview-line { stroke: var(--accent); stroke-width: 2; stroke-dasharray: 6 4; opacity: 0.7; pointer-events: none; }
     .roadmap-phase__count { font-size: 0.72rem; color: var(--text-dim); font-weight: 500; }
     .roadmap-phase__chevron { transition: transform 0.2s; color: var(--text-dim); font-size: 0.8rem; }
     .roadmap-phase.open .roadmap-phase__chevron { transform: rotate(180deg); }
@@ -1314,6 +1317,81 @@
     @media (max-width: 600px) { .equity-dilution__row { grid-template-columns: 1fr; } .equity-summary-cards { grid-template-columns: 1fr 1fr; } }
 
     /* ============ DECK TAB ============ */
+    /* Deck management page */
+    .deck-manager { max-width: 1200px; margin: 0 auto; }
+    .deck-manager__header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; flex-wrap: wrap; gap: 12px; }
+    .deck-manager__header h2 { font-size: 1.1rem; font-weight: 600; }
+    .deck-manager__controls { display: flex; align-items: center; gap: 8px; }
+    .deck-manager__view-toggle {
+      display: flex; gap: 2px; background: var(--surface); border: 1px solid var(--border);
+      border-radius: 8px; padding: 3px;
+    }
+    .deck-manager__view-btn {
+      padding: 6px 12px; border: none; background: none; color: var(--text-dim);
+      font-family: var(--font); font-size: 0.72rem; font-weight: 600; cursor: pointer;
+      border-radius: 6px; transition: all 0.15s;
+    }
+    .deck-manager__view-btn:hover { color: var(--text); }
+    .deck-manager__view-btn.active { background: var(--accent); color: #fff; }
+    .deck-manager__new-btn {
+      padding: 8px 16px; background: var(--accent); color: #fff; border: none;
+      border-radius: 8px; font-family: var(--font); font-size: 0.78rem; font-weight: 600;
+      cursor: pointer; transition: opacity 0.2s;
+    }
+    .deck-manager__new-btn:hover { opacity: 0.85; }
+    /* Grid view */
+    .deck-grid-view { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+    .deck-card {
+      background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+      overflow: hidden; cursor: pointer; transition: all 0.2s;
+    }
+    .deck-card:hover { border-color: var(--accent); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.2); }
+    .deck-card__preview {
+      height: 160px; background: linear-gradient(135deg, var(--surface2), var(--surface));
+      display: flex; align-items: center; justify-content: center; position: relative;
+      overflow: hidden;
+    }
+    .deck-card__preview-icon { font-size: 2.5rem; opacity: 0.5; }
+    .deck-card__preview-gradient {
+      position: absolute; inset: 0;
+      background: linear-gradient(135deg, rgba(59,130,246,0.15), rgba(16,185,129,0.1));
+    }
+    .deck-card__preview-title {
+      position: relative; z-index: 1; font-size: 1rem; font-weight: 600;
+      text-align: center; padding: 0 16px;
+    }
+    .deck-card__preview-slides {
+      position: absolute; bottom: 8px; right: 12px; font-size: 0.6rem;
+      color: var(--text-dim); background: var(--surface); padding: 2px 8px;
+      border-radius: 4px; border: 1px solid var(--border);
+    }
+    .deck-card__info { padding: 16px; }
+    .deck-card__title { font-size: 0.88rem; font-weight: 600; margin-bottom: 4px; }
+    .deck-card__meta { font-size: 0.7rem; color: var(--text-dim); display: flex; gap: 12px; }
+    .deck-card__actions { display: flex; gap: 6px; margin-top: 10px; }
+    .deck-card__action {
+      padding: 4px 10px; border: 1px solid var(--border); background: var(--surface2);
+      color: var(--text-dim); font-family: var(--font); font-size: 0.62rem; font-weight: 600;
+      border-radius: 4px; cursor: pointer; transition: all 0.15s;
+    }
+    .deck-card__action:hover { border-color: var(--accent); color: var(--accent); }
+    .deck-card__action--delete:hover { border-color: var(--red); color: var(--red); }
+    /* List view */
+    .deck-list-view { display: flex; flex-direction: column; gap: 8px; }
+    .deck-list-item {
+      display: grid; grid-template-columns: auto 1fr auto auto; gap: 16px;
+      align-items: center; background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 14px 20px; cursor: pointer;
+      transition: all 0.15s;
+    }
+    .deck-list-item:hover { border-color: var(--accent); background: var(--surface2); }
+    .deck-list-item__icon { font-size: 1.5rem; width: 40px; text-align: center; }
+    .deck-list-item__info { min-width: 0; }
+    .deck-list-item__title { font-size: 0.85rem; font-weight: 600; }
+    .deck-list-item__meta { font-size: 0.7rem; color: var(--text-dim); }
+    .deck-list-item__slides { font-size: 0.7rem; color: var(--text-dim); white-space: nowrap; }
+    .deck-list-item__actions { display: flex; gap: 6px; }
+    /* Deck viewer (opens in full tab) */
     .deck-container { height: calc(100vh - 56px); overflow-y: auto; scroll-snap-type: y mandatory; scroll-behavior: smooth; position: relative; }
     .deck-slide { height: 100vh; min-height: 100vh; scroll-snap-align: start; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; padding: 60px 48px; }
     .deck-slide__bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; opacity: 0.3; }
@@ -1793,7 +1871,24 @@
 
         <!-- Deck Tab -->
         <div class="tab-content" id="tab-deck">
-          <div class="deck-container" id="deckContainer">
+          <!-- Deck Manager (list of decks) -->
+          <div class="deck-manager" id="deckManager">
+            <div class="deck-manager__header">
+              <h2>Pitch Decks</h2>
+              <div class="deck-manager__controls">
+                <div class="deck-manager__view-toggle">
+                  <button class="deck-manager__view-btn active" data-view="grid" id="deckViewGrid">Grid</button>
+                  <button class="deck-manager__view-btn" data-view="list" id="deckViewList">List</button>
+                </div>
+                <button class="deck-manager__new-btn" id="deckNewBtn">+ New Deck</button>
+              </div>
+            </div>
+            <div id="deckManagerContent"></div>
+          </div>
+
+          <!-- Deck Viewer (hidden until a deck is opened) -->
+          <div class="deck-container" id="deckContainer" style="display:none;">
+            <button id="deckBackBtn" style="position:fixed;top:70px;left:24px;z-index:60;padding:8px 16px;background:var(--surface);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:var(--font);font-size:0.78rem;font-weight:600;cursor:pointer;transition:all 0.15s;display:none;" onmouseover="this.style.borderColor='var(--accent)';this.style.color='var(--accent)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text)'">&larr; All Decks</button>
             <canvas class="deck-slide__bg" id="deckCanvas"></canvas>
 
             <!-- Slide 1: Title -->
@@ -2194,7 +2289,7 @@
   var PAGE_TITLES = {
     products: 'Products', variants: 'Variants', collections: 'Collections',
     shop: 'Shop Info', seo: 'SEO', geo: 'GEO', orders: 'Orders', customers: 'Customers',
-    landing: 'Landing Page', roadmap: 'Roadmap', equity: 'Equity', deck: 'Pitch Deck'
+    landing: 'Landing Page', roadmap: 'Roadmap', equity: 'Equity', deck: 'Decks'
   };
 
   document.getElementById('sidebarNav').addEventListener('click', function(e) {
@@ -2214,7 +2309,7 @@
     if (tab === 'landing') setTimeout(renderLanding, 10);
     if (tab === 'roadmap') setTimeout(renderRoadmap, 10);
     if (tab === 'equity') setTimeout(renderEquity, 10);
-    if (tab === 'deck') setTimeout(initDeck, 10);
+    if (tab === 'deck') setTimeout(renderDeckManager, 10);
     // close mobile sidebar
     document.getElementById('sidebar').classList.remove('open');
   });
@@ -4406,34 +4501,89 @@
     document.querySelectorAll('.roadmap-card__add-task').forEach(function(btn) {
       btn.addEventListener('click', function(e) {
         e.stopPropagation();
-        var projId = this.getAttribute('data-proj');
-        var phaseId = this.getAttribute('data-phase');
-        var text = prompt('Task name:');
-        if (!text) return;
-        var phase = ROADMAP_PHASES.find(function(p) { return p.id === phaseId; });
-        var proj = phase.projects.find(function(p) { return p.id === projId; });
-        var newSt = { id: 'st_' + Date.now(), text: text, done: false };
-        proj.subtasks.push(newSt);
-        saveProjectState(projId, proj, newSt);
-        renderRoadmap();
+        // If already showing input, focus it
+        var existing = btn.parentElement.querySelector('.roadmap-card__add-task-input');
+        if (existing) { existing.focus(); return; }
+        // Create inline input
+        var input = document.createElement('input');
+        input.className = 'roadmap-inline-input roadmap-inline-input--subtask roadmap-card__add-task-input';
+        input.placeholder = 'New task name...';
+        input.style.marginTop = '4px';
+        input.style.width = '100%';
+        btn.parentElement.insertBefore(input, btn);
+        btn.style.display = 'none';
+        input.focus();
+
+        var projId = btn.getAttribute('data-proj');
+        var phaseId = btn.getAttribute('data-phase');
+
+        function save() {
+          var text = input.value.trim();
+          if (text) {
+            var phase = ROADMAP_PHASES.find(function(p) { return p.id === phaseId; });
+            var proj = phase.projects.find(function(p) { return p.id === projId; });
+            var newSt = { id: 'st_' + Date.now(), text: text, done: false };
+            proj.subtasks.push(newSt);
+            saveProjectState(projId, proj, newSt);
+            renderRoadmap();
+          } else {
+            input.remove();
+            btn.style.display = '';
+          }
+        }
+        input.addEventListener('keydown', function(ev) {
+          if (ev.key === 'Enter') { ev.preventDefault(); save(); }
+          if (ev.key === 'Escape') { input.remove(); btn.style.display = ''; }
+        });
+        input.addEventListener('blur', function() {
+          setTimeout(save, 100);
+        });
       });
     });
 
     // Add project
     document.querySelectorAll('.roadmap-add-btn').forEach(function(btn) {
-      btn.addEventListener('click', function() {
-        var phaseId = this.getAttribute('data-phase');
-        var col = this.getAttribute('data-col');
-        var title = prompt('Project title:');
-        if (!title) return;
-        var desc = prompt('Description (optional):') || '';
-        var phase = ROADMAP_PHASES.find(function(p) { return p.id === phaseId; });
-        var newProj = { id: 'proj_' + Date.now(), title: title, desc: desc, priority: 'medium', col: col, subtasks: [] };
-        phase.projects.push(newProj);
-        var custom = JSON.parse(localStorage.getItem('atlas_roadmap_custom_projects') || '[]');
-        custom.push({ phaseId: phaseId, project: newProj });
-        localStorage.setItem('atlas_roadmap_custom_projects', JSON.stringify(custom));
-        renderRoadmap();
+      btn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        var existing = btn.parentElement.querySelector('.roadmap-add-project-input');
+        if (existing) { existing.focus(); return; }
+        var wrap = document.createElement('div');
+        wrap.style.marginTop = '8px';
+        var input = document.createElement('input');
+        input.className = 'roadmap-inline-input roadmap-inline-input--title roadmap-add-project-input';
+        input.placeholder = 'Project title...';
+        input.style.width = '100%';
+        input.style.marginBottom = '4px';
+        wrap.appendChild(input);
+        btn.parentElement.insertBefore(wrap, btn.nextSibling);
+        btn.style.display = 'none';
+        input.focus();
+
+        var phaseId = btn.getAttribute('data-phase');
+        var col = btn.getAttribute('data-col');
+
+        function save() {
+          var title = input.value.trim();
+          if (title) {
+            var phase = ROADMAP_PHASES.find(function(p) { return p.id === phaseId; });
+            var newProj = { id: 'proj_' + Date.now(), title: title, desc: '', priority: 'medium', col: col, subtasks: [] };
+            phase.projects.push(newProj);
+            var custom = JSON.parse(localStorage.getItem('atlas_roadmap_custom_projects') || '[]');
+            custom.push({ phaseId: phaseId, project: newProj });
+            localStorage.setItem('atlas_roadmap_custom_projects', JSON.stringify(custom));
+            renderRoadmap();
+          } else {
+            wrap.remove();
+            btn.style.display = '';
+          }
+        }
+        input.addEventListener('keydown', function(ev) {
+          if (ev.key === 'Enter') { ev.preventDefault(); save(); }
+          if (ev.key === 'Escape') { wrap.remove(); btn.style.display = ''; }
+        });
+        input.addEventListener('blur', function() {
+          setTimeout(save, 100);
+        });
       });
     });
 
@@ -4545,27 +4695,89 @@
       });
     });
 
-    // Connector drawing (create connections between cards)
+    // Connector drawing — drag from connector dot to any target card
     var _connectorStart = null;
+    var _previewLine = null;
+
     document.querySelectorAll('.roadmap-canvas-card__connector').forEach(function(dot) {
       dot.addEventListener('mousedown', function(e) {
         e.stopPropagation();
         e.preventDefault();
-        _connectorStart = { id: this.getAttribute('data-id'), phase: this.getAttribute('data-phase') };
-      });
-      dot.addEventListener('mouseup', function(e) {
-        e.stopPropagation();
-        if (!_connectorStart) return;
-        var toId = this.getAttribute('data-id');
         var phaseId = this.getAttribute('data-phase');
-        if (_connectorStart.id !== toId && _connectorStart.phase === phaseId) {
-          saveCanvasConnection(phaseId, _connectorStart.id, toId);
-          renderRoadmap();
+        var cardId = this.getAttribute('data-id');
+        var card = this.closest('.roadmap-canvas-card');
+        var canvas = this.closest('.roadmap-canvas');
+        var svg = canvas.querySelector('.roadmap-canvas__svg');
+
+        // Start position from this connector dot
+        var side = this.getAttribute('data-side');
+        var startX = parseInt(card.style.left) + (side === 'right' ? 220 : 0);
+        var startY = parseInt(card.style.top) + 30;
+
+        _connectorStart = { id: cardId, phase: phaseId, svg: svg, canvas: canvas };
+
+        // Create preview line
+        _previewLine = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        _previewLine.setAttribute('class', 'roadmap-canvas__preview-line');
+        _previewLine.setAttribute('x1', startX);
+        _previewLine.setAttribute('y1', startY);
+        _previewLine.setAttribute('x2', startX);
+        _previewLine.setAttribute('y2', startY);
+        svg.appendChild(_previewLine);
+
+        function onMove(ev) {
+          if (!_previewLine) return;
+          var rect = canvas.getBoundingClientRect();
+          var scrollLeft = canvas.parentElement.scrollLeft || 0;
+          var scrollTop = canvas.parentElement.scrollTop || 0;
+          _previewLine.setAttribute('x2', ev.clientX - rect.left + scrollLeft);
+          _previewLine.setAttribute('y2', ev.clientY - rect.top + scrollTop);
+
+          // Highlight target cards
+          document.querySelectorAll('.roadmap-canvas-card.connect-target').forEach(function(c) {
+            c.classList.remove('connect-target');
+          });
+          var target = document.elementFromPoint(ev.clientX, ev.clientY);
+          if (target) {
+            var targetCard = target.closest('.roadmap-canvas-card');
+            if (targetCard && targetCard.getAttribute('data-id') !== cardId && targetCard.getAttribute('data-phase') === phaseId) {
+              targetCard.classList.add('connect-target');
+            }
+          }
         }
-        _connectorStart = null;
+
+        function onUp(ev) {
+          // Clean up preview
+          if (_previewLine && _previewLine.parentNode) _previewLine.parentNode.removeChild(_previewLine);
+          _previewLine = null;
+          document.querySelectorAll('.roadmap-canvas-card.connect-target').forEach(function(c) {
+            c.classList.remove('connect-target');
+          });
+
+          // Check if we landed on a target card or connector
+          if (_connectorStart) {
+            var target = document.elementFromPoint(ev.clientX, ev.clientY);
+            if (target) {
+              var targetCard = target.closest('.roadmap-canvas-card');
+              if (targetCard) {
+                var toId = targetCard.getAttribute('data-id');
+                var tPhase = targetCard.getAttribute('data-phase');
+                if (toId !== _connectorStart.id && tPhase === _connectorStart.phase) {
+                  saveCanvasConnection(tPhase, _connectorStart.id, toId);
+                  renderRoadmap();
+                }
+              }
+            }
+          }
+          _connectorStart = null;
+          document.removeEventListener('mousemove', onMove);
+          document.removeEventListener('mouseup', onUp);
+        }
+
+        document.addEventListener('mousemove', onMove);
+        document.addEventListener('mouseup', onUp);
       });
     });
-    document.addEventListener('mouseup', function() { _connectorStart = null; });
 
     // Click connection lines to delete
     document.querySelectorAll('.roadmap-canvas__svg line').forEach(function(line) {
@@ -4621,73 +4833,47 @@
     var el = document.getElementById('roadmapAssistantText');
     if (!el) return;
     var pct = total ? Math.round((done / total) * 100) : 0;
-    var msgs = [];
+    var left = total - done;
 
-    // Progress overview
-    if (pct === 0) {
-      msgs.push("You haven't started any projects yet — let's get moving! Pick a task and hit <strong>Start</strong> to begin.");
-    } else if (pct < 25) {
-      msgs.push("You're <strong>" + pct + "% done</strong> — great start! Focus on knocking out the high-priority items first.");
-    } else if (pct < 50) {
-      msgs.push("Nice progress — <strong>" + pct + "%</strong> complete! You're building real momentum.");
-    } else if (pct < 75) {
-      msgs.push("Over halfway there at <strong>" + pct + "%</strong>! The finish line is in sight.");
-    } else if (pct < 100) {
-      msgs.push("Almost done — <strong>" + pct + "%</strong>! Just <strong>" + (total - done) + " projects</strong> left to crush.");
-    } else {
-      msgs.push("&#127881; <strong>All " + total + " projects completed!</strong> You've finished the entire roadmap — incredible work!");
-    }
-
-    // Blocked warnings
-    if (blocked > 0) {
-      var blockedNames = [];
-      ROADMAP_PHASES.forEach(function(ph) {
-        ph.projects.forEach(function(p) {
-          if (p.blocked) blockedNames.push(p.title);
-        });
-      });
-      msgs.push("<br>&#9888;&#65039; <strong>" + blocked + " blocked:</strong> " + blockedNames.slice(0, 3).join(', ') + (blockedNames.length > 3 ? '...' : '') + " — unblock these to keep moving.");
-    }
-
-    // Active work detail
-    if (active > 0) {
-      var activeNames = [];
-      ROADMAP_PHASES.forEach(function(ph) {
-        ph.projects.forEach(function(p) {
-          if (p.col === 'inprogress') activeNames.push(p.title);
-        });
-      });
-      msgs.push("<br>&#128296; <strong>In progress:</strong> " + activeNames.join(', ') + ".");
-    }
-
-    // Per-phase insights
-    var phaseInsights = [];
-    ROADMAP_PHASES.forEach(function(ph) {
-      var phDone = ph.projects.filter(function(p) { return p.col === 'completed'; }).length;
-      var phTotal = ph.projects.length;
-      var phPct = phTotal ? Math.round((phDone / phTotal) * 100) : 0;
-      if (phPct === 100 && phTotal > 0) {
-        phaseInsights.push("<strong>" + ph.title.split('—')[0].trim() + "</strong> &#10003; complete!");
-      } else if (phPct === 0 && phTotal > 0) {
-        phaseInsights.push("<strong>" + ph.title.split('—')[0].trim() + "</strong> hasn't been started yet.");
-      }
-    });
-    if (phaseInsights.length > 0) {
-      msgs.push("<br>" + phaseInsights.join(' '));
-    }
-
-    // High priority insight
+    // Gather data
+    var activeNames = [];
+    var blockedNames = [];
     var highPriority = [];
     ROADMAP_PHASES.forEach(function(ph) {
       ph.projects.forEach(function(p) {
+        if (p.col === 'inprogress') activeNames.push(p.title);
+        if (p.blocked) blockedNames.push(p.title);
         if (p.priority === 'high' && p.col !== 'completed') highPriority.push(p.title);
       });
     });
-    if (highPriority.length > 0 && pct < 100) {
-      msgs.push("<br>&#128308; <strong>" + highPriority.length + " high-priority</strong> item" + (highPriority.length > 1 ? 's' : '') + " remaining: " + highPriority.slice(0, 3).join(', ') + (highPriority.length > 3 ? '...' : ''));
+
+    // Build a natural paragraph
+    var text = '';
+    if (pct === 0) {
+      text = "Alright, nothing has been started yet. You have " + total + " projects across the board and " + highPriority.length + " of them are high priority. I would start by picking one of those and getting it into progress — something like " + (highPriority.length > 0 ? highPriority[0] : "the first task on the list") + " would be a good place to begin.";
+    } else if (pct < 25) {
+      text = "You are about " + pct + "% through the roadmap with " + done + " out of " + total + " projects done. Still early, but you are moving.";
+      if (active > 0) text += " Right now you are working on " + activeNames.join(' and ') + ".";
+      if (highPriority.length > 0) text += " There are " + highPriority.length + " high-priority items still open — I would focus on those before anything else, especially " + highPriority.slice(0, 2).join(' and ') + ".";
+    } else if (pct < 50) {
+      text = "Good progress so far — you have knocked out " + done + " of " + total + " projects, which puts you at " + pct + "%.";
+      if (active > 0) text += " You are currently working on " + activeNames.join(', ') + ".";
+      if (left > 0) text += " There are still " + left + " to go, so keep the pace up.";
+      if (blocked > 0) text += " Heads up — " + blockedNames.slice(0, 2).join(' and ') + (blocked > 2 ? " and " + (blocked - 2) + " more" : "") + " got flagged as blocked. Worth looking into those before they hold up other work.";
+    } else if (pct < 75) {
+      text = "You are past the halfway mark at " + pct + "% with " + done + " projects completed.";
+      if (active > 0) text += " " + activeNames.join(' and ') + " " + (activeNames.length > 1 ? "are" : "is") + " in progress right now.";
+      text += " Only " + left + " left. You are in a solid position to close this out.";
+      if (blocked > 0) text += " Just keep an eye on the blocked items — " + blockedNames.slice(0, 2).join(' and ') + " still need attention.";
+    } else if (pct < 100) {
+      text = "Almost there — " + pct + "% done with just " + left + " project" + (left > 1 ? "s" : "") + " remaining.";
+      if (active > 0) text += " You are finishing up " + activeNames.join(' and ') + ".";
+      text += " Push through these last few and the roadmap is complete.";
+    } else {
+      text = "Everything is done. All " + total + " projects across the roadmap are completed. If there is a next phase to plan out, now would be a good time to add it.";
     }
 
-    el.innerHTML = msgs.join('');
+    el.innerHTML = text;
   }
 
   function closeCardMenu() {
@@ -5328,6 +5514,163 @@
   // =============================================
   var deckInitialized = false;
   var deckAnimFrame = null;
+  var deckManagerView = localStorage.getItem('atlas_deck_view') || 'grid';
+
+  // Default decks
+  var DECK_DEFAULTS = [
+    { id: 'atlas-pitch', title: 'Atlas Hydration Pitch Deck', slides: 12, created: '2026-03-15', icon: 'pitch', builtin: true },
+    { id: 'investor-update', title: 'Investor Update Q1 2026', slides: 8, created: '2026-03-20', icon: 'update' },
+    { id: 'product-roadmap', title: 'Product Roadmap Presentation', slides: 6, created: '2026-03-18', icon: 'roadmap' }
+  ];
+
+  function getDecks() {
+    try {
+      var custom = JSON.parse(localStorage.getItem('atlas_decks') || 'null');
+      if (custom) return custom;
+    } catch(e) {}
+    return DECK_DEFAULTS.slice();
+  }
+  function saveDecks(decks) {
+    localStorage.setItem('atlas_decks', JSON.stringify(decks));
+  }
+
+  function renderDeckManager() {
+    var decks = getDecks();
+    var content = document.getElementById('deckManagerContent');
+    if (!content) return;
+
+    // Update toggle buttons
+    document.getElementById('deckViewGrid').classList.toggle('active', deckManagerView === 'grid');
+    document.getElementById('deckViewList').classList.toggle('active', deckManagerView === 'list');
+
+    if (deckManagerView === 'grid') {
+      var html = '<div class="deck-grid-view">';
+      decks.forEach(function(d) {
+        var gradients = {
+          pitch: 'linear-gradient(135deg, rgba(59,130,246,0.2), rgba(16,185,129,0.15))',
+          update: 'linear-gradient(135deg, rgba(168,85,247,0.2), rgba(236,72,153,0.15))',
+          roadmap: 'linear-gradient(135deg, rgba(234,179,8,0.2), rgba(244,63,94,0.15))',
+          custom: 'linear-gradient(135deg, rgba(99,102,241,0.2), rgba(6,182,212,0.15))'
+        };
+        var icons = { pitch: '&#128200;', update: '&#128202;', roadmap: '&#128506;', custom: '&#128196;' };
+        var grad = gradients[d.icon] || gradients.custom;
+        var icon = icons[d.icon] || icons.custom;
+
+        html += '<div class="deck-card" data-deck-id="' + d.id + '">' +
+          '<div class="deck-card__preview" style="background:' + grad + '">' +
+            '<div class="deck-card__preview-gradient"></div>' +
+            '<div class="deck-card__preview-title">' + esc(d.title) + '</div>' +
+            '<div class="deck-card__preview-slides">' + d.slides + ' slides</div>' +
+          '</div>' +
+          '<div class="deck-card__info">' +
+            '<div class="deck-card__title">' + esc(d.title) + '</div>' +
+            '<div class="deck-card__meta"><span>' + d.slides + ' slides</span><span>' + d.created + '</span></div>' +
+            '<div class="deck-card__actions">' +
+              (d.builtin ? '<button class="deck-card__action" data-open="' + d.id + '">Open</button>' : '') +
+              (!d.builtin ? '<button class="deck-card__action deck-card__action--delete" data-delete="' + d.id + '">Delete</button>' : '') +
+            '</div>' +
+          '</div>' +
+        '</div>';
+      });
+      html += '</div>';
+      content.innerHTML = html;
+    } else {
+      var html = '<div class="deck-list-view">';
+      decks.forEach(function(d) {
+        var icons = { pitch: '&#128200;', update: '&#128202;', roadmap: '&#128506;', custom: '&#128196;' };
+        var icon = icons[d.icon] || icons.custom;
+        html += '<div class="deck-list-item" data-deck-id="' + d.id + '">' +
+          '<div class="deck-list-item__icon">' + icon + '</div>' +
+          '<div class="deck-list-item__info">' +
+            '<div class="deck-list-item__title">' + esc(d.title) + '</div>' +
+            '<div class="deck-list-item__meta">Created ' + d.created + '</div>' +
+          '</div>' +
+          '<div class="deck-list-item__slides">' + d.slides + ' slides</div>' +
+          '<div class="deck-list-item__actions">' +
+            (!d.builtin ? '<button class="deck-card__action deck-card__action--delete" data-delete="' + d.id + '">Delete</button>' : '') +
+          '</div>' +
+        '</div>';
+      });
+      html += '</div>';
+      content.innerHTML = html;
+    }
+
+    // Click to open deck
+    content.querySelectorAll('.deck-card, .deck-list-item').forEach(function(el) {
+      el.addEventListener('click', function(e) {
+        if (e.target.closest('[data-delete]')) return;
+        var deckId = this.getAttribute('data-deck-id');
+        openDeck(deckId);
+      });
+    });
+
+    // Delete buttons
+    content.querySelectorAll('[data-delete]').forEach(function(btn) {
+      btn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        var id = this.getAttribute('data-delete');
+        var decks = getDecks();
+        decks = decks.filter(function(d) { return d.id !== id; });
+        saveDecks(decks);
+        renderDeckManager();
+      });
+    });
+  }
+
+  function openDeck(deckId) {
+    if (deckId === 'atlas-pitch') {
+      // Show the built-in deck
+      document.getElementById('deckManager').style.display = 'none';
+      document.getElementById('deckContainer').style.display = '';
+      document.getElementById('deckBackBtn').style.display = '';
+      initDeck();
+    }
+    // Non-builtin decks would show a placeholder or editor in the future
+  }
+
+  function closeDeck() {
+    document.getElementById('deckContainer').style.display = 'none';
+    document.getElementById('deckBackBtn').style.display = 'none';
+    document.getElementById('deckManager').style.display = '';
+    var nav = document.getElementById('deckNav');
+    if (nav) nav.classList.remove('visible');
+    if (deckAnimFrame) {
+      cancelAnimationFrame(deckAnimFrame);
+      deckAnimFrame = null;
+    }
+  }
+
+  // Back button
+  document.getElementById('deckBackBtn').addEventListener('click', function() {
+    closeDeck();
+  });
+
+  // View toggle
+  document.getElementById('deckViewGrid').addEventListener('click', function() {
+    deckManagerView = 'grid';
+    localStorage.setItem('atlas_deck_view', 'grid');
+    renderDeckManager();
+  });
+  document.getElementById('deckViewList').addEventListener('click', function() {
+    deckManagerView = 'list';
+    localStorage.setItem('atlas_deck_view', 'list');
+    renderDeckManager();
+  });
+
+  // New deck button
+  document.getElementById('deckNewBtn').addEventListener('click', function() {
+    var decks = getDecks();
+    var newDeck = {
+      id: 'deck_' + Date.now(),
+      title: 'Untitled Deck',
+      slides: 0,
+      created: new Date().toISOString().split('T')[0],
+      icon: 'custom'
+    };
+    decks.push(newDeck);
+    saveDecks(decks);
+    renderDeckManager();
+  });
 
   function initDeck() {
     // Build nav dots
@@ -5463,14 +5806,17 @@
     observer.observe(canvas);
   }
 
-  // Hide deck nav when not on deck tab
-  var origSidebarClick = document.getElementById('sidebarNav');
-  origSidebarClick.addEventListener('click', function() {
+  // Hide deck nav and close deck viewer when switching tabs
+  document.getElementById('sidebarNav').addEventListener('click', function() {
     var nav = document.getElementById('deckNav');
     if (nav) {
       var deckTab = document.getElementById('tab-deck');
       if (!deckTab.classList.contains('active')) {
         nav.classList.remove('visible');
+        document.getElementById('deckBackBtn').style.display = 'none';
+        // Reset to manager view
+        document.getElementById('deckContainer').style.display = 'none';
+        document.getElementById('deckManager').style.display = '';
       }
     }
   });
