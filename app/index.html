@@ -302,6 +302,35 @@
     .tab-content { display: none; }
     .tab-content.active { display: block; }
 
+    /* Roadmap */
+    .roadmap { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+    .roadmap__column { display: flex; flex-direction: column; gap: 12px; }
+    .roadmap__column-header {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 0.82rem; font-weight: 600; text-transform: uppercase;
+      letter-spacing: 0.04em; color: var(--text-dim); padding: 8px 0;
+      border-bottom: 1px solid var(--border); margin-bottom: 4px;
+    }
+    .roadmap__column-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+    .roadmap__card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 16px; transition: border-color 0.2s;
+    }
+    .roadmap__card:hover { border-color: var(--accent); }
+    .roadmap__card-title { font-size: 0.88rem; font-weight: 600; margin-bottom: 6px; }
+    .roadmap__card-desc { font-size: 0.78rem; color: var(--text-dim); line-height: 1.5; margin-bottom: 12px; }
+    .roadmap__card-meta { display: flex; gap: 6px; }
+    .roadmap__tag {
+      font-size: 0.68rem; font-weight: 600; padding: 3px 8px;
+      border-radius: 6px; text-transform: uppercase; letter-spacing: 0.03em;
+    }
+    .roadmap__tag--green { background: var(--green-dim); color: var(--green); }
+    .roadmap__tag--yellow { background: var(--yellow-dim); color: var(--yellow); }
+    .roadmap__tag--blue { background: var(--accent-dim); color: var(--accent); }
+    @media (max-width: 768px) {
+      .roadmap { grid-template-columns: 1fr; }
+    }
+
     /* Mobile sidebar toggle */
     .sidebar-toggle {
       display: none; background: none; border: none; color: var(--text);
@@ -646,6 +675,10 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
           Shop Info
         </button>
+        <button class="sidebar__link" data-tab="roadmap">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg>
+          Roadmap
+        </button>
       </nav>
       <div class="sidebar__footer">
         <div class="sidebar__footer-status" id="lastUpdated"></div>
@@ -888,6 +921,95 @@
             </div>
           </div>
         </div>
+
+        <!-- Roadmap Tab -->
+        <div class="tab-content" id="tab-roadmap">
+          <div class="section">
+            <div class="section__header">
+              <h2 class="section__title">Product Roadmap</h2>
+            </div>
+            <p style="color:var(--text-dim);font-size:0.85rem;margin-bottom:24px;">Track upcoming features, improvements, and milestones for Atlas Hydration.</p>
+
+            <div class="roadmap">
+              <div class="roadmap__column">
+                <div class="roadmap__column-header roadmap__column-header--completed">
+                  <span class="roadmap__column-dot" style="background:var(--green);"></span>
+                  Completed
+                </div>
+                <div class="roadmap__card">
+                  <div class="roadmap__card-title">Launch Storefront</div>
+                  <div class="roadmap__card-desc">Static site with Shopify Buy SDK integration for checkout</div>
+                  <div class="roadmap__card-meta"><span class="roadmap__tag roadmap__tag--green">Done</span></div>
+                </div>
+                <div class="roadmap__card">
+                  <div class="roadmap__card-title">Product Detail Pages</div>
+                  <div class="roadmap__card-desc">Individual pages for Strawberry Lemonade and Lemon Lime flavors</div>
+                  <div class="roadmap__card-meta"><span class="roadmap__tag roadmap__tag--green">Done</span></div>
+                </div>
+                <div class="roadmap__card">
+                  <div class="roadmap__card-title">Admin Dashboard</div>
+                  <div class="roadmap__card-desc">Internal dashboard with products, orders, customers, SEO, and GEO tools</div>
+                  <div class="roadmap__card-meta"><span class="roadmap__tag roadmap__tag--green">Done</span></div>
+                </div>
+                <div class="roadmap__card">
+                  <div class="roadmap__card-title">SEO &amp; GEO Optimization</div>
+                  <div class="roadmap__card-desc">Automated SEO health scanning and AI discoverability optimization</div>
+                  <div class="roadmap__card-meta"><span class="roadmap__tag roadmap__tag--green">Done</span></div>
+                </div>
+              </div>
+
+              <div class="roadmap__column">
+                <div class="roadmap__column-header roadmap__column-header--progress">
+                  <span class="roadmap__column-dot" style="background:var(--yellow);"></span>
+                  In Progress
+                </div>
+                <div class="roadmap__card">
+                  <div class="roadmap__card-title">New Flavor Expansion</div>
+                  <div class="roadmap__card-desc">Adding Grapefruit and additional seasonal flavors to the lineup</div>
+                  <div class="roadmap__card-meta"><span class="roadmap__tag roadmap__tag--yellow">In Progress</span></div>
+                </div>
+                <div class="roadmap__card">
+                  <div class="roadmap__card-title">Blog &amp; Content Hub</div>
+                  <div class="roadmap__card-desc">Educational content on hydration science, wellness tips, and brand stories</div>
+                  <div class="roadmap__card-meta"><span class="roadmap__tag roadmap__tag--yellow">In Progress</span></div>
+                </div>
+                <div class="roadmap__card">
+                  <div class="roadmap__card-title">Analytics Integration</div>
+                  <div class="roadmap__card-desc">Conversion tracking, customer behavior insights, and sales reporting</div>
+                  <div class="roadmap__card-meta"><span class="roadmap__tag roadmap__tag--yellow">In Progress</span></div>
+                </div>
+              </div>
+
+              <div class="roadmap__column">
+                <div class="roadmap__column-header roadmap__column-header--planned">
+                  <span class="roadmap__column-dot" style="background:var(--accent);"></span>
+                  Planned
+                </div>
+                <div class="roadmap__card">
+                  <div class="roadmap__card-title">Subscription &amp; Subscribe-to-Save</div>
+                  <div class="roadmap__card-desc">Recurring orders with discounted pricing for loyal customers</div>
+                  <div class="roadmap__card-meta"><span class="roadmap__tag roadmap__tag--blue">Planned</span></div>
+                </div>
+                <div class="roadmap__card">
+                  <div class="roadmap__card-title">Customer Accounts &amp; Order History</div>
+                  <div class="roadmap__card-desc">User login with order tracking, reorder, and saved preferences</div>
+                  <div class="roadmap__card-meta"><span class="roadmap__tag roadmap__tag--blue">Planned</span></div>
+                </div>
+                <div class="roadmap__card">
+                  <div class="roadmap__card-title">Referral Program</div>
+                  <div class="roadmap__card-desc">Share-and-earn rewards program to drive organic growth</div>
+                  <div class="roadmap__card-meta"><span class="roadmap__tag roadmap__tag--blue">Planned</span></div>
+                </div>
+                <div class="roadmap__card">
+                  <div class="roadmap__card-title">Wholesale &amp; B2B Portal</div>
+                  <div class="roadmap__card-desc">Bulk ordering for gyms, wellness centers, and retail partners</div>
+                  <div class="roadmap__card-meta"><span class="roadmap__tag roadmap__tag--blue">Planned</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
       </div>
       </div>
     </div><!-- /app__main -->
@@ -997,7 +1119,8 @@
   // =============================================
   var PAGE_TITLES = {
     products: 'Products', variants: 'Variants', collections: 'Collections',
-    shop: 'Shop Info', seo: 'SEO', geo: 'GEO', orders: 'Orders', customers: 'Customers'
+    shop: 'Shop Info', seo: 'SEO', geo: 'GEO', orders: 'Orders', customers: 'Customers',
+    roadmap: 'Roadmap'
   };
 
   document.getElementById('sidebarNav').addEventListener('click', function(e) {
