@@ -861,12 +861,9 @@
   var PASSWORD = '123';
   var SHOPIFY = {
     domain: '7fa7b7-42.myshopify.com',
-    clientId: '949d9ce57441933e200fa3900159771a',
-    clientSecret: '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',
-    endpoint: 'https://7fa7b7-42.myshopify.com/admin/api/2025-01/graphql.json'
+    token: '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',
+    endpoint: 'https://7fa7b7-42.myshopify.com/api/2025-01/graphql.json'
   };
-  var _adminToken = null;
-  var _tokenExpiry = 0;
 
   // =============================================
   // AUTH
@@ -976,40 +973,16 @@
   });
 
   // =============================================
-  // SHOPIFY ADMIN API (GraphQL via Client Credentials)
+  // SHOPIFY STOREFRONT API (GraphQL)
   // =============================================
-  function getAdminToken() {
-    if (_adminToken && Date.now() < _tokenExpiry) {
-      return Promise.resolve(_adminToken);
-    }
-    return fetch('https://' + SHOPIFY.domain + '/admin/oauth/access_token', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: 'grant_type=client_credentials&client_id=' + SHOPIFY.clientId + '&client_secret=' + SHOPIFY.clientSecret
-    }).then(function(r) {
-      if (!r.ok) {
-        return r.text().then(function(body) {
-          throw new Error('Token exchange failed: HTTP ' + r.status + ': ' + body.substring(0, 120));
-        });
-      }
-      return r.json();
-    }).then(function(data) {
-      _adminToken = data.access_token;
-      _tokenExpiry = Date.now() + ((data.expires_in || 86399) - 60) * 1000;
-      return _adminToken;
-    });
-  }
-
   function gql(query) {
-    return getAdminToken().then(function(token) {
-      return fetch(SHOPIFY.endpoint, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-Shopify-Access-Token': token
-        },
-        body: JSON.stringify({ query: query })
-      });
+    return fetch(SHOPIFY.endpoint, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Shopify-Storefront-Access-Token': SHOPIFY.token
+      },
+      body: JSON.stringify({ query: query })
     }).then(function(r) {
       if (!r.ok) {
         return r.text().then(function(body) {
@@ -1073,7 +1046,7 @@
             productType\n\
             vendor\n\
             tags\n\
-            status\n\
+            availableForSale\n\
             createdAt\n\
             updatedAt\n\
             images(first: 1) { edges { node { url altText } } }\n\
@@ -1083,17 +1056,18 @@
                 node {\n\
                   id\n\
                   title\n\
-                  price\n\
-                  compareAtPrice\n\
+                  price { amount currencyCode }\n\
+                  compareAtPrice { amount currencyCode }\n\
+                  availableForSale\n\
+                  quantityAvailable\n\
                   sku\n\
-                  inventoryQuantity\n\
                   weight\n\
                   weightUnit\n\
                   selectedOptions { name value }\n\
                 }\n\
               }\n\
             }\n\
-            priceRangeV2 {\n\
+            priceRange {\n\
               minVariantPrice { amount currencyCode }\n\
               maxVariantPrice { amount currencyCode }\n\
             }\n\
@@ -1133,13 +1107,13 @@
       shop {\n\
         name\n\
         description\n\
-        url\n\
-        myshopifyDomain\n\
-        plan { displayName }\n\
-        currencyCode\n\
-        billingAddress { country }\n\
-        contactEmail\n\
-        email\n\
+        primaryDomain { host url }\n\
+        paymentSettings {\n\
+          currencyCode\n\
+          acceptedCardBrands\n\
+          enabledPresentmentCurrencies\n\
+        }\n\
+        shipsToCountries\n\
       }\n\
     }').then(function(data) {
       if (data.errors) throw new Error(data.errors[0].message);
@@ -1160,25 +1134,27 @@
 
   function renderStats(products, collections, shop) {
     var totalVariants = 0;
-    var totalInStock = 0;
+    var totalAvailable = 0;
     var prices = [];
 
     products.forEach(function(p) {
       p.variants.edges.forEach(function(v) {
         totalVariants++;
-        if (v.node.inventoryQuantity > 0) totalInStock++;
-        prices.push(parseFloat(v.node.price));
+        if (v.node.availableForSale) totalAvailable++;
+        prices.push(parseFloat(v.node.price.amount));
       });
     });
 
     var avgPrice = prices.length ? (prices.reduce(function(a, b) { return a + b; }, 0) / prices.length) : 0;
-    var currency = shop.currencyCode || 'USD';
+    var currency = (products.length && products[0].variants.edges.length) ? products[0].variants.edges[0].node.price.currencyCode : 'USD';
 
     var statsHtml = '';
-    statsHtml += statCard('Products', products.length, 'In store');
-    statsHtml += statCard('Variants', totalVariants, totalInStock + ' in stock');
+    statsHtml += statCard('Products', products.length, 'Active in storefront');
+    statsHtml += statCard('Variants', totalVariants, totalAvailable + ' available');
     statsHtml += statCard('Collections', collections.length, 'Organized groups');
     statsHtml += statCard('Avg Price', '$' + avgPrice.toFixed(2), currency);
+    statsHtml += statCard('Countries', shop.shipsToCountries ? shop.shipsToCountries.length : 0, 'Shipping destinations');
+    statsHtml += statCard('Currencies', shop.paymentSettings ? shop.paymentSettings.enabledPresentmentCurrencies.length : 0, 'Accepted');
 
     document.getElementById('statsGrid').innerHTML = statsHtml;
   }
@@ -1199,18 +1175,20 @@
         ? '<img class="table__product-img" src="' + img + '" alt="' + esc(p.title) + '">'
         : '<div class="table__product-img" style="display:flex;align-items:center;justify-content:center;color:var(--text-dim);font-size:0.6rem;">No img</div>';
 
-      var status = p.status === 'ACTIVE' ? '<span class="badge badge--active">Active</span>' : '<span class="badge badge--draft">' + (p.status || 'Unknown') + '</span>';
+      var status = p.availableForSale ? '<span class="badge badge--active">Active</span>' : '<span class="badge badge--draft">Unavailable</span>';
       var variantCount = p.variants.edges.length;
-      var minPrice = p.priceRangeV2 ? p.priceRangeV2.minVariantPrice.amount : (variantCount ? p.variants.edges[0].node.price : '0');
-      var maxPrice = p.priceRangeV2 ? p.priceRangeV2.maxVariantPrice.amount : minPrice;
+      var minPrice = p.priceRange.minVariantPrice.amount;
+      var maxPrice = p.priceRange.maxVariantPrice.amount;
       var priceStr = minPrice === maxPrice
         ? '<span class="price">$' + parseFloat(minPrice).toFixed(2) + '</span>'
         : '<span class="price">$' + parseFloat(minPrice).toFixed(2) + ' – $' + parseFloat(maxPrice).toFixed(2) + '</span>';
 
-      var totalInventory = p.variants.edges.reduce(function(sum, v) { return sum + (v.node.inventoryQuantity || 0); }, 0);
-      var inventoryBadge = totalInventory > 0
-        ? '<span class="badge badge--available">' + totalInventory + ' In Stock</span>'
-        : '<span class="badge badge--oos">Out of Stock</span>';
+      var availableVariants = p.variants.edges.filter(function(v) { return v.node.availableForSale; }).length;
+      var inventoryBadge = availableVariants === variantCount
+        ? '<span class="badge badge--available">' + availableVariants + '/' + variantCount + ' In Stock</span>'
+        : availableVariants > 0
+          ? '<span class="badge badge--draft">' + availableVariants + '/' + variantCount + ' In Stock</span>'
+          : '<span class="badge badge--oos">Out of Stock</span>';
 
       html += '<tr>' +
         '<td><div class="table__product">' + imgTag + '<div class="table__product-info"><span class="table__product-title">' + esc(p.title) + '</span><span class="table__product-vendor">' + esc(p.vendor || '—') + '</span></div></div></td>' +
@@ -1233,19 +1211,18 @@
         total++;
         var vn = v.node;
         var compareHtml = vn.compareAtPrice
-          ? '<span class="price--compare">$' + parseFloat(vn.compareAtPrice).toFixed(2) + '</span>'
+          ? '<span class="price--compare">$' + parseFloat(vn.compareAtPrice.amount).toFixed(2) + '</span>'
           : '';
-        var qty = vn.inventoryQuantity || 0;
-        var statusBadge = qty > 0
-          ? '<span class="badge badge--available">In Stock (' + qty + ')</span>'
-          : '<span class="badge badge--oos">Out of Stock</span>';
+        var statusBadge = vn.availableForSale
+          ? '<span class="badge badge--available">Available</span>'
+          : '<span class="badge badge--oos">Sold Out</span>';
 
         html += '<div class="variant-card">' +
           '<div class="variant-card__header"><span class="variant-card__title">' + esc(vn.title) + '</span>' + statusBadge + '</div>' +
           '<div class="variant-card__row"><span class="variant-card__label">Product</span><span class="variant-card__value">' + esc(p.title) + '</span></div>' +
-          '<div class="variant-card__row"><span class="variant-card__label">Price</span><span class="variant-card__value"><span class="price">$' + parseFloat(vn.price).toFixed(2) + '</span>' + compareHtml + '</span></div>' +
+          '<div class="variant-card__row"><span class="variant-card__label">Price</span><span class="variant-card__value"><span class="price">$' + parseFloat(vn.price.amount).toFixed(2) + '</span>' + compareHtml + '</span></div>' +
           '<div class="variant-card__row"><span class="variant-card__label">SKU</span><span class="variant-card__value">' + esc(vn.sku || '—') + '</span></div>' +
-          '<div class="variant-card__row"><span class="variant-card__label">Inventory</span><span class="variant-card__value">' + qty + '</span></div>' +
+          (vn.quantityAvailable !== null ? '<div class="variant-card__row"><span class="variant-card__label">Qty Available</span><span class="variant-card__value">' + vn.quantityAvailable + '</span></div>' : '') +
           (vn.weight ? '<div class="variant-card__row"><span class="variant-card__label">Weight</span><span class="variant-card__value">' + vn.weight + ' ' + (vn.weightUnit || '').toLowerCase() + '</span></div>' : '') +
           '<div class="variant-card__row"><span class="variant-card__label">ID</span><span class="variant-card__value" style="font-size:0.68rem;color:var(--text-dim);word-break:break-all;">' + esc(vn.id) + '</span></div>' +
         '</div>';
@@ -1275,12 +1252,12 @@
     var html = '';
     html += infoCard('Shop Name', shop.name || '—');
     html += infoCard('Description', shop.description || '—');
-    html += infoCard('Myshopify Domain', shop.myshopifyDomain || '—');
-    html += infoCard('Store URL', shop.url || '—');
-    html += infoCard('Currency', shop.currencyCode || '—');
-    html += infoCard('Plan', shop.plan ? shop.plan.displayName : '—');
-    html += infoCard('Contact Email', shop.contactEmail || shop.email || '—');
-    html += infoCard('Country', shop.billingAddress ? shop.billingAddress.country : '—');
+    html += infoCard('Primary Domain', shop.primaryDomain ? shop.primaryDomain.host : '—');
+    html += infoCard('Store URL', shop.primaryDomain ? shop.primaryDomain.url : '—');
+    html += infoCard('Currency', shop.paymentSettings ? shop.paymentSettings.currencyCode : '—');
+    html += infoCard('Accepted Cards', shop.paymentSettings ? shop.paymentSettings.acceptedCardBrands.join(', ') : '—');
+    html += infoCard('Presentment Currencies', shop.paymentSettings ? shop.paymentSettings.enabledPresentmentCurrencies.join(', ') : '—');
+    html += infoCard('Ships To', shop.shipsToCountries ? shop.shipsToCountries.length + ' countries' : '—');
     document.getElementById('shopInfoGrid').innerHTML = html;
   }
 
