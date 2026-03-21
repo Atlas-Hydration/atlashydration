@@ -810,26 +810,74 @@
         border-right: none; border-bottom: 1px solid var(--border);
         max-height: 0; overflow: hidden; transition: max-height 0.3s ease;
       }
-      .sidebar.open { max-height: 500px; }
+      .sidebar.open { max-height: 600px; overflow-y: auto; }
+      .sidebar__brand { padding: 16px 16px 12px; }
       .sidebar__nav { padding: 8px 10px; }
-      .sidebar__link { padding: 8px 12px; }
+      .sidebar__link { padding: 8px 12px; font-size: 0.8rem; }
+      .sidebar__section-label { padding: 8px 12px 4px; }
+      .sidebar__footer { padding: 12px 16px; }
+      .sidebar__footer-actions { flex-direction: row; }
       .sidebar-toggle { display: block; }
-      .app__main { height: auto; overflow-y: auto; }
-      .dashboard { padding: 20px 16px; }
-      .topbar { padding: 0 16px; }
-      .stats { grid-template-columns: 1fr 1fr; }
-      .table { font-size: 0.75rem; }
-      .table th, .table td { padding: 10px 12px; }
-      .seo-header { flex-direction: column; align-items: flex-start; }
-      .orders-header { flex-direction: column; align-items: flex-start; }
+      .app__main { height: auto; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+      .dashboard { padding: 16px 12px; }
+      .topbar { padding: 0 12px; height: 48px; }
+      .topbar__page-title { font-size: 0.85rem; }
+      .topbar__right { gap: 8px; }
+      .api-badge { font-size: 0.6rem; padding: 3px 8px; }
+      .stats { grid-template-columns: 1fr 1fr; gap: 10px; }
+      .stat-card { padding: 16px; }
+      .stat-card__value { font-size: 1.4rem; }
+      .section__header { flex-direction: column; align-items: flex-start; gap: 8px; }
+      .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+      .table { font-size: 0.72rem; min-width: 500px; }
+      .table th, .table td { padding: 10px 10px; white-space: nowrap; }
+      .table__product { gap: 8px; }
+      .table__product-img { width: 32px; height: 32px; }
+      .variant-cards { grid-template-columns: 1fr; }
+      .shop-info { grid-template-columns: 1fr; }
+      .conversion-cards { grid-template-columns: 1fr; }
+      .seo-header { flex-direction: column; align-items: flex-start; gap: 12px; }
+      .seo-header__score { width: 56px; height: 56px; font-size: 1.2rem; }
+      .seo-checks { gap: 8px; }
+      .seo-check { padding: 12px 14px; gap: 10px; flex-wrap: wrap; }
+      .seo-prompt__code { font-size: 0.72rem; max-height: 150px; }
+      .orders-header { flex-direction: column; align-items: flex-start; gap: 8px; }
+      .orders-filter { flex-wrap: wrap; }
+      .orders-stats { grid-template-columns: 1fr 1fr; }
+      .landing-card { padding: 16px; }
       .landing-card__inputs { grid-template-columns: 1fr; }
-      .roadmap-metrics { grid-template-columns: repeat(3, 1fr); }
+      .landing-card__youtube { flex-direction: column; }
+      .landing-card__yt-preview { width: 100%; height: 120px; }
+      .landing-card__preview { aspect-ratio: 16/9; }
+      .roadmap-header { padding: 20px 16px; }
+      .roadmap-header__title { font-size: 1.1rem; }
+      .roadmap-header__communities { gap: 6px; }
+      .roadmap-header__community-tag { font-size: 0.6rem; padding: 2px 8px; }
+      .roadmap-metrics { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+      .roadmap-metric { padding: 12px 8px; }
+      .roadmap-metric__value { font-size: 1rem; }
       .roadmap-header__revenue { flex-direction: column; gap: 4px; }
+      .roadmap-phase__header { padding: 14px 16px; }
+      .roadmap-phase__icon { width: 30px; height: 30px; font-size: 0.85rem; }
+      .roadmap-phase__title { font-size: 0.85rem; }
+      .roadmap-phase__left { gap: 10px; }
+      .roadmap-section { padding: 0 16px 16px; }
+      .roadmap-card { padding: 10px 12px; gap: 10px; }
+      .roadmap-card__check { width: 20px; height: 20px; }
+      .roadmap-card__title { font-size: 0.8rem; }
+      .roadmap-card__desc { font-size: 0.7rem; }
     }
     @media (max-width: 480px) {
       .stats { grid-template-columns: 1fr; }
-      .login-card { padding: 32px 24px; }
+      .login-card { padding: 28px 20px; }
+      .login-card__logo { font-size: 1.3rem; }
       .orders-stats { grid-template-columns: 1fr; }
+      .roadmap-metrics { grid-template-columns: repeat(2, 1fr); }
+      .roadmap-phase__right { display: none; }
+      .roadmap-header__mission { font-size: 0.75rem; }
+      .landing-card__header { flex-direction: column; align-items: flex-start; gap: 8px; }
+      .topbar__status { display: none; }
+      .table { min-width: 400px; }
     }
   </style>
 </head>
