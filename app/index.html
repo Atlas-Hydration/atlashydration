@@ -998,19 +998,6 @@
     .roadmap-card__block-btn:hover { border-color: var(--red); color: var(--red); background: var(--red-dim); }
     .roadmap-card.blocked .roadmap-card__block-btn { opacity: 1; border-color: var(--green); color: var(--green); background: var(--green-dim); }
     .roadmap-card.blocked .roadmap-card__block-btn:hover { border-color: var(--green); }
-    .roadmap-card__actions {
-      display: flex; gap: 4px; margin-top: 8px; opacity: 0; transition: opacity 0.15s;
-    }
-    .roadmap-card:hover .roadmap-card__actions { opacity: 1; }
-    .roadmap-card__action-btn {
-      padding: 3px 8px; border: 1px solid var(--border); background: var(--surface2);
-      color: var(--text-dim); font-family: var(--font); font-size: 0.58rem; font-weight: 600;
-      border-radius: 4px; cursor: pointer; transition: all 0.15s; text-transform: uppercase;
-      letter-spacing: 0.03em;
-    }
-    .roadmap-card__action-btn:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-dim); }
-    .roadmap-card__action-btn--green:hover { border-color: var(--green); color: var(--green); background: var(--green-dim); }
-    .roadmap-card__action-btn--yellow:hover { border-color: var(--yellow); color: var(--yellow); background: var(--yellow-dim); }
     /* Card context menu */
     .roadmap-card-menu {
       position: absolute; z-index: 100; background: var(--surface);
@@ -4257,18 +4244,6 @@
             phasesHtml += '</div>';
           }
 
-          // Quick action buttons
-          if (!isCompleted) {
-            phasesHtml += '<div class="roadmap-card__actions">';
-            if (proj.col === 'todo') {
-              phasesHtml += '<button class="roadmap-card__action-btn roadmap-card__action-btn--yellow" data-action="inprogress" data-id="' + proj.id + '" data-phase="' + phase.id + '">&#9654; Start</button>';
-              phasesHtml += '<button class="roadmap-card__action-btn roadmap-card__action-btn--green" data-action="completed" data-id="' + proj.id + '" data-phase="' + phase.id + '">&#10003; Done</button>';
-            } else if (proj.col === 'inprogress') {
-              phasesHtml += '<button class="roadmap-card__action-btn" data-action="todo" data-id="' + proj.id + '" data-phase="' + phase.id + '">&#8592; To Do</button>';
-              phasesHtml += '<button class="roadmap-card__action-btn roadmap-card__action-btn--green" data-action="completed" data-id="' + proj.id + '" data-phase="' + phase.id + '">&#10003; Done</button>';
-            }
-            phasesHtml += '</div>';
-          }
 
           phasesHtml += '</div>';
         });
@@ -4343,22 +4318,6 @@
       });
     });
 
-    // Quick action buttons (Start / Done / To Do)
-    document.querySelectorAll('.roadmap-card__action-btn').forEach(function(btn) {
-      btn.addEventListener('click', function(e) {
-        e.stopPropagation();
-        var action = this.getAttribute('data-action');
-        var projId = this.getAttribute('data-id');
-        var phaseId = this.getAttribute('data-phase');
-        var phase = ROADMAP_PHASES.find(function(p) { return p.id === phaseId; });
-        var proj = phase.projects.find(function(p) { return p.id === projId; });
-        if (!proj) return;
-        proj.col = action;
-        if (action === 'completed') proj.blocked = false;
-        saveProjectState(projId, proj);
-        renderRoadmap();
-      });
-    });
 
     // Right-click context menu on cards
     document.querySelectorAll('.roadmap-card').forEach(function(card) {
@@ -4504,13 +4463,19 @@
         // If already showing input, focus it
         var existing = btn.parentElement.querySelector('.roadmap-card__add-task-input');
         if (existing) { existing.focus(); return; }
-        // Create inline input
+        // Create inline input with Add button
+        var wrap = document.createElement('div');
+        wrap.style.cssText = 'display:flex;gap:4px;margin-top:4px;align-items:center;';
         var input = document.createElement('input');
         input.className = 'roadmap-inline-input roadmap-inline-input--subtask roadmap-card__add-task-input';
         input.placeholder = 'New task name...';
-        input.style.marginTop = '4px';
-        input.style.width = '100%';
-        btn.parentElement.insertBefore(input, btn);
+        input.style.flex = '1';
+        var addBtn = document.createElement('button');
+        addBtn.textContent = 'Add';
+        addBtn.style.cssText = 'padding:4px 10px;background:var(--accent);color:#fff;border:none;border-radius:4px;font-family:var(--font);font-size:0.68rem;font-weight:600;cursor:pointer;white-space:nowrap;';
+        wrap.appendChild(input);
+        wrap.appendChild(addBtn);
+        btn.parentElement.insertBefore(wrap, btn);
         btn.style.display = 'none';
         input.focus();
 
@@ -4527,16 +4492,21 @@
             saveProjectState(projId, proj, newSt);
             renderRoadmap();
           } else {
-            input.remove();
+            wrap.remove();
             btn.style.display = '';
           }
         }
+        addBtn.addEventListener('click', function(ev) {
+          ev.stopPropagation();
+          save();
+        });
         input.addEventListener('keydown', function(ev) {
           if (ev.key === 'Enter') { ev.preventDefault(); save(); }
-          if (ev.key === 'Escape') { input.remove(); btn.style.display = ''; }
+          if (ev.key === 'Escape') { wrap.remove(); btn.style.display = ''; }
         });
-        input.addEventListener('blur', function() {
-          setTimeout(save, 100);
+        input.addEventListener('blur', function(ev) {
+          if (ev.relatedTarget === addBtn) return;
+          setTimeout(save, 150);
         });
       });
     });
