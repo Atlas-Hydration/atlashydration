@@ -1,0 +1,10 @@
+name = "atlas-shopify-proxy"
+main = "index.js"
+compatibility_date = "2024-01-01"
+
+# Set these as secrets via: wrangler secret put SHOPIFY_ADMIN_TOKEN
+# Do NOT put your token in this file
+
+[vars]
+SHOPIFY_DOMAIN = "7fa7b7-42.myshopify.com"
+ALLOWED_ORIGIN = "https://rwb8771.github.io"
