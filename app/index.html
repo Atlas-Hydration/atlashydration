@@ -629,23 +629,52 @@
     }
     .landing-save-btn:hover { opacity: 0.85; }
     .landing-save-btn.saved { background: var(--green); }
+    .landing-card__preview {
+      margin-bottom: 16px; border-radius: 8px; overflow: hidden;
+      border: 1px solid var(--border); aspect-ratio: 16/9;
+      background: #000;
+    }
+    .landing-card__preview iframe {
+      width: 100%; height: 100%; border: none;
+    }
+    .landing-card__preview-label {
+      font-size: 0.65rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.08em; color: var(--text-dim); margin-bottom: 8px;
+    }
 
     /* === ROADMAP TAB === */
     .roadmap-header {
       text-align: center; margin-bottom: 32px; padding: 32px;
       background: var(--surface); border: 1px solid var(--border);
-      border-radius: var(--radius);
+      border-radius: var(--radius); cursor: pointer; transition: box-shadow 0.2s;
+    }
+    .roadmap-header:hover { box-shadow: 0 4px 20px rgba(59,130,246,0.1); }
+    .roadmap-header__codename {
+      font-size: 0.65rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.15em; color: var(--accent); margin-bottom: 8px;
     }
     .roadmap-header__title {
       font-size: 1.4rem; font-weight: 700; letter-spacing: -0.02em;
-      margin-bottom: 8px;
+      margin-bottom: 4px;
     }
-    .roadmap-header__sub {
-      font-size: 0.82rem; color: var(--text-dim); margin-bottom: 16px;
+    .roadmap-header__mission {
+      font-size: 0.82rem; color: var(--text-dim); margin-bottom: 6px; line-height: 1.5;
     }
+    .roadmap-header__communities {
+      display: flex; justify-content: center; gap: 8px; margin-bottom: 16px; flex-wrap: wrap;
+    }
+    .roadmap-header__community-tag {
+      font-size: 0.65rem; padding: 3px 10px; border-radius: 6px;
+      font-weight: 600; background: var(--surface2); color: var(--text-dim);
+      border: 1px solid var(--border);
+    }
+    .roadmap-header__progress-wrap {
+      max-height: 0; overflow: hidden; transition: max-height 0.3s ease;
+    }
+    .roadmap-header__progress-wrap.open { max-height: 120px; }
     .roadmap-header__progress-bar {
       background: var(--surface2); border-radius: 8px; height: 12px;
-      overflow: hidden; margin-bottom: 8px;
+      overflow: hidden; margin-bottom: 8px; margin-top: 16px;
     }
     .roadmap-header__progress-fill {
       height: 100%; border-radius: 8px; background: linear-gradient(90deg, var(--accent), var(--green));
@@ -654,36 +683,76 @@
     .roadmap-header__progress-text {
       font-size: 0.75rem; color: var(--text-dim); font-weight: 500;
     }
-    .roadmap-columns {
-      display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;
+    .roadmap-header__revenue {
+      display: flex; justify-content: center; gap: 24px; margin-top: 12px;
     }
-    .roadmap-column {
-      min-height: 200px;
+    .roadmap-header__revenue-item {
+      font-size: 0.72rem; color: var(--text-dim);
     }
-    .roadmap-column__title {
+    .roadmap-header__revenue-item strong {
+      color: var(--green); font-weight: 700;
+    }
+    .roadmap-phase {
+      margin-bottom: 24px; background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); overflow: hidden;
+    }
+    .roadmap-phase__header {
+      padding: 20px 24px; cursor: pointer; display: flex;
+      align-items: center; justify-content: space-between;
+      transition: background 0.2s; user-select: none;
+    }
+    .roadmap-phase__header:hover { background: var(--surface2); }
+    .roadmap-phase__left { display: flex; align-items: center; gap: 14px; }
+    .roadmap-phase__icon {
+      width: 36px; height: 36px; border-radius: 10px; display: flex;
+      align-items: center; justify-content: center; font-size: 1rem; flex-shrink: 0;
+    }
+    .roadmap-phase__icon--prelaunch { background: var(--yellow-dim); }
+    .roadmap-phase__icon--phase1 { background: var(--accent-dim); }
+    .roadmap-phase__title { font-weight: 700; font-size: 0.95rem; }
+    .roadmap-phase__subtitle { font-size: 0.75rem; color: var(--text-dim); margin-top: 2px; }
+    .roadmap-phase__right { display: flex; align-items: center; gap: 12px; }
+    .roadmap-phase__count {
+      font-size: 0.72rem; color: var(--text-dim); font-weight: 500;
+    }
+    .roadmap-phase__chevron {
+      transition: transform 0.2s; color: var(--text-dim); font-size: 0.8rem;
+    }
+    .roadmap-phase.open .roadmap-phase__chevron { transform: rotate(180deg); }
+    .roadmap-phase__body {
+      max-height: 0; overflow: hidden; transition: max-height 0.3s ease;
+    }
+    .roadmap-phase.open .roadmap-phase__body { max-height: 5000px; }
+    .roadmap-section {
+      padding: 0 24px 20px;
+    }
+    .roadmap-section__title {
       font-size: 0.72rem; font-weight: 700; text-transform: uppercase;
-      letter-spacing: 0.08em; color: var(--text-dim); margin-bottom: 12px;
+      letter-spacing: 0.08em; color: var(--text-dim); margin-bottom: 10px;
+      padding-top: 16px; border-top: 1px solid var(--border);
       display: flex; align-items: center; gap: 8px;
     }
-    .roadmap-column__count {
-      font-size: 0.65rem; padding: 2px 8px; background: var(--surface2);
-      border-radius: 4px; font-weight: 600;
+    .roadmap-section:first-child .roadmap-section__title { border-top: none; }
+    .roadmap-section__desc {
+      font-size: 0.78rem; color: var(--text-dim); line-height: 1.5;
+      margin-bottom: 12px;
     }
     .roadmap-cards {
-      display: flex; flex-direction: column; gap: 10px;
-      min-height: 80px; padding: 8px; border-radius: 8px;
+      display: flex; flex-direction: column; gap: 8px;
+      min-height: 20px; padding: 4px 0; border-radius: 8px;
       transition: background 0.2s;
     }
-    .roadmap-cards.drag-over { background: var(--accent-dim); }
+    .roadmap-cards.drag-over { background: var(--accent-dim); padding: 8px; }
     .roadmap-card {
-      background: var(--surface); border: 1px solid var(--border);
-      border-radius: 10px; padding: 14px 16px; cursor: grab;
+      background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 10px; padding: 12px 16px; cursor: grab;
       transition: transform 0.15s, box-shadow 0.15s, opacity 0.15s;
       display: flex; align-items: flex-start; gap: 12px;
       user-select: none;
     }
     .roadmap-card:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
     .roadmap-card.dragging { opacity: 0.4; transform: scale(0.95); }
+    .roadmap-card.completed { opacity: 0.6; }
     .roadmap-card.completed .roadmap-card__title { text-decoration: line-through; color: var(--text-dim); }
     .roadmap-card__check {
       width: 22px; height: 22px; border-radius: 50%;
@@ -691,7 +760,7 @@
       display: flex; align-items: center; justify-content: center;
       transition: all 0.2s; margin-top: 1px;
     }
-    .roadmap-card__check:hover { border-color: var(--accent); }
+    .roadmap-card__check:hover { border-color: var(--green); background: var(--green-dim); }
     .roadmap-card.completed .roadmap-card__check {
       background: var(--green); border-color: var(--green);
     }
@@ -700,10 +769,10 @@
     }
     .roadmap-card.completed .roadmap-card__check-icon { display: block; }
     .roadmap-card__body { flex: 1; min-width: 0; }
-    .roadmap-card__title { font-weight: 600; font-size: 0.85rem; margin-bottom: 4px; }
+    .roadmap-card__title { font-weight: 600; font-size: 0.85rem; margin-bottom: 2px; }
     .roadmap-card__desc { font-size: 0.75rem; color: var(--text-dim); line-height: 1.4; }
     .roadmap-card__tag {
-      display: inline-block; margin-top: 8px; font-size: 0.6rem; padding: 2px 8px;
+      display: inline-block; margin-top: 6px; font-size: 0.6rem; padding: 2px 8px;
       border-radius: 4px; font-weight: 600; text-transform: uppercase;
       letter-spacing: 0.04em;
     }
@@ -711,11 +780,27 @@
     .roadmap-card__tag--medium { background: var(--yellow-dim); color: var(--yellow); }
     .roadmap-card__tag--low { background: var(--accent-dim); color: var(--accent); }
     .roadmap-add-btn {
-      width: 100%; padding: 10px; background: none; border: 2px dashed var(--border);
-      border-radius: 8px; color: var(--text-dim); font-family: var(--font);
-      font-size: 0.78rem; cursor: pointer; transition: all 0.2s;
+      width: 100%; padding: 10px; margin-top: 8px; background: none;
+      border: 2px dashed var(--border); border-radius: 8px; color: var(--text-dim);
+      font-family: var(--font); font-size: 0.78rem; cursor: pointer; transition: all 0.2s;
     }
     .roadmap-add-btn:hover { border-color: var(--accent); color: var(--accent); }
+    .roadmap-metrics {
+      display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px;
+      margin-bottom: 24px;
+    }
+    .roadmap-metric {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 16px; text-align: center;
+    }
+    .roadmap-metric__label {
+      font-size: 0.65rem; color: var(--text-dim); text-transform: uppercase;
+      letter-spacing: 0.06em; margin-bottom: 4px; font-weight: 600;
+    }
+    .roadmap-metric__value { font-size: 1.2rem; font-weight: 700; }
+    .roadmap-metric__value--green { color: var(--green); }
+    .roadmap-metric__value--yellow { color: var(--yellow); }
+    .roadmap-metric__value--accent { color: var(--accent); }
 
     /* Responsive */
     @media (max-width: 768px) {
@@ -738,7 +823,8 @@
       .seo-header { flex-direction: column; align-items: flex-start; }
       .orders-header { flex-direction: column; align-items: flex-start; }
       .landing-card__inputs { grid-template-columns: 1fr; }
-      .roadmap-columns { grid-template-columns: 1fr; }
+      .roadmap-metrics { grid-template-columns: repeat(3, 1fr); }
+      .roadmap-header__revenue { flex-direction: column; gap: 4px; }
     }
     @media (max-width: 480px) {
       .stats { grid-template-columns: 1fr; }
@@ -1026,30 +1112,30 @@
 
         <!-- Roadmap Tab -->
         <div class="tab-content" id="tab-roadmap">
-          <div class="roadmap-header">
+          <div class="roadmap-header" id="roadmapHeader">
+            <div class="roadmap-header__codename">Operation Moon Landing</div>
             <div class="roadmap-header__title">Road to $100K Revenue</div>
-            <div class="roadmap-header__sub">Track milestones and tasks on the path to six-figure revenue</div>
-            <div class="roadmap-header__progress-bar">
-              <div class="roadmap-header__progress-fill" id="roadmapProgress" style="width:0%"></div>
+            <div class="roadmap-header__mission">Build Atlas Hydration into a $100M+ premium hydration brand dominating the daily performance hydration category.</div>
+            <div class="roadmap-header__communities">
+              <span class="roadmap-header__community-tag">Travelers</span>
+              <span class="roadmap-header__community-tag">Athletes</span>
+              <span class="roadmap-header__community-tag">Padel Players</span>
+              <span class="roadmap-header__community-tag">Pilots</span>
             </div>
-            <div class="roadmap-header__progress-text" id="roadmapProgressText">0 of 0 tasks completed</div>
-          </div>
-          <div class="roadmap-columns" id="roadmapColumns">
-            <div class="roadmap-column" data-col="todo">
-              <div class="roadmap-column__title">To Do <span class="roadmap-column__count" id="todoCount">0</span></div>
-              <div class="roadmap-cards" id="todoCards"></div>
-              <button class="roadmap-add-btn" data-col="todo">+ Add Task</button>
-            </div>
-            <div class="roadmap-column" data-col="inprogress">
-              <div class="roadmap-column__title">In Progress <span class="roadmap-column__count" id="inprogressCount">0</span></div>
-              <div class="roadmap-cards" id="inprogressCards"></div>
-              <button class="roadmap-add-btn" data-col="inprogress">+ Add Task</button>
-            </div>
-            <div class="roadmap-column" data-col="done">
-              <div class="roadmap-column__title">Done <span class="roadmap-column__count" id="doneCount">0</span></div>
-              <div class="roadmap-cards" id="doneCards"></div>
+            <div class="roadmap-header__progress-wrap" id="roadmapProgressWrap">
+              <div class="roadmap-header__progress-bar">
+                <div class="roadmap-header__progress-fill" id="roadmapProgress" style="width:0%"></div>
+              </div>
+              <div class="roadmap-header__progress-text" id="roadmapProgressText">0 of 0 tasks completed</div>
+              <div class="roadmap-header__revenue">
+                <span class="roadmap-header__revenue-item">Target: <strong>$100K</strong></span>
+                <span class="roadmap-header__revenue-item" id="roadmapPhaseSummary"></span>
+              </div>
             </div>
           </div>
+
+          <div class="roadmap-metrics" id="roadmapMetrics"></div>
+          <div id="roadmapPhases"></div>
         </div>
 
         <!-- Orders Tab -->
@@ -2769,6 +2855,10 @@
           '<span class="landing-card__badge">' + (sec.id === 'founder' ? 'With Controls' : 'Background') + '</span>' +
         '</div>' +
         '<p style="font-size:0.78rem;color:var(--text-dim);margin-bottom:16px;">' + sec.desc + '</p>' +
+        (ytId ? '<div class="landing-card__preview-label">Live Preview</div>' +
+        '<div class="landing-card__preview">' +
+          '<iframe src="https://www.youtube.com/embed/' + ytId + '?autoplay=0&mute=1&loop=1&playlist=' + ytId + '&controls=' + (sec.id === 'founder' ? '1' : '0') + '&modestbranding=1&rel=0&playsinline=1" allow="autoplay; encrypted-media" allowfullscreen></iframe>' +
+        '</div>' : '') +
         '<div class="landing-card__current">' +
           '<span class="landing-card__current-label">Current YouTube ID:</span>' +
           '<span class="landing-card__current-value">' + (ytId || 'None') + '</span>' +
@@ -2859,73 +2949,253 @@
   }
 
   // =============================================
-  // ROADMAP
+  // ROADMAP — Operation Moon Landing
   // =============================================
-  var DEFAULT_ROADMAP = [
-    { id: 'r1', title: 'Deploy New Website', desc: 'Push the latest landing page build to production via GitHub Pages', col: 'todo', completed: false, priority: 'high' },
-    { id: 'r2', title: 'Get New Website Video Assets', desc: 'Source/film new hero, founder, and CTA background videos', col: 'todo', completed: false, priority: 'high' },
-    { id: 'r3', title: 'Set Up Email Capture', desc: 'Integrate Klaviyo or Mailchimp for newsletter signups', col: 'todo', completed: false, priority: 'medium' },
-    { id: 'r4', title: 'Launch TikTok Ad Campaign', desc: 'Create and publish first round of TikTok ads targeting fitness audience', col: 'todo', completed: false, priority: 'medium' },
-    { id: 'r5', title: 'Add Subscription Option', desc: 'Enable subscribe-and-save checkout through Shopify', col: 'todo', completed: false, priority: 'medium' },
-    { id: 'r6', title: 'First 100 Orders', desc: 'Hit the first 100 order milestone', col: 'todo', completed: false, priority: 'low' },
-    { id: 'r7', title: 'Influencer Partnerships', desc: 'Secure 3-5 micro-influencer partnerships for product seeding', col: 'todo', completed: false, priority: 'low' },
-    { id: 'r8', title: 'Retail Outreach', desc: 'Begin outreach to local gyms and health food stores', col: 'todo', completed: false, priority: 'low' }
+  var ROADMAP_PHASES = [
+    {
+      id: 'prelaunch',
+      title: 'Pre-Launch Phase',
+      subtitle: 'Executive Decisions',
+      icon: '&#9733;',
+      iconClass: 'prelaunch',
+      sections: [
+        {
+          id: 'prelaunch-exec',
+          title: 'Executive Decisions',
+          desc: 'Critical decisions that must be finalized before scaling.',
+          tasks: [
+            { id: 'pl1', title: 'Finalize packaging strategy', desc: 'Pouches vs retail boxes — confirm direction', priority: 'high' },
+            { id: 'pl2', title: 'Confirm pouch configuration: 16 sticks per pouch', desc: '', priority: 'high' },
+            { id: 'pl3', title: 'Determine retail box configuration', desc: 'Recommended: 10 sticks per box — aligns with industry norms (8-12 sticks)', priority: 'high' },
+            { id: 'pl4', title: 'Decide SKU structure', desc: 'Grapefruit Pouch & Box, Strawberry Pouch & Box', priority: 'high' },
+            { id: 'pl5', title: 'File trademark for Amazon Brand Registry', desc: 'Required to enable Amazon brand protection and A+ content', priority: 'high' },
+            { id: 'pl6', title: 'Onboard to Amazon', desc: 'Seller Central account setup and product listings', priority: 'high' },
+            { id: 'pl7', title: 'Estimate packaging costs', desc: 'Get quotes for pouch + box production runs', priority: 'medium' },
+            { id: 'pl8', title: 'Approve packaging production', desc: 'Green-light manufacturing after cost review', priority: 'medium' }
+          ]
+        }
+      ]
+    },
+    {
+      id: 'phase1',
+      title: 'Phase 1 — Launchpad',
+      subtitle: '$0 → $1M Revenue — LFG',
+      icon: '&#128640;',
+      iconClass: 'phase1',
+      desc: 'Establish Atlas Hydration as a credible daily performance hydration brand while building the operational foundation required for scalable growth. Focus on operational readiness, product architecture, and direct-to-consumer growth.',
+      sections: [
+        {
+          id: 'p1-amazon',
+          title: '1. Amazon Launch Preparation',
+          desc: 'Many successful hydration companies generate 30-50% of total revenue through Amazon once their brand matures.',
+          tasks: [
+            { id: 'p1a1', title: 'Complete Amazon Seller Central setup', desc: 'Account verification, bank details, tax info', priority: 'high' },
+            { id: 'p1a2', title: 'Create Amazon product listings', desc: 'Optimized titles, bullet points, descriptions, backend keywords', priority: 'high' },
+            { id: 'p1a3', title: 'Set up Amazon Brand Registry', desc: 'Requires trademark — enables A+ content, brand analytics, protection', priority: 'high' },
+            { id: 'p1a4', title: 'Launch Amazon PPC campaigns', desc: 'Sponsored Products and Sponsored Brands ads', priority: 'medium' }
+          ]
+        },
+        {
+          id: 'p1-product',
+          title: '2. Product Architecture & Packaging',
+          desc: 'Dual packaging system: pouches for DTC (shipping efficiency, better margins), boxes for retail (shelf presentation, trial purchases).',
+          tasks: [
+            { id: 'p1p1', title: 'Strawberry Lemonade — 16 stick pouch', desc: 'Core e-commerce SKU, lower packaging cost, reduced shipping weight', priority: 'high' },
+            { id: 'p1p2', title: 'Grapefruit — 16 stick pouch', desc: 'Core e-commerce SKU, new flavor launch', priority: 'high' },
+            { id: 'p1p3', title: 'Strawberry Lemonade — 10 stick retail box', desc: 'Lower entry price point, shelf-ready packaging, different aesthetic from pouch', priority: 'medium' },
+            { id: 'p1p4', title: 'Grapefruit — 10 stick retail box', desc: 'Retail-ready format for gyms and health food stores', priority: 'medium' },
+            { id: 'p1p5', title: 'Design retail box packaging', desc: 'Different aesthetic vibe than pouches — designed to sit on shelves', priority: 'medium' }
+          ]
+        },
+        {
+          id: 'p1-dtc',
+          title: '3. Direct-to-Consumer Growth',
+          desc: 'Phase 1 should prioritize dominance of the DTC channel. Retail comes later.',
+          tasks: [
+            { id: 'p1d1', title: 'Stronger landing page messaging', desc: 'Anoos monthly hour breakdown — compelling conversion copy', priority: 'high' },
+            { id: 'p1d2', title: 'Deploy new website', desc: 'Push the latest landing page build to production', priority: 'high' },
+            { id: 'p1d3', title: 'Get new website video assets', desc: 'Source/film new hero, founder, and CTA background videos', priority: 'high' },
+            { id: 'p1d4', title: 'Product bundles', desc: 'Create bundle offers after Grapefruit SKU launches', priority: 'medium' },
+            { id: 'p1d5', title: 'Customer reviews integration', desc: 'Display verified reviews on product pages', priority: 'medium' },
+            { id: 'p1d6', title: 'UGC videos on site', desc: 'Embed user-generated content on landing page', priority: 'medium' },
+            { id: 'p1d7', title: 'Launch TikTok Shop', desc: 'Build consistent pipeline of UGC creators', priority: 'high' }
+          ]
+        },
+        {
+          id: 'p1-ugc',
+          title: '4. UGC Content Engine',
+          desc: 'Build a large content library that can be continuously tested through TikTok advertising.',
+          tasks: [
+            { id: 'p1u1', title: 'Recruit UGC creators', desc: 'Find authentic creators who produce natural product content', priority: 'high' },
+            { id: 'p1u2', title: 'Workout hydration content', desc: 'Gym, running, crossfit, padel content themes', priority: 'medium' },
+            { id: 'p1u3', title: 'Travel hydration content', desc: 'Airport, flights, road trips — on-the-go hydration', priority: 'medium' },
+            { id: 'p1u4', title: 'Morning routine content', desc: 'Daily ritual integration for broader lifestyle appeal', priority: 'low' },
+            { id: 'p1u5', title: 'Athletic performance content', desc: 'Performance-focused creators in competitive sports', priority: 'low' }
+          ]
+        },
+        {
+          id: 'p1-community',
+          title: '5. Community Positioning',
+          desc: 'Atlas is the hydration brand for people who move. Not just a hydration powder — a performance lifestyle.',
+          tasks: [
+            { id: 'p1c1', title: 'Traveler community outreach', desc: 'Partner with travel influencers, airport retailers', priority: 'medium' },
+            { id: 'p1c2', title: 'Athlete community activation', desc: 'Sponsor local athletic events, gym partnerships', priority: 'medium' },
+            { id: 'p1c3', title: 'Padel community activation', desc: 'Rapidly growing global audience — strong early opportunity', priority: 'medium' },
+            { id: 'p1c4', title: 'Pilot community outreach', desc: 'Aviation forums, airline wellness programs', priority: 'low' }
+          ]
+        },
+        {
+          id: 'p1-metrics',
+          title: '6. Phase 1 Success Metrics',
+          desc: 'Key milestones that signal readiness to move to Phase 2.',
+          tasks: [
+            { id: 'p1m1', title: 'Consistent monthly revenue growth', desc: 'Month-over-month revenue increasing', priority: 'high' },
+            { id: 'p1m2', title: 'Amazon marketplace live', desc: 'Products listed, indexed, and generating sales', priority: 'high' },
+            { id: 'p1m3', title: 'Established SKU architecture', desc: '4 SKUs live: 2 pouches + 2 retail boxes', priority: 'medium' },
+            { id: 'p1m4', title: 'Operational packaging strategy', desc: 'Reliable supply chain for both formats', priority: 'medium' },
+            { id: 'p1m5', title: 'Scalable UGC content engine', desc: 'Steady flow of new creator content for ads', priority: 'medium' },
+            { id: 'p1m6', title: 'First 100 orders', desc: 'Hit the first 100 order milestone', priority: 'low' }
+          ]
+        }
+      ]
+    }
   ];
 
-  function getRoadmapData() {
+  function getRoadmapState() {
     try {
-      var d = JSON.parse(localStorage.getItem('atlas_roadmap'));
-      return d && d.length ? d : DEFAULT_ROADMAP;
-    } catch(e) { return DEFAULT_ROADMAP; }
+      return JSON.parse(localStorage.getItem('atlas_roadmap_v2')) || {};
+    } catch(e) { return {}; }
   }
-  function saveRoadmapData(data) {
-    localStorage.setItem('atlas_roadmap', JSON.stringify(data));
+  function saveRoadmapState(state) {
+    localStorage.setItem('atlas_roadmap_v2', JSON.stringify(state));
   }
 
-  var _dragCard = null;
+  // Header toggle
+  document.getElementById('roadmapHeader').addEventListener('click', function() {
+    document.getElementById('roadmapProgressWrap').classList.toggle('open');
+  });
 
   function renderRoadmap() {
-    var cards = getRoadmapData();
-    var cols = { todo: [], inprogress: [], done: [] };
-    cards.forEach(function(c) { (cols[c.col] || cols.todo).push(c); });
+    var state = getRoadmapState();
+    var totalTasks = 0;
+    var completedTasks = 0;
+    var phaseStats = {};
 
-    var total = cards.length;
-    var completed = cards.filter(function(c) { return c.completed; }).length;
-    var pct = total ? Math.round((completed / total) * 100) : 0;
-    document.getElementById('roadmapProgress').style.width = pct + '%';
-    document.getElementById('roadmapProgressText').textContent = completed + ' of ' + total + ' tasks completed (' + pct + '%)';
-
-    ['todo', 'inprogress', 'done'].forEach(function(colId) {
-      var container = document.getElementById(colId + 'Cards');
-      var countEl = document.getElementById(colId + 'Count');
-      countEl.textContent = cols[colId].length;
-
-      var html = '';
-      cols[colId].forEach(function(card) {
-        html += '<div class="roadmap-card' + (card.completed ? ' completed' : '') + '" draggable="true" data-id="' + card.id + '">' +
-          '<div class="roadmap-card__check" data-id="' + card.id + '">' +
-            '<span class="roadmap-card__check-icon">&#10003;</span>' +
-          '</div>' +
-          '<div class="roadmap-card__body">' +
-            '<div class="roadmap-card__title">' + esc(card.title) + '</div>' +
-            (card.desc ? '<div class="roadmap-card__desc">' + esc(card.desc) + '</div>' : '') +
-            (card.priority ? '<span class="roadmap-card__tag roadmap-card__tag--' + card.priority + '">' + card.priority + '</span>' : '') +
-          '</div>' +
-        '</div>';
+    // Count tasks
+    ROADMAP_PHASES.forEach(function(phase) {
+      var pTotal = 0, pDone = 0;
+      phase.sections.forEach(function(sec) {
+        sec.tasks.forEach(function(t) {
+          totalTasks++;
+          pTotal++;
+          if (state[t.id]) { completedTasks++; pDone++; }
+        });
       });
-      container.innerHTML = html;
+      phaseStats[phase.id] = { total: pTotal, done: pDone };
     });
 
-    // Drag and drop
+    var pct = totalTasks ? Math.round((completedTasks / totalTasks) * 100) : 0;
+    document.getElementById('roadmapProgress').style.width = pct + '%';
+    document.getElementById('roadmapProgressText').textContent = completedTasks + ' of ' + totalTasks + ' tasks completed (' + pct + '%)';
+    document.getElementById('roadmapPhaseSummary').innerHTML =
+      'Pre-Launch: <strong>' + phaseStats.prelaunch.done + '/' + phaseStats.prelaunch.total + '</strong> &nbsp;|&nbsp; Phase 1: <strong>' + phaseStats.phase1.done + '/' + phaseStats.phase1.total + '</strong>';
+
+    // Metrics bar
+    var metricsHtml = '';
+    metricsHtml += '<div class="roadmap-metric"><div class="roadmap-metric__label">Total Tasks</div><div class="roadmap-metric__value">' + totalTasks + '</div></div>';
+    metricsHtml += '<div class="roadmap-metric"><div class="roadmap-metric__label">Completed</div><div class="roadmap-metric__value roadmap-metric__value--green">' + completedTasks + '</div></div>';
+    metricsHtml += '<div class="roadmap-metric"><div class="roadmap-metric__label">Remaining</div><div class="roadmap-metric__value roadmap-metric__value--yellow">' + (totalTasks - completedTasks) + '</div></div>';
+    metricsHtml += '<div class="roadmap-metric"><div class="roadmap-metric__label">Pre-Launch</div><div class="roadmap-metric__value roadmap-metric__value--accent">' + phaseStats.prelaunch.done + '/' + phaseStats.prelaunch.total + '</div></div>';
+    metricsHtml += '<div class="roadmap-metric"><div class="roadmap-metric__label">Phase 1</div><div class="roadmap-metric__value roadmap-metric__value--accent">' + phaseStats.phase1.done + '/' + phaseStats.phase1.total + '</div></div>';
+    document.getElementById('roadmapMetrics').innerHTML = metricsHtml;
+
+    // Phases
+    var phasesHtml = '';
+    ROADMAP_PHASES.forEach(function(phase) {
+      var ps = phaseStats[phase.id];
+      phasesHtml += '<div class="roadmap-phase open" data-phase="' + phase.id + '">' +
+        '<div class="roadmap-phase__header">' +
+          '<div class="roadmap-phase__left">' +
+            '<div class="roadmap-phase__icon roadmap-phase__icon--' + phase.iconClass + '">' + phase.icon + '</div>' +
+            '<div>' +
+              '<div class="roadmap-phase__title">' + phase.title + '</div>' +
+              '<div class="roadmap-phase__subtitle">' + phase.subtitle + '</div>' +
+            '</div>' +
+          '</div>' +
+          '<div class="roadmap-phase__right">' +
+            '<span class="roadmap-phase__count">' + ps.done + '/' + ps.total + ' done</span>' +
+            '<span class="roadmap-phase__chevron">&#9660;</span>' +
+          '</div>' +
+        '</div>' +
+        '<div class="roadmap-phase__body">';
+
+      if (phase.desc) {
+        phasesHtml += '<div style="padding:0 24px 12px;font-size:0.78rem;color:var(--text-dim);line-height:1.5;">' + phase.desc + '</div>';
+      }
+
+      phase.sections.forEach(function(sec) {
+        phasesHtml += '<div class="roadmap-section" data-section="' + sec.id + '">' +
+          '<div class="roadmap-section__title">' + sec.title + '</div>';
+        if (sec.desc) {
+          phasesHtml += '<div class="roadmap-section__desc">' + sec.desc + '</div>';
+        }
+        phasesHtml += '<div class="roadmap-cards" data-section="' + sec.id + '">';
+
+        sec.tasks.forEach(function(task) {
+          var done = !!state[task.id];
+          phasesHtml += '<div class="roadmap-card' + (done ? ' completed' : '') + '" draggable="true" data-id="' + task.id + '">' +
+            '<div class="roadmap-card__check" data-id="' + task.id + '">' +
+              '<span class="roadmap-card__check-icon">&#10003;</span>' +
+            '</div>' +
+            '<div class="roadmap-card__body">' +
+              '<div class="roadmap-card__title">' + esc(task.title) + '</div>' +
+              (task.desc ? '<div class="roadmap-card__desc">' + esc(task.desc) + '</div>' : '') +
+              '<span class="roadmap-card__tag roadmap-card__tag--' + task.priority + '">' + task.priority + '</span>' +
+            '</div>' +
+          '</div>';
+        });
+
+        phasesHtml += '</div>' +
+          '<button class="roadmap-add-btn" data-section="' + sec.id + '">+ Add Task</button>' +
+        '</div>';
+      });
+
+      phasesHtml += '</div></div>';
+    });
+
+    document.getElementById('roadmapPhases').innerHTML = phasesHtml;
+
+    // Phase collapse/expand
+    document.querySelectorAll('.roadmap-phase__header').forEach(function(header) {
+      header.addEventListener('click', function() {
+        this.parentElement.classList.toggle('open');
+      });
+    });
+
+    // Check/uncheck
+    document.querySelectorAll('.roadmap-card__check').forEach(function(btn) {
+      btn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        var id = this.getAttribute('data-id');
+        var st = getRoadmapState();
+        st[id] = !st[id];
+        if (!st[id]) delete st[id];
+        saveRoadmapState(st);
+        renderRoadmap();
+      });
+    });
+
+    // Drag and drop within sections
+    var _dragId = null;
     document.querySelectorAll('.roadmap-card').forEach(function(el) {
       el.addEventListener('dragstart', function(e) {
-        _dragCard = this.getAttribute('data-id');
+        _dragId = this.getAttribute('data-id');
         this.classList.add('dragging');
         e.dataTransfer.effectAllowed = 'move';
       });
       el.addEventListener('dragend', function() {
         this.classList.remove('dragging');
-        _dragCard = null;
+        _dragId = null;
         document.querySelectorAll('.roadmap-cards').forEach(function(c) { c.classList.remove('drag-over'); });
       });
     });
@@ -2935,22 +3205,16 @@
         e.preventDefault();
         e.dataTransfer.dropEffect = 'move';
         this.classList.add('drag-over');
-
-        // Determine drop position
         var cards = Array.from(this.querySelectorAll('.roadmap-card:not(.dragging)'));
         var afterEl = null;
         for (var i = 0; i < cards.length; i++) {
           var box = cards[i].getBoundingClientRect();
-          var midY = box.top + box.height / 2;
-          if (e.clientY < midY) { afterEl = cards[i]; break; }
+          if (e.clientY < box.top + box.height / 2) { afterEl = cards[i]; break; }
         }
-        var draggingEl = document.querySelector('.roadmap-card.dragging');
-        if (draggingEl) {
-          if (afterEl) {
-            this.insertBefore(draggingEl, afterEl);
-          } else {
-            this.appendChild(draggingEl);
-          }
+        var dragging = document.querySelector('.roadmap-card.dragging');
+        if (dragging) {
+          if (afterEl) this.insertBefore(dragging, afterEl);
+          else this.appendChild(dragging);
         }
       });
       zone.addEventListener('dragleave', function(e) {
@@ -2959,73 +3223,47 @@
       zone.addEventListener('drop', function(e) {
         e.preventDefault();
         this.classList.remove('drag-over');
-        if (!_dragCard) return;
-        var colId = this.id.replace('Cards', '');
-        var data = getRoadmapData();
-
-        // Rebuild order from DOM
-        var newOrder = [];
-        ['todo', 'inprogress', 'done'].forEach(function(col) {
-          var container = document.getElementById(col + 'Cards');
-          var cardEls = container.querySelectorAll('.roadmap-card');
-          cardEls.forEach(function(el) {
-            var id = el.getAttribute('data-id');
-            var card = data.find(function(c) { return c.id === id; });
-            if (card) {
-              card.col = col;
-              newOrder.push(card);
-            }
-          });
-        });
-
-        // Add any cards not in DOM (shouldn't happen, but safety)
-        data.forEach(function(c) {
-          if (!newOrder.find(function(n) { return n.id === c.id; })) newOrder.push(c);
-        });
-
-        saveRoadmapData(newOrder);
-        renderRoadmap();
       });
     });
 
-    // Check/uncheck
-    document.querySelectorAll('.roadmap-card__check').forEach(function(btn) {
-      btn.addEventListener('click', function(e) {
-        e.stopPropagation();
-        var id = this.getAttribute('data-id');
-        var data = getRoadmapData();
-        var card = data.find(function(c) { return c.id === id; });
-        if (card) {
-          card.completed = !card.completed;
-          if (card.completed && card.col !== 'done') card.col = 'done';
-          if (!card.completed && card.col === 'done') card.col = 'todo';
-          saveRoadmapData(data);
-          renderRoadmap();
-        }
+    // Add task
+    document.querySelectorAll('.roadmap-add-btn').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        var secId = this.getAttribute('data-section');
+        var title = prompt('Task title:');
+        if (!title) return;
+        var desc = prompt('Description (optional):') || '';
+        var newId = 'custom_' + Date.now();
+        // Find the section and add task
+        ROADMAP_PHASES.forEach(function(phase) {
+          phase.sections.forEach(function(sec) {
+            if (sec.id === secId) {
+              sec.tasks.push({ id: newId, title: title, desc: desc, priority: 'medium' });
+            }
+          });
+        });
+        // Save custom tasks
+        var custom = JSON.parse(localStorage.getItem('atlas_roadmap_custom') || '[]');
+        custom.push({ sectionId: secId, id: newId, title: title, desc: desc, priority: 'medium' });
+        localStorage.setItem('atlas_roadmap_custom', JSON.stringify(custom));
+        renderRoadmap();
       });
     });
   }
 
-  // Add task buttons
-  document.querySelectorAll('.roadmap-add-btn').forEach(function(btn) {
-    btn.addEventListener('click', function() {
-      var col = this.getAttribute('data-col');
-      var title = prompt('Task title:');
-      if (!title) return;
-      var desc = prompt('Description (optional):') || '';
-      var data = getRoadmapData();
-      data.push({
-        id: 'r' + Date.now(),
-        title: title,
-        desc: desc,
-        col: col,
-        completed: false,
-        priority: 'medium'
+  // Restore custom tasks on load
+  (function restoreCustomTasks() {
+    var custom = JSON.parse(localStorage.getItem('atlas_roadmap_custom') || '[]');
+    custom.forEach(function(ct) {
+      ROADMAP_PHASES.forEach(function(phase) {
+        phase.sections.forEach(function(sec) {
+          if (sec.id === ct.sectionId && !sec.tasks.find(function(t) { return t.id === ct.id; })) {
+            sec.tasks.push({ id: ct.id, title: ct.title, desc: ct.desc, priority: ct.priority || 'medium' });
+          }
+        });
       });
-      saveRoadmapData(data);
-      renderRoadmap();
     });
-  });
+  })();
 
 })();
 </script>
