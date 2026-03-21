@@ -773,18 +773,24 @@
       background: var(--surface2); border-radius: 10px; height: 18px;
       overflow: hidden; margin-bottom: 8px; margin-top: 16px;
       box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
+      position: relative;
     }
     .roadmap-header__progress-fill {
       height: 100%; border-radius: 10px;
       background: linear-gradient(90deg, var(--accent), #10b981, #34d399);
-      transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-      box-shadow: 0 0 12px rgba(16,185,129,0.4);
+      transition: width 1.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      box-shadow: 0 0 16px rgba(16,185,129,0.5), 0 0 40px rgba(16,185,129,0.2);
       position: relative;
+      animation: progressGlow 2s ease-in-out infinite alternate;
+    }
+    @keyframes progressGlow {
+      0% { box-shadow: 0 0 12px rgba(16,185,129,0.4), 0 0 30px rgba(16,185,129,0.15); filter: brightness(1); }
+      100% { box-shadow: 0 0 20px rgba(16,185,129,0.6), 0 0 50px rgba(16,185,129,0.25); filter: brightness(1.1); }
     }
     .roadmap-header__progress-fill::after {
       content: ''; position: absolute; inset: 0;
-      background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.15) 50%, transparent 100%);
-      animation: progressShine 2s ease-in-out infinite;
+      background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.2) 50%, transparent 100%);
+      animation: progressShine 2.5s ease-in-out infinite;
     }
     @keyframes progressShine { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
     .roadmap-header__progress-text {
@@ -895,8 +901,22 @@
     .roadmap-phase__progress-fill {
       height: 100%; border-radius: 4px;
       background: linear-gradient(90deg, var(--accent), #10b981, #34d399);
-      transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-      box-shadow: 0 0 8px rgba(16,185,129,0.3);
+      transition: width 1.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      box-shadow: 0 0 10px rgba(16,185,129,0.35);
+      animation: phaseProgressGlow 2s ease-in-out infinite alternate;
+    }
+    .roadmap-phase__progress-fill--inprogress {
+      background: linear-gradient(90deg, #eab308, #facc15, #fde047);
+      box-shadow: 0 0 10px rgba(234,179,8,0.35);
+      animation: phaseProgressGlowYellow 2s ease-in-out infinite alternate;
+    }
+    @keyframes phaseProgressGlow {
+      0% { box-shadow: 0 0 6px rgba(16,185,129,0.3); }
+      100% { box-shadow: 0 0 14px rgba(16,185,129,0.5); }
+    }
+    @keyframes phaseProgressGlowYellow {
+      0% { box-shadow: 0 0 6px rgba(234,179,8,0.3); }
+      100% { box-shadow: 0 0 14px rgba(234,179,8,0.5); }
     }
     .roadmap-phase__body { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; }
     .roadmap-phase.open .roadmap-phase__body { max-height: 8000px; }
@@ -975,6 +995,19 @@
     .roadmap-card__block-btn:hover { border-color: var(--red); color: var(--red); background: var(--red-dim); }
     .roadmap-card.blocked .roadmap-card__block-btn { opacity: 1; border-color: var(--green); color: var(--green); background: var(--green-dim); }
     .roadmap-card.blocked .roadmap-card__block-btn:hover { border-color: var(--green); }
+    .roadmap-card__actions {
+      display: flex; gap: 4px; margin-top: 8px; opacity: 0; transition: opacity 0.15s;
+    }
+    .roadmap-card:hover .roadmap-card__actions { opacity: 1; }
+    .roadmap-card__action-btn {
+      padding: 3px 8px; border: 1px solid var(--border); background: var(--surface2);
+      color: var(--text-dim); font-family: var(--font); font-size: 0.58rem; font-weight: 600;
+      border-radius: 4px; cursor: pointer; transition: all 0.15s; text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+    .roadmap-card__action-btn:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-dim); }
+    .roadmap-card__action-btn--green:hover { border-color: var(--green); color: var(--green); background: var(--green-dim); }
+    .roadmap-card__action-btn--yellow:hover { border-color: var(--yellow); color: var(--yellow); background: var(--yellow-dim); }
     /* Card context menu */
     .roadmap-card-menu {
       position: absolute; z-index: 100; background: var(--surface);
@@ -1266,6 +1299,18 @@
     .equity-modal__actions button { flex: 1; padding: 10px; border-radius: 8px; font-family: var(--font); font-size: 0.82rem; font-weight: 600; cursor: pointer; border: none; }
     .equity-modal__cancel { background: var(--surface2); color: var(--text); border: 1px solid var(--border) !important; }
     .equity-modal__save { background: var(--accent); color: #fff; }
+    .equity-table td[data-editable] { cursor: pointer; position: relative; }
+    .equity-table td[data-editable]:hover { background: var(--surface2); }
+    .equity-table td[data-editable] input {
+      width: 100%; background: var(--surface2); border: 1px solid var(--accent);
+      border-radius: 4px; padding: 4px 8px; color: var(--text); font-family: var(--font);
+      font-size: 0.8rem; outline: none;
+    }
+    .equity-table__delete {
+      opacity: 0; background: none; border: none; color: var(--red); cursor: pointer;
+      font-size: 0.9rem; padding: 2px 6px; transition: opacity 0.15s;
+    }
+    .equity-table tr:hover .equity-table__delete { opacity: 1; }
     @media (max-width: 600px) { .equity-dilution__row { grid-template-columns: 1fr; } .equity-summary-cards { grid-template-columns: 1fr 1fr; } }
 
     /* ============ DECK TAB ============ */
@@ -3954,6 +3999,13 @@
   })();
 
   function renderRoadmap() {
+    // Save which phases are open before re-render
+    var openPhases = {};
+    document.querySelectorAll('.roadmap-phase.open').forEach(function(p) {
+      var pid = p.getAttribute('data-phase');
+      if (pid) openPhases[pid] = true;
+    });
+
     var state = getRoadmapState();
     var totalProjects = 0, completedProjects = 0, blockedProjects = 0, inProgressProjects = 0;
 
@@ -3996,29 +4048,19 @@
     }).join(' &nbsp;|&nbsp; ');
     document.getElementById('roadmapPhaseSummary').innerHTML = phaseSummary;
 
-    // Metrics — phase tabs + stats
-    var mHtml = '';
-    mHtml += '<div class="roadmap-metric-tabs">';
-    mHtml += '<button class="roadmap-metric-tab active" data-metric-phase="all">All</button>';
-    ROADMAP_PHASES.forEach(function(ph) {
-      mHtml += '<button class="roadmap-metric-tab" data-metric-phase="' + ph.id + '">' + ph.title.split('—')[0].trim() + '</button>';
-    });
-    mHtml += '</div>';
-    mHtml += '<div class="roadmap-metric"><div class="roadmap-metric__label">Projects</div><div class="roadmap-metric__value" id="metricTotal">' + totalProjects + '</div></div>';
-    mHtml += '<div class="roadmap-metric"><div class="roadmap-metric__label">Done</div><div class="roadmap-metric__value roadmap-metric__value--green" id="metricDone">' + completedProjects + '</div></div>';
-    mHtml += '<div class="roadmap-metric"><div class="roadmap-metric__label">Active</div><div class="roadmap-metric__value roadmap-metric__value--accent" id="metricActive">' + inProgressProjects + '</div></div>';
-    mHtml += '<div class="roadmap-metric"><div class="roadmap-metric__label">Blocked</div><div class="roadmap-metric__value roadmap-metric__value--red" id="metricBlocked">' + blockedProjects + '</div></div>';
-    mHtml += '<div class="roadmap-metric"><div class="roadmap-metric__label">Left</div><div class="roadmap-metric__value roadmap-metric__value--yellow" id="metricLeft">' + (totalProjects - completedProjects) + '</div></div>';
-    document.getElementById('roadmapMetrics').innerHTML = mHtml;
+    // Metrics — simplified (no tabs)
+    document.getElementById('roadmapMetrics').innerHTML = '';
 
     // Phases
     var phasesHtml = '';
     ROADMAP_PHASES.forEach(function(phase) {
       var pDone = phase.projects.filter(function(p) { return p.col === 'completed'; }).length;
+      var pInProgress = phase.projects.filter(function(p) { return p.col === 'inprogress'; }).length;
       var pTotal = phase.projects.length;
       var pPct = pTotal ? Math.round((pDone / pTotal) * 100) : 0;
+      var progressFillCls = 'roadmap-phase__progress-fill' + (pInProgress > 0 && pDone < pTotal ? ' roadmap-phase__progress-fill--inprogress' : '');
 
-      phasesHtml += '<div class="roadmap-phase" data-phase="' + phase.id + '">' +
+      phasesHtml += '<div class="roadmap-phase' + (openPhases[phase.id] ? ' open' : '') + '" data-phase="' + phase.id + '">' +
         '<div class="roadmap-phase__header">' +
           '<div class="roadmap-phase__left">' +
             '<div class="roadmap-phase__icon roadmap-phase__icon--' + phase.iconClass + '">' + phase.icon + '</div>' +
@@ -4036,7 +4078,7 @@
             '<span class="roadmap-phase__chevron">&#9660;</span>' +
           '</div>' +
         '</div>' +
-        '<div class="roadmap-phase__progress"><div class="roadmap-phase__progress-fill" style="width:' + pPct + '%"></div></div>' +
+        '<div class="roadmap-phase__progress"><div class="' + progressFillCls + '" style="width:' + pPct + '%"></div></div>' +
         '<div class="roadmap-phase__body">';
 
       if (phase.desc) {
@@ -4120,6 +4162,19 @@
             phasesHtml += '</div>';
           }
 
+          // Quick action buttons
+          if (!isCompleted) {
+            phasesHtml += '<div class="roadmap-card__actions">';
+            if (proj.col === 'todo') {
+              phasesHtml += '<button class="roadmap-card__action-btn roadmap-card__action-btn--yellow" data-action="inprogress" data-id="' + proj.id + '" data-phase="' + phase.id + '">&#9654; Start</button>';
+              phasesHtml += '<button class="roadmap-card__action-btn roadmap-card__action-btn--green" data-action="completed" data-id="' + proj.id + '" data-phase="' + phase.id + '">&#10003; Done</button>';
+            } else if (proj.col === 'inprogress') {
+              phasesHtml += '<button class="roadmap-card__action-btn" data-action="todo" data-id="' + proj.id + '" data-phase="' + phase.id + '">&#8592; To Do</button>';
+              phasesHtml += '<button class="roadmap-card__action-btn roadmap-card__action-btn--green" data-action="completed" data-id="' + proj.id + '" data-phase="' + phase.id + '">&#10003; Done</button>';
+            }
+            phasesHtml += '</div>';
+          }
+
           phasesHtml += '</div>';
         });
 
@@ -4144,15 +4199,6 @@
       h.addEventListener('click', function(e) {
         if (e.target.closest('[data-rename]')) return;
         this.closest('.roadmap-phase').classList.toggle('open');
-      });
-    });
-
-    // Metric tab clicks
-    document.querySelectorAll('.roadmap-metric-tab').forEach(function(tab) {
-      tab.addEventListener('click', function() {
-        document.querySelectorAll('.roadmap-metric-tab').forEach(function(t) { t.classList.remove('active'); });
-        this.classList.add('active');
-        updateMetricsForPhase(this.getAttribute('data-metric-phase'));
       });
     });
 
@@ -4197,6 +4243,23 @@
         var proj = phase.projects.find(function(p) { return p.id === projId; });
         proj.col = proj.col === 'completed' ? 'todo' : 'completed';
         if (proj.col === 'completed') proj.blocked = false;
+        saveProjectState(projId, proj);
+        renderRoadmap();
+      });
+    });
+
+    // Quick action buttons (Start / Done / To Do)
+    document.querySelectorAll('.roadmap-card__action-btn').forEach(function(btn) {
+      btn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        var action = this.getAttribute('data-action');
+        var projId = this.getAttribute('data-id');
+        var phaseId = this.getAttribute('data-phase');
+        var phase = ROADMAP_PHASES.find(function(p) { return p.id === phaseId; });
+        var proj = phase.projects.find(function(p) { return p.id === projId; });
+        if (!proj) return;
+        proj.col = action;
+        if (action === 'completed') proj.blocked = false;
         saveProjectState(projId, proj);
         renderRoadmap();
       });
@@ -4423,7 +4486,7 @@
       });
     });
 
-    // View toggle buttons
+    // View toggle buttons — also opens the phase if collapsed
     document.querySelectorAll('.roadmap-phase__view-btn').forEach(function(btn) {
       btn.addEventListener('click', function(e) {
         e.stopPropagation();
@@ -4431,6 +4494,17 @@
         var view = this.getAttribute('data-view');
         setPhaseView(phaseId, view);
         renderRoadmap();
+        // Ensure the phase is open after re-render
+        var phases = document.querySelectorAll('.roadmap-phase');
+        phases.forEach(function(p) {
+          var header = p.querySelector('.roadmap-phase__title');
+          if (header) {
+            var pid = header.getAttribute('data-phase');
+            if (pid === phaseId && !p.classList.contains('open')) {
+              p.classList.add('open');
+            }
+          }
+        });
       });
     });
 
@@ -4548,8 +4622,10 @@
     if (!el) return;
     var pct = total ? Math.round((done / total) * 100) : 0;
     var msgs = [];
+
+    // Progress overview
     if (pct === 0) {
-      msgs.push("You haven't started any projects yet — let's get moving! Pick a task from <strong>Pre-Launch</strong> and drag it to <strong>In Progress</strong>.");
+      msgs.push("You haven't started any projects yet — let's get moving! Pick a task and hit <strong>Start</strong> to begin.");
     } else if (pct < 25) {
       msgs.push("You're <strong>" + pct + "% done</strong> — great start! Focus on knocking out the high-priority items first.");
     } else if (pct < 50) {
@@ -4561,12 +4637,56 @@
     } else {
       msgs.push("&#127881; <strong>All " + total + " projects completed!</strong> You've finished the entire roadmap — incredible work!");
     }
+
+    // Blocked warnings
     if (blocked > 0) {
-      msgs.push(" &#9888;&#65039; <strong>" + blocked + " project" + (blocked > 1 ? 's are' : ' is') + " blocked</strong> — check if you can unblock them.");
+      var blockedNames = [];
+      ROADMAP_PHASES.forEach(function(ph) {
+        ph.projects.forEach(function(p) {
+          if (p.blocked) blockedNames.push(p.title);
+        });
+      });
+      msgs.push("<br>&#9888;&#65039; <strong>" + blocked + " blocked:</strong> " + blockedNames.slice(0, 3).join(', ') + (blockedNames.length > 3 ? '...' : '') + " — unblock these to keep moving.");
     }
+
+    // Active work detail
     if (active > 0) {
-      msgs.push(" <strong>" + active + "</strong> in progress right now.");
+      var activeNames = [];
+      ROADMAP_PHASES.forEach(function(ph) {
+        ph.projects.forEach(function(p) {
+          if (p.col === 'inprogress') activeNames.push(p.title);
+        });
+      });
+      msgs.push("<br>&#128296; <strong>In progress:</strong> " + activeNames.join(', ') + ".");
     }
+
+    // Per-phase insights
+    var phaseInsights = [];
+    ROADMAP_PHASES.forEach(function(ph) {
+      var phDone = ph.projects.filter(function(p) { return p.col === 'completed'; }).length;
+      var phTotal = ph.projects.length;
+      var phPct = phTotal ? Math.round((phDone / phTotal) * 100) : 0;
+      if (phPct === 100 && phTotal > 0) {
+        phaseInsights.push("<strong>" + ph.title.split('—')[0].trim() + "</strong> &#10003; complete!");
+      } else if (phPct === 0 && phTotal > 0) {
+        phaseInsights.push("<strong>" + ph.title.split('—')[0].trim() + "</strong> hasn't been started yet.");
+      }
+    });
+    if (phaseInsights.length > 0) {
+      msgs.push("<br>" + phaseInsights.join(' '));
+    }
+
+    // High priority insight
+    var highPriority = [];
+    ROADMAP_PHASES.forEach(function(ph) {
+      ph.projects.forEach(function(p) {
+        if (p.priority === 'high' && p.col !== 'completed') highPriority.push(p.title);
+      });
+    });
+    if (highPriority.length > 0 && pct < 100) {
+      msgs.push("<br>&#128308; <strong>" + highPriority.length + " high-priority</strong> item" + (highPriority.length > 1 ? 's' : '') + " remaining: " + highPriority.slice(0, 3).join(', ') + (highPriority.length > 3 ? '...' : ''));
+    }
+
     el.innerHTML = msgs.join('');
   }
 
@@ -4736,6 +4856,71 @@
 
   var EQUITY_COLORS = ['#3b82f6','#a855f7','#ec4899','#f43f5e','#34d399','#fbbf24','#f97316','#06b6d4','#8b5cf6','#10b981','#ef4444','#6366f1'];
 
+  // Persist equity edits to localStorage
+  function getEquityEdits() {
+    try { return JSON.parse(localStorage.getItem('atlas_equity_edits') || '{}'); } catch(e) { return {}; }
+  }
+  function saveEquityEdits(data) {
+    localStorage.setItem('atlas_equity_edits', JSON.stringify(data));
+  }
+  function applyEquityEdits() {
+    var edits = getEquityEdits();
+    Object.keys(edits).forEach(function(stageKey) {
+      if (!EQUITY_DATA[stageKey]) return;
+      var stageEdits = edits[stageKey];
+      if (stageEdits.rows) {
+        EQUITY_DATA[stageKey].rows = stageEdits.rows;
+      }
+      if (stageEdits.future) {
+        EQUITY_DATA[stageKey].future = stageEdits.future;
+      }
+    });
+  }
+  function saveStageToStorage(stageKey) {
+    var edits = getEquityEdits();
+    edits[stageKey] = {
+      rows: EQUITY_DATA[stageKey].rows,
+      future: EQUITY_DATA[stageKey].future
+    };
+    saveEquityEdits(edits);
+  }
+  function recalcSummary(stageKey) {
+    var stage = EQUITY_DATA[stageKey];
+    var totalShares = 0;
+    var founderShares = 0;
+    var investorShares = 0;
+    var valCap = 0;
+    var futureShares = 0;
+    stage.rows.forEach(function(r) {
+      totalShares += (r.shares || 0);
+      if (r.type === 'Founder') founderShares += (r.shares || 0);
+      else investorShares += (r.shares || 0);
+      if (r.valuation && r.valuation > valCap) valCap = r.valuation;
+    });
+    stage.future.forEach(function(f) {
+      totalShares += (f.shares || 0);
+      futureShares += (f.shares || 0);
+    });
+    stage.totalShares = totalShares;
+    // Recalc percentages for founders
+    stage.rows.forEach(function(r) {
+      if (r.type === 'Founder' && r.shares) {
+        r.pct = (r.shares / totalShares * 100);
+      }
+    });
+    stage.founderPct = totalShares ? (founderShares / totalShares * 100) : 0;
+    stage.investorPct = totalShares ? (investorShares / totalShares * 100) : 0;
+    // Update summary cards for foundation
+    if (stageKey === 'foundation') {
+      stage.summaryCards = [
+        { label: 'Total Shares', value: totalShares.toLocaleString(), cls: '' },
+        { label: 'Founder Shares', value: founderShares.toLocaleString(), cls: '--accent' },
+        { label: 'Investor Shares', value: investorShares.toLocaleString(), cls: '--green' },
+        { label: 'Valuation Cap', value: valCap ? '$' + valCap.toLocaleString() : 'N/A', cls: '' },
+        { label: 'Future Pools', value: futureShares.toLocaleString(), cls: '' }
+      ];
+    }
+  }
   var EQUITY_DATA = {
     foundation: {
       label: 'Foundation',
