@@ -658,27 +658,42 @@
     }
 
     /* === ROADMAP TAB === */
+    /* Stars background for entire roadmap tab */
+    #tab-roadmap {
+      position: relative;
+    }
+    .roadmap-stars-bg {
+      position: fixed; inset: 0; z-index: 0; pointer-events: none;
+      background: radial-gradient(ellipse at 50% 80%, rgba(59,130,246,0.04) 0%, transparent 70%);
+    }
+    #tab-roadmap > * { position: relative; z-index: 1; }
     .roadmap-header {
       text-align: center; padding: 0;
-      background: var(--surface); border: 1px solid var(--border);
-      border-radius: var(--radius); overflow: hidden; transition: box-shadow 0.2s;
+      background: transparent; border: none;
+      overflow: visible; transition: all 0.6s ease;
       margin-bottom: 24px; position: relative;
     }
-    .roadmap-header:hover { box-shadow: 0 4px 20px rgba(59,130,246,0.15); }
     .roadmap-header__scene {
-      height: 100vh; min-height: 500px; max-height: 800px;
+      height: 70vh; min-height: 400px;
       position: relative; overflow: hidden; cursor: pointer;
       display: flex; align-items: center; justify-content: center; flex-direction: column;
+      transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+      border-radius: var(--radius);
       background: radial-gradient(ellipse at 50% 80%, rgba(59,130,246,0.08) 0%, transparent 70%);
     }
-    .roadmap-header__scene--collapsed { height: 180px; min-height: 180px; max-height: 180px; transition: all 0.6s ease; }
-    .roadmap-header__scroll-hint {
-      position: absolute; bottom: 24px; left: 50%; transform: translateX(-50%);
-      font-size: 0.7rem; color: var(--text-dim); animation: bounceHint 2s ease-in-out infinite;
-      display: flex; flex-direction: column; align-items: center; gap: 4px;
+    .roadmap-header__scene.collapsed {
+      height: 120px; min-height: 120px;
+      border-radius: var(--radius);
+      background: var(--surface);
+      border: 1px solid var(--border);
     }
-    .roadmap-header__scroll-hint span { font-size: 1.2rem; }
-    @keyframes bounceHint { 0%,100% { transform: translateX(-50%) translateY(0); } 50% { transform: translateX(-50%) translateY(-8px); } }
+    .roadmap-header__scene.collapsed .roadmap-header__logo { width: 40px; height: 40px; margin-bottom: 8px; }
+    .roadmap-header__scene.collapsed .roadmap-header__codename { font-size: 0.6rem; margin-bottom: 0; }
+    .roadmap-header__scene.collapsed .roadmap-header__progress-wrap { opacity: 0; height: 0; overflow: hidden; }
+    .roadmap-header__scene.collapsed .roadmap-header__earth,
+    .roadmap-header__scene.collapsed .roadmap-header__droplet { opacity: 0; }
+    .roadmap-header__scene.collapsed .roadmap-header__rocket { font-size: 0.8rem; }
+    .roadmap-header__scene.collapsed .roadmap-header__moon { font-size: 1.2rem; }
     .roadmap-header__logo {
       width: 80px; height: 80px; margin-bottom: 16px;
       filter: drop-shadow(0 0 20px rgba(59,130,246,0.4));
@@ -879,9 +894,21 @@
     .roadmap-card__check-icon { display: none; color: #fff; font-size: 0.65rem; font-weight: 700; }
     .roadmap-card.completed .roadmap-card__check-icon { display: block; }
     .roadmap-card.completed .roadmap-card__title { text-decoration: line-through; color: var(--text-dim); }
+    .roadmap-card { position: relative; }
     .roadmap-card.blocked { border-color: var(--red); background: rgba(239,68,68,0.06); }
     .roadmap-card.blocked .roadmap-card__title { color: var(--red); }
     .roadmap-card.blocked .roadmap-card__check { border-color: var(--red); }
+    .roadmap-card__block-btn {
+      position: absolute; top: 6px; right: 6px; width: 22px; height: 22px;
+      border-radius: 50%; border: 1.5px solid var(--border); background: var(--surface2);
+      color: var(--text-dim); font-size: 0.6rem; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; transition: all 0.15s; z-index: 2;
+    }
+    .roadmap-card:hover .roadmap-card__block-btn { opacity: 1; }
+    .roadmap-card__block-btn:hover { border-color: var(--red); color: var(--red); background: var(--red-dim); }
+    .roadmap-card.blocked .roadmap-card__block-btn { opacity: 1; border-color: var(--green); color: var(--green); background: var(--green-dim); }
+    .roadmap-card.blocked .roadmap-card__block-btn:hover { border-color: var(--green); }
     /* Card context menu */
     .roadmap-card-menu {
       position: absolute; z-index: 100; background: var(--surface);
@@ -990,6 +1017,40 @@
     .roadmap-metric__value--yellow { color: var(--yellow); }
     .roadmap-metric__value--red { color: var(--red); }
     .roadmap-metric__value--accent { color: var(--accent); }
+    .roadmap-metric-tabs {
+      display: flex; gap: 4px; flex-shrink: 0;
+    }
+    .roadmap-metric-tab {
+      padding: 5px 12px; border-radius: 6px; border: 1px solid var(--border);
+      background: none; color: var(--text-dim); font-family: var(--font);
+      font-size: 0.65rem; font-weight: 600; cursor: pointer; transition: all 0.15s;
+      white-space: nowrap;
+    }
+    .roadmap-metric-tab:hover { border-color: var(--accent); color: var(--accent); }
+    .roadmap-metric-tab.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+    /* AI Assistant bubble */
+    .roadmap-assistant {
+      display: flex; align-items: flex-start; gap: 12px; margin-bottom: 20px;
+      padding: 16px 20px; background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); position: relative;
+    }
+    .roadmap-assistant__avatar {
+      width: 40px; height: 40px; border-radius: 50%; background: var(--accent-dim);
+      display: flex; align-items: center; justify-content: center; font-size: 1.2rem;
+      flex-shrink: 0; border: 2px solid var(--accent);
+    }
+    .roadmap-assistant__bubble {
+      flex: 1; min-width: 0;
+    }
+    .roadmap-assistant__label {
+      font-size: 0.6rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.08em; color: var(--accent); margin-bottom: 4px;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .roadmap-assistant__text {
+      font-size: 0.78rem; color: var(--text-dim); line-height: 1.5;
+    }
+    .roadmap-assistant__text strong { color: var(--text); }
     .roadmap-toolbar__add-phase {
       padding: 8px 20px; background: var(--accent); color: #fff;
       border: none; border-radius: 8px; font-family: var(--font);
@@ -1137,6 +1198,15 @@
         <button class="sidebar__link" data-tab="roadmap">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg>
           Roadmap
+        </button>
+        <div class="sidebar__section-label">Business</div>
+        <button class="sidebar__link" data-tab="equity">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+          Equity
+        </button>
+        <button class="sidebar__link" data-tab="deck">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+          Deck
         </button>
         <div class="sidebar__section-label">Tools</div>
         <button class="sidebar__link" data-tab="seo">
@@ -1357,6 +1427,7 @@
 
         <!-- Roadmap Tab -->
         <div class="tab-content" id="tab-roadmap">
+          <div class="roadmap-stars-bg" id="roadmapStarsBg"></div>
           <div class="roadmap-header" id="roadmapHeader">
             <div class="roadmap-header__scene" id="roadmapScene">
               <div class="roadmap-header__stars" id="roadmapStars"></div>
@@ -1382,10 +1453,14 @@
                   <span class="roadmap-header__revenue-item" id="roadmapPhaseSummary"></span>
                 </div>
               </div>
-              <div class="roadmap-header__scroll-hint">
-                Scroll to explore
-                <span>&#8595;</span>
-              </div>
+            </div>
+          </div>
+
+          <div class="roadmap-assistant" id="roadmapAssistant">
+            <div class="roadmap-assistant__avatar">&#127987;&#65039;&#8205;&#9895;&#65039;</div>
+            <div class="roadmap-assistant__bubble">
+              <div class="roadmap-assistant__label">Atlas Assistant</div>
+              <div class="roadmap-assistant__text" id="roadmapAssistantText">Loading your roadmap...</div>
             </div>
           </div>
 
@@ -3283,21 +3358,46 @@
     localStorage.setItem('atlas_roadmap_v3', JSON.stringify(state));
   }
 
-  // Generate stars
+  // Generate stars — scene + full background
   (function() {
-    var starsEl = document.getElementById('roadmapStars');
-    if (!starsEl) return;
-    var html = '';
-    for (var i = 0; i < 40; i++) {
-      html += '<div class="roadmap-header__star" style="top:' + Math.random()*100 + '%;left:' + Math.random()*100 + '%;animation-delay:' + (Math.random()*3).toFixed(1) + 's;width:' + (1+Math.random()*2) + 'px;height:' + (1+Math.random()*2) + 'px;"></div>';
+    function makeStars(el, count) {
+      if (!el) return;
+      var html = '';
+      for (var i = 0; i < count; i++) {
+        html += '<div class="roadmap-header__star" style="top:' + Math.random()*100 + '%;left:' + Math.random()*100 + '%;animation-delay:' + (Math.random()*3).toFixed(1) + 's;width:' + (1+Math.random()*2) + 'px;height:' + (1+Math.random()*2) + 'px;"></div>';
+      }
+      el.innerHTML = html;
     }
-    starsEl.innerHTML = html;
+    makeStars(document.getElementById('roadmapStars'), 40);
+    makeStars(document.getElementById('roadmapStarsBg'), 80);
   })();
 
-  // Header toggle
-  document.getElementById('roadmapHeader').addEventListener('click', function() {
-    document.getElementById('roadmapProgressWrap').classList.toggle('open');
-  });
+  // Scene collapse on scroll
+  (function() {
+    var scene = document.getElementById('roadmapScene');
+    if (!scene) return;
+    // Use IntersectionObserver on the assistant element
+    var observer = new IntersectionObserver(function(entries) {
+      // When assistant comes into view, scene should be collapsed
+    }, { threshold: 0 });
+
+    // Scroll-based collapse
+    var mainContent = document.querySelector('.main-content');
+    if (mainContent) {
+      mainContent.addEventListener('scroll', function() {
+        var rect = scene.getBoundingClientRect();
+        if (rect.bottom < 300) {
+          scene.classList.add('collapsed');
+        } else {
+          scene.classList.remove('collapsed');
+        }
+      });
+    }
+    // Also handle click to toggle
+    scene.addEventListener('click', function() {
+      this.classList.toggle('collapsed');
+    });
+  })();
 
   function renderRoadmap() {
     var state = getRoadmapState();
@@ -3342,15 +3442,19 @@
     }).join(' &nbsp;|&nbsp; ');
     document.getElementById('roadmapPhaseSummary').innerHTML = phaseSummary;
 
-    // Metrics
+    // Metrics — phase tabs + stats
     var mHtml = '';
-    mHtml += '<div class="roadmap-metric"><div class="roadmap-metric__label">Projects</div><div class="roadmap-metric__value">' + totalProjects + '</div></div>';
-    mHtml += '<div class="roadmap-metric"><div class="roadmap-metric__label">Done</div><div class="roadmap-metric__value roadmap-metric__value--green">' + completedProjects + '</div></div>';
-    mHtml += '<div class="roadmap-metric"><div class="roadmap-metric__label">Active</div><div class="roadmap-metric__value roadmap-metric__value--accent">' + inProgressProjects + '</div></div>';
-    if (blockedProjects > 0) {
-      mHtml += '<div class="roadmap-metric"><div class="roadmap-metric__label">Blocked</div><div class="roadmap-metric__value roadmap-metric__value--red">' + blockedProjects + '</div></div>';
-    }
-    mHtml += '<div class="roadmap-metric"><div class="roadmap-metric__label">Left</div><div class="roadmap-metric__value roadmap-metric__value--yellow">' + (totalProjects - completedProjects) + '</div></div>';
+    mHtml += '<div class="roadmap-metric-tabs">';
+    mHtml += '<button class="roadmap-metric-tab active" data-metric-phase="all">All</button>';
+    ROADMAP_PHASES.forEach(function(ph) {
+      mHtml += '<button class="roadmap-metric-tab" data-metric-phase="' + ph.id + '">' + ph.title.split('—')[0].trim() + '</button>';
+    });
+    mHtml += '</div>';
+    mHtml += '<div class="roadmap-metric"><div class="roadmap-metric__label">Projects</div><div class="roadmap-metric__value" id="metricTotal">' + totalProjects + '</div></div>';
+    mHtml += '<div class="roadmap-metric"><div class="roadmap-metric__label">Done</div><div class="roadmap-metric__value roadmap-metric__value--green" id="metricDone">' + completedProjects + '</div></div>';
+    mHtml += '<div class="roadmap-metric"><div class="roadmap-metric__label">Active</div><div class="roadmap-metric__value roadmap-metric__value--accent" id="metricActive">' + inProgressProjects + '</div></div>';
+    mHtml += '<div class="roadmap-metric"><div class="roadmap-metric__label">Blocked</div><div class="roadmap-metric__value roadmap-metric__value--red" id="metricBlocked">' + blockedProjects + '</div></div>';
+    mHtml += '<div class="roadmap-metric"><div class="roadmap-metric__label">Left</div><div class="roadmap-metric__value roadmap-metric__value--yellow" id="metricLeft">' + (totalProjects - completedProjects) + '</div></div>';
     document.getElementById('roadmapMetrics').innerHTML = mHtml;
 
     // Phases
@@ -3360,7 +3464,7 @@
       var pTotal = phase.projects.length;
       var pPct = pTotal ? Math.round((pDone / pTotal) * 100) : 0;
 
-      phasesHtml += '<div class="roadmap-phase open" data-phase="' + phase.id + '">' +
+      phasesHtml += '<div class="roadmap-phase" data-phase="' + phase.id + '">' +
         '<div class="roadmap-phase__header">' +
           '<div class="roadmap-phase__left">' +
             '<div class="roadmap-phase__icon roadmap-phase__icon--' + phase.iconClass + '">' + phase.icon + '</div>' +
@@ -3399,6 +3503,7 @@
 
           var cardClasses = 'roadmap-card' + (isCompleted ? ' completed' : '') + (proj.blocked ? ' blocked' : '');
           phasesHtml += '<div class="' + cardClasses + '" draggable="true" data-id="' + proj.id + '" data-phase="' + phase.id + '">' +
+            '<button class="roadmap-card__block-btn" data-id="' + proj.id + '" data-phase="' + phase.id + '" title="' + (proj.blocked ? 'Unblock' : 'Block') + '">' + (proj.blocked ? '&#10003;' : '&#9888;') + '</button>' +
             '<div class="roadmap-card__top">' +
               '<div class="roadmap-card__check" data-id="' + proj.id + '" data-phase="' + phase.id + '">' +
                 '<span class="roadmap-card__check-icon">&#10003;</span>' +
@@ -3449,6 +3554,46 @@
       h.addEventListener('click', function(e) {
         if (e.target.closest('[data-rename]')) return;
         this.closest('.roadmap-phase').classList.toggle('open');
+      });
+    });
+
+    // Metric tab clicks
+    document.querySelectorAll('.roadmap-metric-tab').forEach(function(tab) {
+      tab.addEventListener('click', function() {
+        document.querySelectorAll('.roadmap-metric-tab').forEach(function(t) { t.classList.remove('active'); });
+        this.classList.add('active');
+        updateMetricsForPhase(this.getAttribute('data-metric-phase'));
+      });
+    });
+
+    // Update AI assistant summary
+    updateAssistantSummary(totalProjects, completedProjects, inProgressProjects, blockedProjects);
+
+    // Block button on hover
+    document.querySelectorAll('.roadmap-card__block-btn').forEach(function(btn) {
+      btn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        var projId = this.getAttribute('data-id');
+        var phaseId = this.getAttribute('data-phase');
+        var phase = ROADMAP_PHASES.find(function(p) { return p.id === phaseId; });
+        var proj = phase.projects.find(function(p) { return p.id === projId; });
+        proj.blocked = !proj.blocked;
+        saveProjectState(projId, proj);
+        renderRoadmap();
+      });
+    });
+
+    // Phase-specific metrics — update when a phase is opened
+    document.querySelectorAll('.roadmap-phase__header').forEach(function(h) {
+      h.addEventListener('click', function() {
+        var phaseEl = this.closest('.roadmap-phase');
+        // After toggle, check if it's now open
+        setTimeout(function() {
+          if (phaseEl.classList.contains('open')) {
+            var phaseId = phaseEl.getAttribute('data-phase');
+            updateMetricsForPhase(phaseId);
+          }
+        }, 10);
       });
     });
 
@@ -3687,6 +3832,53 @@
         renderRoadmap();
       });
     });
+  }
+
+  function updateMetricsForPhase(phaseId) {
+    var projects = [];
+    if (phaseId === 'all') {
+      ROADMAP_PHASES.forEach(function(ph) { projects = projects.concat(ph.projects); });
+    } else {
+      var phase = ROADMAP_PHASES.find(function(p) { return p.id === phaseId; });
+      if (phase) projects = phase.projects;
+    }
+    var total = projects.length;
+    var done = projects.filter(function(p) { return p.col === 'completed'; }).length;
+    var active = projects.filter(function(p) { return p.col === 'inprogress'; }).length;
+    var blocked = projects.filter(function(p) { return p.blocked; }).length;
+    var el = function(id) { return document.getElementById(id); };
+    if (el('metricTotal')) el('metricTotal').textContent = total;
+    if (el('metricDone')) el('metricDone').textContent = done;
+    if (el('metricActive')) el('metricActive').textContent = active;
+    if (el('metricBlocked')) el('metricBlocked').textContent = blocked;
+    if (el('metricLeft')) el('metricLeft').textContent = total - done;
+  }
+
+  function updateAssistantSummary(total, done, active, blocked) {
+    var el = document.getElementById('roadmapAssistantText');
+    if (!el) return;
+    var pct = total ? Math.round((done / total) * 100) : 0;
+    var msgs = [];
+    if (pct === 0) {
+      msgs.push("You haven't started any projects yet — let's get moving! Pick a task from <strong>Pre-Launch</strong> and drag it to <strong>In Progress</strong>.");
+    } else if (pct < 25) {
+      msgs.push("You're <strong>" + pct + "% done</strong> — great start! Focus on knocking out the high-priority items first.");
+    } else if (pct < 50) {
+      msgs.push("Nice progress — <strong>" + pct + "%</strong> complete! You're building real momentum.");
+    } else if (pct < 75) {
+      msgs.push("Over halfway there at <strong>" + pct + "%</strong>! The finish line is in sight.");
+    } else if (pct < 100) {
+      msgs.push("Almost done — <strong>" + pct + "%</strong>! Just <strong>" + (total - done) + " projects</strong> left to crush.");
+    } else {
+      msgs.push("&#127881; <strong>All " + total + " projects completed!</strong> You've finished the entire roadmap — incredible work!");
+    }
+    if (blocked > 0) {
+      msgs.push(" &#9888;&#65039; <strong>" + blocked + " project" + (blocked > 1 ? 's are' : ' is') + " blocked</strong> — check if you can unblock them.");
+    }
+    if (active > 0) {
+      msgs.push(" <strong>" + active + "</strong> in progress right now.");
+    }
+    el.innerHTML = msgs.join('');
   }
 
   function closeCardMenu() {
