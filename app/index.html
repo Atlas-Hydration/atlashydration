@@ -303,31 +303,78 @@
     .tab-content.active { display: block; }
 
     /* Roadmap */
+    .roadmap-mission {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 20px 24px; margin-bottom: 24px;
+    }
+    .roadmap-mission__title {
+      font-size: 1.1rem; font-weight: 700; margin-bottom: 6px;
+      letter-spacing: -0.02em;
+    }
+    .roadmap-mission__text { font-size: 0.82rem; color: var(--text-dim); line-height: 1.6; }
+    .roadmap-mission__tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
+    .roadmap-mission__tag {
+      font-size: 0.7rem; font-weight: 500; padding: 4px 10px;
+      border-radius: 20px; background: var(--accent-dim); color: var(--accent);
+    }
+    .roadmap-phase-label {
+      font-size: 0.78rem; font-weight: 600; color: var(--text-dim);
+      text-transform: uppercase; letter-spacing: 0.05em;
+      margin: 28px 0 12px; padding-bottom: 8px; border-bottom: 1px solid var(--border);
+    }
+    .roadmap-phase-label span { color: var(--text); }
     .roadmap { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
-    .roadmap__column { display: flex; flex-direction: column; gap: 12px; }
+    .roadmap__column {
+      display: flex; flex-direction: column; gap: 10px; min-height: 120px;
+      padding: 8px; border-radius: var(--radius);
+      transition: background 0.2s;
+    }
+    .roadmap__column.drag-over { background: var(--accent-dim); }
     .roadmap__column-header {
-      display: flex; align-items: center; gap: 8px;
-      font-size: 0.82rem; font-weight: 600; text-transform: uppercase;
-      letter-spacing: 0.04em; color: var(--text-dim); padding: 8px 0;
-      border-bottom: 1px solid var(--border); margin-bottom: 4px;
+      display: flex; align-items: center; justify-content: space-between;
+      font-size: 0.78rem; font-weight: 600; text-transform: uppercase;
+      letter-spacing: 0.04em; color: var(--text-dim); padding: 6px 4px;
+      border-bottom: 2px solid var(--border); margin-bottom: 4px;
+    }
+    .roadmap__column-header--completed { border-bottom-color: var(--green); }
+    .roadmap__column-header--progress { border-bottom-color: var(--yellow); }
+    .roadmap__column-header--planned { border-bottom-color: var(--accent); }
+    .roadmap__column-count {
+      font-size: 0.7rem; background: var(--surface2); padding: 2px 8px;
+      border-radius: 10px; color: var(--text-dim);
     }
     .roadmap__column-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
     .roadmap__card {
       background: var(--surface); border: 1px solid var(--border);
-      border-radius: var(--radius); padding: 16px; transition: border-color 0.2s;
+      border-radius: var(--radius); padding: 14px 16px;
+      cursor: grab; user-select: none;
+      transition: border-color 0.2s, box-shadow 0.2s, opacity 0.2s, transform 0.15s;
     }
     .roadmap__card:hover { border-color: var(--accent); }
-    .roadmap__card-title { font-size: 0.88rem; font-weight: 600; margin-bottom: 6px; }
-    .roadmap__card-desc { font-size: 0.78rem; color: var(--text-dim); line-height: 1.5; margin-bottom: 12px; }
-    .roadmap__card-meta { display: flex; gap: 6px; }
+    .roadmap__card.dragging {
+      opacity: 0.5; transform: scale(0.97);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    }
+    .roadmap__card-title { font-size: 0.85rem; font-weight: 600; margin-bottom: 5px; }
+    .roadmap__card-desc { font-size: 0.76rem; color: var(--text-dim); line-height: 1.5; margin-bottom: 10px; }
+    .roadmap__card-meta { display: flex; gap: 6px; flex-wrap: wrap; }
     .roadmap__tag {
-      font-size: 0.68rem; font-weight: 600; padding: 3px 8px;
-      border-radius: 6px; text-transform: uppercase; letter-spacing: 0.03em;
+      font-size: 0.65rem; font-weight: 600; padding: 2px 7px;
+      border-radius: 5px; text-transform: uppercase; letter-spacing: 0.03em;
     }
     .roadmap__tag--green { background: var(--green-dim); color: var(--green); }
     .roadmap__tag--yellow { background: var(--yellow-dim); color: var(--yellow); }
     .roadmap__tag--blue { background: var(--accent-dim); color: var(--accent); }
-    @media (max-width: 768px) {
+    .roadmap__tag--cat {
+      background: var(--surface2); color: var(--text-dim);
+      font-weight: 500; text-transform: none;
+    }
+    .roadmap__drop-indicator {
+      height: 3px; background: var(--accent); border-radius: 2px;
+      margin: -2px 0; transition: opacity 0.15s; opacity: 0;
+    }
+    .roadmap__drop-indicator.visible { opacity: 1; }
+    @media (max-width: 900px) {
       .roadmap { grid-template-columns: 1fr; }
     }
 
@@ -926,87 +973,131 @@
         <div class="tab-content" id="tab-roadmap">
           <div class="section">
             <div class="section__header">
-              <h2 class="section__title">Product Roadmap</h2>
+              <h2 class="section__title">Operation Moon Landing</h2>
             </div>
-            <p style="color:var(--text-dim);font-size:0.85rem;margin-bottom:24px;">Track upcoming features, improvements, and milestones for Atlas Hydration.</p>
 
-            <div class="roadmap">
-              <div class="roadmap__column">
+            <div class="roadmap-mission">
+              <div class="roadmap-mission__title">Mission</div>
+              <div class="roadmap-mission__text">Build Atlas Hydration into a $100M+ premium hydration brand dominating the daily performance hydration category.</div>
+              <div class="roadmap-mission__tags">
+                <span class="roadmap-mission__tag">Premium Travel Hydration</span>
+                <span class="roadmap-mission__tag">Performance Lifestyle</span>
+                <span class="roadmap-mission__tag">Travelers</span>
+                <span class="roadmap-mission__tag">Athletes</span>
+                <span class="roadmap-mission__tag">Padel Players</span>
+                <span class="roadmap-mission__tag">Pilots</span>
+              </div>
+            </div>
+
+            <div class="roadmap-phase-label">Pre-Launch Phase &mdash; <span>Executive Decisions</span></div>
+            <div class="roadmap" id="roadmapPrelaunch">
+              <div class="roadmap__column" data-phase="completed" id="prelaunch-completed">
                 <div class="roadmap__column-header roadmap__column-header--completed">
-                  <span class="roadmap__column-dot" style="background:var(--green);"></span>
-                  Completed
-                </div>
-                <div class="roadmap__card">
-                  <div class="roadmap__card-title">Launch Storefront</div>
-                  <div class="roadmap__card-desc">Static site with Shopify Buy SDK integration for checkout</div>
-                  <div class="roadmap__card-meta"><span class="roadmap__tag roadmap__tag--green">Done</span></div>
-                </div>
-                <div class="roadmap__card">
-                  <div class="roadmap__card-title">Product Detail Pages</div>
-                  <div class="roadmap__card-desc">Individual pages for Strawberry Lemonade and Lemon Lime flavors</div>
-                  <div class="roadmap__card-meta"><span class="roadmap__tag roadmap__tag--green">Done</span></div>
-                </div>
-                <div class="roadmap__card">
-                  <div class="roadmap__card-title">Admin Dashboard</div>
-                  <div class="roadmap__card-desc">Internal dashboard with products, orders, customers, SEO, and GEO tools</div>
-                  <div class="roadmap__card-meta"><span class="roadmap__tag roadmap__tag--green">Done</span></div>
-                </div>
-                <div class="roadmap__card">
-                  <div class="roadmap__card-title">SEO &amp; GEO Optimization</div>
-                  <div class="roadmap__card-desc">Automated SEO health scanning and AI discoverability optimization</div>
-                  <div class="roadmap__card-meta"><span class="roadmap__tag roadmap__tag--green">Done</span></div>
+                  <span style="display:flex;align-items:center;gap:8px;"><span class="roadmap__column-dot" style="background:var(--green);"></span> Completed</span>
+                  <span class="roadmap__column-count" data-count></span>
                 </div>
               </div>
-
-              <div class="roadmap__column">
+              <div class="roadmap__column" data-phase="in-progress" id="prelaunch-progress">
                 <div class="roadmap__column-header roadmap__column-header--progress">
-                  <span class="roadmap__column-dot" style="background:var(--yellow);"></span>
-                  In Progress
+                  <span style="display:flex;align-items:center;gap:8px;"><span class="roadmap__column-dot" style="background:var(--yellow);"></span> In Progress</span>
+                  <span class="roadmap__column-count" data-count></span>
                 </div>
-                <div class="roadmap__card">
-                  <div class="roadmap__card-title">New Flavor Expansion</div>
-                  <div class="roadmap__card-desc">Adding Grapefruit and additional seasonal flavors to the lineup</div>
-                  <div class="roadmap__card-meta"><span class="roadmap__tag roadmap__tag--yellow">In Progress</span></div>
+                <div class="roadmap__card" draggable="true" data-id="pl-1">
+                  <div class="roadmap__card-title">Finalize Packaging Strategy</div>
+                  <div class="roadmap__card-desc">Decide between pouches vs retail boxes for each product line</div>
+                  <div class="roadmap__card-meta"><span class="roadmap__tag roadmap__tag--yellow">In Progress</span><span class="roadmap__tag roadmap__tag--cat">Packaging</span></div>
                 </div>
-                <div class="roadmap__card">
-                  <div class="roadmap__card-title">Blog &amp; Content Hub</div>
-                  <div class="roadmap__card-desc">Educational content on hydration science, wellness tips, and brand stories</div>
-                  <div class="roadmap__card-meta"><span class="roadmap__tag roadmap__tag--yellow">In Progress</span></div>
+                <div class="roadmap__card" draggable="true" data-id="pl-2">
+                  <div class="roadmap__card-title">Confirm Pouch Configuration</div>
+                  <div class="roadmap__card-desc">16 sticks per pouch &mdash; primary DTC format for shipping efficiency and perceived value</div>
+                  <div class="roadmap__card-meta"><span class="roadmap__tag roadmap__tag--yellow">In Progress</span><span class="roadmap__tag roadmap__tag--cat">Packaging</span></div>
                 </div>
-                <div class="roadmap__card">
-                  <div class="roadmap__card-title">Analytics Integration</div>
-                  <div class="roadmap__card-desc">Conversion tracking, customer behavior insights, and sales reporting</div>
-                  <div class="roadmap__card-meta"><span class="roadmap__tag roadmap__tag--yellow">In Progress</span></div>
+                <div class="roadmap__card" draggable="true" data-id="pl-3">
+                  <div class="roadmap__card-title">Determine Retail Box Configuration</div>
+                  <div class="roadmap__card-desc">Recommended: 10 sticks per box &mdash; aligns with industry norms, lower entry price point</div>
+                  <div class="roadmap__card-meta"><span class="roadmap__tag roadmap__tag--yellow">In Progress</span><span class="roadmap__tag roadmap__tag--cat">Packaging</span></div>
+                </div>
+                <div class="roadmap__card" draggable="true" data-id="pl-4">
+                  <div class="roadmap__card-title">Decide SKU Structure</div>
+                  <div class="roadmap__card-desc">Grapefruit Pouch &amp; Box, Strawberry Lemonade Pouch &amp; Box &mdash; 4 core SKUs</div>
+                  <div class="roadmap__card-meta"><span class="roadmap__tag roadmap__tag--yellow">In Progress</span><span class="roadmap__tag roadmap__tag--cat">Product</span></div>
                 </div>
               </div>
-
-              <div class="roadmap__column">
+              <div class="roadmap__column" data-phase="planned" id="prelaunch-planned">
                 <div class="roadmap__column-header roadmap__column-header--planned">
-                  <span class="roadmap__column-dot" style="background:var(--accent);"></span>
-                  Planned
+                  <span style="display:flex;align-items:center;gap:8px;"><span class="roadmap__column-dot" style="background:var(--accent);"></span> Planned</span>
+                  <span class="roadmap__column-count" data-count></span>
                 </div>
-                <div class="roadmap__card">
-                  <div class="roadmap__card-title">Subscription &amp; Subscribe-to-Save</div>
-                  <div class="roadmap__card-desc">Recurring orders with discounted pricing for loyal customers</div>
-                  <div class="roadmap__card-meta"><span class="roadmap__tag roadmap__tag--blue">Planned</span></div>
+                <div class="roadmap__card" draggable="true" data-id="pl-5">
+                  <div class="roadmap__card-title">File Trademark</div>
+                  <div class="roadmap__card-desc">Enable Amazon Brand Registry for brand protection and enhanced listings</div>
+                  <div class="roadmap__card-meta"><span class="roadmap__tag roadmap__tag--blue">Planned</span><span class="roadmap__tag roadmap__tag--cat">Legal</span></div>
                 </div>
-                <div class="roadmap__card">
-                  <div class="roadmap__card-title">Customer Accounts &amp; Order History</div>
-                  <div class="roadmap__card-desc">User login with order tracking, reorder, and saved preferences</div>
-                  <div class="roadmap__card-meta"><span class="roadmap__tag roadmap__tag--blue">Planned</span></div>
+                <div class="roadmap__card" draggable="true" data-id="pl-6">
+                  <div class="roadmap__card-title">Onboard to Amazon</div>
+                  <div class="roadmap__card-desc">Set up Amazon seller account and prepare for marketplace launch</div>
+                  <div class="roadmap__card-meta"><span class="roadmap__tag roadmap__tag--blue">Planned</span><span class="roadmap__tag roadmap__tag--cat">Distribution</span></div>
                 </div>
-                <div class="roadmap__card">
-                  <div class="roadmap__card-title">Referral Program</div>
-                  <div class="roadmap__card-desc">Share-and-earn rewards program to drive organic growth</div>
-                  <div class="roadmap__card-meta"><span class="roadmap__tag roadmap__tag--blue">Planned</span></div>
+                <div class="roadmap__card" draggable="true" data-id="pl-7">
+                  <div class="roadmap__card-title">Estimate Packaging Costs</div>
+                  <div class="roadmap__card-desc">Get production quotes for pouch + box formats across all SKUs</div>
+                  <div class="roadmap__card-meta"><span class="roadmap__tag roadmap__tag--blue">Planned</span><span class="roadmap__tag roadmap__tag--cat">Finance</span></div>
                 </div>
-                <div class="roadmap__card">
-                  <div class="roadmap__card-title">Wholesale &amp; B2B Portal</div>
-                  <div class="roadmap__card-desc">Bulk ordering for gyms, wellness centers, and retail partners</div>
-                  <div class="roadmap__card-meta"><span class="roadmap__tag roadmap__tag--blue">Planned</span></div>
+                <div class="roadmap__card" draggable="true" data-id="pl-8">
+                  <div class="roadmap__card-title">Approve Packaging Production</div>
+                  <div class="roadmap__card-desc">Final sign-off on designs, materials, and production run quantities</div>
+                  <div class="roadmap__card-meta"><span class="roadmap__tag roadmap__tag--blue">Planned</span><span class="roadmap__tag roadmap__tag--cat">Packaging</span></div>
                 </div>
               </div>
             </div>
+
+            <div class="roadmap-phase-label">Phase 1 &mdash; <span>Launchpad</span> &nbsp;&middot;&nbsp; $0 &rarr; $1M Revenue</div>
+            <div class="roadmap" id="roadmapPhase1">
+              <div class="roadmap__column" data-phase="completed" id="phase1-completed">
+                <div class="roadmap__column-header roadmap__column-header--completed">
+                  <span style="display:flex;align-items:center;gap:8px;"><span class="roadmap__column-dot" style="background:var(--green);"></span> Completed</span>
+                  <span class="roadmap__column-count" data-count></span>
+                </div>
+              </div>
+              <div class="roadmap__column" data-phase="in-progress" id="phase1-progress">
+                <div class="roadmap__column-header roadmap__column-header--progress">
+                  <span style="display:flex;align-items:center;gap:8px;"><span class="roadmap__column-dot" style="background:var(--yellow);"></span> In Progress</span>
+                  <span class="roadmap__column-count" data-count></span>
+                </div>
+              </div>
+              <div class="roadmap__column" data-phase="planned" id="phase1-planned">
+                <div class="roadmap__column-header roadmap__column-header--planned">
+                  <span style="display:flex;align-items:center;gap:8px;"><span class="roadmap__column-dot" style="background:var(--accent);"></span> Planned</span>
+                  <span class="roadmap__column-count" data-count></span>
+                </div>
+                <div class="roadmap__card" draggable="true" data-id="p1-1">
+                  <div class="roadmap__card-title">Amazon Launch Preparation</div>
+                  <div class="roadmap__card-desc">30&ndash;50% of hydration revenue comes through Amazon at maturity. Set up listings, A+ content, and brand storefront.</div>
+                  <div class="roadmap__card-meta"><span class="roadmap__tag roadmap__tag--blue">Planned</span><span class="roadmap__tag roadmap__tag--cat">Distribution</span></div>
+                </div>
+                <div class="roadmap__card" draggable="true" data-id="p1-2">
+                  <div class="roadmap__card-title">Product Architecture &amp; Packaging</div>
+                  <div class="roadmap__card-desc">Dual packaging system: 16-stick pouches for DTC, 10-stick retail boxes for shelf presence. 4 core SKUs across Strawberry Lemonade &amp; Grapefruit.</div>
+                  <div class="roadmap__card-meta"><span class="roadmap__tag roadmap__tag--blue">Planned</span><span class="roadmap__tag roadmap__tag--cat">Product</span></div>
+                </div>
+                <div class="roadmap__card" draggable="true" data-id="p1-3">
+                  <div class="roadmap__card-title">Direct-to-Consumer Growth</div>
+                  <div class="roadmap__card-desc">Stronger landing page messaging, product bundles, customer reviews, UGC videos. Prioritize Shopify &amp; TikTok Shop channels.</div>
+                  <div class="roadmap__card-meta"><span class="roadmap__tag roadmap__tag--blue">Planned</span><span class="roadmap__tag roadmap__tag--cat">Growth</span></div>
+                </div>
+                <div class="roadmap__card" draggable="true" data-id="p1-4">
+                  <div class="roadmap__card-title">UGC Content Engine</div>
+                  <div class="roadmap__card-desc">Recruit creators producing authentic content around workouts, travel, morning routines, and athletic performance for TikTok advertising.</div>
+                  <div class="roadmap__card-meta"><span class="roadmap__tag roadmap__tag--blue">Planned</span><span class="roadmap__tag roadmap__tag--cat">Marketing</span></div>
+                </div>
+                <div class="roadmap__card" draggable="true" data-id="p1-5">
+                  <div class="roadmap__card-title">Community Positioning</div>
+                  <div class="roadmap__card-desc">Establish Atlas as the hydration brand for people who move. Core communities: Travelers, Athletes (padel), Pilots.</div>
+                  <div class="roadmap__card-meta"><span class="roadmap__tag roadmap__tag--blue">Planned</span><span class="roadmap__tag roadmap__tag--cat">Brand</span></div>
+                </div>
+              </div>
+            </div>
+
           </div>
         </div>
 
@@ -2633,6 +2724,192 @@
   }
 
   document.getElementById('customersSegmentFilter').addEventListener('change', renderCustomers);
+
+  // =============================================
+  // ROADMAP DRAG & DROP
+  // =============================================
+  var ROADMAP_STORAGE_KEY = 'atlas_roadmap_state';
+  var tagClassMap = { completed: 'roadmap__tag--green', 'in-progress': 'roadmap__tag--yellow', planned: 'roadmap__tag--blue' };
+  var tagLabelMap = { completed: 'Done', 'in-progress': 'In Progress', planned: 'Planned' };
+
+  function saveRoadmapState() {
+    var state = {};
+    document.querySelectorAll('.roadmap__column').forEach(function(col) {
+      var phase = col.getAttribute('data-phase');
+      var boardId = col.closest('.roadmap').id;
+      col.querySelectorAll('.roadmap__card').forEach(function(card) {
+        state[card.getAttribute('data-id')] = { phase: phase, board: boardId };
+      });
+    });
+    localStorage.setItem(ROADMAP_STORAGE_KEY, JSON.stringify(state));
+  }
+
+  function loadRoadmapState() {
+    var raw = localStorage.getItem(ROADMAP_STORAGE_KEY);
+    if (!raw) return;
+    try {
+      var state = JSON.parse(raw);
+      Object.keys(state).forEach(function(cardId) {
+        var info = state[cardId];
+        var card = document.querySelector('.roadmap__card[data-id="' + cardId + '"]');
+        if (!card) return;
+        var board = document.getElementById(info.board);
+        if (!board) return;
+        var targetCol = board.querySelector('.roadmap__column[data-phase="' + info.phase + '"]');
+        if (!targetCol) return;
+        if (card.parentElement !== targetCol) {
+          targetCol.appendChild(card);
+          updateCardTag(card, info.phase);
+        }
+      });
+      updateAllCounts();
+    } catch(e) {}
+  }
+
+  function updateCardTag(card, phase) {
+    var tag = card.querySelector('.roadmap__tag:first-child');
+    if (!tag) return;
+    tag.className = 'roadmap__tag ' + (tagClassMap[phase] || '');
+    tag.textContent = tagLabelMap[phase] || phase;
+  }
+
+  function updateAllCounts() {
+    document.querySelectorAll('.roadmap__column').forEach(function(col) {
+      var count = col.querySelectorAll('.roadmap__card').length;
+      var badge = col.querySelector('[data-count]');
+      if (badge) badge.textContent = count;
+    });
+  }
+
+  var draggedCard = null;
+
+  document.addEventListener('dragstart', function(e) {
+    var card = e.target.closest('.roadmap__card');
+    if (!card) return;
+    draggedCard = card;
+    card.classList.add('dragging');
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('text/plain', card.getAttribute('data-id'));
+  });
+
+  document.addEventListener('dragend', function(e) {
+    if (draggedCard) {
+      draggedCard.classList.remove('dragging');
+      draggedCard = null;
+    }
+    document.querySelectorAll('.roadmap__column').forEach(function(c) { c.classList.remove('drag-over'); });
+    document.querySelectorAll('.roadmap__drop-indicator').forEach(function(i) { i.classList.remove('visible'); });
+  });
+
+  document.addEventListener('dragover', function(e) {
+    var col = e.target.closest('.roadmap__column');
+    if (!col || !draggedCard) return;
+    // Only allow drop within same board (pre-launch or phase 1)
+    if (col.closest('.roadmap') !== draggedCard.closest('.roadmap')) return;
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+    document.querySelectorAll('.roadmap__column').forEach(function(c) { c.classList.remove('drag-over'); });
+    col.classList.add('drag-over');
+
+    // Find insert position
+    var cards = Array.from(col.querySelectorAll('.roadmap__card:not(.dragging)'));
+    var afterCard = null;
+    for (var i = 0; i < cards.length; i++) {
+      var rect = cards[i].getBoundingClientRect();
+      if (e.clientY < rect.top + rect.height / 2) {
+        afterCard = cards[i];
+        break;
+      }
+    }
+    if (afterCard) {
+      col.insertBefore(draggedCard, afterCard);
+    } else {
+      col.appendChild(draggedCard);
+    }
+  });
+
+  document.addEventListener('drop', function(e) {
+    var col = e.target.closest('.roadmap__column');
+    if (!col || !draggedCard) return;
+    if (col.closest('.roadmap') !== draggedCard.closest('.roadmap')) return;
+    e.preventDefault();
+    var phase = col.getAttribute('data-phase');
+    updateCardTag(draggedCard, phase);
+    updateAllCounts();
+    saveRoadmapState();
+    col.classList.remove('drag-over');
+  });
+
+  // Touch support for mobile drag & drop
+  var touchCard = null, touchClone = null, touchStartX = 0, touchStartY = 0;
+
+  document.addEventListener('touchstart', function(e) {
+    var card = e.target.closest('.roadmap__card');
+    if (!card) return;
+    touchCard = card;
+    var touch = e.touches[0];
+    touchStartX = touch.clientX;
+    touchStartY = touch.clientY;
+  }, { passive: true });
+
+  document.addEventListener('touchmove', function(e) {
+    if (!touchCard) return;
+    var touch = e.touches[0];
+    var dx = Math.abs(touch.clientX - touchStartX);
+    var dy = Math.abs(touch.clientY - touchStartY);
+    if (dx < 10 && dy < 10) return;
+    e.preventDefault();
+    if (!touchClone) {
+      touchClone = touchCard.cloneNode(true);
+      touchClone.style.position = 'fixed';
+      touchClone.style.zIndex = '9999';
+      touchClone.style.width = touchCard.offsetWidth + 'px';
+      touchClone.style.opacity = '0.85';
+      touchClone.style.pointerEvents = 'none';
+      touchClone.style.transform = 'rotate(2deg)';
+      document.body.appendChild(touchClone);
+      touchCard.classList.add('dragging');
+    }
+    touchClone.style.left = (touch.clientX - touchCard.offsetWidth / 2) + 'px';
+    touchClone.style.top = (touch.clientY - 20) + 'px';
+
+    // Highlight column under finger
+    document.querySelectorAll('.roadmap__column').forEach(function(c) { c.classList.remove('drag-over'); });
+    var elUnder = document.elementFromPoint(touch.clientX, touch.clientY);
+    if (elUnder) {
+      var col = elUnder.closest('.roadmap__column');
+      if (col && col.closest('.roadmap') === touchCard.closest('.roadmap')) {
+        col.classList.add('drag-over');
+      }
+    }
+  }, { passive: false });
+
+  document.addEventListener('touchend', function(e) {
+    if (!touchCard) return;
+    if (touchClone) {
+      var touch = e.changedTouches[0];
+      document.body.removeChild(touchClone);
+      var elUnder = document.elementFromPoint(touch.clientX, touch.clientY);
+      if (elUnder) {
+        var col = elUnder.closest('.roadmap__column');
+        if (col && col.closest('.roadmap') === touchCard.closest('.roadmap')) {
+          col.appendChild(touchCard);
+          var phase = col.getAttribute('data-phase');
+          updateCardTag(touchCard, phase);
+          updateAllCounts();
+          saveRoadmapState();
+        }
+      }
+      document.querySelectorAll('.roadmap__column').forEach(function(c) { c.classList.remove('drag-over'); });
+    }
+    if (touchCard) touchCard.classList.remove('dragging');
+    touchCard = null;
+    touchClone = null;
+  });
+
+  // Initialize counts and restore saved state
+  updateAllCounts();
+  loadRoadmapState();
 
 })();
 </script>
