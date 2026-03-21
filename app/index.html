@@ -1828,36 +1828,41 @@
     sitemapEl.innerHTML = smHtml;
     sitemapEl.style.display = '';
 
-    // Generate Claude prompt
+    // Generate Claude prompt — only show if there are actual issues to fix
     var promptEl = document.getElementById('seoPrompt');
     var highActions = actions.filter(function(a) { return a.priority === 'high'; });
     var medActions = actions.filter(function(a) { return a.priority === 'medium'; });
-    var promptText = 'Fix the following SEO issues on the Atlas Hydration website (https://atlas-hydration.github.io/atlashydration/):\n\n';
-    promptText += 'Current SEO Score: ' + score + '/100\n\n';
-    if (highActions.length) {
-      promptText += 'HIGH PRIORITY:\n';
-      highActions.forEach(function(a) { promptText += '- ' + a.text + '\n'; });
-      promptText += '\n';
-    }
-    if (medActions.length) {
-      promptText += 'MEDIUM PRIORITY:\n';
-      medActions.forEach(function(a) { promptText += '- ' + a.text + '\n'; });
-      promptText += '\n';
-    }
-    promptText += 'Pages scanned: ' + checks[0].desc + '\n';
-    promptText += 'Sitemap has ' + SITEMAP_URLS.length + ' URLs.\n\n';
-    promptText += 'For each issue, make the fix directly in the HTML files. Ensure all pages have: title tags (20-60 chars), meta descriptions (<160 chars), canonical URLs, Open Graph tags (og:title, og:description, og:image), a single H1 tag, alt text on all images, and viewport meta tags. Add JSON-LD structured data where appropriate (Product schema for product pages, Article schema for blog posts). After fixing, commit and push.';
 
-    document.getElementById('seoPromptCode').textContent = promptText;
-    promptEl.style.display = '';
+    if (actions.length === 0) {
+      promptEl.style.display = 'none';
+    } else {
+      var promptText = 'Fix the following SEO issues on the Atlas Hydration website (https://atlas-hydration.github.io/atlashydration/):\n\n';
+      promptText += 'Current SEO Score: ' + score + '/100\n\n';
+      if (highActions.length) {
+        promptText += 'HIGH PRIORITY:\n';
+        highActions.forEach(function(a) { promptText += '- ' + a.text + '\n'; });
+        promptText += '\n';
+      }
+      if (medActions.length) {
+        promptText += 'MEDIUM PRIORITY:\n';
+        medActions.forEach(function(a) { promptText += '- ' + a.text + '\n'; });
+        promptText += '\n';
+      }
+      promptText += 'Pages scanned: ' + checks[0].desc + '\n';
+      promptText += 'Sitemap has ' + SITEMAP_URLS.length + ' URLs.\n\n';
+      promptText += 'For each issue found above, make the fix directly in the HTML files.\nAfter fixing, commit and push.';
 
-    document.getElementById('seoPromptCopy').onclick = function() {
-      navigator.clipboard.writeText(promptText).then(function() {
-        var btn = document.getElementById('seoPromptCopy');
-        btn.textContent = 'Copied!';
-        setTimeout(function() { btn.textContent = 'Copy Prompt'; }, 2000);
-      });
-    };
+      document.getElementById('seoPromptCode').textContent = promptText;
+      promptEl.style.display = '';
+
+      document.getElementById('seoPromptCopy').onclick = function() {
+        navigator.clipboard.writeText(promptText).then(function() {
+          var btn = document.getElementById('seoPromptCopy');
+          btn.textContent = 'Copied!';
+          setTimeout(function() { btn.textContent = 'Copy Prompt'; }, 2000);
+        });
+      };
+    }
   }
 
   // =============================================
@@ -2184,48 +2189,47 @@
       sugEl.style.display = '';
     }
 
-    // Generate Claude prompt
+    // Generate Claude prompt — only show if there are actual issues to fix
     var promptEl = document.getElementById('geoPrompt');
     var highActions = actions.filter(function(a) { return a.priority === 'high'; });
     var medActions = actions.filter(function(a) { return a.priority === 'medium'; });
-    var promptText = 'Fix the following GEO (Generative Engine Optimization) issues on the Atlas Hydration website (https://atlas-hydration.github.io/atlashydration/):\n\n';
-    promptText += 'Current GEO Score: ' + score + '/100\n\n';
-    promptText += 'GEO ensures AI assistants (ChatGPT, Claude, Perplexity, Google AI Overviews) can discover, understand, and accurately cite our content.\n\n';
-    if (highActions.length) {
-      promptText += 'HIGH PRIORITY:\n';
-      highActions.forEach(function(a) { promptText += '- ' + a.text + '\n'; });
-      promptText += '\n';
-    }
-    if (medActions.length) {
-      promptText += 'MEDIUM PRIORITY:\n';
-      medActions.forEach(function(a) { promptText += '- ' + a.text + '\n'; });
-      promptText += '\n';
-    }
-    if (suggestions.length) {
-      promptText += 'CONTENT SUGGESTIONS:\n';
-      suggestions.forEach(function(s) { promptText += '- ' + s.text + '\n'; });
-      promptText += '\n';
-    }
-    promptText += 'For each issue:\n';
-    promptText += '1. Add FAQPage JSON-LD schema to product and key content pages\n';
-    promptText += '2. Add comprehensive Product schema with nutritionInformation, offers, brand\n';
-    promptText += '3. Use natural question-style headings (H2/H3) that match how users query AI\n';
-    promptText += '4. Include specific, citable statistics and data points\n';
-    promptText += '5. Add comparison content for "Atlas Hydration vs" queries\n';
-    promptText += '6. Ensure all claims have source citations\n';
-    promptText += '7. Do NOT block AI crawlers (GPTBot, ClaudeBot, PerplexityBot) in robots.txt\n';
-    promptText += '\nAfter fixing, commit and push.';
 
-    document.getElementById('geoPromptCode').textContent = promptText;
-    promptEl.style.display = '';
+    if (actions.length === 0 && suggestions.length === 0) {
+      // Perfect score — no prompt needed
+      promptEl.style.display = 'none';
+    } else {
+      var promptText = 'Fix the following GEO (Generative Engine Optimization) issues on the Atlas Hydration website (https://atlas-hydration.github.io/atlashydration/):\n\n';
+      promptText += 'Current GEO Score: ' + score + '/100\n\n';
+      promptText += 'GEO ensures AI assistants (ChatGPT, Claude, Perplexity, Google AI Overviews) can discover, understand, and accurately cite our content.\n\n';
+      if (highActions.length) {
+        promptText += 'HIGH PRIORITY:\n';
+        highActions.forEach(function(a) { promptText += '- ' + a.text + '\n'; });
+        promptText += '\n';
+      }
+      if (medActions.length) {
+        promptText += 'MEDIUM PRIORITY:\n';
+        medActions.forEach(function(a) { promptText += '- ' + a.text + '\n'; });
+        promptText += '\n';
+      }
+      if (suggestions.length) {
+        promptText += 'CONTENT SUGGESTIONS:\n';
+        suggestions.forEach(function(s) { promptText += '- ' + s.text + '\n'; });
+        promptText += '\n';
+      }
+      promptText += 'For each issue found above, apply the appropriate fix.\n';
+      promptText += 'After fixing, commit and push.';
 
-    document.getElementById('geoPromptCopy').onclick = function() {
-      navigator.clipboard.writeText(promptText).then(function() {
-        var btn = document.getElementById('geoPromptCopy');
-        btn.textContent = 'Copied!';
-        setTimeout(function() { btn.textContent = 'Copy Prompt'; }, 2000);
-      });
-    };
+      document.getElementById('geoPromptCode').textContent = promptText;
+      promptEl.style.display = '';
+
+      document.getElementById('geoPromptCopy').onclick = function() {
+        navigator.clipboard.writeText(promptText).then(function() {
+          var btn = document.getElementById('geoPromptCopy');
+          btn.textContent = 'Copied!';
+          setTimeout(function() { btn.textContent = 'Copy Prompt'; }, 2000);
+        });
+      };
+    }
   }
 
   // =============================================
