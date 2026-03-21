@@ -659,14 +659,32 @@
 
     /* === ROADMAP TAB === */
     .roadmap-header {
-      text-align: center; margin-bottom: 24px; padding: 28px;
+      text-align: center; padding: 0;
       background: var(--surface); border: 1px solid var(--border);
-      border-radius: var(--radius); cursor: pointer; transition: box-shadow 0.2s;
+      border-radius: var(--radius); overflow: hidden; transition: box-shadow 0.2s;
+      margin-bottom: 24px; position: relative;
     }
     .roadmap-header:hover { box-shadow: 0 4px 20px rgba(59,130,246,0.15); }
     .roadmap-header__scene {
-      height: 100px; position: relative; margin-bottom: 16px; overflow: hidden;
+      height: 100vh; min-height: 500px; max-height: 800px;
+      position: relative; overflow: hidden; cursor: pointer;
+      display: flex; align-items: center; justify-content: center; flex-direction: column;
+      background: radial-gradient(ellipse at 50% 80%, rgba(59,130,246,0.08) 0%, transparent 70%);
     }
+    .roadmap-header__scene--collapsed { height: 180px; min-height: 180px; max-height: 180px; transition: all 0.6s ease; }
+    .roadmap-header__scroll-hint {
+      position: absolute; bottom: 24px; left: 50%; transform: translateX(-50%);
+      font-size: 0.7rem; color: var(--text-dim); animation: bounceHint 2s ease-in-out infinite;
+      display: flex; flex-direction: column; align-items: center; gap: 4px;
+    }
+    .roadmap-header__scroll-hint span { font-size: 1.2rem; }
+    @keyframes bounceHint { 0%,100% { transform: translateX(-50%) translateY(0); } 50% { transform: translateX(-50%) translateY(-8px); } }
+    .roadmap-header__logo {
+      width: 80px; height: 80px; margin-bottom: 16px;
+      filter: drop-shadow(0 0 20px rgba(59,130,246,0.4));
+      animation: logoPulse 4s ease-in-out infinite;
+    }
+    @keyframes logoPulse { 0%,100% { transform: scale(1); filter: drop-shadow(0 0 20px rgba(59,130,246,0.4)); } 50% { transform: scale(1.05); filter: drop-shadow(0 0 30px rgba(59,130,246,0.6)); } }
     .roadmap-header__stars {
       position: absolute; inset: 0;
     }
@@ -676,8 +694,16 @@
     }
     @keyframes twinkle { 0%,100% { opacity: 0.2; } 50% { opacity: 1; } }
     .roadmap-header__rocket {
-      position: absolute; font-size: 2rem; animation: rocketFly 6s ease-in-out infinite;
+      position: absolute; font-size: 1.2rem; animation: rocketFly 6s ease-in-out infinite;
       filter: drop-shadow(0 0 8px rgba(59,130,246,0.5));
+      display: flex; align-items: center; gap: 4px;
+    }
+    .roadmap-header__rocket-logo {
+      width: 24px; height: 24px; border-radius: 50%;
+      filter: drop-shadow(0 0 6px rgba(59,130,246,0.6));
+    }
+    .roadmap-header__rocket-flag {
+      font-size: 0.8rem; margin-left: 2px;
     }
     @keyframes rocketFly {
       0% { bottom: 10%; left: 10%; transform: rotate(-30deg); }
@@ -704,8 +730,10 @@
     }
     @keyframes earthPulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.05); } }
     .roadmap-header__codename {
-      font-size: 0.65rem; font-weight: 700; text-transform: uppercase;
+      font-size: 0.75rem; font-weight: 700; text-transform: uppercase;
       letter-spacing: 0.15em; color: var(--accent); margin-bottom: 8px;
+      position: relative; z-index: 2;
+      text-shadow: 0 0 20px rgba(59,130,246,0.5);
     }
     .roadmap-header__title {
       font-size: 1.4rem; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 4px;
@@ -722,17 +750,28 @@
       border: 1px solid var(--border);
     }
     .roadmap-header__progress-wrap {
-      max-height: 0; overflow: hidden; transition: max-height 0.3s ease;
+      position: relative; z-index: 2; width: 80%; max-width: 500px;
+      transition: opacity 0.3s ease;
     }
-    .roadmap-header__progress-wrap.open { max-height: 120px; }
+    .roadmap-header__scene--collapsed .roadmap-header__progress-wrap { opacity: 0; }
     .roadmap-header__progress-bar {
-      background: var(--surface2); border-radius: 8px; height: 12px;
+      background: var(--surface2); border-radius: 10px; height: 18px;
       overflow: hidden; margin-bottom: 8px; margin-top: 16px;
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
     }
     .roadmap-header__progress-fill {
-      height: 100%; border-radius: 8px; background: linear-gradient(90deg, var(--accent), var(--green));
-      transition: width 0.4s ease;
+      height: 100%; border-radius: 10px;
+      background: linear-gradient(90deg, var(--accent), #10b981, #34d399);
+      transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 0 12px rgba(16,185,129,0.4);
+      position: relative;
     }
+    .roadmap-header__progress-fill::after {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.15) 50%, transparent 100%);
+      animation: progressShine 2s ease-in-out infinite;
+    }
+    @keyframes progressShine { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
     .roadmap-header__progress-text {
       font-size: 0.75rem; color: var(--text-dim); font-weight: 500;
     }
@@ -767,13 +806,16 @@
     .roadmap-phase__chevron { transition: transform 0.2s; color: var(--text-dim); font-size: 0.8rem; }
     .roadmap-phase.open .roadmap-phase__chevron { transform: rotate(180deg); }
     .roadmap-phase__progress {
-      height: 4px; background: var(--surface2); border-radius: 2px;
+      height: 8px; background: var(--surface2); border-radius: 4px;
       overflow: hidden; transition: height 0.2s;
+      box-shadow: inset 0 1px 3px rgba(0,0,0,0.2); margin: 0 24px;
     }
-    .roadmap-phase__header:hover .roadmap-phase__progress { height: 6px; }
+    .roadmap-phase__header:hover + .roadmap-phase__progress { height: 10px; }
     .roadmap-phase__progress-fill {
-      height: 100%; border-radius: 2px; background: linear-gradient(90deg, var(--accent), var(--green));
-      transition: width 0.4s ease;
+      height: 100%; border-radius: 4px;
+      background: linear-gradient(90deg, var(--accent), #10b981, #34d399);
+      transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 0 8px rgba(16,185,129,0.3);
     }
     .roadmap-phase__body { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; }
     .roadmap-phase.open .roadmap-phase__body { max-height: 8000px; }
@@ -783,7 +825,7 @@
 
     /* Kanban columns */
     .roadmap-kanban {
-      display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;
       padding: 0 20px 20px;
     }
     .roadmap-col {
@@ -837,6 +879,25 @@
     .roadmap-card__check-icon { display: none; color: #fff; font-size: 0.65rem; font-weight: 700; }
     .roadmap-card.completed .roadmap-card__check-icon { display: block; }
     .roadmap-card.completed .roadmap-card__title { text-decoration: line-through; color: var(--text-dim); }
+    .roadmap-card.blocked { border-color: var(--red); background: rgba(239,68,68,0.06); }
+    .roadmap-card.blocked .roadmap-card__title { color: var(--red); }
+    .roadmap-card.blocked .roadmap-card__check { border-color: var(--red); }
+    /* Card context menu */
+    .roadmap-card-menu {
+      position: absolute; z-index: 100; background: var(--surface);
+      border: 1px solid var(--border); border-radius: 8px; padding: 4px 0;
+      min-width: 160px; box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+    }
+    .roadmap-card-menu__item {
+      display: flex; align-items: center; gap: 8px; padding: 8px 14px;
+      font-size: 0.75rem; cursor: pointer; transition: background 0.15s;
+      color: var(--text); border: none; background: none; width: 100%;
+      font-family: var(--font);
+    }
+    .roadmap-card-menu__item:hover { background: var(--surface2); }
+    .roadmap-card-menu__item--red { color: var(--red); }
+    .roadmap-card-menu__item--green { color: var(--green); }
+    .roadmap-card-menu__sep { height: 1px; background: var(--border); margin: 4px 0; }
     .roadmap-card__body { flex: 1; min-width: 0; }
     .roadmap-card__title { font-weight: 600; font-size: 0.8rem; margin-bottom: 2px; line-height: 1.3; }
     .roadmap-card__desc { font-size: 0.7rem; color: var(--text-dim); line-height: 1.4; }
@@ -876,6 +937,19 @@
       transition: opacity 0.15s;
     }
     .roadmap-card__add-task:hover { opacity: 0.7; }
+    /* Inline rename */
+    [data-rename] { cursor: text; border-radius: 3px; transition: background 0.15s; }
+    [data-rename]:hover { background: rgba(255,255,255,0.05); }
+    .roadmap-inline-input {
+      background: var(--surface2); border: 1.5px solid var(--accent); border-radius: 4px;
+      color: var(--text); font-family: var(--font); padding: 2px 6px; width: 100%;
+      box-sizing: border-box; outline: none;
+    }
+    .roadmap-inline-input--title { font-weight: 600; font-size: 0.8rem; }
+    .roadmap-inline-input--desc { font-size: 0.7rem; }
+    .roadmap-inline-input--subtask { font-size: 0.7rem; }
+    .roadmap-inline-input--phase-title { font-weight: 700; font-size: 0.95rem; }
+    .roadmap-inline-input--phase-sub { font-size: 0.75rem; }
 
     /* Add buttons */
     .roadmap-add-btn {
@@ -895,22 +969,34 @@
     }
 
     /* Metrics */
+    .roadmap-toolbar {
+      display: flex; align-items: center; gap: 12px; margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
     .roadmap-metrics {
-      display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin-bottom: 20px;
+      display: flex; gap: 8px; flex: 1; flex-wrap: wrap;
     }
     .roadmap-metric {
       background: var(--surface); border: 1px solid var(--border);
-      border-radius: var(--radius); padding: 14px; text-align: center;
+      border-radius: 8px; padding: 8px 16px; text-align: center;
+      display: flex; align-items: center; gap: 8px; min-width: 0;
     }
     .roadmap-metric__label {
-      font-size: 0.65rem; color: var(--text-dim); text-transform: uppercase;
-      letter-spacing: 0.06em; margin-bottom: 4px; font-weight: 600;
+      font-size: 0.6rem; color: var(--text-dim); text-transform: uppercase;
+      letter-spacing: 0.06em; font-weight: 600; white-space: nowrap;
     }
-    .roadmap-metric__value { font-size: 1.2rem; font-weight: 700; }
+    .roadmap-metric__value { font-size: 1rem; font-weight: 700; white-space: nowrap; }
     .roadmap-metric__value--green { color: var(--green); }
     .roadmap-metric__value--yellow { color: var(--yellow); }
     .roadmap-metric__value--red { color: var(--red); }
     .roadmap-metric__value--accent { color: var(--accent); }
+    .roadmap-toolbar__add-phase {
+      padding: 8px 20px; background: var(--accent); color: #fff;
+      border: none; border-radius: 8px; font-family: var(--font);
+      font-size: 0.78rem; font-weight: 600; cursor: pointer;
+      transition: all 0.2s; white-space: nowrap; flex-shrink: 0;
+    }
+    .roadmap-toolbar__add-phase:hover { background: var(--accent-hover); transform: translateY(-1px); }
 
     /* Responsive */
     @media (max-width: 768px) {
@@ -968,7 +1054,7 @@
       .roadmap-metric__value { font-size: 1rem; }
       .roadmap-header__revenue { flex-direction: column; gap: 4px; }
       .roadmap-header__scene { height: 80px; }
-      .roadmap-kanban { grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 0 12px 16px; }
+      .roadmap-kanban { grid-template-columns: 1fr 1fr; gap: 10px; padding: 0 12px 16px; }
       .roadmap-phase__header { padding: 14px 16px; }
       .roadmap-phase__icon { width: 30px; height: 30px; font-size: 0.85rem; }
       .roadmap-phase__title { font-size: 0.85rem; }
@@ -1272,36 +1358,41 @@
         <!-- Roadmap Tab -->
         <div class="tab-content" id="tab-roadmap">
           <div class="roadmap-header" id="roadmapHeader">
-            <div class="roadmap-header__scene">
+            <div class="roadmap-header__scene" id="roadmapScene">
               <div class="roadmap-header__stars" id="roadmapStars"></div>
               <div class="roadmap-header__earth">&#127758;</div>
-              <div class="roadmap-header__rocket">&#128640;</div>
+              <div class="roadmap-header__rocket">
+                <img src="../logo.svg" class="roadmap-header__rocket-logo" alt="Atlas">
+                &#128640;
+                <span class="roadmap-header__rocket-flag">&#127987;&#65039;&#8205;&#9895;&#65039;</span>
+              </div>
               <div class="roadmap-header__moon">&#127765;</div>
               <div class="roadmap-header__droplet" style="top:20%;left:20%;animation-delay:0s;">&#128167;</div>
               <div class="roadmap-header__droplet" style="top:50%;left:65%;animation-delay:1.5s;">&#128167;</div>
               <div class="roadmap-header__droplet" style="top:30%;left:80%;animation-delay:3s;">&#128167;</div>
-            </div>
-            <div class="roadmap-header__codename">Operation Moon Landing</div>
-            <div class="roadmap-header__mission">Build Atlas Hydration into a $100M+ premium hydration brand dominating the daily performance hydration category.</div>
-            <div class="roadmap-header__communities">
-              <span class="roadmap-header__community-tag">Travelers</span>
-              <span class="roadmap-header__community-tag">Athletes</span>
-              <span class="roadmap-header__community-tag">Padel Players</span>
-              <span class="roadmap-header__community-tag">Pilots</span>
-            </div>
-            <div class="roadmap-header__progress-wrap" id="roadmapProgressWrap">
-              <div class="roadmap-header__progress-bar">
-                <div class="roadmap-header__progress-fill" id="roadmapProgress" style="width:0%"></div>
+              <img src="../logo.svg" class="roadmap-header__logo" alt="Atlas Hydration">
+              <div class="roadmap-header__codename">Operation Moon Landing</div>
+              <div class="roadmap-header__progress-wrap open" id="roadmapProgressWrap">
+                <div class="roadmap-header__progress-bar">
+                  <div class="roadmap-header__progress-fill" id="roadmapProgress" style="width:0%"></div>
+                </div>
+                <div class="roadmap-header__progress-text" id="roadmapProgressText">0 of 0 projects completed</div>
+                <div class="roadmap-header__revenue">
+                  <span class="roadmap-header__revenue-item">Target: <strong>$100K</strong></span>
+                  <span class="roadmap-header__revenue-item" id="roadmapPhaseSummary"></span>
+                </div>
               </div>
-              <div class="roadmap-header__progress-text" id="roadmapProgressText">0 of 0 tasks completed</div>
-              <div class="roadmap-header__revenue">
-                <span class="roadmap-header__revenue-item">Target: <strong>$100K</strong></span>
-                <span class="roadmap-header__revenue-item" id="roadmapPhaseSummary"></span>
+              <div class="roadmap-header__scroll-hint">
+                Scroll to explore
+                <span>&#8595;</span>
               </div>
             </div>
           </div>
 
-          <div class="roadmap-metrics" id="roadmapMetrics"></div>
+          <div class="roadmap-toolbar">
+            <div class="roadmap-metrics" id="roadmapMetrics"></div>
+            <button class="roadmap-toolbar__add-phase" id="addPhaseBtnTop">+ Add Phase</button>
+          </div>
           <div id="roadmapPhases"></div>
         </div>
 
@@ -3182,7 +3273,6 @@
   var COL_DEFS = [
     { id: 'todo', label: 'To Do', dot: 'todo' },
     { id: 'inprogress', label: 'In Progress', dot: 'inprogress' },
-    { id: 'blocked', label: 'Blocked', dot: 'blocked' },
     { id: 'completed', label: 'Completed', dot: 'completed' }
   ];
 
@@ -3218,6 +3308,7 @@
       phase.projects.forEach(function(p) {
         if (state[p.id]) {
           if (state[p.id].col) p.col = state[p.id].col;
+          if (state[p.id].blocked !== undefined) p.blocked = state[p.id].blocked;
           if (state[p.id].subtasks) {
             state[p.id].subtasks.forEach(function(sid) {
               var st = p.subtasks.find(function(s) { return s.id === sid; });
@@ -3232,9 +3323,11 @@
             });
           }
         }
+        // Migrate old 'blocked' column to flag
+        if (p.col === 'blocked') { p.col = 'todo'; p.blocked = true; }
         totalProjects++;
         if (p.col === 'completed') completedProjects++;
-        if (p.col === 'blocked') blockedProjects++;
+        if (p.blocked) blockedProjects++;
         if (p.col === 'inprogress') inProgressProjects++;
       });
     });
@@ -3252,10 +3345,12 @@
     // Metrics
     var mHtml = '';
     mHtml += '<div class="roadmap-metric"><div class="roadmap-metric__label">Projects</div><div class="roadmap-metric__value">' + totalProjects + '</div></div>';
-    mHtml += '<div class="roadmap-metric"><div class="roadmap-metric__label">Completed</div><div class="roadmap-metric__value roadmap-metric__value--green">' + completedProjects + '</div></div>';
-    mHtml += '<div class="roadmap-metric"><div class="roadmap-metric__label">In Progress</div><div class="roadmap-metric__value roadmap-metric__value--accent">' + inProgressProjects + '</div></div>';
-    mHtml += '<div class="roadmap-metric"><div class="roadmap-metric__label">Blocked</div><div class="roadmap-metric__value roadmap-metric__value--red">' + blockedProjects + '</div></div>';
-    mHtml += '<div class="roadmap-metric"><div class="roadmap-metric__label">Remaining</div><div class="roadmap-metric__value roadmap-metric__value--yellow">' + (totalProjects - completedProjects) + '</div></div>';
+    mHtml += '<div class="roadmap-metric"><div class="roadmap-metric__label">Done</div><div class="roadmap-metric__value roadmap-metric__value--green">' + completedProjects + '</div></div>';
+    mHtml += '<div class="roadmap-metric"><div class="roadmap-metric__label">Active</div><div class="roadmap-metric__value roadmap-metric__value--accent">' + inProgressProjects + '</div></div>';
+    if (blockedProjects > 0) {
+      mHtml += '<div class="roadmap-metric"><div class="roadmap-metric__label">Blocked</div><div class="roadmap-metric__value roadmap-metric__value--red">' + blockedProjects + '</div></div>';
+    }
+    mHtml += '<div class="roadmap-metric"><div class="roadmap-metric__label">Left</div><div class="roadmap-metric__value roadmap-metric__value--yellow">' + (totalProjects - completedProjects) + '</div></div>';
     document.getElementById('roadmapMetrics').innerHTML = mHtml;
 
     // Phases
@@ -3270,8 +3365,8 @@
           '<div class="roadmap-phase__left">' +
             '<div class="roadmap-phase__icon roadmap-phase__icon--' + phase.iconClass + '">' + phase.icon + '</div>' +
             '<div>' +
-              '<div class="roadmap-phase__title">' + phase.title + '</div>' +
-              '<div class="roadmap-phase__subtitle">' + phase.subtitle + '</div>' +
+              '<div class="roadmap-phase__title" data-rename="phase" data-phase="' + phase.id + '">' + phase.title + '</div>' +
+              '<div class="roadmap-phase__subtitle" data-rename="phase-sub" data-phase="' + phase.id + '">' + phase.subtitle + '</div>' +
             '</div>' +
           '</div>' +
           '<div class="roadmap-phase__right">' +
@@ -3302,14 +3397,15 @@
           var doneSubtasks = proj.subtasks.filter(function(s) { return s.done; }).length;
           var totalSubtasks = proj.subtasks.length;
 
-          phasesHtml += '<div class="roadmap-card' + (isCompleted ? ' completed' : '') + '" draggable="true" data-id="' + proj.id + '" data-phase="' + phase.id + '">' +
+          var cardClasses = 'roadmap-card' + (isCompleted ? ' completed' : '') + (proj.blocked ? ' blocked' : '');
+          phasesHtml += '<div class="' + cardClasses + '" draggable="true" data-id="' + proj.id + '" data-phase="' + phase.id + '">' +
             '<div class="roadmap-card__top">' +
               '<div class="roadmap-card__check" data-id="' + proj.id + '" data-phase="' + phase.id + '">' +
                 '<span class="roadmap-card__check-icon">&#10003;</span>' +
               '</div>' +
               '<div class="roadmap-card__body">' +
-                '<div class="roadmap-card__title">' + esc(proj.title) + '</div>' +
-                (proj.desc ? '<div class="roadmap-card__desc">' + esc(proj.desc) + '</div>' : '') +
+                '<div class="roadmap-card__title" data-rename="proj" data-id="' + proj.id + '" data-phase="' + phase.id + '">' + esc(proj.title) + '</div>' +
+                (proj.desc ? '<div class="roadmap-card__desc" data-rename="proj-desc" data-id="' + proj.id + '" data-phase="' + phase.id + '">' + esc(proj.desc) + '</div>' : '') +
                 '<span class="roadmap-card__tag roadmap-card__tag--' + proj.priority + '">' + proj.priority + '</span>' +
               '</div>' +
             '</div>';
@@ -3320,7 +3416,7 @@
             proj.subtasks.forEach(function(st) {
               phasesHtml += '<div class="roadmap-card__task' + (st.done ? ' done' : '') + '" data-proj="' + proj.id + '" data-task="' + st.id + '" data-phase="' + phase.id + '">' +
                 '<span class="roadmap-card__task-check">' + (st.done ? '&#10003;' : '') + '</span>' +
-                '<span class="roadmap-card__task-text">' + esc(st.text) + '</span>' +
+                '<span class="roadmap-card__task-text" data-rename="subtask" data-proj="' + proj.id + '" data-task="' + st.id + '" data-phase="' + phase.id + '">' + esc(st.text) + '</span>' +
               '</div>';
             });
             if (totalSubtasks > 0) {
@@ -3344,14 +3440,16 @@
       phasesHtml += '</div></div>'; // body, phase
     });
 
-    phasesHtml += '<button class="roadmap-add-phase-btn" id="addPhaseBtn">+ Add New Phase</button>';
     document.getElementById('roadmapPhases').innerHTML = phasesHtml;
 
     // === Event handlers ===
 
     // Phase collapse/expand
     document.querySelectorAll('.roadmap-phase__header').forEach(function(h) {
-      h.addEventListener('click', function() { this.closest('.roadmap-phase').classList.toggle('open'); });
+      h.addEventListener('click', function(e) {
+        if (e.target.closest('[data-rename]')) return;
+        this.closest('.roadmap-phase').classList.toggle('open');
+      });
     });
 
     // Check circle — toggle completed
@@ -3363,8 +3461,92 @@
         var phase = ROADMAP_PHASES.find(function(p) { return p.id === phaseId; });
         var proj = phase.projects.find(function(p) { return p.id === projId; });
         proj.col = proj.col === 'completed' ? 'todo' : 'completed';
+        if (proj.col === 'completed') proj.blocked = false;
         saveProjectState(projId, proj);
         renderRoadmap();
+      });
+    });
+
+    // Right-click context menu on cards
+    document.querySelectorAll('.roadmap-card').forEach(function(card) {
+      card.addEventListener('contextmenu', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        closeCardMenu();
+        var projId = this.getAttribute('data-id');
+        var phaseId = this.getAttribute('data-phase');
+        var phase = ROADMAP_PHASES.find(function(p) { return p.id === phaseId; });
+        var proj = phase.projects.find(function(p) { return p.id === projId; });
+        if (!proj) return;
+
+        var menu = document.createElement('div');
+        menu.className = 'roadmap-card-menu';
+        menu.id = 'roadmapCardMenu';
+        menu.style.left = e.pageX + 'px';
+        menu.style.top = e.pageY + 'px';
+
+        // Block/unblock
+        var blockBtn = document.createElement('button');
+        blockBtn.className = 'roadmap-card-menu__item' + (proj.blocked ? ' roadmap-card-menu__item--green' : ' roadmap-card-menu__item--red');
+        blockBtn.innerHTML = proj.blocked ? '&#10003; Unblock' : '&#9888; Block';
+        blockBtn.onclick = function() {
+          proj.blocked = !proj.blocked;
+          saveProjectState(projId, proj);
+          closeCardMenu();
+          renderRoadmap();
+        };
+        menu.appendChild(blockBtn);
+
+        // Rename
+        var renameBtn = document.createElement('button');
+        renameBtn.className = 'roadmap-card-menu__item';
+        renameBtn.innerHTML = '&#9998; Rename';
+        renameBtn.onclick = function() {
+          closeCardMenu();
+          var newTitle = prompt('New title:', proj.title);
+          if (newTitle && newTitle.trim()) {
+            proj.title = newTitle.trim();
+            saveProjectRename(projId, 'title', proj.title);
+            renderRoadmap();
+          }
+        };
+        menu.appendChild(renameBtn);
+
+        // Move to phase
+        if (ROADMAP_PHASES.length > 1) {
+          var sep = document.createElement('div');
+          sep.className = 'roadmap-card-menu__sep';
+          menu.appendChild(sep);
+
+          ROADMAP_PHASES.forEach(function(targetPhase) {
+            if (targetPhase.id === phaseId) return;
+            var moveBtn = document.createElement('button');
+            moveBtn.className = 'roadmap-card-menu__item';
+            moveBtn.textContent = '→ Move to ' + targetPhase.title;
+            moveBtn.onclick = function() {
+              // Remove from current phase
+              var idx = phase.projects.indexOf(proj);
+              if (idx > -1) phase.projects.splice(idx, 1);
+              // Add to target phase
+              targetPhase.projects.push(proj);
+              // Update custom projects storage
+              var cp = JSON.parse(localStorage.getItem('atlas_roadmap_custom_projects') || '[]');
+              cp = cp.filter(function(c) { return c.project.id !== projId; });
+              cp.push({ phaseId: targetPhase.id, project: proj });
+              localStorage.setItem('atlas_roadmap_custom_projects', JSON.stringify(cp));
+              // Save move in state
+              var state = getRoadmapState();
+              if (!state[projId]) state[projId] = {};
+              state[projId].movedTo = targetPhase.id;
+              saveRoadmapState(state);
+              closeCardMenu();
+              renderRoadmap();
+            };
+            menu.appendChild(moveBtn);
+          });
+        }
+
+        document.body.appendChild(menu);
       });
     });
 
@@ -3379,6 +3561,46 @@
         var proj = phase.projects.find(function(p) { return p.id === projId; });
         var st = proj.subtasks.find(function(s) { return s.id === taskId; });
         if (st) { st.done = !st.done; saveProjectState(projId, proj); renderRoadmap(); }
+      });
+    });
+
+    // Inline rename — double-click on any [data-rename] element
+    document.querySelectorAll('[data-rename]').forEach(function(el) {
+      el.addEventListener('dblclick', function(e) {
+        e.stopPropagation();
+        e.preventDefault();
+        var renameType = this.getAttribute('data-rename');
+        var currentText = this.textContent;
+        var inputClass = 'roadmap-inline-input';
+        if (renameType === 'proj') inputClass += ' roadmap-inline-input--title';
+        else if (renameType === 'proj-desc') inputClass += ' roadmap-inline-input--desc';
+        else if (renameType === 'subtask') inputClass += ' roadmap-inline-input--subtask';
+        else if (renameType === 'phase') inputClass += ' roadmap-inline-input--phase-title';
+        else if (renameType === 'phase-sub') inputClass += ' roadmap-inline-input--phase-sub';
+
+        var input = document.createElement('input');
+        input.type = 'text';
+        input.className = inputClass;
+        input.value = currentText;
+        this.textContent = '';
+        this.appendChild(input);
+        input.focus();
+        input.select();
+
+        var self = this;
+        var committed = false;
+        function commit() {
+          if (committed) return;
+          committed = true;
+          var newVal = input.value.trim();
+          if (!newVal) newVal = currentText;
+          applyRename(renameType, self, newVal);
+        }
+        input.addEventListener('blur', commit);
+        input.addEventListener('keydown', function(ev) {
+          if (ev.key === 'Enter') { ev.preventDefault(); commit(); }
+          if (ev.key === 'Escape') { ev.preventDefault(); input.value = currentText; commit(); }
+        });
       });
     });
 
@@ -3417,23 +3639,7 @@
       });
     });
 
-    // Add phase
-    document.getElementById('addPhaseBtn').addEventListener('click', function() {
-      var title = prompt('Phase title (e.g. "Phase 2 — Scale"):');
-      if (!title) return;
-      var subtitle = prompt('Subtitle (e.g. "$1M → $10M Revenue"):') || '';
-      var newPhase = {
-        id: 'phase_' + Date.now(), title: title, subtitle: subtitle,
-        icon: '&#9679;', iconClass: 'phase1', projects: []
-      };
-      ROADMAP_PHASES.push(newPhase);
-      var cp = JSON.parse(localStorage.getItem('atlas_roadmap_phases') || '[]');
-      cp.push(newPhase);
-      localStorage.setItem('atlas_roadmap_phases', JSON.stringify(cp));
-      renderRoadmap();
-    });
-
-    // Drag and drop between columns
+    // Drag and drop — works across phases too
     document.querySelectorAll('.roadmap-card[draggable]').forEach(function(el) {
       el.addEventListener('dragstart', function(e) {
         e.dataTransfer.setData('text/plain', this.getAttribute('data-id') + '|' + this.getAttribute('data-phase'));
@@ -3459,23 +3665,91 @@
         e.preventDefault();
         this.classList.remove('drag-over');
         var data = e.dataTransfer.getData('text/plain').split('|');
-        var projId = data[0], phaseId = data[1];
+        var projId = data[0], srcPhaseId = data[1];
         var newCol = this.getAttribute('data-col');
-        var phase = ROADMAP_PHASES.find(function(p) { return p.id === phaseId; });
-        if (!phase) return;
-        var proj = phase.projects.find(function(p) { return p.id === projId; });
+        var targetPhaseId = this.getAttribute('data-phase');
+
+        var srcPhase = ROADMAP_PHASES.find(function(p) { return p.id === srcPhaseId; });
+        var targetPhase = ROADMAP_PHASES.find(function(p) { return p.id === targetPhaseId; });
+        if (!srcPhase || !targetPhase) return;
+        var proj = srcPhase.projects.find(function(p) { return p.id === projId; });
         if (!proj) return;
+
+        // Move between phases if needed
+        if (srcPhaseId !== targetPhaseId) {
+          var idx = srcPhase.projects.indexOf(proj);
+          if (idx > -1) srcPhase.projects.splice(idx, 1);
+          targetPhase.projects.push(proj);
+        }
         proj.col = newCol;
+        if (newCol === 'completed') proj.blocked = false;
         saveProjectState(projId, proj);
         renderRoadmap();
       });
     });
   }
 
+  function closeCardMenu() {
+    var existing = document.getElementById('roadmapCardMenu');
+    if (existing) existing.remove();
+  }
+  document.addEventListener('click', closeCardMenu);
+
+  function applyRename(type, el, newVal) {
+    var phaseId = el.getAttribute('data-phase');
+    var projId = el.getAttribute('data-id') || el.getAttribute('data-proj');
+    var taskId = el.getAttribute('data-task');
+    var phase = ROADMAP_PHASES.find(function(p) { return p.id === phaseId; });
+
+    if (type === 'phase' && phase) {
+      phase.title = newVal;
+      savePhaseRename(phaseId, 'title', newVal);
+    } else if (type === 'phase-sub' && phase) {
+      phase.subtitle = newVal;
+      savePhaseRename(phaseId, 'subtitle', newVal);
+    } else if (type === 'proj' && phase) {
+      var proj = phase.projects.find(function(p) { return p.id === projId; });
+      if (proj) { proj.title = newVal; saveProjectRename(projId, 'title', newVal); }
+    } else if (type === 'proj-desc' && phase) {
+      var proj = phase.projects.find(function(p) { return p.id === projId; });
+      if (proj) { proj.desc = newVal; saveProjectRename(projId, 'desc', newVal); }
+    } else if (type === 'subtask' && phase) {
+      var proj = phase.projects.find(function(p) { return p.id === projId; });
+      if (proj) {
+        var st = proj.subtasks.find(function(s) { return s.id === taskId; });
+        if (st) { st.text = newVal; saveSubtaskRename(projId, taskId, newVal); }
+      }
+    }
+    renderRoadmap();
+  }
+
+  function savePhaseRename(phaseId, field, val) {
+    var renames = JSON.parse(localStorage.getItem('atlas_roadmap_renames') || '{}');
+    if (!renames.phases) renames.phases = {};
+    if (!renames.phases[phaseId]) renames.phases[phaseId] = {};
+    renames.phases[phaseId][field] = val;
+    localStorage.setItem('atlas_roadmap_renames', JSON.stringify(renames));
+  }
+  function saveProjectRename(projId, field, val) {
+    var renames = JSON.parse(localStorage.getItem('atlas_roadmap_renames') || '{}');
+    if (!renames.projects) renames.projects = {};
+    if (!renames.projects[projId]) renames.projects[projId] = {};
+    renames.projects[projId][field] = val;
+    localStorage.setItem('atlas_roadmap_renames', JSON.stringify(renames));
+  }
+  function saveSubtaskRename(projId, taskId, val) {
+    var renames = JSON.parse(localStorage.getItem('atlas_roadmap_renames') || '{}');
+    if (!renames.subtasks) renames.subtasks = {};
+    var key = projId + '|' + taskId;
+    renames.subtasks[key] = val;
+    localStorage.setItem('atlas_roadmap_renames', JSON.stringify(renames));
+  }
+
   function saveProjectState(projId, proj, newCustomSubtask) {
     var state = getRoadmapState();
     if (!state[projId]) state[projId] = {};
     state[projId].col = proj.col;
+    state[projId].blocked = !!proj.blocked;
     state[projId].subtasks = proj.subtasks.filter(function(s) { return s.done; }).map(function(s) { return s.id; });
     if (newCustomSubtask) {
       if (!state[projId].customSubtasks) state[projId].customSubtasks = [];
@@ -3503,6 +3777,75 @@
       }
     });
   })();
+  // Restore renames
+  (function() {
+    var renames = JSON.parse(localStorage.getItem('atlas_roadmap_renames') || '{}');
+    if (renames.phases) {
+      Object.keys(renames.phases).forEach(function(phaseId) {
+        var phase = ROADMAP_PHASES.find(function(p) { return p.id === phaseId; });
+        if (phase) {
+          if (renames.phases[phaseId].title) phase.title = renames.phases[phaseId].title;
+          if (renames.phases[phaseId].subtitle) phase.subtitle = renames.phases[phaseId].subtitle;
+        }
+      });
+    }
+    if (renames.projects) {
+      Object.keys(renames.projects).forEach(function(projId) {
+        ROADMAP_PHASES.forEach(function(phase) {
+          var proj = phase.projects.find(function(p) { return p.id === projId; });
+          if (proj) {
+            if (renames.projects[projId].title) proj.title = renames.projects[projId].title;
+            if (renames.projects[projId].desc !== undefined) proj.desc = renames.projects[projId].desc;
+          }
+        });
+      });
+    }
+    if (renames.subtasks) {
+      Object.keys(renames.subtasks).forEach(function(key) {
+        var parts = key.split('|');
+        ROADMAP_PHASES.forEach(function(phase) {
+          var proj = phase.projects.find(function(p) { return p.id === parts[0]; });
+          if (proj) {
+            var st = proj.subtasks.find(function(s) { return s.id === parts[1]; });
+            if (st) st.text = renames.subtasks[key];
+          }
+        });
+      });
+    }
+  })();
+
+  // Add phase from toolbar button
+  function addPhaseHandler() {
+    var title = prompt('Phase title (e.g. "Phase 2 — Scale"):');
+    if (!title) return;
+    var subtitle = prompt('Subtitle (e.g. "$1M → $10M Revenue"):') || '';
+    var newPhase = {
+      id: 'phase_' + Date.now(), title: title, subtitle: subtitle,
+      icon: '&#9679;', iconClass: 'phase1', projects: []
+    };
+    ROADMAP_PHASES.push(newPhase);
+    var cp = JSON.parse(localStorage.getItem('atlas_roadmap_phases') || '[]');
+    cp.push(newPhase);
+    localStorage.setItem('atlas_roadmap_phases', JSON.stringify(cp));
+    renderRoadmap();
+  }
+  document.getElementById('addPhaseBtnTop').addEventListener('click', addPhaseHandler);
+
+  // Scene collapse on scroll
+  var scene = document.getElementById('roadmapScene');
+  var roadmapTab = document.getElementById('tab-roadmap');
+  if (scene && roadmapTab) {
+    roadmapTab.addEventListener('scroll', function() {
+      if (this.scrollTop > 100) {
+        scene.classList.add('roadmap-header__scene--collapsed');
+      } else {
+        scene.classList.remove('roadmap-header__scene--collapsed');
+      }
+    });
+    scene.addEventListener('click', function() {
+      this.classList.toggle('roadmap-header__scene--collapsed');
+    });
+  }
 
 })();
 </script>
