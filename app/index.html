@@ -629,6 +629,10 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
           Orders
         </button>
+        <button class="sidebar__link" data-tab="customers">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+          Customers
+        </button>
         <div class="sidebar__section-label">Tools</div>
         <button class="sidebar__link" data-tab="seo">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
@@ -797,6 +801,43 @@
           </div>
         </div>
 
+        <!-- Customers Tab -->
+        <div class="tab-content" id="tab-customers">
+          <div class="orders-header">
+            <h2 class="section__title">Customers</h2>
+            <div class="orders-filter">
+              <select id="customersSegmentFilter">
+                <option value="all">All Customers</option>
+                <option value="repeat">Repeat Buyers</option>
+                <option value="new">New Customers</option>
+                <option value="inactive">Inactive (90d+)</option>
+              </select>
+            </div>
+          </div>
+          <div class="orders-stats" id="customerStats"></div>
+          <div class="section">
+            <div class="section__header">
+              <h2 class="section__title">Customer List</h2>
+              <span class="section__badge" id="customerCount"></span>
+            </div>
+            <div class="table-wrap">
+              <table class="table" id="customersTable">
+                <thead>
+                  <tr>
+                    <th>Customer</th>
+                    <th>Email</th>
+                    <th>Orders</th>
+                    <th>Total Spent</th>
+                    <th>Last Order</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody id="customersBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
         <!-- Orders Tab -->
         <div class="tab-content" id="tab-orders">
           <div class="orders-header">
@@ -949,7 +990,7 @@
   // =============================================
   var PAGE_TITLES = {
     products: 'Products', variants: 'Variants', collections: 'Collections',
-    shop: 'Shop Info', seo: 'SEO', geo: 'GEO', orders: 'Orders'
+    shop: 'Shop Info', seo: 'SEO', geo: 'GEO', orders: 'Orders', customers: 'Customers'
   };
 
   document.getElementById('sidebarNav').addEventListener('click', function(e) {
@@ -963,6 +1004,7 @@
     document.getElementById('pageTitle').textContent = PAGE_TITLES[tab] || tab;
     // auto-trigger
     if (tab === 'orders') setTimeout(renderOrders, 10);
+    if (tab === 'customers') setTimeout(renderCustomers, 10);
     if (tab === 'seo' && document.getElementById('seoChecks').innerHTML === '') setTimeout(runSeoScan, 10);
     if (tab === 'geo' && document.getElementById('geoChecks').innerHTML === '') setTimeout(runGeoScan, 10);
     // close mobile sidebar
@@ -2098,6 +2140,92 @@
   // Render orders on filter change
   document.getElementById('ordersDateFilter').addEventListener('change', renderOrders);
   document.getElementById('ordersStatusFilter').addEventListener('change', renderOrders);
+
+  // =============================================
+  // CUSTOMERS (Demo Data)
+  // =============================================
+  function generateDemoCustomers() {
+    var firstNames = ['Emma', 'Liam', 'Olivia', 'Noah', 'Ava', 'Sophia', 'Jackson', 'Isabella', 'Aiden', 'Mia', 'Lucas', 'Harper', 'Mason', 'Evelyn', 'Ethan', 'Amelia', 'Logan', 'Abigail', 'James', 'Charlotte', 'Benjamin', 'Emily', 'Alexander', 'Ella', 'Daniel'];
+    var lastNames = ['Williams', 'Johnson', 'Smith', 'Brown', 'Martinez', 'Rodriguez', 'Davis', 'Kim', 'Lopez', 'Taylor', 'Patel', 'Gonzalez', 'Anderson', 'Thomas', 'Hernandez', 'Moore', 'Martin', 'Jackson', 'Thompson', 'White', 'Lee', 'Harris', 'Clark', 'Lewis', 'Walker'];
+    var cities = ['Los Angeles, CA', 'New York, NY', 'Chicago, IL', 'Houston, TX', 'Phoenix, AZ', 'Miami, FL', 'Denver, CO', 'Seattle, WA', 'Austin, TX', 'Portland, OR', 'San Diego, CA', 'Nashville, TN', 'Atlanta, GA', 'Boston, MA', 'Dallas, TX'];
+    var customers = [];
+
+    for (var i = 0; i < 30; i++) {
+      var first = firstNames[Math.floor(Math.random() * firstNames.length)];
+      var last = lastNames[Math.floor(Math.random() * lastNames.length)];
+      var orderCount = Math.floor(Math.random() * 12) + 1;
+      var avgOrder = 20 + Math.random() * 60;
+      var totalSpent = orderCount * avgOrder;
+      var lastOrder = new Date();
+      lastOrder.setDate(lastOrder.getDate() - Math.floor(Math.random() * 180));
+      var firstOrder = new Date(lastOrder);
+      firstOrder.setDate(firstOrder.getDate() - Math.floor(Math.random() * 365));
+
+      customers.push({
+        name: first + ' ' + last,
+        email: first.toLowerCase() + '.' + last.toLowerCase() + '@email.com',
+        city: cities[Math.floor(Math.random() * cities.length)],
+        orders: orderCount,
+        totalSpent: totalSpent,
+        lastOrder: lastOrder,
+        firstOrder: firstOrder,
+        isRepeat: orderCount > 1
+      });
+    }
+    customers.sort(function(a, b) { return b.totalSpent - a.totalSpent; });
+    return customers;
+  }
+
+  var allCustomers = generateDemoCustomers();
+
+  function renderCustomers() {
+    var filter = document.getElementById('customersSegmentFilter').value;
+    var now = new Date();
+
+    var filtered = allCustomers.filter(function(c) {
+      if (filter === 'repeat') return c.orders > 1;
+      if (filter === 'new') return (now - c.firstOrder) <= 30 * 86400000;
+      if (filter === 'inactive') return (now - c.lastOrder) > 90 * 86400000;
+      return true;
+    });
+
+    // Stats
+    var totalCustomers = filtered.length;
+    var repeatCount = filtered.filter(function(c) { return c.orders > 1; }).length;
+    var totalRevenue = filtered.reduce(function(s, c) { return s + c.totalSpent; }, 0);
+    var avgLTV = totalCustomers ? totalRevenue / totalCustomers : 0;
+
+    var statsHtml = '';
+    statsHtml += statCard('Customers', totalCustomers, 'Filtered results');
+    statsHtml += statCard('Repeat Buyers', repeatCount, Math.round(repeatCount / (totalCustomers || 1) * 100) + '% retention');
+    statsHtml += '<div class="stat-card"><div class="stat-card__label">Total Revenue</div><div class="stat-card__value stat-card__value--green">$' + totalRevenue.toFixed(2) + '</div><div class="stat-card__sub">Lifetime</div></div>';
+    statsHtml += statCard('Avg LTV', '$' + avgLTV.toFixed(2), 'Per customer');
+    document.getElementById('customerStats').innerHTML = statsHtml;
+
+    // Table
+    var html = '';
+    filtered.forEach(function(c) {
+      var daysSince = Math.floor((now - c.lastOrder) / 86400000);
+      var statusBadge = daysSince > 90
+        ? '<span class="badge badge--draft">Inactive</span>'
+        : daysSince > 30
+          ? '<span class="badge" style="background:var(--yellow-dim);color:var(--yellow);">Idle</span>'
+          : '<span class="badge badge--active">Active</span>';
+
+      html += '<tr>' +
+        '<td><strong>' + esc(c.name) + '</strong><div style="font-size:0.72rem;color:var(--text-dim);margin-top:2px;">' + esc(c.city) + '</div></td>' +
+        '<td>' + esc(c.email) + '</td>' +
+        '<td>' + c.orders + '</td>' +
+        '<td class="price">$' + c.totalSpent.toFixed(2) + '</td>' +
+        '<td>' + c.lastOrder.toLocaleDateString() + '</td>' +
+        '<td>' + statusBadge + '</td>' +
+      '</tr>';
+    });
+    document.getElementById('customersBody').innerHTML = html || '<tr><td colspan="6" style="text-align:center;color:var(--text-dim);padding:40px;">No customers found</td></tr>';
+    document.getElementById('customerCount').textContent = filtered.length + ' customers';
+  }
+
+  document.getElementById('customersSegmentFilter').addEventListener('change', renderCustomers);
 
 })();
 </script>
