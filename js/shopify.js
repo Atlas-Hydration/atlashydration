@@ -18,7 +18,7 @@ var AtlasShop = (function() {
   // =============================================
   var CONFIG = {
     domain: '7fa7b7-42.myshopify.com',
-    storefrontAccessToken: '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'
+    storefrontAccessToken: '390caf7f28b55c8958daeab3fcd55f76'
   };
 
   // Map product slugs to Shopify variant GIDs
@@ -61,25 +61,32 @@ var AtlasShop = (function() {
     // Try to restore a saved checkout
     var savedCheckoutId = localStorage.getItem('atlas_checkout_id');
 
-    if (typeof ShopifyBuy !== 'undefined') {
-      client = ShopifyBuy.buildClient({
-        domain: CONFIG.domain,
-        storefrontAccessToken: CONFIG.storefrontAccessToken
-      });
-
-      if (savedCheckoutId) {
-        client.checkout.fetch(savedCheckoutId).then(function(existingCheckout) {
-          if (existingCheckout && !existingCheckout.completedAt) {
-            checkout = existingCheckout;
-            updateCartUI();
-          } else {
-            createNewCheckout();
-          }
-        }).catch(function() {
-          createNewCheckout();
+    if (typeof ShopifyBuy !== 'undefined' && CONFIG.storefrontAccessToken) {
+      try {
+        client = ShopifyBuy.buildClient({
+          domain: CONFIG.domain,
+          storefrontAccessToken: CONFIG.storefrontAccessToken
         });
-      } else {
-        createNewCheckout();
+
+        if (savedCheckoutId) {
+          client.checkout.fetch(savedCheckoutId).then(function(existingCheckout) {
+            if (existingCheckout && !existingCheckout.completedAt) {
+              checkout = existingCheckout;
+              updateCartUI();
+            } else {
+              createNewCheckout();
+            }
+          }).catch(function() {
+            // SDK auth failed — fall back to local cart
+            client = null;
+            loadLocalCart();
+          });
+        } else {
+          createNewCheckout();
+        }
+      } catch(e) {
+        client = null;
+        loadLocalCart();
       }
     } else {
       // SDK not loaded — use local cart fallback
@@ -88,11 +95,15 @@ var AtlasShop = (function() {
   }
 
   function createNewCheckout() {
-    if (!client) return;
+    if (!client) { loadLocalCart(); return; }
     client.checkout.create().then(function(newCheckout) {
       checkout = newCheckout;
       localStorage.setItem('atlas_checkout_id', checkout.id);
       updateCartUI();
+    }).catch(function() {
+      // SDK checkout creation failed — fall back to local cart
+      client = null;
+      loadLocalCart();
     });
   }
 

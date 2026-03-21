@@ -1388,20 +1388,6 @@ img {
   margin-bottom: 20px;
 }
 
-.footer__social {
-  display: flex;
-  gap: 16px;
-}
-
-.footer__social a {
-  color: rgba(255,255,255,0.4);
-  transition: color var(--transition);
-}
-
-.footer__social a:hover {
-  color: #ffffff;
-}
-
 .footer__links h4 {
   font-size: 0.8rem;
   font-weight: 700;
@@ -1411,30 +1397,9 @@ img {
   margin-bottom: 16px;
 }
 
-.footer__links nav {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.footer__links a {
-  font-size: 0.875rem;
-  color: rgba(255,255,255,0.5);
-  transition: color var(--transition);
-}
-
-.footer__links a:hover {
-  color: #ffffff;
-}
-
 .footer .logo-text--footer {
   color: #ffffff;
 }
-.footer__logo-img {
-  height: 24px;
-  width: auto;
-}
-
 .footer__bottom {
   border-top: 1px solid rgba(255,255,255,0.1);
   padding-top: 24px;
@@ -2850,12 +2815,6 @@ img {
   }
 }
 
-/* Water fill effect removed — clean Promix-style buttons */
-
-/* ========================================
-   Scroll Snap
-   ======================================== */
-/* Scroll snap removed for smoother browsing */
 
 /* ========================================
    WebGL Canvas
@@ -3627,18 +3586,7 @@ img {
   color: rgba(255,255,255,0.7);
 }
 
-@media (max-width: 600px) {
-  .popup__percent {
-    font-size: 4rem;
-  }
-  .popup {
-    padding: 0 20px;
-  }
-  .popup__close {
-    top: 16px;
-    right: 16px;
-  }
-}
+/* 600px popup overrides removed — identical rules exist in the 768px breakpoint */
 
 /* ========================================
    Animations
@@ -4122,10 +4070,6 @@ img {
   opacity: 0.4;
 }
 
-.hero__content {
-  z-index: 2;
-}
-
 /* Old popup overrides removed — styles now in main popup block above */
 
 /* ========================================
@@ -4222,11 +4166,6 @@ img {
   justify-content: center;
   pointer-events: none;
   z-index: 0;
-}
-
-.cta-dark__inner {
-  position: relative;
-  z-index: 1;
 }
 
 /* ========================================
@@ -4717,15 +4656,6 @@ img {
 
   .science__usa {
     align-items: center;
-  }
-
-  .how-it-works {
-    padding: 80px 0;
-  }
-
-  .how-it-works__grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 24px;
   }
 
   .how-it-works__number {
