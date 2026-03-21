@@ -816,7 +816,73 @@
     .roadmap-phase__icon--phase1 { background: var(--accent-dim); }
     .roadmap-phase__title { font-weight: 700; font-size: 0.95rem; }
     .roadmap-phase__subtitle { font-size: 0.75rem; color: var(--text-dim); margin-top: 2px; }
-    .roadmap-phase__right { display: flex; align-items: center; gap: 12px; }
+    .roadmap-phase__right { display: flex; align-items: center; gap: 8px; }
+    .roadmap-phase__view-toggle {
+      display: flex; gap: 2px; background: var(--surface2); border-radius: 6px; padding: 2px;
+    }
+    .roadmap-phase__view-btn {
+      padding: 4px 8px; border: none; background: none; color: var(--text-dim);
+      font-family: var(--font); font-size: 0.6rem; font-weight: 600; cursor: pointer;
+      border-radius: 4px; transition: all 0.15s; text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .roadmap-phase__view-btn:hover { color: var(--text); }
+    .roadmap-phase__view-btn.active { background: var(--accent); color: #fff; }
+    /* Canvas (freeform) view */
+    .roadmap-canvas-wrap {
+      position: relative; min-height: 500px; overflow: auto;
+      background: var(--surface2); border-radius: 8px; margin: 0 20px 20px;
+      border: 1px solid var(--border);
+    }
+    .roadmap-canvas {
+      position: relative; width: 2000px; height: 1200px;
+    }
+    .roadmap-canvas__grid {
+      position: absolute; inset: 0;
+      background-image: radial-gradient(circle, var(--border) 1px, transparent 1px);
+      background-size: 30px 30px; opacity: 0.5;
+    }
+    .roadmap-canvas__svg {
+      position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1;
+    }
+    .roadmap-canvas__svg line {
+      stroke: var(--accent); stroke-width: 2; stroke-dasharray: 6 4;
+      opacity: 0.5; transition: opacity 0.2s;
+    }
+    .roadmap-canvas__svg line:hover { opacity: 1; stroke-width: 3; }
+    .roadmap-canvas-card {
+      position: absolute; z-index: 2; cursor: grab;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 10px; padding: 12px 16px; width: 220px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      transition: box-shadow 0.15s;
+      user-select: none;
+    }
+    .roadmap-canvas-card:hover { box-shadow: 0 6px 20px rgba(0,0,0,0.3); }
+    .roadmap-canvas-card.dragging { cursor: grabbing; box-shadow: 0 8px 30px rgba(59,130,246,0.3); z-index: 10; }
+    .roadmap-canvas-card.blocked { border-color: var(--red); }
+    .roadmap-canvas-card.completed { opacity: 0.6; }
+    .roadmap-canvas-card.completed .roadmap-canvas-card__title { text-decoration: line-through; }
+    .roadmap-canvas-card__title { font-weight: 600; font-size: 0.78rem; margin-bottom: 2px; }
+    .roadmap-canvas-card__desc { font-size: 0.65rem; color: var(--text-dim); line-height: 1.3; }
+    .roadmap-canvas-card__tag {
+      display: inline-block; margin-top: 6px; font-size: 0.5rem; padding: 2px 6px;
+      border-radius: 4px; font-weight: 600; text-transform: uppercase;
+    }
+    .roadmap-canvas-card__col-dot {
+      display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px;
+    }
+    .roadmap-canvas-card__col-dot--todo { background: var(--text-dim); }
+    .roadmap-canvas-card__col-dot--inprogress { background: var(--accent); }
+    .roadmap-canvas-card__col-dot--completed { background: var(--green); }
+    .roadmap-canvas-card__connector {
+      position: absolute; width: 12px; height: 12px; border-radius: 50%;
+      background: var(--accent); border: 2px solid var(--surface);
+      cursor: crosshair; z-index: 3; opacity: 0; transition: opacity 0.15s;
+    }
+    .roadmap-canvas-card:hover .roadmap-canvas-card__connector { opacity: 1; }
+    .roadmap-canvas-card__connector--right { right: -6px; top: 50%; transform: translateY(-50%); }
+    .roadmap-canvas-card__connector--left { left: -6px; top: 50%; transform: translateY(-50%); }
     .roadmap-phase__count { font-size: 0.72rem; color: var(--text-dim); font-weight: 500; }
     .roadmap-phase__chevron { transition: transform 0.2s; color: var(--text-dim); font-size: 0.8rem; }
     .roadmap-phase.open .roadmap-phase__chevron { transform: rotate(180deg); }
@@ -1116,6 +1182,8 @@
       .roadmap-header__revenue { flex-direction: column; gap: 4px; }
       .roadmap-header__scene { height: 80px; }
       .roadmap-kanban { grid-template-columns: 1fr 1fr; gap: 10px; padding: 0 12px 16px; }
+      .roadmap-canvas-wrap { margin: 0 12px 16px; }
+      .roadmap-phase__view-toggle { display: none; }
       .roadmap-phase__header { padding: 14px 16px; }
       .roadmap-phase__icon { width: 30px; height: 30px; font-size: 0.85rem; }
       .roadmap-phase__title { font-size: 0.85rem; }
@@ -3803,6 +3871,40 @@
     { id: 'completed', label: 'Completed', dot: 'completed' }
   ];
 
+  function getPhaseView(phaseId) {
+    try { var v = JSON.parse(localStorage.getItem('atlas_phase_views') || '{}'); return v[phaseId] || 'kanban'; } catch(e) { return 'kanban'; }
+  }
+  function setPhaseView(phaseId, view) {
+    var v = JSON.parse(localStorage.getItem('atlas_phase_views') || '{}');
+    v[phaseId] = view;
+    localStorage.setItem('atlas_phase_views', JSON.stringify(v));
+  }
+  function getCanvasPositions(phaseId) {
+    try { var p = JSON.parse(localStorage.getItem('atlas_canvas_pos') || '{}'); return p[phaseId] || {}; } catch(e) { return {}; }
+  }
+  function saveCanvasPosition(phaseId, projId, x, y) {
+    var p = JSON.parse(localStorage.getItem('atlas_canvas_pos') || '{}');
+    if (!p[phaseId]) p[phaseId] = {};
+    p[phaseId][projId] = { x: x, y: y };
+    localStorage.setItem('atlas_canvas_pos', JSON.stringify(p));
+  }
+  function getCanvasConnections(phaseId) {
+    try { var c = JSON.parse(localStorage.getItem('atlas_canvas_conn') || '{}'); return c[phaseId] || []; } catch(e) { return []; }
+  }
+  function saveCanvasConnection(phaseId, fromId, toId) {
+    var c = JSON.parse(localStorage.getItem('atlas_canvas_conn') || '{}');
+    if (!c[phaseId]) c[phaseId] = [];
+    // Avoid duplicates
+    if (!c[phaseId].find(function(conn) { return conn.from === fromId && conn.to === toId; })) {
+      c[phaseId].push({ from: fromId, to: toId });
+    }
+    localStorage.setItem('atlas_canvas_conn', JSON.stringify(c));
+  }
+  function removeCanvasConnection(phaseId, idx) {
+    var c = JSON.parse(localStorage.getItem('atlas_canvas_conn') || '{}');
+    if (c[phaseId]) { c[phaseId].splice(idx, 1); localStorage.setItem('atlas_canvas_conn', JSON.stringify(c)); }
+  }
+
   function getRoadmapState() {
     try { return JSON.parse(localStorage.getItem('atlas_roadmap_v3')) || {}; } catch(e) { return {}; }
   }
@@ -3926,6 +4028,10 @@
             '</div>' +
           '</div>' +
           '<div class="roadmap-phase__right">' +
+            '<div class="roadmap-phase__view-toggle" onclick="event.stopPropagation()">' +
+              '<button class="roadmap-phase__view-btn' + (getPhaseView(phase.id) !== 'canvas' ? ' active' : '') + '" data-view="kanban" data-phase="' + phase.id + '">Kanban</button>' +
+              '<button class="roadmap-phase__view-btn' + (getPhaseView(phase.id) === 'canvas' ? ' active' : '') + '" data-view="canvas" data-phase="' + phase.id + '">Canvas</button>' +
+            '</div>' +
             '<span class="roadmap-phase__count">' + pDone + '/' + pTotal + ' done</span>' +
             '<span class="roadmap-phase__chevron">&#9660;</span>' +
           '</div>' +
@@ -3937,8 +4043,39 @@
         phasesHtml += '<div class="roadmap-phase__desc">' + phase.desc + '</div>';
       }
 
-      // Kanban columns
-      phasesHtml += '<div class="roadmap-kanban">';
+      var isCanvasView = getPhaseView(phase.id) === 'canvas';
+
+      // === CANVAS VIEW ===
+      if (isCanvasView) {
+        var positions = getCanvasPositions(phase.id);
+        var connections = getCanvasConnections(phase.id);
+        phasesHtml += '<div class="roadmap-canvas-wrap"><div class="roadmap-canvas" data-phase="' + phase.id + '">';
+        phasesHtml += '<div class="roadmap-canvas__grid"></div>';
+        phasesHtml += '<svg class="roadmap-canvas__svg" data-phase="' + phase.id + '">';
+        connections.forEach(function(conn, idx) {
+          var fromPos = positions[conn.from] || { x: 100, y: 100 };
+          var toPos = positions[conn.to] || { x: 300, y: 100 };
+          phasesHtml += '<line x1="' + (fromPos.x + 220) + '" y1="' + (fromPos.y + 30) + '" x2="' + toPos.x + '" y2="' + (toPos.y + 30) + '" data-from="' + conn.from + '" data-to="' + conn.to + '" data-idx="' + idx + '" data-phase="' + phase.id + '" style="pointer-events:stroke;cursor:pointer;" />';
+        });
+        phasesHtml += '</svg>';
+
+        phase.projects.forEach(function(proj, i) {
+          var pos = positions[proj.id] || { x: 60 + (i % 5) * 250, y: 60 + Math.floor(i / 5) * 140 };
+          var classes = 'roadmap-canvas-card' + (proj.col === 'completed' ? ' completed' : '') + (proj.blocked ? ' blocked' : '');
+          phasesHtml += '<div class="' + classes + '" data-id="' + proj.id + '" data-phase="' + phase.id + '" style="left:' + pos.x + 'px;top:' + pos.y + 'px;">' +
+            '<div class="roadmap-canvas-card__connector roadmap-canvas-card__connector--left" data-id="' + proj.id + '" data-side="left" data-phase="' + phase.id + '"></div>' +
+            '<div class="roadmap-canvas-card__connector roadmap-canvas-card__connector--right" data-id="' + proj.id + '" data-side="right" data-phase="' + phase.id + '"></div>' +
+            '<span class="roadmap-canvas-card__col-dot roadmap-canvas-card__col-dot--' + proj.col + '"></span>' +
+            '<div class="roadmap-canvas-card__title">' + esc(proj.title) + '</div>' +
+            (proj.desc ? '<div class="roadmap-canvas-card__desc">' + esc(proj.desc) + '</div>' : '') +
+            '<span class="roadmap-card__tag roadmap-card__tag--' + proj.priority + '">' + proj.priority + '</span>' +
+          '</div>';
+        });
+
+        phasesHtml += '</div></div>';
+      } else {
+        // === KANBAN VIEW ===
+        phasesHtml += '<div class="roadmap-kanban">';
       COL_DEFS.forEach(function(colDef) {
         var colProjects = phase.projects.filter(function(p) { return p.col === colDef.id; });
         phasesHtml += '<div class="roadmap-col">' +
@@ -3992,7 +4129,8 @@
         }
         phasesHtml += '</div>';
       });
-      phasesHtml += '</div>'; // kanban
+        phasesHtml += '</div>'; // kanban
+      } // end kanban else
 
       phasesHtml += '</div></div>'; // body, phase
     });
@@ -4283,6 +4421,105 @@
         saveProjectState(projId, proj);
         renderRoadmap();
       });
+    });
+
+    // View toggle buttons
+    document.querySelectorAll('.roadmap-phase__view-btn').forEach(function(btn) {
+      btn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        var phaseId = this.getAttribute('data-phase');
+        var view = this.getAttribute('data-view');
+        setPhaseView(phaseId, view);
+        renderRoadmap();
+      });
+    });
+
+    // Canvas card dragging (freeform)
+    document.querySelectorAll('.roadmap-canvas-card').forEach(function(card) {
+      var startX, startY, origLeft, origTop, isDragging = false;
+      card.addEventListener('mousedown', function(e) {
+        if (e.target.classList.contains('roadmap-canvas-card__connector')) return;
+        e.preventDefault();
+        isDragging = true;
+        card.classList.add('dragging');
+        startX = e.clientX;
+        startY = e.clientY;
+        origLeft = parseInt(card.style.left) || 0;
+        origTop = parseInt(card.style.top) || 0;
+
+        function onMove(ev) {
+          if (!isDragging) return;
+          var dx = ev.clientX - startX;
+          var dy = ev.clientY - startY;
+          card.style.left = Math.max(0, origLeft + dx) + 'px';
+          card.style.top = Math.max(0, origTop + dy) + 'px';
+          // Update SVG lines
+          updateCanvasLines(card.getAttribute('data-phase'));
+        }
+        function onUp() {
+          if (!isDragging) return;
+          isDragging = false;
+          card.classList.remove('dragging');
+          var phaseId = card.getAttribute('data-phase');
+          var projId = card.getAttribute('data-id');
+          saveCanvasPosition(phaseId, projId, parseInt(card.style.left), parseInt(card.style.top));
+          document.removeEventListener('mousemove', onMove);
+          document.removeEventListener('mouseup', onUp);
+        }
+        document.addEventListener('mousemove', onMove);
+        document.addEventListener('mouseup', onUp);
+      });
+    });
+
+    // Connector drawing (create connections between cards)
+    var _connectorStart = null;
+    document.querySelectorAll('.roadmap-canvas-card__connector').forEach(function(dot) {
+      dot.addEventListener('mousedown', function(e) {
+        e.stopPropagation();
+        e.preventDefault();
+        _connectorStart = { id: this.getAttribute('data-id'), phase: this.getAttribute('data-phase') };
+      });
+      dot.addEventListener('mouseup', function(e) {
+        e.stopPropagation();
+        if (!_connectorStart) return;
+        var toId = this.getAttribute('data-id');
+        var phaseId = this.getAttribute('data-phase');
+        if (_connectorStart.id !== toId && _connectorStart.phase === phaseId) {
+          saveCanvasConnection(phaseId, _connectorStart.id, toId);
+          renderRoadmap();
+        }
+        _connectorStart = null;
+      });
+    });
+    document.addEventListener('mouseup', function() { _connectorStart = null; });
+
+    // Click connection lines to delete
+    document.querySelectorAll('.roadmap-canvas__svg line').forEach(function(line) {
+      line.addEventListener('click', function(e) {
+        e.stopPropagation();
+        var phaseId = this.getAttribute('data-phase');
+        var idx = parseInt(this.getAttribute('data-idx'));
+        removeCanvasConnection(phaseId, idx);
+        renderRoadmap();
+      });
+    });
+  }
+
+  // Update SVG connection lines when cards move
+  function updateCanvasLines(phaseId) {
+    var svg = document.querySelector('.roadmap-canvas__svg[data-phase="' + phaseId + '"]');
+    if (!svg) return;
+    svg.querySelectorAll('line').forEach(function(line) {
+      var fromId = line.getAttribute('data-from');
+      var toId = line.getAttribute('data-to');
+      var fromCard = document.querySelector('.roadmap-canvas-card[data-id="' + fromId + '"][data-phase="' + phaseId + '"]');
+      var toCard = document.querySelector('.roadmap-canvas-card[data-id="' + toId + '"][data-phase="' + phaseId + '"]');
+      if (fromCard && toCard) {
+        line.setAttribute('x1', parseInt(fromCard.style.left) + 220);
+        line.setAttribute('y1', parseInt(fromCard.style.top) + 30);
+        line.setAttribute('x2', parseInt(toCard.style.left));
+        line.setAttribute('y2', parseInt(toCard.style.top) + 30);
+      }
     });
   }
 
