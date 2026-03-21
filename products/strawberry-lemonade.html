@@ -31,27 +31,88 @@
     "@context": "https://schema.org",
     "@type": "Product",
     "name": "Atlas Hydration Strawberry Lemonade Electrolyte Drink Mix",
-    "description": "Zero-sugar electrolyte drink mix with 1,300mg electrolytes, B vitamins, Vitamin C, L-Glutamine, and recovery amino acids. 16 individually wrapped stick packs.",
+    "description": "Premium zero-sugar electrolyte drink mix with 1,300mg electrolytes (600mg Sodium, 500mg Potassium, 200mg Magnesium), B vitamins (B3, B5, B6, B12), 90mg Vitamin C, and 1,200mg recovery amino acids (L-Glutamine + L-Alanine). 16 individually wrapped stick packs per box, only 5 calories per serving. Made in the USA, non-GMO, no artificial flavors or sweeteners. Naturally sweetened with stevia leaf extract and allulose.",
     "brand": {
       "@type": "Brand",
       "name": "Atlas Hydration"
     },
     "offers": {
-      "@type": "Offer",
-      "price": "29.99",
+      "@type": "AggregateOffer",
+      "lowPrice": "23.99",
+      "highPrice": "29.99",
       "priceCurrency": "USD",
       "availability": "https://schema.org/InStock",
-      "url": "https://rwb8771.github.io/atlashydration/products/strawberry-lemonade.html"
+      "offerCount": "2",
+      "offers": [
+        {
+          "@type": "Offer",
+          "name": "Subscribe & Save (20% off)",
+          "price": "23.99",
+          "priceCurrency": "USD",
+          "availability": "https://schema.org/InStock",
+          "url": "https://rwb8771.github.io/atlashydration/products/strawberry-lemonade.html",
+          "priceValidUntil": "2026-12-31"
+        },
+        {
+          "@type": "Offer",
+          "name": "One-Time Purchase",
+          "price": "29.99",
+          "priceCurrency": "USD",
+          "availability": "https://schema.org/InStock",
+          "url": "https://rwb8771.github.io/atlashydration/products/strawberry-lemonade.html",
+          "priceValidUntil": "2026-12-31"
+        }
+      ]
     },
     "category": "Sports Nutrition > Electrolyte Drinks",
     "countryOfOrigin": "US",
     "sku": "ATLAS-SL-16",
-    "image": "https://rwb8771.github.io/atlashydration/logo.svg",
+    "image": [
+      "https://cdn.shopify.com/s/files/1/0595/8133/3578/files/1_e4b7eae7-01d9-430c-9655-7949d910deb6.jpg",
+      "https://cdn.shopify.com/s/files/1/0595/8133/3578/files/2_e035ddf8-ce06-45b8-a18b-9c44b182ef6c.jpg",
+      "https://cdn.shopify.com/s/files/1/0595/8133/3578/files/6_b41fe7f1-0bca-41d3-8bf7-db4414e95a05.jpg"
+    ],
     "aggregateRating": {
       "@type": "AggregateRating",
       "ratingValue": "5",
-      "reviewCount": "20"
-    }
+      "reviewCount": "20",
+      "bestRating": "5"
+    },
+    "review": [
+      {
+        "@type": "Review",
+        "reviewRating": { "@type": "Rating", "ratingValue": "5", "bestRating": "5" },
+        "author": { "@type": "Person", "name": "Verified Customer" },
+        "reviewBody": "Best electrolyte mix I've tried. No sugar crash, great strawberry lemonade taste, and I feel the difference during my workouts. Way better than Liquid IV."
+      },
+      {
+        "@type": "Review",
+        "reviewRating": { "@type": "Rating", "ratingValue": "5", "bestRating": "5" },
+        "author": { "@type": "Person", "name": "Verified Customer" },
+        "reviewBody": "I switched from LMNT to Atlas. More electrolytes, plus vitamins and amino acids they don't have. The Strawberry Lemonade flavor is incredible."
+      }
+    ],
+    "nutrition": {
+      "@type": "NutritionInformation",
+      "servingSize": "1 stick pack (8g)",
+      "calories": "5 calories",
+      "sugarContent": "0g",
+      "carbohydrateContent": "1g",
+      "proteinContent": "0g",
+      "sodiumContent": "600mg",
+      "potassiumContent": "500mg"
+    },
+    "additionalProperty": [
+      { "@type": "PropertyValue", "name": "Magnesium", "value": "200mg" },
+      { "@type": "PropertyValue", "name": "Vitamin C", "value": "90mg (100% DV)" },
+      { "@type": "PropertyValue", "name": "Vitamin B3 (Niacin)", "value": "24mg (150% DV)" },
+      { "@type": "PropertyValue", "name": "Vitamin B5 (Pantothenic Acid)", "value": "5mg (100% DV)" },
+      { "@type": "PropertyValue", "name": "Vitamin B6", "value": "2mg (118% DV)" },
+      { "@type": "PropertyValue", "name": "Vitamin B12", "value": "8mcg (333% DV)" },
+      { "@type": "PropertyValue", "name": "L-Glutamine", "value": "1,000mg" },
+      { "@type": "PropertyValue", "name": "L-Alanine", "value": "200mg" },
+      { "@type": "PropertyValue", "name": "Total Electrolytes", "value": "1,300mg per serving" }
+    ]
   }
   </script>
   <script type="application/ld+json">
@@ -61,7 +122,7 @@
     "itemListElement": [
       { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://rwb8771.github.io/atlashydration/" },
       { "@type": "ListItem", "position": 2, "name": "Products", "item": "https://rwb8771.github.io/atlashydration/#products" },
-      { "@type": "ListItem", "position": 3, "name": "Strawberry Lemonade" }
+      { "@type": "ListItem", "position": 3, "name": "Strawberry Lemonade Electrolyte Mix" }
     ]
   }
   </script>
@@ -72,27 +133,106 @@
     "mainEntity": [
       {
         "@type": "Question",
-        "name": "How much is the cost per stick?",
+        "name": "How many electrolytes are in Atlas Strawberry Lemonade per serving?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Each stick pack works out to just $1.87 at full price, or $1.50 per stick with a subscription (20% off). That's less than most sugary sports drinks with far superior ingredients."
+          "text": "Each Atlas Strawberry Lemonade stick pack contains 1,300mg of total electrolytes: 600mg Sodium (from Sodium Citrate and Pink Himalayan Salt), 500mg Potassium (from Potassium Citrate), and 200mg Magnesium (from Magnesium Malate). This is more total electrolytes than LMNT (1,260mg), Liquid I.V. (~500mg), or WaterBoy."
         }
       },
       {
         "@type": "Question",
-        "name": "What's inside each stick?",
+        "name": "Is Atlas Strawberry Lemonade sugar-free?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Every stick contains 1,300mg of electrolytes (600mg Sodium, 500mg Potassium, 200mg Magnesium), B Vitamins (B3, B5, B6, B12), 90mg Vitamin C, and 1,200mg of recovery amino acids (L-Glutamine + L-Alanine). Zero sugar, 5 calories, naturally sweetened with stevia and allulose."
+          "text": "Yes, Atlas Strawberry Lemonade contains zero grams of sugar and only 5 calories per serving. It is naturally sweetened with stevia leaf extract and allulose, a rare sugar that tastes sweet but has near-zero glycemic impact. No artificial sweeteners are used."
         }
       },
       {
         "@type": "Question",
-        "name": "What makes it different from other hydration mixes?",
+        "name": "How much does Atlas Hydration cost per stick?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Atlas delivers more total electrolytes than LMNT, Liquid I.V., or WaterBoy — plus B vitamins, Vitamin C, and recovery amino acids that none of them include. All with zero sugar and only 5 calories."
+          "text": "Each stick pack costs $1.87 at full price ($29.99 for 16 sticks), or $1.50 per stick with a Subscribe & Save subscription which saves 20% ($23.99 per box). Subscribers also get free shipping and can cancel anytime."
         }
+      },
+      {
+        "@type": "Question",
+        "name": "What's inside each Atlas Hydration stick pack?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Every stick contains 1,300mg of electrolytes (600mg Sodium, 500mg Potassium, 200mg Magnesium), B Vitamins (B3 24mg, B5 5mg, B6 2mg, B12 8mcg), 90mg Vitamin C, and 1,200mg of recovery amino acids (1,000mg L-Glutamine + 200mg L-Alanine). Zero sugar, 5 calories, naturally sweetened with stevia and allulose. Other ingredients: Citric Acid, Natural Strawberry & Lemon Flavors, Bamboo Extract, Annatto Seed Extract (color)."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How does Atlas compare to LMNT and Liquid IV?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Atlas delivers 1,300mg electrolytes (vs LMNT's 1,260mg and Liquid I.V.'s ~500mg), plus B vitamins, Vitamin C, and 1,200mg recovery amino acids that neither competitor includes. Atlas has zero sugar (Liquid I.V. has 11g sugar), only 5 calories (Liquid I.V. has 45 calories), and costs $1.87/stick ($1.50 with subscription) — comparable to LMNT's $2.00/packet and less than many Liquid I.V. offerings."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Why do I see floaties or clumps sometimes?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Totally normal. Atlas's mineral-forward formula uses organic natural flavor ingredients and bamboo extract, which can take a bit longer to dissolve. Just shake or stir a little more — it won't affect taste or effectiveness."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How do I use Atlas Hydration Strawberry Lemonade?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Mix one stick pack with 12-16 oz of cold water and shake or stir until dissolved. Drink first thing in the morning, during or after workouts, while traveling, or anytime you need hydration. Each box contains 16 individually wrapped stick packs. Adjust water to taste — less water for stronger flavor."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Does Atlas Hydration use artificial flavors or sweeteners?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. Atlas uses zero artificial flavors, colors, or sweeteners. Natural flavors come from real fruit extracts. Sweetness comes from stevia leaf extract and allulose, both natural. Colors come from annatto seed extract. Every ingredient is listed with no proprietary blends."
+        }
+      }
+    ]
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "HowTo",
+    "name": "How to Use Atlas Hydration Strawberry Lemonade Electrolyte Mix",
+    "description": "Simple instructions for mixing Atlas Hydration Strawberry Lemonade zero-sugar electrolyte drink mix for optimal hydration.",
+    "totalTime": "PT1M",
+    "supply": [
+      { "@type": "HowToSupply", "name": "1 Atlas Hydration Strawberry Lemonade stick pack (8g)" },
+      { "@type": "HowToSupply", "name": "12-16 oz cold water" }
+    ],
+    "step": [
+      {
+        "@type": "HowToStep",
+        "position": 1,
+        "name": "Open the stick pack",
+        "text": "Tear open one individually-wrapped Atlas Hydration Strawberry Lemonade stick pack."
+      },
+      {
+        "@type": "HowToStep",
+        "position": 2,
+        "name": "Add to water",
+        "text": "Pour the electrolyte powder into 12-16 fl oz of cold water."
+      },
+      {
+        "@type": "HowToStep",
+        "position": 3,
+        "name": "Mix well",
+        "text": "Shake or stir well until fully dissolved. Adjust water to taste — less water for stronger flavor, more for lighter."
+      },
+      {
+        "@type": "HowToStep",
+        "position": 4,
+        "name": "Enjoy",
+        "text": "Drink first thing in the morning, during or after workouts, while traveling, or anytime. Use daily for best results."
       }
     ]
   }
@@ -467,31 +607,44 @@
     </section>
 
     <!-- FAQ -->
-    <section class="product-faq" aria-label="Frequently asked questions">
+    <section class="product-faq" aria-label="Frequently asked questions about Atlas Hydration Strawberry Lemonade">
       <div class="container">
         <div class="section-header">
           <h2 class="section-title">Frequently Asked Questions</h2>
+          <p class="section-subtitle">Everything you need to know about Atlas Hydration Strawberry Lemonade electrolyte mix.</p>
         </div>
         <div class="product-faq__list">
           <div class="product-faq__item">
-            <button class="product-faq__question">How much is the cost per stick?<span>+</span></button>
-            <div class="product-faq__answer"><p>Each stick pack works out to just $1.87 at full price, or $1.50 per stick with a subscription (20% off). That's less than most sugary sports drinks with far superior ingredients.</p></div>
+            <button class="product-faq__question"><h3 style="font:inherit;margin:0;">How many electrolytes are in Atlas Strawberry Lemonade per serving?</h3><span>+</span></button>
+            <div class="product-faq__answer"><p>Each stick pack contains <strong>1,300mg of total electrolytes</strong>: 600mg Sodium (from Sodium Citrate and Pink Himalayan Salt), 500mg Potassium (from Potassium Citrate), and 200mg Magnesium (from Magnesium Malate). This is more total electrolytes per serving than LMNT (1,260mg), Liquid I.V. (~500mg), or WaterBoy.</p></div>
           </div>
           <div class="product-faq__item">
-            <button class="product-faq__question">What's inside each stick?<span>+</span></button>
-            <div class="product-faq__answer"><p>Every stick contains 1,300mg of electrolytes (600mg Sodium, 500mg Potassium, 200mg Magnesium), B Vitamins (B3, B5, B6, B12), 90mg Vitamin C, and 1,200mg of recovery amino acids (L-Glutamine + L-Alanine). Zero sugar, 5 calories, naturally sweetened with stevia and allulose.</p></div>
+            <button class="product-faq__question"><h3 style="font:inherit;margin:0;">Is Atlas Strawberry Lemonade sugar-free?</h3><span>+</span></button>
+            <div class="product-faq__answer"><p>Yes — <strong>zero grams of sugar</strong> and only <strong>5 calories per serving</strong>. Atlas is naturally sweetened with stevia leaf extract and allulose, a rare sugar with near-zero glycemic impact. No artificial sweeteners are used. Compare that to Liquid I.V. which contains 11g of sugar and 45 calories per serving.</p></div>
           </div>
           <div class="product-faq__item">
-            <button class="product-faq__question">Why do I see floaties or clumps sometimes?<span>+</span></button>
-            <div class="product-faq__answer"><p>Totally normal. Our mineral-forward formula uses organic natural flavor ingredients and bamboo extract, which can take a bit longer to dissolve. Just shake or stir a little more — it won't affect taste or effectiveness.</p></div>
+            <button class="product-faq__question"><h3 style="font:inherit;margin:0;">How much does Atlas Hydration cost per stick?</h3><span>+</span></button>
+            <div class="product-faq__answer"><p>Each stick pack is <strong>$1.87 at full price</strong> ($29.99 for 16 sticks), or <strong>$1.50 per stick with a subscription</strong> (20% off, $23.99 per box). Subscribers also get free shipping and can cancel anytime. That's less than most sugary sports drinks with far superior ingredients.</p></div>
           </div>
           <div class="product-faq__item">
-            <button class="product-faq__question">Are "natural flavors" always bad?<span>+</span></button>
-            <div class="product-faq__answer"><p>Not at all. Our natural flavors are derived from real fruit extracts — grapefruit oil and real fruit essences. We use zero artificial flavors, colors, or sweeteners. Every ingredient is listed on the label with no proprietary blends.</p></div>
+            <button class="product-faq__question"><h3 style="font:inherit;margin:0;">What vitamins and amino acids are in each stick pack?</h3><span>+</span></button>
+            <div class="product-faq__answer"><p>Every stick contains <strong>Vitamin C</strong> (90mg, 100% DV), <strong>Vitamin B3</strong> (24mg, 150% DV), <strong>Vitamin B5</strong> (5mg, 100% DV), <strong>Vitamin B6</strong> (2mg, 118% DV), <strong>Vitamin B12</strong> (8mcg, 333% DV), plus <strong>1,000mg L-Glutamine</strong> and <strong>200mg L-Alanine</strong> for recovery support.</p></div>
           </div>
           <div class="product-faq__item">
-            <button class="product-faq__question">What makes it different from other hydration mixes?<span>+</span></button>
-            <div class="product-faq__answer"><p>Atlas delivers more total electrolytes than LMNT, Liquid I.V., or WaterBoy — plus B vitamins, Vitamin C, and recovery amino acids that none of them include. All with zero sugar and only 5 calories. It's a cleaner, more complete formula built by a pilot who needed real hydration.</p></div>
+            <button class="product-faq__question"><h3 style="font:inherit;margin:0;">How does Atlas compare to LMNT and Liquid IV?</h3><span>+</span></button>
+            <div class="product-faq__answer"><p>Atlas delivers <strong>1,300mg electrolytes</strong> (vs LMNT's 1,260mg and Liquid I.V.'s ~500mg), plus B vitamins, Vitamin C, and 1,200mg recovery amino acids that neither competitor includes. Atlas has <strong>zero sugar</strong> (Liquid I.V. has 11g), only <strong>5 calories</strong> (Liquid I.V. has 45), and costs $1.87/stick ($1.50 with subscription). It's a cleaner, more complete formula.</p></div>
+          </div>
+          <div class="product-faq__item">
+            <button class="product-faq__question"><h3 style="font:inherit;margin:0;">Does Atlas Hydration use artificial flavors or sweeteners?</h3><span>+</span></button>
+            <div class="product-faq__answer"><p>No. Atlas uses <strong>zero artificial flavors, colors, or sweeteners</strong>. Natural flavors come from real fruit extracts and natural strawberry & lemon flavors. Sweetness comes from stevia leaf extract and allulose. Colors from annatto seed extract. Every ingredient is listed on the label with no proprietary blends.</p></div>
+          </div>
+          <div class="product-faq__item">
+            <button class="product-faq__question"><h3 style="font:inherit;margin:0;">Why do I see floaties or clumps sometimes?</h3><span>+</span></button>
+            <div class="product-faq__answer"><p>Totally normal. Atlas's mineral-forward formula uses organic natural flavor ingredients and bamboo extract, which can take slightly longer to dissolve. Just shake or stir a little more — it won't affect taste or effectiveness.</p></div>
+          </div>
+          <div class="product-faq__item">
+            <button class="product-faq__question"><h3 style="font:inherit;margin:0;">How do I use Atlas Hydration Strawberry Lemonade?</h3><span>+</span></button>
+            <div class="product-faq__answer"><p>Mix one stick pack with <strong>12–16 oz of cold water</strong> and shake or stir until dissolved. Drink first thing in the morning, during or after workouts, while traveling, or anytime you need a hydration boost. Each box contains 16 individually wrapped stick packs. Use daily for best results.</p></div>
           </div>
         </div>
       </div>
