@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Atlas Hydration Pitch Deck</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0a0a0b;
+      --surface: #141416;
+      --surface2: #1c1c1f;
+      --border: #2a2a2d;
+      --text: #e8e8ed;
+      --text-dim: #8e8e93;
+      --accent: #3b82f6;
+      --accent-dim: rgba(59,130,246,0.12);
+      --radius: 12px;
+      --font: 'Inter', -apple-system, system-ui, sans-serif;
+    }
+    html, body { height: 100%; font-family: var(--font); background: var(--bg); color: var(--text); }
+    .deck-container { height: 100vh; overflow-y: auto; scroll-snap-type: y mandatory; scroll-behavior: smooth; position: relative; }
+    .deck-slide { height: 100vh; min-height: 100vh; scroll-snap-align: start; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; padding: 60px 48px; }
+    .deck-slide__bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; opacity: 0.3; }
+    .deck-slide__content { position: relative; z-index: 1; max-width: 900px; width: 100%; text-align: center; }
+    .deck-slide__num { font-size: 0.65rem; color: var(--accent); text-transform: uppercase; letter-spacing: 0.12em; font-weight: 600; margin-bottom: 16px; }
+    .deck-slide__title { font-size: clamp(2rem, 5vw, 3.2rem); font-weight: 700; letter-spacing: -0.03em; line-height: 1.15; margin-bottom: 24px; }
+    .deck-slide__subtitle { font-size: 1.1rem; color: var(--text-dim); line-height: 1.6; max-width: 640px; margin: 0 auto 32px; }
+    .deck-stats-row { display: flex; gap: 24px; justify-content: center; flex-wrap: wrap; margin-top: 28px; }
+    .deck-stat { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px 32px; min-width: 160px; }
+    .deck-stat__val { font-size: 1.8rem; font-weight: 700; color: var(--accent); letter-spacing: -0.02em; }
+    .deck-stat__lbl { font-size: 0.72rem; color: var(--text-dim); margin-top: 4px; }
+    .deck-bullets { text-align: left; display: inline-block; margin: 0 auto; }
+    .deck-bullets li { font-size: 0.95rem; color: var(--text-dim); line-height: 2; list-style: none; padding-left: 24px; position: relative; }
+    .deck-bullets li::before { content: ''; position: absolute; left: 0; top: 50%; transform: translateY(-50%); width: 8px; height: 8px; background: var(--accent); border-radius: 2px; }
+    .deck-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; text-align: left; margin-top: 24px; }
+    .deck-grid-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; }
+    .deck-grid-card__icon { font-size: 1.8rem; margin-bottom: 12px; }
+    .deck-grid-card__title { font-size: 0.9rem; font-weight: 600; margin-bottom: 6px; }
+    .deck-grid-card__desc { font-size: 0.78rem; color: var(--text-dim); line-height: 1.5; }
+    .deck-compare-table { width: 100%; border-collapse: collapse; font-size: 0.8rem; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; margin-top: 24px; text-align: left; }
+    .deck-compare-table th { padding: 12px 16px; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-dim); border-bottom: 1px solid var(--border); background: var(--surface2); font-weight: 600; }
+    .deck-compare-table td { padding: 10px 16px; border-bottom: 1px solid var(--border); }
+    .deck-compare-table tr:last-child td { border-bottom: none; }
+    .deck-compare-table .deck-highlight { color: var(--accent); font-weight: 600; }
+    .deck-team-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 32px; max-width: 480px; margin: 0 auto; }
+    .deck-team-card__name { font-size: 1.3rem; font-weight: 700; margin-bottom: 4px; }
+    .deck-team-card__role { font-size: 0.85rem; color: var(--accent); margin-bottom: 16px; }
+    .deck-team-card__bio { font-size: 0.85rem; color: var(--text-dim); line-height: 1.7; }
+    .deck-funds-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 14px; margin-top: 24px; text-align: left; }
+    .deck-fund-item { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; }
+    .deck-fund-item__pct { font-size: 1.5rem; font-weight: 700; color: var(--accent); }
+    .deck-fund-item__lbl { font-size: 0.78rem; color: var(--text-dim); margin-top: 4px; }
+    .deck-cta-contact { margin-top: 32px; font-size: 0.85rem; color: var(--text-dim); }
+    .deck-nav { position: fixed; right: 24px; top: 50%; transform: translateY(-50%); z-index: 50; display: flex; flex-direction: column; gap: 8px; }
+    .deck-nav__dot { width: 10px; height: 10px; border-radius: 50%; background: var(--border); border: none; cursor: pointer; transition: all 0.2s; padding: 0; }
+    .deck-nav__dot.active { background: var(--accent); transform: scale(1.3); }
+    @media (max-width: 600px) { .deck-slide { padding: 40px 20px; } .deck-stat { min-width: 120px; padding: 16px 20px; } .deck-nav { display: none !important; } }
+  </style>
+</head>
+<body>
+  <div class="deck-container" id="deckContainer">
+    <canvas class="deck-slide__bg" id="deckCanvas"></canvas>
+
+    <!-- Slide 1: Title -->
+    <div class="deck-slide" data-slide="0">
+      <div class="deck-slide__content">
+        <div class="deck-slide__num">Atlas Hydration</div>
+        <div class="deck-slide__title">Zero-Sugar<br>Electrolyte Mixes</div>
+        <div class="deck-slide__subtitle">Premium hydration engineered for peak performance. No sugar. No compromises.</div>
+        <div class="deck-stats-row">
+          <div class="deck-stat"><div class="deck-stat__val">Seed Round</div><div class="deck-stat__lbl">March 2026</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 2: Problem -->
+    <div class="deck-slide" data-slide="1">
+      <div class="deck-slide__content">
+        <div class="deck-slide__num">Slide 02 &mdash; The Problem</div>
+        <div class="deck-slide__title">Dehydration Is the #1 Silent Performance Killer</div>
+        <div class="deck-slide__subtitle">75% of Americans are chronically dehydrated. Existing solutions are loaded with sugar, artificial ingredients, or overpriced for what you get.</div>
+        <div class="deck-stats-row">
+          <div class="deck-stat"><div class="deck-stat__val">75%</div><div class="deck-stat__lbl">Chronically Dehydrated</div></div>
+          <div class="deck-stat"><div class="deck-stat__val">$45B</div><div class="deck-stat__lbl">Lost Productivity/yr</div></div>
+          <div class="deck-stat"><div class="deck-stat__val">2-3x</div><div class="deck-stat__lbl">Sugar in Leading Brands</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 3: Solution -->
+    <div class="deck-slide" data-slide="2">
+      <div class="deck-slide__content">
+        <div class="deck-slide__num">Slide 03 &mdash; The Solution</div>
+        <div class="deck-slide__title">Atlas Hydration</div>
+        <div class="deck-slide__subtitle">Premium electrolyte drink mixes with zero sugar, clean ingredients, and science-backed formulations for real hydration.</div>
+        <ul class="deck-bullets">
+          <li>Zero sugar, zero artificial sweeteners</li>
+          <li>1,000mg electrolytes per serving</li>
+          <li>Added Vitamins B &amp; C for immunity</li>
+          <li>Clean, transparent ingredient list</li>
+          <li>Convenient single-serve stick packs</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Slide 4: Market -->
+    <div class="deck-slide" data-slide="3">
+      <div class="deck-slide__content">
+        <div class="deck-slide__num">Slide 04 &mdash; Market Opportunity</div>
+        <div class="deck-slide__title">A Massive &amp; Growing Market</div>
+        <div class="deck-slide__subtitle">The global hydration and sports drink market is expanding rapidly, driven by health-conscious consumers shifting away from sugary beverages.</div>
+        <div class="deck-stats-row">
+          <div class="deck-stat"><div class="deck-stat__val">$32B</div><div class="deck-stat__lbl">Global Sports Drink Market</div></div>
+          <div class="deck-stat"><div class="deck-stat__val">$8.4B</div><div class="deck-stat__lbl">US Electrolyte Market</div></div>
+          <div class="deck-stat"><div class="deck-stat__val">12.4%</div><div class="deck-stat__lbl">CAGR Through 2030</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 5: Product Line -->
+    <div class="deck-slide" data-slide="4">
+      <div class="deck-slide__content">
+        <div class="deck-slide__num">Slide 05 &mdash; Product Line</div>
+        <div class="deck-slide__title">Our Products</div>
+        <div class="deck-slide__subtitle">Launching with bold flavors backed by real science.</div>
+        <div class="deck-grid">
+          <div class="deck-grid-card">
+            <div class="deck-grid-card__icon">&#127827;</div>
+            <div class="deck-grid-card__title">Strawberry Lemonade</div>
+            <div class="deck-grid-card__desc">Our flagship flavor. Refreshing, clean taste with full electrolyte profile. Now shipping.</div>
+          </div>
+          <div class="deck-grid-card">
+            <div class="deck-grid-card__icon">&#127818;</div>
+            <div class="deck-grid-card__title">Lemon Lime</div>
+            <div class="deck-grid-card__desc">Classic citrus hydration. Zero sugar with a crisp, natural flavor. Now shipping.</div>
+          </div>
+          <div class="deck-grid-card">
+            <div class="deck-grid-card__icon">&#127815;</div>
+            <div class="deck-grid-card__title">Grapefruit (Coming Soon)</div>
+            <div class="deck-grid-card__desc">Tangy and bold. Next in the lineup for Q2 2026 launch.</div>
+          </div>
+          <div class="deck-grid-card">
+            <div class="deck-grid-card__icon">&#127819;</div>
+            <div class="deck-grid-card__title">More Flavors</div>
+            <div class="deck-grid-card__desc">Tropical Mango, Mixed Berry, and Watermelon planned for 2026-2027 expansion.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 6: Business Model -->
+    <div class="deck-slide" data-slide="5">
+      <div class="deck-slide__content">
+        <div class="deck-slide__num">Slide 06 &mdash; Business Model</div>
+        <div class="deck-slide__title">How We Make Money</div>
+        <div class="deck-slide__subtitle">Multi-channel DTC-first approach with strong unit economics.</div>
+        <div class="deck-grid">
+          <div class="deck-grid-card">
+            <div class="deck-grid-card__title">DTC Website</div>
+            <div class="deck-grid-card__desc">Shopify-powered. Highest margins (65-70%). Direct customer relationship &amp; data.</div>
+          </div>
+          <div class="deck-grid-card">
+            <div class="deck-grid-card__title">Amazon FBA</div>
+            <div class="deck-grid-card__desc">Massive reach and discovery. 45-50% margins. Leveraging Amazon advertising.</div>
+          </div>
+          <div class="deck-grid-card">
+            <div class="deck-grid-card__title">Retail (2027)</div>
+            <div class="deck-grid-card__desc">Target GNC, Vitamin Shoppe, grocery chains. 35-40% margins at scale.</div>
+          </div>
+          <div class="deck-grid-card">
+            <div class="deck-grid-card__title">Subscriptions</div>
+            <div class="deck-grid-card__desc">Subscribe &amp; save model for recurring revenue. 20% discount drives LTV.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 7: Traction -->
+    <div class="deck-slide" data-slide="6">
+      <div class="deck-slide__content">
+        <div class="deck-slide__num">Slide 07 &mdash; Traction</div>
+        <div class="deck-slide__title">Early Momentum</div>
+        <div class="deck-slide__subtitle">Building a community-first brand from day one.</div>
+        <div class="deck-stats-row">
+          <div class="deck-stat"><div class="deck-stat__val">2</div><div class="deck-stat__lbl">SKUs Launched</div></div>
+          <div class="deck-stat"><div class="deck-stat__val">Live</div><div class="deck-stat__lbl">Amazon + DTC</div></div>
+          <div class="deck-stat"><div class="deck-stat__val">Growing</div><div class="deck-stat__lbl">Social Community</div></div>
+        </div>
+        <ul class="deck-bullets" style="margin-top:32px;">
+          <li>Product live on Amazon and atlashydration.com</li>
+          <li>Influencer partnership pipeline activated</li>
+          <li>TikTok Shop integration in progress</li>
+          <li>First batch of UGC content produced</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Slide 8: Go-to-Market -->
+    <div class="deck-slide" data-slide="7">
+      <div class="deck-slide__content">
+        <div class="deck-slide__num">Slide 08 &mdash; Go-to-Market</div>
+        <div class="deck-slide__title">Growth Engine</div>
+        <div class="deck-slide__subtitle">A UGC-first content engine combined with strategic influencer partnerships and paid amplification.</div>
+        <div class="deck-grid">
+          <div class="deck-grid-card">
+            <div class="deck-grid-card__title">UGC Content Engine</div>
+            <div class="deck-grid-card__desc">Scalable creator-driven content production for TikTok, Instagram Reels, and YouTube Shorts.</div>
+          </div>
+          <div class="deck-grid-card">
+            <div class="deck-grid-card__title">TikTok Shop</div>
+            <div class="deck-grid-card__desc">Native commerce integration. Viral potential with zero-friction checkout.</div>
+          </div>
+          <div class="deck-grid-card">
+            <div class="deck-grid-card__title">Influencer Partnerships</div>
+            <div class="deck-grid-card__desc">Micro and macro influencers in fitness, wellness, and lifestyle verticals.</div>
+          </div>
+          <div class="deck-grid-card">
+            <div class="deck-grid-card__title">Paid Amplification</div>
+            <div class="deck-grid-card__desc">Meta, TikTok, Google ads to scale winning creatives with proven ROAS.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 9: Competitive Landscape -->
+    <div class="deck-slide" data-slide="8">
+      <div class="deck-slide__content">
+        <div class="deck-slide__num">Slide 09 &mdash; Competitive Landscape</div>
+        <div class="deck-slide__title">Why Atlas Wins</div>
+        <div class="deck-slide__subtitle">We compete on clean ingredients, zero sugar, and honest branding.</div>
+        <table class="deck-compare-table">
+          <thead>
+            <tr><th>Feature</th><th>Liquid IV</th><th>LMNT</th><th>Drip Drop</th><th class="deck-highlight">Atlas</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Sugar</td><td>11g</td><td>0g</td><td>6g</td><td class="deck-highlight">0g</td></tr>
+            <tr><td>Price/Serving</td><td>$1.50</td><td>$1.60</td><td>$1.25</td><td class="deck-highlight">$1.33</td></tr>
+            <tr><td>Vitamins B &amp; C</td><td>Yes</td><td>No</td><td>Yes</td><td class="deck-highlight">Yes</td></tr>
+            <tr><td>Clean Label</td><td>No</td><td>Yes</td><td>No</td><td class="deck-highlight">Yes</td></tr>
+            <tr><td>DTC + Amazon</td><td>Yes</td><td>Yes</td><td>Yes</td><td class="deck-highlight">Yes</td></tr>
+            <tr><td>TikTok Shop</td><td>No</td><td>No</td><td>No</td><td class="deck-highlight">Yes</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Slide 10: Team -->
+    <div class="deck-slide" data-slide="9">
+      <div class="deck-slide__content">
+        <div class="deck-slide__num">Slide 10 &mdash; The Team</div>
+        <div class="deck-slide__title">Built by Operators</div>
+        <div class="deck-team-card">
+          <div class="deck-team-card__name">Garrett Ray</div>
+          <div class="deck-team-card__role">Founder &amp; CEO</div>
+          <div class="deck-team-card__bio">Commercial airline pilot turned entrepreneur. Garrett experienced the hydration problem firsthand at 35,000 feet and built Atlas to solve it. Combines disciplined operational thinking with a passion for health and wellness. Hands-on across product development, branding, and go-to-market strategy.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 11: Financials -->
+    <div class="deck-slide" data-slide="10">
+      <div class="deck-slide__content">
+        <div class="deck-slide__num">Slide 11 &mdash; Financials</div>
+        <div class="deck-slide__title">Revenue Projections</div>
+        <div class="deck-slide__subtitle">Clear milestones with capital-efficient growth.</div>
+        <div class="deck-stats-row">
+          <div class="deck-stat"><div class="deck-stat__val">$1M</div><div class="deck-stat__lbl">Year 1 Target</div></div>
+          <div class="deck-stat"><div class="deck-stat__val">$10M</div><div class="deck-stat__lbl">Year 3 Target</div></div>
+          <div class="deck-stat"><div class="deck-stat__val">$100M</div><div class="deck-stat__lbl">Year 5+ Vision</div></div>
+        </div>
+        <ul class="deck-bullets" style="margin-top:32px;">
+          <li>65-70% gross margins on DTC channel</li>
+          <li>Path to profitability by end of Year 2</li>
+          <li>Subscription model drives 40%+ repeat rate</li>
+          <li>Retail expansion unlocks exponential growth in Year 3+</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Slide 12: The Ask -->
+    <div class="deck-slide" data-slide="11">
+      <div class="deck-slide__content">
+        <div class="deck-slide__num">Slide 12 &mdash; The Ask</div>
+        <div class="deck-slide__title">$2.5M Seed Round</div>
+        <div class="deck-slide__subtitle">Fueling the next phase of growth. Pre-money valuation: $12.5M.</div>
+        <div class="deck-funds-row">
+          <div class="deck-fund-item"><div class="deck-fund-item__pct">40%</div><div class="deck-fund-item__lbl">Marketing &amp; Customer Acquisition</div></div>
+          <div class="deck-fund-item"><div class="deck-fund-item__pct">25%</div><div class="deck-fund-item__lbl">Inventory &amp; Supply Chain</div></div>
+          <div class="deck-fund-item"><div class="deck-fund-item__pct">20%</div><div class="deck-fund-item__lbl">Team &amp; Operations</div></div>
+          <div class="deck-fund-item"><div class="deck-fund-item__pct">15%</div><div class="deck-fund-item__lbl">Product Development</div></div>
+        </div>
+        <div class="deck-cta-contact">
+          <p style="margin-top:32px;font-size:1.1rem;color:var(--text);font-weight:600;">Let's build the future of hydration together.</p>
+          <p style="margin-top:12px;">garrett@atlashydration.com</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="deck-nav" id="deckNav"></div>
+
+  <script>
+  (function() {
+    var container = document.getElementById('deckContainer');
+    var nav = document.getElementById('deckNav');
+    var slides = container.querySelectorAll('.deck-slide');
+
+    // Build nav dots
+    for (var i = 0; i < slides.length; i++) {
+      var dot = document.createElement('button');
+      dot.className = 'deck-nav__dot' + (i === 0 ? ' active' : '');
+      dot.setAttribute('data-slide', i);
+      nav.appendChild(dot);
+    }
+
+    nav.addEventListener('click', function(e) {
+      var dot = e.target.closest('.deck-nav__dot');
+      if (!dot) return;
+      var idx = parseInt(dot.getAttribute('data-slide'));
+      slides[idx].scrollIntoView({ behavior: 'smooth' });
+    });
+
+    container.addEventListener('scroll', function() {
+      var scrollTop = container.scrollTop;
+      var slideH = container.clientHeight;
+      var current = Math.round(scrollTop / slideH);
+      nav.querySelectorAll('.deck-nav__dot').forEach(function(d, i) {
+        d.classList.toggle('active', i === current);
+      });
+    });
+
+    // Canvas background
+    var canvas = document.getElementById('deckCanvas');
+    var ctx = canvas.getContext('2d');
+
+    function resize() {
+      canvas.width = container.clientWidth;
+      canvas.height = container.scrollHeight;
+      canvas.style.position = 'absolute';
+      canvas.style.top = '0';
+      canvas.style.left = '0';
+      canvas.style.width = '100%';
+      canvas.style.height = container.scrollHeight + 'px';
+      canvas.style.pointerEvents = 'none';
+      canvas.style.zIndex = '0';
+    }
+    resize();
+
+    var particles = [];
+    for (var i = 0; i < 60; i++) {
+      particles.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        r: Math.random() * 3 + 1,
+        dx: (Math.random() - 0.5) * 0.5,
+        dy: (Math.random() - 0.5) * 0.5,
+        alpha: Math.random() * 0.4 + 0.1
+      });
+    }
+
+    var time = 0;
+    function animate() {
+      time += 0.005;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      for (var b = 0; b < 4; b++) {
+        var bx = canvas.width * (0.3 + 0.4 * Math.sin(time + b * 1.5));
+        var by = canvas.height * (0.2 + 0.1 * b + 0.05 * Math.cos(time * 0.7 + b));
+        var grad = ctx.createRadialGradient(bx, by, 0, bx, by, 300);
+        var hue = 220 + b * 30;
+        grad.addColorStop(0, 'hsla(' + hue + ',70%,50%,0.08)');
+        grad.addColorStop(1, 'hsla(' + hue + ',70%,50%,0)');
+        ctx.fillStyle = grad;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+      }
+      particles.forEach(function(p) {
+        p.x += p.dx; p.y += p.dy;
+        if (p.x < 0) p.x = canvas.width;
+        if (p.x > canvas.width) p.x = 0;
+        if (p.y < 0) p.y = canvas.height;
+        if (p.y > canvas.height) p.y = 0;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(59,130,246,' + p.alpha + ')';
+        ctx.fill();
+      });
+      requestAnimationFrame(animate);
+    }
+    animate();
+    window.addEventListener('resize', resize);
+  })();
+  </script>
+</body>
+</html>

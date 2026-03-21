@@ -1,0 +1,589 @@
+  <!-- Announcement Bar -->
+  <div class="announcement-bar" role="banner">
+    <div class="announcement-bar__inner">
+      <span>Free Shipping Over $50</span>
+      <span class="announcement-bar__divider">|</span>
+      <span>Subscribe & Save 20%</span>
+      <span class="announcement-bar__divider">|</span>
+      <span>Science-Backed Hydration</span>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <header class="header header--solid" role="banner">
+    <nav class="header__nav" aria-label="Main navigation">
+      <a href="/atlashydration/" class="header__logo" aria-label="Atlas Hydration Home">
+        <img src="/atlashydration/logo.svg" alt="Atlas Hydration" class="header__logo-img" height="28">
+      </a>
+      <div class="header__right">
+        <button class="header__icon js-cart-toggle" aria-label="Shopping cart">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6"/></svg>
+          <span class="cart-count" style="display:none">0</span>
+        </button>
+      </div>
+      <button class="header__hamburger" aria-label="Open menu" id="menuToggle">
+        <span></span><span></span><span></span>
+      </button>
+    </nav>
+    <div class="mobile-menu" id="mobileMenu" aria-hidden="true">
+      <a href="#" class="js-cart-toggle">Cart</a>
+    </div>
+  </header>
+
+  <main>
+    <!-- Product Hero -->
+    <section class="product-hero" aria-label="Grapefruit product details">
+      <div class="container">
+        <div class="product-hero__grid">
+          <!-- Product Gallery -->
+          <div class="product-gallery">
+            <div class="product-gallery__main">
+              <div class="product-gallery__slide active">
+                <img src="https://cdn.shopify.com/s/files/1/0595/8133/3578/files/1_1a252c57-dc62-4c7b-a6b1-0f9677ce6b6f.jpg?v=1769181320" alt="Atlas Grapefruit pouch and stick pack" loading="eager">
+              </div>
+              <div class="product-gallery__slide">
+                <img src="https://cdn.shopify.com/s/files/1/0595/8133/3578/files/3_895d9a50-ff83-4081-a78b-7c5034614a38.jpg?v=1769181320" alt="Atlas Grapefruit lifestyle" loading="lazy">
+              </div>
+              <div class="product-gallery__slide">
+                <img src="https://cdn.shopify.com/s/files/1/0595/8133/3578/files/6_9aa2f5c5-dc91-499b-a36e-2ddb0ba45f49.jpg?v=1769181321" alt="Atlas Grapefruit mixing" loading="lazy">
+              </div>
+              <div class="product-gallery__slide">
+                <img src="https://cdn.shopify.com/s/files/1/0595/8133/3578/files/4_04a1c3d2-929b-4150-bf92-64f0f83445b1.jpg?v=1769181321" alt="Atlas Grapefruit active lifestyle" loading="lazy">
+              </div>
+            </div>
+            <button class="product-gallery__nav product-gallery__nav--prev" aria-label="Previous image">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+            </button>
+            <button class="product-gallery__nav product-gallery__nav--next" aria-label="Next image">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+            </button>
+            <div class="product-gallery__dots">
+              <span class="product-gallery__dot active" data-index="0"></span>
+              <span class="product-gallery__dot" data-index="1"></span>
+              <span class="product-gallery__dot" data-index="2"></span>
+              <span class="product-gallery__dot" data-index="3"></span>
+            </div>
+          </div>
+
+          <!-- Product Info -->
+          <div class="product-hero__info">
+            <p class="product-hero__eyebrow">Hydrate. Recover. Thrive.</p>
+            <h1 class="product-hero__title">Atlas Zero-Sugar Electrolytes</h1>
+
+            <div class="product-hero__stars">
+              <span class="junip-product-summary" data-product-id="7862662103114"></span>
+            </div>
+
+            <span class="product-hero__preorder-badge">Pre-Order</span>
+            <p class="product-hero__packs">16 Stick Packs</p>
+            <p class="product-hero__desc">Clean, zero-sugar hydration with electrolytes, vitamins, and amino acids.</p>
+
+            <!-- Flavor Selector -->
+            <div class="flavor-selector--circles">
+              <a href="/atlashydration/products/strawberry-lemonade" class="flavor-circle flavor-circle--strawberry" title="Strawberry Lemonade"><span class="flavor-circle__dot"></span>Strawberry Lemonade</a>
+              <a href="/atlashydration/products/grapefruit" class="flavor-circle flavor-circle--grapefruit active" title="Grapefruit"><span class="flavor-circle__dot"></span>Grapefruit</a>
+            </div>
+
+            <!-- Subscribe & Save -->
+            <div class="purchase-options">
+              <label class="purchase-option purchase-option--subscribe active" data-option="subscribe">
+                <div class="purchase-option__header">
+                  <div class="purchase-option__radio">
+                    <input type="radio" name="purchase-type" value="subscribe" checked>
+                    <span class="purchase-option__radio-custom"></span>
+                  </div>
+                  <span class="purchase-option__label">Subscribe &amp; Save</span>
+                  <div class="purchase-option__pricing">
+                    <span class="purchase-option__price" id="subscribePrice">$23.99</span>
+                    <span class="purchase-option__per">$1.69 / Stick</span>
+                  </div>
+                </div>
+                <div class="purchase-option__details">
+                  <div class="purchase-option__perks">
+                    <div class="purchase-option__perk">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
+                      <span class="purchase-option__save-badge">Save 20%</span>
+                    </div>
+                    <div class="purchase-option__perk">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
+                      <strong>Free Shipping</strong>
+                    </div>
+                    <div class="purchase-option__perk">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
+                      <strong>Cancel Anytime</strong>
+                    </div>
+                  </div>
+                  <div class="frequency-selector">
+                    <button class="frequency-selector__btn active" data-frequency="2">2 Weeks</button>
+                    <button class="frequency-selector__btn" data-frequency="4">4 Weeks</button>
+                    <button class="frequency-selector__btn" data-frequency="6">6 Weeks</button>
+                  </div>
+                </div>
+              </label>
+
+              <label class="purchase-option purchase-option--onetime" data-option="onetime">
+                <div class="purchase-option__header">
+                  <div class="purchase-option__radio">
+                    <input type="radio" name="purchase-type" value="onetime">
+                    <span class="purchase-option__radio-custom"></span>
+                  </div>
+                  <span class="purchase-option__label">One-time</span>
+                  <div class="purchase-option__pricing">
+                    <span class="purchase-option__price" id="onetimePrice">$29.99</span>
+                    <span class="purchase-option__per">$1.87 / Stick</span>
+                  </div>
+                </div>
+              </label>
+            </div>
+
+            <p class="product-hero__promo"><strong>Limited Time. Buy 3 Get 1 Free</strong></p>
+
+            <!-- Quantity Selector + Add to Cart -->
+            <div class="product-hero__buy">
+              <div class="qty-selector">
+                <button class="qty-selector__btn" id="qtyMinus" aria-label="Decrease quantity">−</button>
+                <input type="number" class="qty-selector__input" id="productQty" value="1" min="1" max="10" aria-label="Quantity">
+                <button class="qty-selector__btn" id="qtyPlus" aria-label="Increase quantity">+</button>
+              </div>
+              <button class="btn btn--primary btn--lg js-add-to-cart" data-product="grapefruit">Pre-Order Now</button>
+            </div>
+
+            <!-- Product Detail Accordions -->
+            <div class="product-accordions" style="margin-top: 16px;">
+
+              <div class="product-accordion__divider"></div>
+              <div class="product-accordion">
+                <button class="product-accordion__header" aria-expanded="false">
+                  <svg class="product-accordion__icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
+                  <span class="product-accordion__title">Description &amp; Ingredients</span>
+                  <svg class="product-accordion__chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+                </button>
+                <div class="product-accordion__body" style="display:none;">
+                  <div class="product-accordion__content">
+                    <p><strong>Atlas Hydration Grapefruit</strong> is a premium zero-sugar electrolyte drink mix engineered for superior hydration, recovery, and everyday performance. Each box contains 16 individually wrapped stick packs — perfect for the gym, office, or travel.</p>
+                    <p><strong>Key Electrolytes:</strong> Sodium 500mg, Potassium 400mg, Magnesium 60mg. <strong>Vitamins:</strong> Vitamin C 90mg, Niacin (B3) 20mg, Pantothenic Acid (B5) 10mg, Vitamin B6 2mg, Vitamin B12 8mcg. <strong>Amino Acids:</strong> L-Glutamine 1,000mg, L-Taurine 200mg.</p>
+                    <p><strong>Other Ingredients:</strong> Citric Acid, Natural Grapefruit Flavor, Bamboo Extract, Grapefruit Oil, Annatto Seed Extract (color), Stevia Leaf Extract, Allulose.</p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="product-accordion__divider"></div>
+              <div class="product-accordion">
+                <button class="product-accordion__header" aria-expanded="false">
+                  <svg class="product-accordion__icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2.69l5.66 5.66a8 8 0 11-11.31 0z"/></svg>
+                  <span class="product-accordion__title">How to Use</span>
+                  <svg class="product-accordion__chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+                </button>
+                <div class="product-accordion__body" style="display:none;">
+                  <div class="product-accordion__content">
+                    <p>Mix one stick pack with 12–16 oz of cold water and shake or stir until dissolved. Adjust water to taste — less water for a stronger flavor, more for a lighter drink.</p>
+                    <p><strong>When to drink:</strong> First thing in the morning, during or after workouts, while traveling, or anytime you need a hydration boost. Use daily for best results.</p>
+                    <p><strong>Storage:</strong> Store in a cool, dry place. No refrigeration needed until mixed.</p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="product-accordion__divider"></div>
+              <div class="product-accordion">
+                <button class="product-accordion__header" aria-expanded="false">
+                  <svg class="product-accordion__icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="3" width="15" height="13" rx="2"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+                  <span class="product-accordion__title">Shipping &amp; Returns</span>
+                  <svg class="product-accordion__chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+                </button>
+                <div class="product-accordion__body" style="display:none;">
+                  <div class="product-accordion__content">
+                    <p><strong>Free shipping</strong> on all U.S. orders over $50. Standard shipping (3–5 business days) is $4.99. Expedited options available at checkout.</p>
+                    <p><strong>Satisfaction guaranteed:</strong> If you're not completely happy with your order, contact us within 30 days for a full refund or exchange — no questions asked.</p>
+                    <p>We currently ship within the United States. International shipping coming soon.</p>
+                  </div>
+                </div>
+              </div>
+              <div class="product-accordion__divider"></div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Benefits Bar -->
+    <section class="benefits-bar" aria-label="Product benefits">
+      <div class="container">
+        <div class="benefits-bar__grid">
+          <div class="benefits-bar__item"><div class="benefits-bar__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2.69l5.66 5.66a8 8 0 11-11.31 0z"/></svg></div><span class="benefits-bar__label">Hydration</span></div>
+          <div class="benefits-bar__item"><div class="benefits-bar__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div><span class="benefits-bar__label">Recovery</span></div>
+          <div class="benefits-bar__item"><div class="benefits-bar__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></div><span class="benefits-bar__label">Performance</span></div>
+          <div class="benefits-bar__item"><div class="benefits-bar__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div><span class="benefits-bar__label">Immunity</span></div>
+          <div class="benefits-bar__item"><div class="benefits-bar__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 6L6 18M6 6l12 12"/><circle cx="12" cy="12" r="10"/></svg></div><span class="benefits-bar__label">No Sugar</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- No Artificial Flavors -->
+    <section class="natural-flavors" aria-label="No artificial flavors">
+      <div class="container">
+        <div class="natural-flavors__grid">
+          <div class="natural-flavors__visual">
+            <div class="natural-flavors__circle">
+              <div class="natural-flavors__circle-inner">
+                <svg class="natural-flavors__circle-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg>
+                <div class="natural-flavors__circle-text">100% Natural</div>
+              </div>
+              <div class="natural-flavors__orbit">
+                <span class="natural-flavors__orbit-item">Real Grapefruit Oil</span>
+                <span class="natural-flavors__orbit-item">Annatto Extract</span>
+                <span class="natural-flavors__orbit-item">Bamboo Extract</span>
+              </div>
+              <div class="natural-flavors__orbit">
+                <span class="natural-flavors__orbit-item">Stevia Leaf</span>
+                <span class="natural-flavors__orbit-item">Allulose</span>
+                <span class="natural-flavors__orbit-item">Citric Acid</span>
+              </div>
+            </div>
+          </div>
+          <div class="natural-flavors__content">
+            <p class="section-eyebrow">Clean Label Promise</p>
+            <h2>No Artificial <span>Anything</span></h2>
+            <p>Every flavor, color, and sweetener in Atlas Grapefruit comes from nature. Real grapefruit oil for authentic citrus taste. Annatto seed extract for color. Stevia and allulose for guilt-free sweetness. Zero synthetic dyes, zero artificial flavors, zero compromise.</p>
+            <p>While other brands hide behind "natural flavors" in their ingredient list, we list every single source so you know exactly what you're drinking.</p>
+            <div class="natural-flavors__features">
+              <div class="natural-flavors__feature">
+                <div class="natural-flavors__feature-icon">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="M8 12l3 3 5-6"/></svg>
+                </div>
+                <div>
+                  <h4>Real Grapefruit Oil</h4>
+                  <p>Cold-pressed citrus oil for bright, authentic flavor — not a lab creation</p>
+                </div>
+              </div>
+              <div class="natural-flavors__feature">
+                <div class="natural-flavors__feature-icon">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="M8 12l3 3 5-6"/></svg>
+                </div>
+                <div>
+                  <h4>No Synthetic Dyes</h4>
+                  <p>Color from annatto seed extract, a plant-based pigment used for centuries</p>
+                </div>
+              </div>
+              <div class="natural-flavors__feature">
+                <div class="natural-flavors__feature-icon">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="M8 12l3 3 5-6"/></svg>
+                </div>
+                <div>
+                  <h4>Smart Sweetening</h4>
+                  <p>Stevia leaf + allulose for zero-sugar sweetness without the aftertaste</p>
+                </div>
+              </div>
+              <div class="natural-flavors__feature">
+                <div class="natural-flavors__feature-icon">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="M8 12l3 3 5-6"/></svg>
+                </div>
+                <div>
+                  <h4>Full Transparency</h4>
+                  <p>Every ingredient sourced and listed — no proprietary blends or hidden fillers</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Supplement Facts -->
+    <section class="supplement-facts" id="supplement-facts" aria-label="Supplement Facts">
+      <div class="container">
+        <div class="section-header">
+          <p class="section-eyebrow">Transparency</p>
+          <h2 class="section-title">Supplement Facts</h2>
+          <p class="section-subtitle">Every ingredient listed. No proprietary blends. No hidden fillers.</p>
+        </div>
+
+        <div class="supplement-facts__grid">
+          <div class="supplement-facts__table" role="table" aria-label="Supplement Facts">
+            <h3>Supplement Facts</h3>
+            <p class="sf-meta">16 servings per container</p>
+            <p class="sf-meta">Serving Size <strong>1 Stick (8g)</strong></p>
+
+            <div class="sf-divider"></div>
+            <p class="sf-meta" style="font-size:0.75rem;">Amount per serving</p>
+
+            <div class="sf-row sf-row--calories">
+              <span>Calories</span>
+              <span>5</span>
+            </div>
+
+            <div class="sf-row sf-row--header">
+              <span>% Daily Value*</span>
+            </div>
+
+            <div class="sf-row">
+              <span><strong>Total Carbohydrate</strong> 1g</span>
+              <span>&lt;1%*</span>
+            </div>
+            <div class="sf-row">
+              <span><strong>Total Sugar</strong> 0g</span>
+              <span>0%</span>
+            </div>
+            <div class="sf-row">
+              <span><strong>Protein</strong> 0g</span>
+              <span>0%</span>
+            </div>
+
+            <div class="sf-section-divider"></div>
+
+            <div class="sf-row sf-row--hoverable" data-ingredient="sodium">
+              <span><strong>Sodium</strong> (as Sodium Citrate and Pink Himalayan Salt) 600mg</span>
+              <span>26%</span>
+            </div>
+            <div class="sf-row sf-row--hoverable" data-ingredient="magnesium">
+              <span><strong>Magnesium</strong> (as Magnesium Malate) 200mg</span>
+              <span>48%</span>
+            </div>
+            <div class="sf-row sf-row--hoverable" data-ingredient="potassium">
+              <span><strong>Potassium</strong> (as Potassium Citrate) 500mg</span>
+              <span>11%</span>
+            </div>
+
+            <div class="sf-section-divider"></div>
+
+            <div class="sf-row sf-row--hoverable" data-ingredient="vitaminb3">
+              <span><strong>Vitamin B3</strong> (as Niacin) 24mg</span>
+              <span>150%</span>
+            </div>
+            <div class="sf-row sf-row--hoverable" data-ingredient="vitaminb5">
+              <span><strong>Vitamin B5</strong> (as Pantothenic acid) 5mg</span>
+              <span>100%</span>
+            </div>
+            <div class="sf-row sf-row--hoverable" data-ingredient="vitaminb6">
+              <span><strong>Vitamin B6</strong> (as Pyridoxal-5-phosphate) 2mg</span>
+              <span>118%</span>
+            </div>
+            <div class="sf-row sf-row--hoverable" data-ingredient="vitaminb12">
+              <span><strong>Vitamin B12</strong> (as Methylcobalamin) 8mcg</span>
+              <span>333%</span>
+            </div>
+            <div class="sf-row sf-row--hoverable" data-ingredient="vitaminc">
+              <span><strong>Vitamin C</strong> (Ascorbic Acid) 90mg</span>
+              <span>100%</span>
+            </div>
+
+            <div class="sf-section-divider"></div>
+
+            <div class="sf-row sf-row--hoverable" data-ingredient="glutamine">
+              <span><strong>L-Glutamine</strong> 1000mg</span>
+              <span>+</span>
+            </div>
+            <div class="sf-row sf-row--hoverable" data-ingredient="alanine">
+              <span><strong>L-Alanine</strong> 200mg</span>
+              <span>+</span>
+            </div>
+
+            <div class="sf-divider"></div>
+
+            <p class="sf-other"><strong>Other Ingredients:</strong> Citric Acid, Bamboo Extract, Grapefruit Oil, Annatto Seed Extract (color)</p>
+            <p class="sf-other">*Percent Daily Values Are Based on a 2000 Calorie Diet</p>
+          </div>
+
+          <!-- Ingredient Detail Panel -->
+          <div class="sf-detail-panel" id="sfDetailPanel">
+            <div class="sf-detail-panel__default">
+              <div class="sf-detail-panel__icon">
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2C10 6 6 10 6 14a6 6 0 1012 0c0-4-4-8-6-12z"/></svg>
+              </div>
+              <p class="sf-detail-panel__prompt"><span class="desktop-only">Hover over</span><span class="mobile-only">Tap</span> any ingredient to learn how it works in your body</p>
+            </div>
+            <div class="sf-detail-panel__content" style="display:none;">
+              <div class="sf-detail-panel__header">
+                <span class="sf-detail-panel__name"></span>
+                <span class="sf-detail-panel__dose"></span>
+              </div>
+              <div class="sf-detail-panel__body">
+                <p class="sf-detail-panel__desc"></p>
+                <div class="sf-detail-panel__effects">
+                  <h4>How it affects your body</h4>
+                  <ul class="sf-detail-panel__list"></ul>
+                </div>
+                <div class="sf-detail-panel__goodfor" style="display:none;">
+                  <h4>Good For</h4>
+                  <div class="sf-detail-panel__goodfor-tags"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Junip Product Reviews -->
+    <section class="product-reviews" aria-label="Customer Reviews">
+      <div class="container">
+        <span class="junip-product-review" data-product-id="7862662103114"></span>
+      </div>
+    </section>
+
+    <!-- How to Use -->
+    <section class="how-it-works" aria-label="How to use">
+      <div class="container">
+        <div class="section-header">
+          <p class="section-eyebrow">Directions</p>
+          <h2 class="section-title">How to Use</h2>
+        </div>
+        <div class="how-it-works__grid">
+          <div class="how-it-works__step">
+            <div class="how-it-works__number">01</div>
+            <h3>Tear</h3>
+            <p>Open one individually-wrapped stick pack</p>
+          </div>
+          <div class="how-it-works__step">
+            <div class="how-it-works__number">02</div>
+            <h3>Pour</h3>
+            <p>Mix with 12–16 fl oz of cold water</p>
+          </div>
+          <div class="how-it-works__step">
+            <div class="how-it-works__number">03</div>
+            <h3>Shake</h3>
+            <p>Shake well until fully dissolved</p>
+          </div>
+          <div class="how-it-works__step">
+            <div class="how-it-works__number">04</div>
+            <h3>Thrive</h3>
+            <p>Enjoy superior hydration anytime, anywhere</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="product-faq" aria-label="Frequently asked questions about Atlas Hydration Grapefruit">
+      <div class="container">
+        <div class="section-header">
+          <h2 class="section-title">Frequently Asked Questions</h2>
+          <p class="section-subtitle">Everything you need to know about Atlas Hydration Grapefruit electrolyte mix.</p>
+        </div>
+        <div class="product-faq__list">
+          <div class="product-faq__item">
+            <button class="product-faq__question"><h3 style="font:inherit;margin:0;">How many electrolytes are in Atlas Grapefruit per serving?</h3><span>+</span></button>
+            <div class="product-faq__answer"><p>Each stick pack contains <strong>1,300mg of total electrolytes</strong>: 600mg Sodium (from Sodium Citrate and Pink Himalayan Salt), 500mg Potassium (from Potassium Citrate), and 200mg Magnesium (from Magnesium Malate). This is more total electrolytes per serving than LMNT, Liquid I.V., or WaterBoy.</p></div>
+          </div>
+          <div class="product-faq__item">
+            <button class="product-faq__question"><h3 style="font:inherit;margin:0;">Is Atlas Grapefruit sugar-free?</h3><span>+</span></button>
+            <div class="product-faq__answer"><p>Yes — <strong>zero grams of sugar</strong> and only <strong>5 calories per serving</strong>. Naturally sweetened with stevia leaf extract and allulose, a rare sugar with near-zero glycemic impact. No artificial sweeteners are used.</p></div>
+          </div>
+          <div class="product-faq__item">
+            <button class="product-faq__question"><h3 style="font:inherit;margin:0;">What makes Atlas Grapefruit flavor natural?</h3><span>+</span></button>
+            <div class="product-faq__answer"><p>Atlas Grapefruit uses <strong>real cold-pressed grapefruit oil</strong> for authentic citrus flavor — not artificial grapefruit flavoring. Colors come from annatto seed extract (a plant-based pigment used for centuries), and sweetness from stevia leaf and allulose. Zero synthetic dyes, zero artificial flavors, zero compromise.</p></div>
+          </div>
+          <div class="product-faq__item">
+            <button class="product-faq__question"><h3 style="font:inherit;margin:0;">How does Atlas Grapefruit compare to other electrolyte drinks?</h3><span>+</span></button>
+            <div class="product-faq__answer"><p>Atlas delivers <strong>1,300mg electrolytes</strong> per serving with zero sugar and 5 calories, plus B vitamins, Vitamin C, and 1,200mg recovery amino acids. Most competitors either have less electrolytes (Liquid I.V. ~500mg), include sugar (Liquid I.V. 11g), or lack vitamins and amino acids (LMNT). Atlas provides the most complete hydration formula on the market.</p></div>
+          </div>
+          <div class="product-faq__item">
+            <button class="product-faq__question"><h3 style="font:inherit;margin:0;">What vitamins and amino acids are in Atlas Grapefruit?</h3><span>+</span></button>
+            <div class="product-faq__answer"><p>Each serving contains <strong>Vitamin C</strong> (90mg, 100% DV), <strong>Vitamin B3</strong> (24mg, 150% DV), <strong>Vitamin B5</strong> (5mg, 100% DV), <strong>Vitamin B6</strong> (2mg, 118% DV), <strong>Vitamin B12</strong> (8mcg, 333% DV), plus <strong>1,000mg L-Glutamine</strong> and <strong>200mg L-Alanine</strong> for recovery support.</p></div>
+          </div>
+          <div class="product-faq__item">
+            <button class="product-faq__question"><h3 style="font:inherit;margin:0;">How do I use Atlas Hydration Grapefruit?</h3><span>+</span></button>
+            <div class="product-faq__answer"><p>Mix one stick pack with <strong>12–16 oz of cold water</strong> and shake or stir until dissolved. Drink first thing in the morning, during or after workouts, while traveling, or anytime you need a hydration boost. Each box contains 16 individually wrapped stick packs.</p></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="cta-section" aria-label="Buy now">
+      <div class="cta-section__video-wrap">
+        <iframe class="cta-section__video-yt" src="https://www.youtube.com/embed/c3iXL6Wxqtw?autoplay=1&mute=1&loop=1&playlist=c3iXL6Wxqtw&controls=0&showinfo=0&rel=0&modestbranding=1&playsinline=1&start=15&enablejsapi=1&origin=https://rwb8771.github.io" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+      </div>
+      <div class="cta-section__overlay"></div>
+      <div class="container">
+        <div class="cta-section__inner">
+          <h2 class="cta-section__title">Ready to Try Grapefruit?</h2>
+          <p class="cta-section__text">16 stick packs of crisp, refreshing hydration. Zero sugar. Five calories. Full performance.</p>
+          <button class="btn btn--white btn--lg js-add-to-cart" data-product="grapefruit">Pre-Order — $29.99</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Sticky Buy Now Bar -->
+  <div class="sticky-buy sticky-buy--grapefruit" id="stickyBuy">
+    <svg class="sticky-buy__wave" viewBox="0 0 1200 24" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0,18 C150,6 300,24 450,14 C600,4 750,22 900,12 C1050,2 1200,18 1200,18 L1200,24 L0,24 Z"/>
+    </svg>
+    <svg class="sticky-buy__wave sticky-buy__wave--back" viewBox="0 0 1200 24" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0,16 C200,8 350,22 500,12 C650,2 800,20 1000,10 C1100,5 1200,16 1200,16 L1200,24 L0,24 Z"/>
+    </svg>
+    <div class="sticky-buy__bubbles">
+      <span class="sticky-buy__bubble"></span>
+      <span class="sticky-buy__bubble"></span>
+      <span class="sticky-buy__bubble"></span>
+      <span class="sticky-buy__bubble"></span>
+      <span class="sticky-buy__bubble"></span>
+      <span class="sticky-buy__bubble"></span>
+      <span class="sticky-buy__bubble"></span>
+    </div>
+    <div class="sticky-buy__inner">
+      <div class="sticky-buy__left">
+        <img class="sticky-buy__thumb" id="stickyBuyThumb" src="https://cdn.shopify.com/s/files/1/0595/8133/3578/files/1_1a252c57-dc62-4c7b-a6b1-0f9677ce6b6f.jpg?v=1769181320" alt="Grapefruit" width="44" height="44">
+        <div class="sticky-buy__info">
+          <span class="sticky-buy__name" id="stickyBuyName">Grapefruit</span>
+          <span class="sticky-buy__tag">Pre-Order</span>
+          <span class="sticky-buy__price" id="stickyBuyPrice">$29.99</span>
+        </div>
+        <div class="sticky-buy__flavors">
+          <button class="sticky-buy__flavor-dot sticky-buy__flavor-dot--strawberry" data-sticky-flavor="strawberry" aria-label="Strawberry Lemonade"></button>
+          <button class="sticky-buy__flavor-dot sticky-buy__flavor-dot--grapefruit active" data-sticky-flavor="grapefruit" aria-label="Grapefruit"></button>
+        </div>
+      </div>
+      <button class="sticky-buy__btn js-add-to-cart" id="stickyBuyBtn" data-product="grapefruit">Buy Now</button>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer" role="contentinfo">
+    <div class="container">
+      <div class="footer__grid">
+        <div class="footer__brand">
+          <img src="/atlashydration/logo.svg" alt="Atlas Hydration" class="footer__logo-img" height="24">
+          <p class="footer__tagline">Hydrate. Recover. Thrive.</p>
+          <div class="footer__social">
+            <a href="https://www.instagram.com/atlashydration" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+            </a>
+            <a href="https://www.tiktok.com/@atlashydration" target="_blank" rel="noopener noreferrer" aria-label="TikTok">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1v-3.5a6.37 6.37 0 00-.79-.05A6.34 6.34 0 003.15 15.2a6.34 6.34 0 0010.86 4.48V13a8.28 8.28 0 005.58 2.16V11.7a4.83 4.83 0 01-3.77-1.78V6.69h3.77z"/></svg>
+            </a>
+          </div>
+        </div>
+        <div class="footer__links">
+          <h4>Shop</h4>
+          <nav aria-label="Shop links">
+            <a href="/atlashydration/products/strawberry-lemonade">Strawberry Lemonade</a>
+            <a href="/atlashydration/products/grapefruit">Grapefruit</a>
+          </nav>
+        </div>
+        <div class="footer__links">
+          <h4>Company</h4>
+          <nav aria-label="Company links">
+            <a href="../index.html#science">Science</a>
+            <a href="../index.html#mission">Our Mission</a>
+          </nav>
+        </div>
+        <div class="footer__links">
+          <h4>Support</h4>
+          <nav aria-label="Support links">
+            <a href="mailto:support@atlas-hydration.com">Contact Us</a>
+          </nav>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <p>&copy; 2026 Atlas Hydration. All rights reserved.</p>
+        <p>Non-GMO &bull; Made in USA &bull; Zero Sugar</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Junip Reviews -->
+  <span class="junip-store-key" data-store-key="anLwjMqeGdCvG9w79wSpfM16" style="display:none"></span>
+
+  <!-- Shopify Buy SDK (CDN) -->
