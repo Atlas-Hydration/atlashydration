@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="robots" content="noindex, nofollow">
   <title>Atlas Dev — Image Manager</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -14,178 +13,165 @@
       --border: #2a2a2d; --text: #e8e8ed; --text-dim: #8e8e93;
       --accent: #3b82f6; --accent-dim: rgba(59,130,246,0.12);
       --green: #34d399; --green-dim: rgba(52,211,153,0.12);
-      --red: #f87171; --font: 'Inter', -apple-system, system-ui, sans-serif;
-      --radius: 10px;
+      --red: #f87171; --red-dim: rgba(248,113,113,0.12);
+      --font: 'Inter', -apple-system, system-ui, sans-serif;
     }
     body { font-family: var(--font); background: var(--bg); color: var(--text); min-height: 100vh; }
 
+    /* Top bar */
     .topbar {
       display: flex; align-items: center; justify-content: space-between;
-      padding: 16px 32px; border-bottom: 1px solid var(--border);
-      background: rgba(10,10,11,0.9); backdrop-filter: blur(12px);
+      padding: 14px 32px; border-bottom: 1px solid var(--border);
+      background: rgba(10,10,11,0.92); backdrop-filter: blur(12px);
       position: sticky; top: 0; z-index: 100;
     }
     .topbar__left { display: flex; align-items: center; gap: 12px; }
     .topbar__logo { font-weight: 800; font-size: 0.95rem; letter-spacing: -0.03em; }
     .topbar__badge {
-      font-size: 0.6rem; font-weight: 700; padding: 3px 8px; border-radius: 4px;
-      background: var(--accent-dim); color: var(--accent); text-transform: uppercase;
-      letter-spacing: 0.05em;
+      font-size: 0.58rem; font-weight: 700; padding: 3px 8px; border-radius: 4px;
+      background: var(--accent-dim); color: var(--accent); text-transform: uppercase; letter-spacing: 0.06em;
     }
-    .topbar__back {
-      font-size: 0.78rem; color: var(--text-dim); text-decoration: none;
-      transition: color 0.2s;
-    }
+    .topbar__back { font-size: 0.78rem; color: var(--text-dim); text-decoration: none; }
     .topbar__back:hover { color: var(--text); }
 
-    .container { max-width: 1200px; margin: 0 auto; padding: 32px; }
+    .container { max-width: 960px; margin: 0 auto; padding: 32px; }
 
-    .hero { margin-bottom: 40px; }
-    .hero__title { font-size: 1.8rem; font-weight: 800; letter-spacing: -0.03em; margin-bottom: 8px; }
-    .hero__desc { color: var(--text-dim); font-size: 0.88rem; line-height: 1.6; max-width: 600px; }
+    /* Hero */
+    .hero { margin-bottom: 32px; }
+    .hero__title { font-size: 1.6rem; font-weight: 800; letter-spacing: -0.03em; margin-bottom: 6px; }
+    .hero__desc { color: var(--text-dim); font-size: 0.82rem; line-height: 1.6; }
 
-    /* Drop Zone */
+    /* Drop zone */
     .dropzone {
-      border: 2px dashed var(--border); border-radius: var(--radius);
-      padding: 60px 40px; text-align: center; cursor: pointer;
-      transition: all 0.25s ease; margin-bottom: 40px;
-      background: var(--surface);
+      border: 2px dashed var(--border); border-radius: 12px;
+      padding: 48px 32px; text-align: center; cursor: pointer;
+      transition: all 0.2s; margin-bottom: 12px; background: var(--surface);
     }
     .dropzone:hover, .dropzone.dragover {
       border-color: var(--accent); background: var(--accent-dim);
     }
-    .dropzone.dragover .dropzone__icon { transform: scale(1.15); }
-    .dropzone__icon {
-      width: 56px; height: 56px; margin: 0 auto 16px;
-      color: var(--text-dim); transition: transform 0.2s;
-    }
-    .dropzone__title { font-size: 1.1rem; font-weight: 700; margin-bottom: 6px; }
-    .dropzone__hint { font-size: 0.8rem; color: var(--text-dim); }
-    .dropzone__hint strong { color: var(--accent); cursor: pointer; }
-    .dropzone input[type="file"] { display: none; }
+    .dropzone__icon { width: 40px; height: 40px; margin: 0 auto 12px; color: var(--text-dim); }
+    .dropzone.dragover .dropzone__icon { color: var(--accent); }
+    .dropzone__title { font-size: 0.95rem; font-weight: 700; margin-bottom: 4px; }
+    .dropzone__hint { font-size: 0.75rem; color: var(--text-dim); }
+    .dropzone__hint strong { color: var(--accent); }
+    .dropzone input { display: none; }
 
-    /* Folder selector */
-    .folder-bar {
-      display: flex; align-items: center; gap: 12px; margin-bottom: 24px;
-      flex-wrap: wrap;
+    /* Compression info */
+    .compress-info {
+      display: flex; align-items: center; gap: 8px; margin-bottom: 28px;
+      font-size: 0.72rem; color: var(--text-dim);
     }
-    .folder-bar__label { font-size: 0.75rem; font-weight: 600; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.05em; }
-    .folder-btn {
-      font-family: var(--font); font-size: 0.78rem; font-weight: 600;
-      padding: 7px 16px; border-radius: 6px; border: 1px solid var(--border);
-      background: var(--surface); color: var(--text-dim); cursor: pointer;
-      transition: all 0.2s;
-    }
-    .folder-btn:hover { border-color: var(--text-dim); color: var(--text); }
-    .folder-btn.active { border-color: var(--accent); background: var(--accent-dim); color: var(--accent); }
-    .folder-btn--add {
-      border-style: dashed; color: var(--text-dim);
-    }
+    .compress-info svg { flex-shrink: 0; }
+    .compress-info strong { color: var(--green); }
 
-    /* Image grid */
-    .grid-header {
+    /* Stats bar */
+    .stats-bar {
       display: flex; align-items: center; justify-content: space-between;
-      margin-bottom: 20px;
+      margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid var(--border);
     }
-    .grid-header__title { font-size: 0.85rem; font-weight: 700; }
-    .grid-header__count { font-size: 0.75rem; color: var(--text-dim); }
-    .grid-header__actions { display: flex; gap: 8px; }
-    .grid-header__btn {
-      font-family: var(--font); font-size: 0.72rem; font-weight: 600;
-      padding: 6px 14px; border-radius: 6px; border: 1px solid var(--border);
-      background: var(--surface); color: var(--text-dim); cursor: pointer;
-      transition: all 0.2s;
+    .stats-bar__left { display: flex; align-items: center; gap: 16px; }
+    .stats-bar__count { font-size: 0.82rem; font-weight: 700; }
+    .stats-bar__size { font-size: 0.72rem; color: var(--text-dim); }
+    .stats-bar__btn {
+      font-family: var(--font); font-size: 0.7rem; font-weight: 600;
+      padding: 5px 12px; border-radius: 6px; border: 1px solid var(--border);
+      background: none; color: var(--text-dim); cursor: pointer;
     }
-    .grid-header__btn:hover { border-color: var(--red); color: var(--red); }
+    .stats-bar__btn:hover { border-color: var(--red); color: var(--red); }
 
-    .image-grid {
-      display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-      gap: 16px;
+    /* Image list */
+    .image-list { display: flex; flex-direction: column; gap: 2px; }
+
+    .image-row {
+      display: grid; grid-template-columns: 56px 1fr auto auto auto;
+      align-items: center; gap: 16px; padding: 10px 14px;
+      background: var(--surface); border: 1px solid transparent;
+      border-radius: 8px; cursor: pointer; transition: all 0.15s;
+      user-select: none;
+    }
+    .image-row:hover { border-color: var(--accent); background: var(--accent-dim); }
+    .image-row.copied { border-color: var(--green); background: var(--green-dim); }
+    .image-row.copied .image-row__copied { opacity: 1; }
+
+    .image-row__thumb {
+      width: 56px; height: 40px; border-radius: 4px; overflow: hidden;
+      background: var(--surface2); flex-shrink: 0;
+    }
+    .image-row__thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+    .image-row__info { min-width: 0; }
+    .image-row__path {
+      font-size: 0.8rem; font-weight: 600; color: var(--accent);
+      font-family: 'SF Mono', 'Fira Code', Consolas, monospace;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .image-row__meta {
+      font-size: 0.68rem; color: var(--text-dim); margin-top: 2px;
+      display: flex; gap: 8px;
     }
 
-    .image-card {
-      background: var(--surface); border: 1px solid var(--border);
-      border-radius: var(--radius); overflow: hidden;
-      transition: border-color 0.2s;
+    .image-row__dims {
+      font-size: 0.68rem; color: var(--text-dim); white-space: nowrap;
     }
-    .image-card:hover { border-color: var(--accent); }
-    .image-card__preview {
-      aspect-ratio: 4 / 3; overflow: hidden; position: relative;
-      background: var(--surface2); cursor: pointer;
+    .image-row__size {
+      font-size: 0.68rem; color: var(--text-dim); white-space: nowrap;
     }
-    .image-card__preview img {
-      width: 100%; height: 100%; object-fit: cover; display: block;
+    .image-row__savings {
+      font-size: 0.65rem; font-weight: 600; color: var(--green);
+      padding: 2px 7px; background: var(--green-dim); border-radius: 4px;
+      white-space: nowrap;
     }
-    .image-card__size {
-      position: absolute; bottom: 6px; right: 6px;
-      font-size: 0.6rem; font-weight: 600; padding: 2px 6px;
-      background: rgba(0,0,0,0.7); color: #fff; border-radius: 4px;
+    .image-row__savings--none { color: var(--text-dim); background: var(--surface2); }
+
+    .image-row__actions { display: flex; gap: 4px; }
+    .image-row__btn {
+      font-family: var(--font); font-size: 0.65rem; font-weight: 600;
+      padding: 4px 10px; border-radius: 5px; border: 1px solid var(--border);
+      background: none; color: var(--text-dim); cursor: pointer; transition: all 0.15s;
+      white-space: nowrap;
     }
-    .image-card__info { padding: 12px; }
-    .image-card__name {
-      font-size: 0.78rem; font-weight: 600; margin-bottom: 4px;
-      word-break: break-all;
+    .image-row__btn:hover { border-color: var(--text-dim); color: var(--text); }
+    .image-row__btn--del:hover { border-color: var(--red); color: var(--red); }
+
+    .image-row__copied {
+      position: absolute; right: 14px; font-size: 0.7rem; font-weight: 600;
+      color: var(--green); opacity: 0; transition: opacity 0.2s; pointer-events: none;
     }
-    .image-card__name-input {
-      width: 100%; font-family: var(--font); font-size: 0.78rem; font-weight: 600;
-      background: var(--surface2); border: 1px solid var(--border);
-      border-radius: 4px; padding: 4px 8px; color: var(--text);
-      outline: none; margin-bottom: 4px;
-    }
-    .image-card__name-input:focus { border-color: var(--accent); }
-    .image-card__path {
-      font-size: 0.68rem; color: var(--accent); font-family: 'SF Mono', 'Fira Code', monospace;
-      word-break: break-all; margin-bottom: 8px; cursor: pointer;
-    }
-    .image-card__path:hover { text-decoration: underline; }
-    .image-card__dims { font-size: 0.65rem; color: var(--text-dim); margin-bottom: 10px; }
-    .image-card__actions { display: flex; gap: 6px; }
-    .image-card__btn {
-      flex: 1; font-family: var(--font); font-size: 0.68rem; font-weight: 600;
-      padding: 6px 0; border-radius: 5px; border: 1px solid var(--border);
-      background: var(--surface2); color: var(--text-dim); cursor: pointer;
-      transition: all 0.15s; text-align: center;
-    }
-    .image-card__btn:hover { border-color: var(--text-dim); color: var(--text); }
-    .image-card__btn--copy:hover { border-color: var(--accent); color: var(--accent); }
-    .image-card__btn--download:hover { border-color: var(--green); color: var(--green); }
-    .image-card__btn--delete:hover { border-color: var(--red); color: var(--red); }
+
+    /* Empty state */
+    .empty { text-align: center; padding: 60px 20px; color: var(--text-dim); }
+    .empty__title { font-size: 0.95rem; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+    .empty__text { font-size: 0.78rem; }
 
     /* Toast */
     .toast {
       position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px);
-      background: var(--surface); border: 1px solid var(--border);
-      padding: 12px 24px; border-radius: 8px; font-size: 0.8rem; font-weight: 600;
-      z-index: 999; transition: transform 0.3s ease; pointer-events: none;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+      background: #1a3a2a; border: 1px solid var(--green);
+      padding: 10px 24px; border-radius: 8px; font-size: 0.8rem; font-weight: 600;
+      color: var(--green); z-index: 999; transition: transform 0.3s ease;
+      pointer-events: none; box-shadow: 0 8px 32px rgba(0,0,0,0.5);
     }
     .toast.visible { transform: translateX(-50%) translateY(0); }
-    .toast--success { border-color: var(--green); color: var(--green); }
 
-    /* Lightbox */
-    .lightbox {
-      display: none; position: fixed; inset: 0; z-index: 200;
-      background: rgba(0,0,0,0.92); align-items: center; justify-content: center;
-      cursor: zoom-out;
+    /* Processing overlay */
+    .processing {
+      display: none; align-items: center; gap: 10px;
+      padding: 12px 20px; background: var(--accent-dim); border: 1px solid var(--accent);
+      border-radius: 8px; margin-bottom: 16px; font-size: 0.8rem; color: var(--accent);
     }
-    .lightbox.open { display: flex; }
-    .lightbox img {
-      max-width: 90vw; max-height: 90vh; object-fit: contain;
-      border-radius: 4px;
+    .processing.active { display: flex; }
+    .processing__spinner {
+      width: 16px; height: 16px; border: 2px solid var(--accent-dim);
+      border-top-color: var(--accent); border-radius: 50%;
+      animation: spin 0.6s linear infinite;
     }
+    @keyframes spin { to { transform: rotate(360deg); } }
 
-    /* Empty state */
-    .empty {
-      text-align: center; padding: 80px 20px; color: var(--text-dim);
-    }
-    .empty__icon { margin-bottom: 16px; opacity: 0.3; }
-    .empty__title { font-size: 1rem; font-weight: 600; margin-bottom: 6px; color: var(--text); }
-    .empty__text { font-size: 0.82rem; }
-
-    @media (max-width: 640px) {
+    @media (max-width: 700px) {
       .container { padding: 20px; }
-      .image-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); }
-      .dropzone { padding: 40px 20px; }
+      .image-row { grid-template-columns: 48px 1fr auto; gap: 10px; padding: 8px 10px; }
+      .image-row__dims, .image-row__savings { display: none; }
     }
   </style>
 </head>
@@ -196,26 +182,15 @@
       <span class="topbar__logo">Atlas Dev</span>
       <span class="topbar__badge">Image Manager</span>
     </div>
-    <a href="../app/" class="topbar__back">&larr; Back to Dashboard</a>
+    <a href="../app/" class="topbar__back">&larr; Dashboard</a>
   </div>
 
   <div class="container">
     <div class="hero">
       <h1 class="hero__title">Image Library</h1>
-      <p class="hero__desc">Drop images here to store them for the website. Each image gets a repo path you can reference when building pages. Images are saved in your browser and downloadable to commit to the repo.</p>
+      <p class="hero__desc">Drop images to compress &amp; store them. Click any row to copy the path for Claude Code. Download files to commit to the repo.</p>
     </div>
 
-    <!-- Folder selector -->
-    <div class="folder-bar">
-      <span class="folder-bar__label">Folder:</span>
-      <button class="folder-btn active" data-folder="images">images/</button>
-      <button class="folder-btn" data-folder="images/products">images/products/</button>
-      <button class="folder-btn" data-folder="images/lifestyle">images/lifestyle/</button>
-      <button class="folder-btn" data-folder="images/brand">images/brand/</button>
-      <button class="folder-btn folder-btn--add" id="addFolderBtn">+ folder</button>
-    </div>
-
-    <!-- Drop zone -->
     <div class="dropzone" id="dropzone">
       <input type="file" id="fileInput" multiple accept="image/*">
       <svg class="dropzone__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
@@ -224,258 +199,297 @@
         <line x1="12" y1="3" x2="12" y2="15"/>
       </svg>
       <div class="dropzone__title">Drop images here</div>
-      <div class="dropzone__hint">or <strong id="browseBtn">browse files</strong> &mdash; PNG, JPG, WebP, SVG</div>
+      <div class="dropzone__hint">or <strong>browse files</strong> — auto-compressed to WebP for fast page loads</div>
     </div>
 
-    <!-- Grid header -->
-    <div class="grid-header" id="gridHeader" style="display:none;">
-      <div>
-        <span class="grid-header__title" id="gridTitle">All Images</span>
-        <span class="grid-header__count" id="gridCount"></span>
-      </div>
-      <div class="grid-header__actions">
-        <button class="grid-header__btn" id="clearAllBtn">Clear All</button>
+    <div class="compress-info">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+      <span>Images auto-compressed to <strong>WebP</strong> &bull; Max 1600px wide &bull; SEO-friendly filenames &bull; Ready for <strong>images/</strong> folder</span>
+    </div>
+
+    <div class="processing" id="processing">
+      <div class="processing__spinner"></div>
+      <span id="processingText">Compressing images...</span>
+    </div>
+
+    <div id="statsBar" style="display:none;">
+      <div class="stats-bar">
+        <div class="stats-bar__left">
+          <span class="stats-bar__count" id="statsCount">0 images</span>
+          <span class="stats-bar__size" id="statsSize"></span>
+        </div>
+        <button class="stats-bar__btn" id="clearAllBtn">Clear All</button>
       </div>
     </div>
 
-    <!-- Image grid -->
-    <div class="image-grid" id="imageGrid"></div>
+    <div class="image-list" id="imageList"></div>
 
-    <!-- Empty state -->
     <div class="empty" id="emptyState">
-      <svg class="empty__icon" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
-        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
-        <circle cx="8.5" cy="8.5" r="1.5"/>
-        <polyline points="21 15 16 10 5 21"/>
-      </svg>
       <div class="empty__title">No images yet</div>
       <div class="empty__text">Drop images above to start building your library</div>
     </div>
   </div>
 
-  <!-- Lightbox -->
-  <div class="lightbox" id="lightbox">
-    <img id="lightboxImg" src="" alt="Preview">
-  </div>
-
-  <!-- Toast -->
   <div class="toast" id="toast"></div>
 
 <script>
 (function() {
   'use strict';
 
-  var STORAGE_KEY = 'atlas_dev_images';
-  var FOLDERS_KEY = 'atlas_dev_folders';
+  // ========== IndexedDB Storage ==========
+  var DB_NAME = 'atlas_images';
+  var DB_VERSION = 1;
+  var STORE_NAME = 'images';
+  var db = null;
 
+  function openDB(cb) {
+    if (db) return cb(db);
+    var req = indexedDB.open(DB_NAME, DB_VERSION);
+    req.onupgradeneeded = function(e) {
+      var d = e.target.result;
+      if (!d.objectStoreNames.contains(STORE_NAME)) {
+        d.createObjectStore(STORE_NAME, { keyPath: 'id' });
+      }
+    };
+    req.onsuccess = function(e) { db = e.target.result; cb(db); };
+    req.onerror = function() { console.error('IndexedDB error'); };
+  }
+
+  function getAllImages(cb) {
+    openDB(function(d) {
+      var tx = d.transaction(STORE_NAME, 'readonly');
+      var store = tx.objectStore(STORE_NAME);
+      var req = store.getAll();
+      req.onsuccess = function() { cb(req.result || []); };
+      req.onerror = function() { cb([]); };
+    });
+  }
+
+  function putImage(img, cb) {
+    openDB(function(d) {
+      var tx = d.transaction(STORE_NAME, 'readwrite');
+      tx.objectStore(STORE_NAME).put(img);
+      tx.oncomplete = function() { if (cb) cb(); };
+    });
+  }
+
+  function deleteImage(id, cb) {
+    openDB(function(d) {
+      var tx = d.transaction(STORE_NAME, 'readwrite');
+      tx.objectStore(STORE_NAME).delete(id);
+      tx.oncomplete = function() { if (cb) cb(); };
+    });
+  }
+
+  function clearAll(cb) {
+    openDB(function(d) {
+      var tx = d.transaction(STORE_NAME, 'readwrite');
+      tx.objectStore(STORE_NAME).clear();
+      tx.oncomplete = function() { if (cb) cb(); };
+    });
+  }
+
+  // ========== Image Compression ==========
+  var MAX_WIDTH = 1600;
+  var WEBP_QUALITY = 0.82;
+
+  function compressImage(file, callback) {
+    var reader = new FileReader();
+    reader.onload = function(e) {
+      var img = new Image();
+      img.onload = function() {
+        var w = img.width;
+        var h = img.height;
+        var origSize = file.size;
+
+        // Scale down if wider than max
+        if (w > MAX_WIDTH) {
+          h = Math.round(h * (MAX_WIDTH / w));
+          w = MAX_WIDTH;
+        }
+
+        var canvas = document.createElement('canvas');
+        canvas.width = w;
+        canvas.height = h;
+        var ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, w, h);
+
+        // Try WebP first, fall back to JPEG
+        var webpUrl = canvas.toDataURL('image/webp', WEBP_QUALITY);
+        var isWebP = webpUrl.indexOf('data:image/webp') === 0;
+
+        var dataUrl, ext;
+        if (isWebP) {
+          dataUrl = webpUrl;
+          ext = 'webp';
+        } else {
+          dataUrl = canvas.toDataURL('image/jpeg', WEBP_QUALITY);
+          ext = 'jpg';
+        }
+
+        // Calculate compressed size (base64 → bytes rough estimate)
+        var compressedSize = Math.round((dataUrl.length - dataUrl.indexOf(',') - 1) * 0.75);
+
+        callback({
+          dataUrl: dataUrl,
+          width: w,
+          height: h,
+          ext: ext,
+          originalSize: origSize,
+          compressedSize: compressedSize
+        });
+      };
+      img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  }
+
+  // ========== SEO-friendly filename ==========
+  function seoFilename(name) {
+    // Remove extension, slugify
+    var base = name.replace(/\.[^.]+$/, '');
+    return base
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '')
+      .replace(/-+/g, '-')
+      || 'image';
+  }
+
+  // ========== Format bytes ==========
+  function formatBytes(b) {
+    if (b > 1048576) return (b / 1048576).toFixed(1) + ' MB';
+    return Math.round(b / 1024) + ' KB';
+  }
+
+  // ========== Toast ==========
+  var toastTimer;
+  function showToast(msg) {
+    var t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('visible');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function() { t.classList.remove('visible'); }, 2000);
+  }
+
+  // ========== Processing indicator ==========
+  var processing = document.getElementById('processing');
+  var processingText = document.getElementById('processingText');
+  var pendingCount = 0;
+
+  function showProcessing(count) {
+    pendingCount = count;
+    processingText.textContent = 'Compressing ' + count + ' image' + (count > 1 ? 's' : '') + '...';
+    processing.classList.add('active');
+  }
+
+  function tickProcessing() {
+    pendingCount--;
+    if (pendingCount <= 0) {
+      processing.classList.remove('active');
+    } else {
+      processingText.textContent = 'Compressing ' + pendingCount + ' remaining...';
+    }
+  }
+
+  // ========== Process dropped files ==========
+  function processFiles(files) {
+    var fileArr = Array.from(files).filter(function(f) { return f.type.startsWith('image/'); });
+    if (!fileArr.length) return;
+
+    showProcessing(fileArr.length);
+    var done = 0;
+
+    fileArr.forEach(function(file) {
+      compressImage(file, function(result) {
+        var baseName = seoFilename(file.name);
+        var fileName = baseName + '.' + result.ext;
+
+        var record = {
+          id: Date.now() + '-' + Math.random().toString(36).substr(2, 8),
+          fileName: fileName,
+          folder: 'images',
+          dataUrl: result.dataUrl,
+          width: result.width,
+          height: result.height,
+          originalSize: result.originalSize,
+          compressedSize: result.compressedSize,
+          ext: result.ext,
+          added: new Date().toISOString()
+        };
+
+        putImage(record, function() {
+          done++;
+          tickProcessing();
+          if (done === fileArr.length) {
+            render();
+            showToast(done + ' image' + (done > 1 ? 's' : '') + ' added');
+          }
+        });
+      });
+    });
+  }
+
+  // ========== Render list ==========
+  function render() {
+    getAllImages(function(images) {
+      var list = document.getElementById('imageList');
+      var empty = document.getElementById('emptyState');
+      var statsBar = document.getElementById('statsBar');
+
+      if (!images.length) {
+        list.innerHTML = '';
+        empty.style.display = '';
+        statsBar.style.display = 'none';
+        return;
+      }
+
+      // Sort newest first
+      images.sort(function(a, b) { return b.added > a.added ? 1 : -1; });
+
+      empty.style.display = 'none';
+      statsBar.style.display = '';
+
+      var totalSize = 0;
+      images.forEach(function(img) { totalSize += img.compressedSize || 0; });
+      document.getElementById('statsCount').textContent = images.length + ' image' + (images.length !== 1 ? 's' : '');
+      document.getElementById('statsSize').textContent = 'Total: ' + formatBytes(totalSize);
+
+      list.innerHTML = images.map(function(img) {
+        var path = img.folder + '/' + img.fileName;
+        var savings = img.originalSize > 0
+          ? Math.round((1 - img.compressedSize / img.originalSize) * 100)
+          : 0;
+        var savingsClass = savings > 5 ? '' : ' image-row__savings--none';
+
+        return '<div class="image-row" data-id="' + img.id + '" data-path="' + path + '">' +
+          '<div class="image-row__thumb"><img src="' + img.dataUrl + '" alt="" loading="lazy"></div>' +
+          '<div class="image-row__info">' +
+            '<div class="image-row__path">' + path + '</div>' +
+            '<div class="image-row__meta">' +
+              '<span>' + img.width + '&times;' + img.height + '</span>' +
+              '<span>' + formatBytes(img.compressedSize) + '</span>' +
+              '<span>' + (img.ext || 'webp').toUpperCase() + '</span>' +
+            '</div>' +
+          '</div>' +
+          '<span class="image-row__savings' + savingsClass + '">' + (savings > 0 ? '-' + savings + '%' : 'n/a') + '</span>' +
+          '<div class="image-row__actions">' +
+            '<button class="image-row__btn" data-action="download">Save</button>' +
+            '<button class="image-row__btn image-row__btn--del" data-action="delete">&times;</button>' +
+          '</div>' +
+        '</div>';
+      }).join('');
+    });
+  }
+
+  // ========== Events ==========
+
+  // Drop zone
   var dropzone = document.getElementById('dropzone');
   var fileInput = document.getElementById('fileInput');
-  var imageGrid = document.getElementById('imageGrid');
-  var emptyState = document.getElementById('emptyState');
-  var gridHeader = document.getElementById('gridHeader');
-  var gridTitle = document.getElementById('gridTitle');
-  var gridCount = document.getElementById('gridCount');
-  var lightbox = document.getElementById('lightbox');
-  var lightboxImg = document.getElementById('lightboxImg');
-  var toast = document.getElementById('toast');
 
-  var currentFolder = 'images';
-  var defaultFolders = ['images', 'images/products', 'images/lifestyle', 'images/brand'];
-
-  // Load custom folders
-  function getFolders() {
-    try {
-      var saved = JSON.parse(localStorage.getItem(FOLDERS_KEY));
-      return saved && saved.length ? saved : defaultFolders;
-    } catch(e) { return defaultFolders; }
-  }
-
-  function saveFolders(folders) {
-    localStorage.setItem(FOLDERS_KEY, JSON.stringify(folders));
-  }
-
-  // Load/save images
-  function getImages() {
-    try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; }
-    catch(e) { return []; }
-  }
-
-  function saveImages(images) {
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(images));
-    } catch(e) {
-      // Storage full — try to warn
-      showToast('Storage full! Download images and clear some space.', false);
-    }
-  }
-
-  // Toast
-  function showToast(msg, success) {
-    toast.textContent = msg;
-    toast.className = 'toast visible' + (success !== false ? ' toast--success' : '');
-    setTimeout(function() { toast.className = 'toast'; }, 2200);
-  }
-
-  // Slug filename
-  function slugify(name) {
-    return name.toLowerCase()
-      .replace(/[^a-z0-9.]+/g, '-')
-      .replace(/^-+|-+$/g, '')
-      .replace(/-+/g, '-');
-  }
-
-  // Get extension
-  function getExt(name) {
-    var parts = name.split('.');
-    return parts.length > 1 ? parts.pop().toLowerCase() : 'jpg';
-  }
-
-  // Process dropped files
-  function processFiles(files) {
-    var images = getImages();
-    var count = 0;
-
-    Array.from(files).forEach(function(file) {
-      if (!file.type.startsWith('image/')) return;
-
-      var reader = new FileReader();
-      reader.onload = function(e) {
-        var dataUrl = e.target.result;
-
-        // Get dimensions
-        var img = new Image();
-        img.onload = function() {
-          var ext = getExt(file.name);
-          var baseName = slugify(file.name.replace(/\.[^.]+$/, ''));
-          var fileName = baseName + '.' + ext;
-
-          // Deduplicate name
-          var existing = images.map(function(i) { return i.fileName; });
-          if (existing.indexOf(fileName) !== -1) {
-            var n = 2;
-            while (existing.indexOf(baseName + '-' + n + '.' + ext) !== -1) n++;
-            fileName = baseName + '-' + n + '.' + ext;
-          }
-
-          images.push({
-            id: Date.now() + '-' + Math.random().toString(36).substr(2, 6),
-            fileName: fileName,
-            folder: currentFolder,
-            dataUrl: dataUrl,
-            width: img.width,
-            height: img.height,
-            size: file.size,
-            type: file.type,
-            added: new Date().toISOString()
-          });
-
-          count++;
-          saveImages(images);
-          render();
-
-          if (count === files.length) {
-            showToast(count + ' image' + (count > 1 ? 's' : '') + ' added to ' + currentFolder + '/');
-          }
-        };
-        img.src = dataUrl;
-      };
-      reader.readAsDataURL(file);
-    });
-  }
-
-  // Render image grid
-  function render() {
-    var images = getImages();
-    var filtered = images.filter(function(img) { return img.folder === currentFolder; });
-
-    if (filtered.length === 0) {
-      imageGrid.innerHTML = '';
-      emptyState.style.display = '';
-      gridHeader.style.display = 'none';
-      return;
-    }
-
-    emptyState.style.display = 'none';
-    gridHeader.style.display = 'flex';
-    gridTitle.textContent = currentFolder + '/';
-    gridCount.textContent = ' — ' + filtered.length + ' image' + (filtered.length !== 1 ? 's' : '');
-
-    imageGrid.innerHTML = filtered.map(function(img) {
-      var path = img.folder + '/' + img.fileName;
-      var sizeKB = (img.size / 1024).toFixed(0);
-      var sizeLabel = img.size > 1048576 ? (img.size / 1048576).toFixed(1) + 'MB' : sizeKB + 'KB';
-
-      return '<div class="image-card" data-id="' + img.id + '">' +
-        '<div class="image-card__preview" data-action="preview">' +
-          '<img src="' + img.dataUrl + '" alt="' + img.fileName + '" loading="lazy">' +
-          '<span class="image-card__size">' + sizeLabel + '</span>' +
-        '</div>' +
-        '<div class="image-card__info">' +
-          '<input class="image-card__name-input" value="' + img.fileName + '" data-action="rename" spellcheck="false">' +
-          '<div class="image-card__path" data-action="copy-path" title="Click to copy path">' + path + '</div>' +
-          '<div class="image-card__dims">' + img.width + ' &times; ' + img.height + 'px</div>' +
-          '<div class="image-card__actions">' +
-            '<button class="image-card__btn image-card__btn--copy" data-action="copy-tag" title="Copy img tag">Copy &lt;img&gt;</button>' +
-            '<button class="image-card__btn image-card__btn--download" data-action="download" title="Download file">Save</button>' +
-            '<button class="image-card__btn image-card__btn--delete" data-action="delete" title="Remove">&times;</button>' +
-          '</div>' +
-        '</div>' +
-      '</div>';
-    }).join('');
-  }
-
-  // Render folder buttons
-  function renderFolders() {
-    var folders = getFolders();
-    var bar = document.querySelector('.folder-bar');
-    var btns = bar.querySelectorAll('.folder-btn:not(.folder-btn--add)');
-    btns.forEach(function(b) { b.remove(); });
-
-    var addBtn = document.getElementById('addFolderBtn');
-    folders.forEach(function(f) {
-      var btn = document.createElement('button');
-      btn.className = 'folder-btn' + (f === currentFolder ? ' active' : '');
-      btn.setAttribute('data-folder', f);
-      btn.textContent = f + '/';
-      bar.insertBefore(btn, addBtn);
-    });
-  }
-
-  // Event: folder selection
-  document.querySelector('.folder-bar').addEventListener('click', function(e) {
-    var btn = e.target.closest('.folder-btn');
-    if (!btn) return;
-
-    if (btn.id === 'addFolderBtn') {
-      var name = prompt('Folder path (e.g. images/hero):');
-      if (!name) return;
-      name = name.replace(/^\/+|\/+$/g, '').replace(/\s+/g, '-').toLowerCase();
-      if (!name) return;
-      var folders = getFolders();
-      if (folders.indexOf(name) === -1) {
-        folders.push(name);
-        saveFolders(folders);
-      }
-      currentFolder = name;
-      renderFolders();
-      render();
-      return;
-    }
-
-    currentFolder = btn.getAttribute('data-folder');
-    document.querySelectorAll('.folder-btn').forEach(function(b) { b.classList.remove('active'); });
-    btn.classList.add('active');
-    render();
-  });
-
-  // Event: dropzone
-  dropzone.addEventListener('dragover', function(e) {
-    e.preventDefault();
-    dropzone.classList.add('dragover');
-  });
-  dropzone.addEventListener('dragleave', function() {
-    dropzone.classList.remove('dragover');
-  });
+  dropzone.addEventListener('dragover', function(e) { e.preventDefault(); dropzone.classList.add('dragover'); });
+  dropzone.addEventListener('dragleave', function() { dropzone.classList.remove('dragover'); });
   dropzone.addEventListener('drop', function(e) {
     e.preventDefault();
     dropzone.classList.remove('dragover');
@@ -487,99 +501,61 @@
     fileInput.value = '';
   });
 
-  // Also support full-page drop
+  // Full-page drop support
   document.addEventListener('dragover', function(e) { e.preventDefault(); });
   document.addEventListener('drop', function(e) {
+    if (e.target.closest('.dropzone')) return;
     e.preventDefault();
-    if (e.target.closest('.dropzone')) return; // handled above
     if (e.dataTransfer.files.length) processFiles(e.dataTransfer.files);
   });
 
-  // Event: image card actions
-  imageGrid.addEventListener('click', function(e) {
-    var card = e.target.closest('.image-card');
-    if (!card) return;
-    var id = card.getAttribute('data-id');
-    var images = getImages();
-    var img = images.find(function(i) { return i.id === id; });
-    if (!img) return;
+  // Image list click — copy path or action buttons
+  document.getElementById('imageList').addEventListener('click', function(e) {
+    var row = e.target.closest('.image-row');
+    if (!row) return;
+    var id = row.getAttribute('data-id');
 
-    var action = e.target.closest('[data-action]');
-    if (!action) return;
-    var act = action.getAttribute('data-action');
+    // Check if an action button was clicked
+    var actionBtn = e.target.closest('[data-action]');
+    if (actionBtn) {
+      var action = actionBtn.getAttribute('data-action');
 
-    if (act === 'preview') {
-      lightboxImg.src = img.dataUrl;
-      lightbox.classList.add('open');
+      if (action === 'download') {
+        getAllImages(function(images) {
+          var img = images.find(function(i) { return i.id === id; });
+          if (!img) return;
+          var a = document.createElement('a');
+          a.href = img.dataUrl;
+          a.download = img.fileName;
+          a.click();
+          showToast('Downloading ' + img.fileName);
+        });
+        return;
+      }
+
+      if (action === 'delete') {
+        deleteImage(id, function() { render(); showToast('Image removed'); });
+        return;
+      }
     }
 
-    if (act === 'copy-path') {
-      var path = img.folder + '/' + img.fileName;
-      navigator.clipboard.writeText(path).then(function() {
-        showToast('Copied: ' + path);
-      });
-    }
-
-    if (act === 'copy-tag') {
-      var tag = '<img src="' + img.folder + '/' + img.fileName + '" alt="" loading="lazy">';
-      navigator.clipboard.writeText(tag).then(function() {
-        showToast('Copied <img> tag');
-      });
-    }
-
-    if (act === 'download') {
-      var a = document.createElement('a');
-      a.href = img.dataUrl;
-      a.download = img.fileName;
-      a.click();
-      showToast('Downloading ' + img.fileName);
-    }
-
-    if (act === 'delete') {
-      images = images.filter(function(i) { return i.id !== id; });
-      saveImages(images);
-      render();
-      showToast('Image removed');
-    }
+    // Default click = copy path
+    var path = row.getAttribute('data-path');
+    navigator.clipboard.writeText(path).then(function() {
+      showToast('Copied: ' + path);
+      row.classList.add('copied');
+      setTimeout(function() { row.classList.remove('copied'); }, 1200);
+    });
   });
 
-  // Event: rename
-  imageGrid.addEventListener('change', function(e) {
-    if (e.target.getAttribute('data-action') !== 'rename') return;
-    var card = e.target.closest('.image-card');
-    var id = card.getAttribute('data-id');
-    var images = getImages();
-    var img = images.find(function(i) { return i.id === id; });
-    if (!img) return;
-
-    var newName = slugify(e.target.value);
-    if (!newName) { e.target.value = img.fileName; return; }
-    // Preserve extension if stripped
-    if (newName.indexOf('.') === -1) {
-      newName += '.' + getExt(img.fileName);
-    }
-    img.fileName = newName;
-    e.target.value = newName;
-    saveImages(images);
-    render();
-    showToast('Renamed to ' + newName);
-  });
-
-  // Event: lightbox close
-  lightbox.addEventListener('click', function() { lightbox.classList.remove('open'); });
-
-  // Event: clear all
+  // Clear all
   document.getElementById('clearAllBtn').addEventListener('click', function() {
-    if (!confirm('Remove all images from ' + currentFolder + '/?')) return;
-    var images = getImages().filter(function(i) { return i.folder !== currentFolder; });
-    saveImages(images);
-    render();
-    showToast('Cleared ' + currentFolder + '/');
+    if (!confirm('Remove all images?')) return;
+    clearAll(function() { render(); showToast('All images cleared'); });
   });
 
   // Init
-  renderFolders();
-  render();
+  openDB(function() { render(); });
 })();
 </script>
 </body>
