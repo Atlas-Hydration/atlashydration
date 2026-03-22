@@ -6201,16 +6201,17 @@ img {
 }
 
 /* ========================================
-   SVG Animations — Wave Dividers
+   SVG Animations — Flowing Water Wave Dividers
    ======================================== */
 .svg-wave-divider {
   position: absolute;
   left: 0;
   right: 0;
   width: 100%;
-  height: 60px;
+  height: 80px;
   z-index: 2;
   pointer-events: none;
+  overflow: hidden;
 }
 
 .svg-wave-divider--bottom {
@@ -6219,20 +6220,36 @@ img {
 
 .svg-wave-divider--top {
   top: -1px;
-  transform: rotate(180deg);
+  transform: scaleY(-1);
 }
 
-.svg-wave-divider__wave--back {
-  animation: waveDrift 8s ease-in-out infinite;
+/* Each wave layer is a full-width SVG that scrolls horizontally */
+.wave-layer {
+  position: absolute;
+  left: 0;
+  top: 0;
+  /* 200% width so we can scroll half and loop seamlessly */
+  width: 200%;
+  height: 100%;
+  will-change: transform;
 }
 
-.svg-wave-divider__wave--front {
-  animation: waveDrift 6s ease-in-out infinite reverse;
+.wave-layer--1 {
+  animation: waveFlow 7s linear infinite;
 }
 
-@keyframes waveDrift {
-  0%, 100% { transform: translateX(0); }
-  50% { transform: translateX(-20px); }
+.wave-layer--2 {
+  animation: waveFlow 5s linear infinite;
+  animation-direction: reverse;
+}
+
+.wave-layer--3 {
+  animation: waveFlow 9s linear infinite;
+}
+
+@keyframes waveFlow {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
 }
 
 /* ========================================
@@ -6539,7 +6556,7 @@ img {
    ======================================== */
 @media (max-width: 768px) {
   .svg-wave-divider {
-    height: 30px;
+    height: 40px;
   }
 
   .science-molecules {
@@ -6561,8 +6578,7 @@ img {
 
 /* Reduce motion for accessibility */
 @media (prefers-reduced-motion: reduce) {
-  .svg-wave-divider__wave--back,
-  .svg-wave-divider__wave--front,
+  .wave-layer,
   .science-molecule,
   .hero-particle,
   .dna-strand,

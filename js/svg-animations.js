@@ -23,7 +23,7 @@
     els.forEach(function(el) { observer.observe(el); });
   }
 
-  // ── 1. Animated SVG Wave Dividers ──
+  // ── 1. Animated SVG Wave Dividers — Realistic Flowing Water ──
   function insertWaveDividers() {
     var waveSections = [
       { selector: '.hero', position: 'bottom', color: '#ffffff', id: 'wave-hero' },
@@ -38,37 +38,58 @@
     waveSections.forEach(function(w) {
       var section = document.querySelector(w.selector);
       if (!section) return;
-      // Avoid duplicates
       if (section.querySelector('.svg-wave-divider--' + w.position)) return;
 
-      var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-      svg.setAttribute('class', 'svg-wave-divider svg-wave-divider--' + w.position);
-      svg.setAttribute('viewBox', '0 0 1440 80');
-      svg.setAttribute('preserveAspectRatio', 'none');
-      svg.setAttribute('aria-hidden', 'true');
-      svg.id = w.id;
+      // Container wraps overflow for the scrolling waves
+      var wrapper = document.createElement('div');
+      wrapper.className = 'svg-wave-divider svg-wave-divider--' + w.position;
+      wrapper.id = w.id;
+      wrapper.setAttribute('aria-hidden', 'true');
 
-      // Two wave paths for layered animation
-      var path1 = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-      path1.setAttribute('class', 'svg-wave-divider__wave svg-wave-divider__wave--back');
-      path1.setAttribute('d', 'M0,40 C240,80 480,0 720,40 C960,80 1200,0 1440,40 L1440,80 L0,80 Z');
-      path1.setAttribute('fill', w.color);
-      path1.setAttribute('opacity', '0.5');
+      // Three wave layers at different speeds/amplitudes for realistic water
+      var layers = [
+        { cls: 'wave-layer--1', opacity: 0.3, d: 'M0,30 C60,10 120,45 180,30 C240,15 300,50 360,30 C420,10 480,45 540,30 C600,15 660,50 720,30 C780,10 840,45 900,30 C960,15 1020,50 1080,30 C1140,10 1200,45 1260,30 C1320,15 1380,50 1440,30 L1440,80 L0,80 Z' },
+        { cls: 'wave-layer--2', opacity: 0.5, d: 'M0,40 C80,25 160,55 240,40 C320,25 400,55 480,40 C560,25 640,55 720,40 C800,25 880,55 960,40 C1040,25 1120,55 1200,40 C1280,25 1360,55 1440,40 L1440,80 L0,80 Z' },
+        { cls: 'wave-layer--3', opacity: 1.0, d: 'M0,50 C100,38 200,60 300,48 C400,36 500,58 600,48 C700,38 800,60 900,48 C1000,36 1100,58 1200,48 C1300,38 1400,60 1440,50 L1440,80 L0,80 Z' }
+      ];
 
-      var path2 = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-      path2.setAttribute('class', 'svg-wave-divider__wave svg-wave-divider__wave--front');
-      path2.setAttribute('d', 'M0,50 C360,10 600,70 900,30 C1100,10 1300,60 1440,50 L1440,80 L0,80 Z');
-      path2.setAttribute('fill', w.color);
+      layers.forEach(function(layer) {
+        var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+        svg.setAttribute('class', 'wave-layer ' + layer.cls);
+        // Double-wide viewBox so we can scroll half and loop seamlessly
+        svg.setAttribute('viewBox', '0 0 2880 80');
+        svg.setAttribute('preserveAspectRatio', 'none');
 
-      svg.appendChild(path1);
-      svg.appendChild(path2);
+        // Duplicate the path: original 0-1440, copy shifted 1440-2880
+        var path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        // Build the duplicated path: first half + second half shifted by 1440
+        var secondD = layer.d.replace(/L1440,80 L0,80 Z/, '');
+        var shifted = secondD.replace(/(\d+\.?\d*)/g, function(match, num, offset, str) {
+          // Only shift x-coordinates (every other number in the path)
+          return match; // we'll use a cleaner approach
+        });
+        // Simpler: just concat two copies with a translate on the second path
+        var p1 = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        p1.setAttribute('d', layer.d);
+        p1.setAttribute('fill', w.color);
+        p1.setAttribute('opacity', layer.opacity);
 
+        var p2 = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        p2.setAttribute('d', layer.d);
+        p2.setAttribute('fill', w.color);
+        p2.setAttribute('opacity', layer.opacity);
+        p2.setAttribute('transform', 'translate(1440, 0)');
+
+        svg.appendChild(p1);
+        svg.appendChild(p2);
+        wrapper.appendChild(svg);
+      });
+
+      section.style.position = section.style.position || 'relative';
       if (w.position === 'top') {
-        section.style.position = section.style.position || 'relative';
-        section.insertBefore(svg, section.firstChild);
+        section.insertBefore(wrapper, section.firstChild);
       } else {
-        section.style.position = section.style.position || 'relative';
-        section.appendChild(svg);
+        section.appendChild(wrapper);
       }
     });
   }
