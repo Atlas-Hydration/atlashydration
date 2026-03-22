@@ -24,6 +24,10 @@
   }
 
   // ── 1. Animated SVG Wave Dividers — Realistic Flowing Water ──
+  // Uses requestAnimationFrame to animate sine-wave paths that
+  // undulate vertically AND drift horizontally like real water.
+  var activeWaves = [];
+
   function insertWaveDividers() {
     var waveSections = [
       { selector: '.hero', position: 'bottom', color: '#ffffff', id: 'wave-hero' },
@@ -40,58 +44,96 @@
       if (!section) return;
       if (section.querySelector('.svg-wave-divider--' + w.position)) return;
 
-      // Container wraps overflow for the scrolling waves
       var wrapper = document.createElement('div');
       wrapper.className = 'svg-wave-divider svg-wave-divider--' + w.position;
       wrapper.id = w.id;
       wrapper.setAttribute('aria-hidden', 'true');
 
-      // Three wave layers at different speeds/amplitudes for realistic water
+      // 4 wave layers with different amplitude, frequency, speed, vertical offset
       var layers = [
-        { cls: 'wave-layer--1', opacity: 0.3, d: 'M0,30 C60,10 120,45 180,30 C240,15 300,50 360,30 C420,10 480,45 540,30 C600,15 660,50 720,30 C780,10 840,45 900,30 C960,15 1020,50 1080,30 C1140,10 1200,45 1260,30 C1320,15 1380,50 1440,30 L1440,80 L0,80 Z' },
-        { cls: 'wave-layer--2', opacity: 0.5, d: 'M0,40 C80,25 160,55 240,40 C320,25 400,55 480,40 C560,25 640,55 720,40 C800,25 880,55 960,40 C1040,25 1120,55 1200,40 C1280,25 1360,55 1440,40 L1440,80 L0,80 Z' },
-        { cls: 'wave-layer--3', opacity: 1.0, d: 'M0,50 C100,38 200,60 300,48 C400,36 500,58 600,48 C700,38 800,60 900,48 C1000,36 1100,58 1200,48 C1300,38 1400,60 1440,50 L1440,80 L0,80 Z' }
+        { opacity: 0.15, amplitude: 12, frequency: 0.004, speed: 1.8,  yBase: 25 },
+        { opacity: 0.25, amplitude: 10, frequency: 0.006, speed: -1.3, yBase: 32 },
+        { opacity: 0.4,  amplitude: 8,  frequency: 0.005, speed: 1.0,  yBase: 40 },
+        { opacity: 1.0,  amplitude: 6,  frequency: 0.007, speed: -0.7, yBase: 48 }
       ];
 
+      var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+      svg.setAttribute('class', 'wave-layer');
+      svg.setAttribute('viewBox', '0 0 1440 80');
+      svg.setAttribute('preserveAspectRatio', 'none');
+
+      var paths = [];
+
       layers.forEach(function(layer) {
-        var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-        svg.setAttribute('class', 'wave-layer ' + layer.cls);
-        // Double-wide viewBox so we can scroll half and loop seamlessly
-        svg.setAttribute('viewBox', '0 0 2880 80');
-        svg.setAttribute('preserveAspectRatio', 'none');
-
-        // Duplicate the path: original 0-1440, copy shifted 1440-2880
         var path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-        // Build the duplicated path: first half + second half shifted by 1440
-        var secondD = layer.d.replace(/L1440,80 L0,80 Z/, '');
-        var shifted = secondD.replace(/(\d+\.?\d*)/g, function(match, num, offset, str) {
-          // Only shift x-coordinates (every other number in the path)
-          return match; // we'll use a cleaner approach
-        });
-        // Simpler: just concat two copies with a translate on the second path
-        var p1 = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-        p1.setAttribute('d', layer.d);
-        p1.setAttribute('fill', w.color);
-        p1.setAttribute('opacity', layer.opacity);
-
-        var p2 = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-        p2.setAttribute('d', layer.d);
-        p2.setAttribute('fill', w.color);
-        p2.setAttribute('opacity', layer.opacity);
-        p2.setAttribute('transform', 'translate(1440, 0)');
-
-        svg.appendChild(p1);
-        svg.appendChild(p2);
-        wrapper.appendChild(svg);
+        path.setAttribute('fill', w.color);
+        path.setAttribute('opacity', layer.opacity);
+        svg.appendChild(path);
+        paths.push({ el: path, cfg: layer, phase: Math.random() * Math.PI * 2 });
       });
 
+      wrapper.appendChild(svg);
       section.style.position = section.style.position || 'relative';
       if (w.position === 'top') {
         section.insertBefore(wrapper, section.firstChild);
       } else {
         section.appendChild(wrapper);
       }
+
+      activeWaves.push({ paths: paths });
     });
+
+    // Single rAF loop drives all waves
+    var reducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    if (activeWaves.length && !window._waveAnimRunning) {
+      window._waveAnimRunning = true;
+      var startTime = performance.now();
+
+      // Draw one static frame for reduced-motion users
+      function drawStatic() {
+        activeWaves.forEach(function(wave) {
+          wave.paths.forEach(function(p) {
+            var cfg = p.cfg;
+            var points = '';
+            for (var x = 0; x <= 1440; x += 20) {
+              var y = cfg.yBase + Math.sin(x * cfg.frequency + p.phase) * cfg.amplitude;
+              points += (x === 0 ? 'M' : 'L') + x + ',' + y.toFixed(1) + ' ';
+            }
+            p.el.setAttribute('d', points + 'L1440,80 L0,80 Z');
+          });
+        });
+      }
+
+      if (reducedMotion) {
+        drawStatic();
+        return;
+      }
+
+      function tick(now) {
+        var t = (now - startTime) / 1000;
+
+        activeWaves.forEach(function(wave) {
+          wave.paths.forEach(function(p) {
+            var cfg = p.cfg;
+            var points = '';
+
+            for (var x = 0; x <= 1440; x += 20) {
+              var y = cfg.yBase
+                + Math.sin(x * cfg.frequency + t * cfg.speed + p.phase) * cfg.amplitude
+                + Math.sin(x * cfg.frequency * 0.5 + t * cfg.speed * 1.3 + p.phase + 1.5) * (cfg.amplitude * 0.4);
+              points += (x === 0 ? 'M' : 'L') + x + ',' + y.toFixed(1) + ' ';
+            }
+
+            p.el.setAttribute('d', points + 'L1440,80 L0,80 Z');
+          });
+        });
+
+        requestAnimationFrame(tick);
+      }
+
+      requestAnimationFrame(tick);
+    }
   }
 
   // ── 2. Floating Molecule SVGs in Science Section ──
