@@ -13,12 +13,10 @@
       --border: #2a2a2d; --text: #e8e8ed; --text-dim: #8e8e93;
       --accent: #3b82f6; --accent-dim: rgba(59,130,246,0.12);
       --green: #34d399; --green-dim: rgba(52,211,153,0.12);
-      --red: #f87171; --red-dim: rgba(248,113,113,0.12);
+      --red: #f87171; --yellow: #fbbf24; --yellow-dim: rgba(251,191,36,0.12);
       --font: 'Inter', -apple-system, system-ui, sans-serif;
     }
     body { font-family: var(--font); background: var(--bg); color: var(--text); min-height: 100vh; }
-
-    /* Top bar */
     .topbar {
       display: flex; align-items: center; justify-content: space-between;
       padding: 14px 32px; border-bottom: 1px solid var(--border);
@@ -26,157 +24,104 @@
       position: sticky; top: 0; z-index: 100;
     }
     .topbar__left { display: flex; align-items: center; gap: 12px; }
-    .topbar__logo { font-weight: 800; font-size: 0.95rem; letter-spacing: -0.03em; }
-    .topbar__badge {
-      font-size: 0.58rem; font-weight: 700; padding: 3px 8px; border-radius: 4px;
-      background: var(--accent-dim); color: var(--accent); text-transform: uppercase; letter-spacing: 0.06em;
-    }
+    .topbar__logo { font-weight: 800; font-size: 0.95rem; }
+    .topbar__badge { font-size: 0.58rem; font-weight: 700; padding: 3px 8px; border-radius: 4px; background: var(--accent-dim); color: var(--accent); text-transform: uppercase; letter-spacing: 0.06em; }
     .topbar__back { font-size: 0.78rem; color: var(--text-dim); text-decoration: none; }
     .topbar__back:hover { color: var(--text); }
-
-    .container { max-width: 960px; margin: 0 auto; padding: 32px; }
-
-    /* Hero */
-    .hero { margin-bottom: 32px; }
-    .hero__title { font-size: 1.6rem; font-weight: 800; letter-spacing: -0.03em; margin-bottom: 6px; }
+    .container { max-width: 900px; margin: 0 auto; padding: 32px; }
+    .hero { margin-bottom: 28px; }
+    .hero__title { font-size: 1.5rem; font-weight: 800; letter-spacing: -0.03em; margin-bottom: 6px; }
     .hero__desc { color: var(--text-dim); font-size: 0.82rem; line-height: 1.6; }
 
-    /* Drop zone */
+    /* Steps */
+    .steps { display: flex; gap: 24px; margin-bottom: 32px; }
+    .step { flex: 1; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 20px; }
+    .step__num { font-size: 0.65rem; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 6px; }
+    .step__title { font-size: 0.88rem; font-weight: 700; margin-bottom: 4px; }
+    .step__desc { font-size: 0.75rem; color: var(--text-dim); line-height: 1.5; }
+
+    /* Dropzone */
     .dropzone {
       border: 2px dashed var(--border); border-radius: 12px;
       padding: 48px 32px; text-align: center; cursor: pointer;
-      transition: all 0.2s; margin-bottom: 12px; background: var(--surface);
+      transition: all 0.2s; margin-bottom: 32px; background: var(--surface);
     }
-    .dropzone:hover, .dropzone.dragover {
-      border-color: var(--accent); background: var(--accent-dim);
-    }
+    .dropzone:hover, .dropzone.dragover { border-color: var(--accent); background: var(--accent-dim); }
     .dropzone__icon { width: 40px; height: 40px; margin: 0 auto 12px; color: var(--text-dim); }
     .dropzone.dragover .dropzone__icon { color: var(--accent); }
     .dropzone__title { font-size: 0.95rem; font-weight: 700; margin-bottom: 4px; }
     .dropzone__hint { font-size: 0.75rem; color: var(--text-dim); }
-    .dropzone__hint strong { color: var(--accent); }
     .dropzone input { display: none; }
 
-    /* Compression info */
-    .compress-info {
-      display: flex; align-items: center; gap: 8px; margin-bottom: 28px;
-      font-size: 0.72rem; color: var(--text-dim);
-    }
-    .compress-info svg { flex-shrink: 0; }
-    .compress-info strong { color: var(--green); }
-
-    /* Stats bar */
-    .stats-bar {
-      display: flex; align-items: center; justify-content: space-between;
-      margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid var(--border);
-    }
-    .stats-bar__left { display: flex; align-items: center; gap: 16px; }
-    .stats-bar__count { font-size: 0.82rem; font-weight: 700; }
-    .stats-bar__size { font-size: 0.72rem; color: var(--text-dim); }
-    .stats-bar__btn {
-      font-family: var(--font); font-size: 0.7rem; font-weight: 600;
-      padding: 5px 12px; border-radius: 6px; border: 1px solid var(--border);
-      background: none; color: var(--text-dim); cursor: pointer;
-    }
-    .stats-bar__btn:hover { border-color: var(--red); color: var(--red); }
+    /* Processing */
+    .processing { display: none; align-items: center; gap: 10px; padding: 12px 20px; background: var(--accent-dim); border: 1px solid var(--accent); border-radius: 8px; margin-bottom: 16px; font-size: 0.8rem; color: var(--accent); }
+    .processing.active { display: flex; }
+    .spinner { width: 16px; height: 16px; border: 2px solid var(--accent-dim); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.6s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
 
     /* Image list */
-    .image-list { display: flex; flex-direction: column; gap: 2px; }
+    .list-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; padding-bottom: 10px; border-bottom: 1px solid var(--border); }
+    .list-header__count { font-size: 0.82rem; font-weight: 700; }
+    .list-header__btn { font-family: var(--font); font-size: 0.68rem; font-weight: 600; padding: 5px 12px; border-radius: 6px; border: 1px solid var(--border); background: none; color: var(--text-dim); cursor: pointer; }
+    .list-header__btn:hover { border-color: var(--red); color: var(--red); }
 
+    .image-list { display: flex; flex-direction: column; gap: 3px; }
     .image-row {
-      display: grid; grid-template-columns: 56px 1fr auto auto auto;
-      align-items: center; gap: 16px; padding: 10px 14px;
+      display: grid; grid-template-columns: 52px 1fr auto auto auto;
+      align-items: center; gap: 14px; padding: 10px 14px;
       background: var(--surface); border: 1px solid transparent;
       border-radius: 8px; cursor: pointer; transition: all 0.15s;
-      user-select: none;
     }
-    .image-row:hover { border-color: var(--accent); background: var(--accent-dim); }
+    .image-row:hover { border-color: var(--border); background: var(--surface2); }
     .image-row.copied { border-color: var(--green); background: var(--green-dim); }
-    .image-row.copied .image-row__copied { opacity: 1; }
-
-    .image-row__thumb {
-      width: 56px; height: 40px; border-radius: 4px; overflow: hidden;
-      background: var(--surface2); flex-shrink: 0;
-    }
+    .image-row__thumb { width: 52px; height: 38px; border-radius: 4px; overflow: hidden; background: var(--surface2); }
     .image-row__thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
-
     .image-row__info { min-width: 0; }
-    .image-row__path {
-      font-size: 0.8rem; font-weight: 600; color: var(--accent);
-      font-family: 'SF Mono', 'Fira Code', Consolas, monospace;
-      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-    }
-    .image-row__meta {
-      font-size: 0.68rem; color: var(--text-dim); margin-top: 2px;
-      display: flex; gap: 8px;
-    }
-
-    .image-row__dims {
-      font-size: 0.68rem; color: var(--text-dim); white-space: nowrap;
-    }
-    .image-row__size {
-      font-size: 0.68rem; color: var(--text-dim); white-space: nowrap;
-    }
-    .image-row__savings {
-      font-size: 0.65rem; font-weight: 600; color: var(--green);
-      padding: 2px 7px; background: var(--green-dim); border-radius: 4px;
-      white-space: nowrap;
-    }
-    .image-row__savings--none { color: var(--text-dim); background: var(--surface2); }
-
+    .image-row__name { font-size: 0.8rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 2px; }
+    .image-row__path { font-size: 0.7rem; color: var(--accent); font-family: 'SF Mono', Consolas, monospace; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .image-row__meta { font-size: 0.68rem; color: var(--text-dim); white-space: nowrap; text-align: right; }
+    .image-row__savings { font-size: 0.63rem; font-weight: 700; color: var(--green); padding: 2px 7px; background: var(--green-dim); border-radius: 4px; white-space: nowrap; }
     .image-row__actions { display: flex; gap: 4px; }
-    .image-row__btn {
-      font-family: var(--font); font-size: 0.65rem; font-weight: 600;
-      padding: 4px 10px; border-radius: 5px; border: 1px solid var(--border);
-      background: none; color: var(--text-dim); cursor: pointer; transition: all 0.15s;
-      white-space: nowrap;
-    }
-    .image-row__btn:hover { border-color: var(--text-dim); color: var(--text); }
+    .image-row__btn { font-family: var(--font); font-size: 0.63rem; font-weight: 600; padding: 4px 10px; border-radius: 5px; border: 1px solid var(--border); background: none; color: var(--text-dim); cursor: pointer; transition: all 0.15s; white-space: nowrap; }
+    .image-row__btn--cmd { color: var(--yellow); border-color: rgba(251,191,36,0.3); }
+    .image-row__btn--cmd:hover { background: var(--yellow-dim); border-color: var(--yellow); }
     .image-row__btn--del:hover { border-color: var(--red); color: var(--red); }
 
-    .image-row__copied {
-      position: absolute; right: 14px; font-size: 0.7rem; font-weight: 600;
-      color: var(--green); opacity: 0; transition: opacity 0.2s; pointer-events: none;
-    }
+    /* Command modal */
+    .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 200; align-items: center; justify-content: center; padding: 20px; }
+    .modal-overlay.open { display: flex; }
+    .modal { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 28px; max-width: 700px; width: 100%; max-height: 80vh; overflow-y: auto; }
+    .modal__title { font-size: 1rem; font-weight: 700; margin-bottom: 4px; }
+    .modal__desc { font-size: 0.78rem; color: var(--text-dim); margin-bottom: 16px; line-height: 1.5; }
+    .modal__preview { display: flex; align-items: center; gap: 16px; margin-bottom: 16px; padding: 12px; background: var(--surface2); border-radius: 8px; }
+    .modal__preview-img { width: 80px; height: 60px; border-radius: 4px; object-fit: cover; }
+    .modal__preview-info { font-size: 0.75rem; color: var(--text-dim); }
+    .modal__preview-path { font-size: 0.8rem; font-weight: 600; color: var(--accent); font-family: 'SF Mono', Consolas, monospace; margin-bottom: 4px; }
+    .modal__cmd { background: #0d1117; border: 1px solid #30363d; border-radius: 8px; padding: 16px; font-family: 'SF Mono', Consolas, monospace; font-size: 0.7rem; line-height: 1.4; color: #c9d1d9; white-space: pre-wrap; word-break: break-all; max-height: 200px; overflow-y: auto; margin-bottom: 16px; }
+    .modal__btns { display: flex; gap: 8px; }
+    .modal__btn { flex: 1; font-family: var(--font); font-size: 0.82rem; font-weight: 700; padding: 12px; border-radius: 8px; border: none; cursor: pointer; transition: all 0.15s; }
+    .modal__btn--copy { background: var(--accent); color: #fff; }
+    .modal__btn--copy:hover { opacity: 0.85; }
+    .modal__btn--close { background: var(--surface2); color: var(--text-dim); border: 1px solid var(--border); }
+    .modal__btn--close:hover { color: var(--text); }
 
-    /* Empty state */
+    /* Toast */
+    .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px); background: #1a3a2a; border: 1px solid var(--green); padding: 10px 24px; border-radius: 8px; font-size: 0.8rem; font-weight: 600; color: var(--green); z-index: 999; transition: transform 0.3s ease; pointer-events: none; box-shadow: 0 8px 32px rgba(0,0,0,0.5); }
+    .toast.visible { transform: translateX(-50%) translateY(0); }
+
     .empty { text-align: center; padding: 60px 20px; color: var(--text-dim); }
     .empty__title { font-size: 0.95rem; font-weight: 600; color: var(--text); margin-bottom: 4px; }
     .empty__text { font-size: 0.78rem; }
 
-    /* Toast */
-    .toast {
-      position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px);
-      background: #1a3a2a; border: 1px solid var(--green);
-      padding: 10px 24px; border-radius: 8px; font-size: 0.8rem; font-weight: 600;
-      color: var(--green); z-index: 999; transition: transform 0.3s ease;
-      pointer-events: none; box-shadow: 0 8px 32px rgba(0,0,0,0.5);
-    }
-    .toast.visible { transform: translateX(-50%) translateY(0); }
-
-    /* Processing overlay */
-    .processing {
-      display: none; align-items: center; gap: 10px;
-      padding: 12px 20px; background: var(--accent-dim); border: 1px solid var(--accent);
-      border-radius: 8px; margin-bottom: 16px; font-size: 0.8rem; color: var(--accent);
-    }
-    .processing.active { display: flex; }
-    .processing__spinner {
-      width: 16px; height: 16px; border: 2px solid var(--accent-dim);
-      border-top-color: var(--accent); border-radius: 50%;
-      animation: spin 0.6s linear infinite;
-    }
-    @keyframes spin { to { transform: rotate(360deg); } }
-
     @media (max-width: 700px) {
       .container { padding: 20px; }
-      .image-row { grid-template-columns: 48px 1fr auto; gap: 10px; padding: 8px 10px; }
-      .image-row__dims, .image-row__savings { display: none; }
+      .steps { flex-direction: column; gap: 12px; }
+      .image-row { grid-template-columns: 44px 1fr auto; gap: 10px; }
+      .image-row__meta, .image-row__savings { display: none; }
     }
   </style>
 </head>
 <body>
-
   <div class="topbar">
     <div class="topbar__left">
       <span class="topbar__logo">Atlas Dev</span>
@@ -188,7 +133,25 @@
   <div class="container">
     <div class="hero">
       <h1 class="hero__title">Image Library</h1>
-      <p class="hero__desc">Drop images to compress &amp; store them. Click any row to copy the path for Claude Code. Download files to commit to the repo.</p>
+      <p class="hero__desc">Drop images here. They get compressed for web speed. Click a row to copy the command — paste it to Claude Code and the image goes straight into the repo.</p>
+    </div>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step__num">Step 1</div>
+        <div class="step__title">Drop Image</div>
+        <div class="step__desc">Drag any image onto this page. It auto-compresses to WebP, max 1600px.</div>
+      </div>
+      <div class="step">
+        <div class="step__num">Step 2</div>
+        <div class="step__title">Click the Row</div>
+        <div class="step__desc">Copies a shell command to your clipboard that writes the image file.</div>
+      </div>
+      <div class="step">
+        <div class="step__num">Step 3</div>
+        <div class="step__title">Paste to Claude</div>
+        <div class="step__desc">Paste the command in Claude Code. The image is committed to your repo. Done.</div>
+      </div>
     </div>
 
     <div class="dropzone" id="dropzone">
@@ -199,34 +162,35 @@
         <line x1="12" y1="3" x2="12" y2="15"/>
       </svg>
       <div class="dropzone__title">Drop images here</div>
-      <div class="dropzone__hint">or <strong>browse files</strong> — auto-compressed to WebP for fast page loads</div>
+      <div class="dropzone__hint">Auto-compressed to WebP &bull; SEO-friendly filenames &bull; Click to browse</div>
     </div>
 
-    <div class="compress-info">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-      <span>Images auto-compressed to <strong>WebP</strong> &bull; Max 1600px wide &bull; SEO-friendly filenames &bull; Ready for <strong>images/</strong> folder</span>
-    </div>
+    <div class="processing" id="processing"><div class="spinner"></div><span id="processingText">Compressing...</span></div>
 
-    <div class="processing" id="processing">
-      <div class="processing__spinner"></div>
-      <span id="processingText">Compressing images...</span>
-    </div>
-
-    <div id="statsBar" style="display:none;">
-      <div class="stats-bar">
-        <div class="stats-bar__left">
-          <span class="stats-bar__count" id="statsCount">0 images</span>
-          <span class="stats-bar__size" id="statsSize"></span>
-        </div>
-        <button class="stats-bar__btn" id="clearAllBtn">Clear All</button>
+    <div id="listHeader" style="display:none;">
+      <div class="list-header">
+        <span class="list-header__count" id="listCount"></span>
+        <button class="list-header__btn" id="clearAllBtn">Clear All</button>
       </div>
     </div>
-
     <div class="image-list" id="imageList"></div>
-
     <div class="empty" id="emptyState">
       <div class="empty__title">No images yet</div>
-      <div class="empty__text">Drop images above to start building your library</div>
+      <div class="empty__text">Drop images above to get started</div>
+    </div>
+  </div>
+
+  <!-- Command modal -->
+  <div class="modal-overlay" id="modal">
+    <div class="modal">
+      <div class="modal__title">Paste this into Claude Code</div>
+      <div class="modal__desc">This command writes the compressed image directly into your repo. Just paste it as a message to Claude.</div>
+      <div class="modal__preview" id="modalPreview"></div>
+      <div class="modal__cmd" id="modalCmd"></div>
+      <div class="modal__btns">
+        <button class="modal__btn modal__btn--copy" id="modalCopy">Copy Command</button>
+        <button class="modal__btn modal__btn--close" id="modalClose">Close</button>
+      </div>
     </div>
   </div>
 
@@ -236,325 +200,204 @@
 (function() {
   'use strict';
 
-  // ========== IndexedDB Storage ==========
-  var DB_NAME = 'atlas_images';
-  var DB_VERSION = 1;
-  var STORE_NAME = 'images';
+  var DB_NAME = 'atlas_images_v2';
+  var STORE = 'images';
   var db = null;
 
   function openDB(cb) {
     if (db) return cb(db);
-    var req = indexedDB.open(DB_NAME, DB_VERSION);
-    req.onupgradeneeded = function(e) {
-      var d = e.target.result;
-      if (!d.objectStoreNames.contains(STORE_NAME)) {
-        d.createObjectStore(STORE_NAME, { keyPath: 'id' });
-      }
-    };
-    req.onsuccess = function(e) { db = e.target.result; cb(db); };
-    req.onerror = function() { console.error('IndexedDB error'); };
+    var r = indexedDB.open(DB_NAME, 1);
+    r.onupgradeneeded = function(e) { e.target.result.createObjectStore(STORE, { keyPath: 'id' }); };
+    r.onsuccess = function(e) { db = e.target.result; cb(db); };
   }
 
-  function getAllImages(cb) {
+  function getAll(cb) {
     openDB(function(d) {
-      var tx = d.transaction(STORE_NAME, 'readonly');
-      var store = tx.objectStore(STORE_NAME);
-      var req = store.getAll();
-      req.onsuccess = function() { cb(req.result || []); };
-      req.onerror = function() { cb([]); };
+      var r = d.transaction(STORE).objectStore(STORE).getAll();
+      r.onsuccess = function() { cb(r.result || []); };
     });
   }
 
-  function putImage(img, cb) {
+  function put(img, cb) {
     openDB(function(d) {
-      var tx = d.transaction(STORE_NAME, 'readwrite');
-      tx.objectStore(STORE_NAME).put(img);
-      tx.oncomplete = function() { if (cb) cb(); };
+      var tx = d.transaction(STORE, 'readwrite');
+      tx.objectStore(STORE).put(img);
+      tx.oncomplete = cb;
     });
   }
 
-  function deleteImage(id, cb) {
+  function del(id, cb) {
     openDB(function(d) {
-      var tx = d.transaction(STORE_NAME, 'readwrite');
-      tx.objectStore(STORE_NAME).delete(id);
-      tx.oncomplete = function() { if (cb) cb(); };
+      var tx = d.transaction(STORE, 'readwrite');
+      tx.objectStore(STORE).delete(id);
+      tx.oncomplete = cb;
     });
   }
 
   function clearAll(cb) {
     openDB(function(d) {
-      var tx = d.transaction(STORE_NAME, 'readwrite');
-      tx.objectStore(STORE_NAME).clear();
-      tx.oncomplete = function() { if (cb) cb(); };
+      var tx = d.transaction(STORE, 'readwrite');
+      tx.objectStore(STORE).clear();
+      tx.oncomplete = cb;
     });
   }
 
-  // ========== Image Compression ==========
-  var MAX_WIDTH = 1600;
-  var WEBP_QUALITY = 0.82;
-
-  function compressImage(file, callback) {
+  // Compress
+  function compress(file, cb) {
     var reader = new FileReader();
     reader.onload = function(e) {
       var img = new Image();
       img.onload = function() {
-        var w = img.width;
-        var h = img.height;
-        var origSize = file.size;
-
-        // Scale down if wider than max
-        if (w > MAX_WIDTH) {
-          h = Math.round(h * (MAX_WIDTH / w));
-          w = MAX_WIDTH;
-        }
-
-        var canvas = document.createElement('canvas');
-        canvas.width = w;
-        canvas.height = h;
-        var ctx = canvas.getContext('2d');
-        ctx.drawImage(img, 0, 0, w, h);
-
-        // Try WebP first, fall back to JPEG
-        var webpUrl = canvas.toDataURL('image/webp', WEBP_QUALITY);
-        var isWebP = webpUrl.indexOf('data:image/webp') === 0;
-
-        var dataUrl, ext;
-        if (isWebP) {
-          dataUrl = webpUrl;
-          ext = 'webp';
-        } else {
-          dataUrl = canvas.toDataURL('image/jpeg', WEBP_QUALITY);
-          ext = 'jpg';
-        }
-
-        // Calculate compressed size (base64 → bytes rough estimate)
-        var compressedSize = Math.round((dataUrl.length - dataUrl.indexOf(',') - 1) * 0.75);
-
-        callback({
-          dataUrl: dataUrl,
-          width: w,
-          height: h,
-          ext: ext,
-          originalSize: origSize,
-          compressedSize: compressedSize
-        });
+        var w = img.width, h = img.height;
+        if (w > 1600) { h = Math.round(h * 1600 / w); w = 1600; }
+        var c = document.createElement('canvas');
+        c.width = w; c.height = h;
+        c.getContext('2d').drawImage(img, 0, 0, w, h);
+        var webp = c.toDataURL('image/webp', 0.82);
+        var isWebP = webp.indexOf('data:image/webp') === 0;
+        var url = isWebP ? webp : c.toDataURL('image/jpeg', 0.82);
+        var ext = isWebP ? 'webp' : 'jpg';
+        var compressed = Math.round((url.length - url.indexOf(',') - 1) * 0.75);
+        cb({ dataUrl: url, width: w, height: h, ext: ext, originalSize: file.size, compressedSize: compressed });
       };
       img.src = e.target.result;
     };
     reader.readAsDataURL(file);
   }
 
-  // ========== SEO-friendly filename ==========
-  function seoFilename(name) {
-    // Remove extension, slugify
-    var base = name.replace(/\.[^.]+$/, '');
-    return base
-      .toLowerCase()
-      .replace(/[^a-z0-9]+/g, '-')
-      .replace(/^-+|-+$/g, '')
-      .replace(/-+/g, '-')
-      || 'image';
+  function slugify(n) {
+    return n.replace(/\.[^.]+$/, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || 'image';
   }
 
-  // ========== Format bytes ==========
-  function formatBytes(b) {
-    if (b > 1048576) return (b / 1048576).toFixed(1) + ' MB';
-    return Math.round(b / 1024) + ' KB';
-  }
+  function fmtBytes(b) { return b > 1048576 ? (b/1048576).toFixed(1)+' MB' : Math.round(b/1024)+' KB'; }
 
-  // ========== Toast ==========
-  var toastTimer;
-  function showToast(msg) {
+  var toastT;
+  function toast(m) {
     var t = document.getElementById('toast');
-    t.textContent = msg;
-    t.classList.add('visible');
-    clearTimeout(toastTimer);
-    toastTimer = setTimeout(function() { t.classList.remove('visible'); }, 2000);
+    t.textContent = m; t.classList.add('visible');
+    clearTimeout(toastT); toastT = setTimeout(function() { t.classList.remove('visible'); }, 2000);
   }
 
-  // ========== Processing indicator ==========
-  var processing = document.getElementById('processing');
-  var processingText = document.getElementById('processingText');
-  var pendingCount = 0;
-
-  function showProcessing(count) {
-    pendingCount = count;
-    processingText.textContent = 'Compressing ' + count + ' image' + (count > 1 ? 's' : '') + '...';
-    processing.classList.add('active');
-  }
-
-  function tickProcessing() {
-    pendingCount--;
-    if (pendingCount <= 0) {
-      processing.classList.remove('active');
-    } else {
-      processingText.textContent = 'Compressing ' + pendingCount + ' remaining...';
-    }
-  }
-
-  // ========== Process dropped files ==========
+  // Process files
   function processFiles(files) {
-    var fileArr = Array.from(files).filter(function(f) { return f.type.startsWith('image/'); });
-    if (!fileArr.length) return;
-
-    showProcessing(fileArr.length);
+    var arr = Array.from(files).filter(function(f) { return f.type.startsWith('image/'); });
+    if (!arr.length) return;
+    var proc = document.getElementById('processing');
+    var procText = document.getElementById('processingText');
+    proc.classList.add('active');
+    procText.textContent = 'Compressing ' + arr.length + ' image' + (arr.length > 1 ? 's' : '') + '...';
     var done = 0;
-
-    fileArr.forEach(function(file) {
-      compressImage(file, function(result) {
-        var baseName = seoFilename(file.name);
-        var fileName = baseName + '.' + result.ext;
-
-        var record = {
-          id: Date.now() + '-' + Math.random().toString(36).substr(2, 8),
-          fileName: fileName,
-          folder: 'images',
-          dataUrl: result.dataUrl,
-          width: result.width,
-          height: result.height,
-          originalSize: result.originalSize,
-          compressedSize: result.compressedSize,
-          ext: result.ext,
+    arr.forEach(function(file) {
+      compress(file, function(res) {
+        var name = slugify(file.name) + '.' + res.ext;
+        var rec = {
+          id: Date.now() + '-' + Math.random().toString(36).substr(2,8),
+          fileName: name, folder: 'images',
+          dataUrl: res.dataUrl, base64: res.dataUrl.split(',')[1],
+          width: res.width, height: res.height, ext: res.ext,
+          originalSize: res.originalSize, compressedSize: res.compressedSize,
           added: new Date().toISOString()
         };
-
-        putImage(record, function() {
+        put(rec, function() {
           done++;
-          tickProcessing();
-          if (done === fileArr.length) {
+          if (done >= arr.length) {
+            proc.classList.remove('active');
             render();
-            showToast(done + ' image' + (done > 1 ? 's' : '') + ' added');
+            toast(done + ' image' + (done > 1 ? 's' : '') + ' compressed & ready');
           }
         });
       });
     });
   }
 
-  // ========== Render list ==========
+  // Render
   function render() {
-    getAllImages(function(images) {
+    getAll(function(images) {
       var list = document.getElementById('imageList');
       var empty = document.getElementById('emptyState');
-      var statsBar = document.getElementById('statsBar');
-
-      if (!images.length) {
-        list.innerHTML = '';
-        empty.style.display = '';
-        statsBar.style.display = 'none';
-        return;
-      }
-
-      // Sort newest first
+      var header = document.getElementById('listHeader');
+      if (!images.length) { list.innerHTML = ''; empty.style.display = ''; header.style.display = 'none'; return; }
       images.sort(function(a, b) { return b.added > a.added ? 1 : -1; });
-
-      empty.style.display = 'none';
-      statsBar.style.display = '';
-
-      var totalSize = 0;
-      images.forEach(function(img) { totalSize += img.compressedSize || 0; });
-      document.getElementById('statsCount').textContent = images.length + ' image' + (images.length !== 1 ? 's' : '');
-      document.getElementById('statsSize').textContent = 'Total: ' + formatBytes(totalSize);
-
+      empty.style.display = 'none'; header.style.display = '';
+      document.getElementById('listCount').textContent = images.length + ' image' + (images.length !== 1 ? 's' : '');
       list.innerHTML = images.map(function(img) {
         var path = img.folder + '/' + img.fileName;
-        var savings = img.originalSize > 0
-          ? Math.round((1 - img.compressedSize / img.originalSize) * 100)
-          : 0;
-        var savingsClass = savings > 5 ? '' : ' image-row__savings--none';
-
-        return '<div class="image-row" data-id="' + img.id + '" data-path="' + path + '">' +
+        var sav = img.originalSize > 0 ? Math.round((1 - img.compressedSize / img.originalSize) * 100) : 0;
+        return '<div class="image-row" data-id="' + img.id + '">' +
           '<div class="image-row__thumb"><img src="' + img.dataUrl + '" alt="" loading="lazy"></div>' +
-          '<div class="image-row__info">' +
-            '<div class="image-row__path">' + path + '</div>' +
-            '<div class="image-row__meta">' +
-              '<span>' + img.width + '&times;' + img.height + '</span>' +
-              '<span>' + formatBytes(img.compressedSize) + '</span>' +
-              '<span>' + (img.ext || 'webp').toUpperCase() + '</span>' +
-            '</div>' +
-          '</div>' +
-          '<span class="image-row__savings' + savingsClass + '">' + (savings > 0 ? '-' + savings + '%' : 'n/a') + '</span>' +
+          '<div class="image-row__info"><div class="image-row__name">' + img.fileName + '</div><div class="image-row__path">' + path + '</div></div>' +
+          '<div class="image-row__meta">' + img.width + '&times;' + img.height + '<br>' + fmtBytes(img.compressedSize) + '</div>' +
+          '<span class="image-row__savings">' + (sav > 0 ? '-' + sav + '%' : '~') + '</span>' +
           '<div class="image-row__actions">' +
-            '<button class="image-row__btn" data-action="download">Save</button>' +
+            '<button class="image-row__btn image-row__btn--cmd" data-action="cmd">Copy Command</button>' +
             '<button class="image-row__btn image-row__btn--del" data-action="delete">&times;</button>' +
-          '</div>' +
-        '</div>';
+          '</div></div>';
       }).join('');
     });
   }
 
-  // ========== Events ==========
+  // Show command modal
+  function showCommand(img) {
+    var path = img.folder + '/' + img.fileName;
+    var modal = document.getElementById('modal');
+    document.getElementById('modalPreview').innerHTML =
+      '<img class="modal__preview-img" src="' + img.dataUrl + '">' +
+      '<div><div class="modal__preview-path">' + path + '</div>' +
+      '<div class="modal__preview-info">' + img.width + '&times;' + img.height + ' &bull; ' + fmtBytes(img.compressedSize) + ' &bull; ' + img.ext.toUpperCase() + '</div></div>';
 
-  // Drop zone
+    // Build the command — writes base64 to file
+    var cmd = 'Please run this command to save my image to the repo:\n\n' +
+      'mkdir -p ' + img.folder + ' && echo "' + img.base64.substr(0, 60) + '..." | (full base64 data) > ' + path + '\n\n' +
+      'Actually — here is the full base64. Please decode it and save to ' + path + ':\n\n' + img.base64;
+
+    document.getElementById('modalCmd').textContent = 'Save this image to ' + path;
+    modal.classList.add('open');
+
+    // Store for copy
+    modal._copyData = 'Please save this base64-encoded ' + img.ext.toUpperCase() + ' image to ' + path + ' in the repo. Here is the base64 data:\n\n' + img.base64;
+    modal._path = path;
+  }
+
+  // Events
   var dropzone = document.getElementById('dropzone');
   var fileInput = document.getElementById('fileInput');
-
   dropzone.addEventListener('dragover', function(e) { e.preventDefault(); dropzone.classList.add('dragover'); });
   dropzone.addEventListener('dragleave', function() { dropzone.classList.remove('dragover'); });
-  dropzone.addEventListener('drop', function(e) {
-    e.preventDefault();
-    dropzone.classList.remove('dragover');
-    if (e.dataTransfer.files.length) processFiles(e.dataTransfer.files);
-  });
+  dropzone.addEventListener('drop', function(e) { e.preventDefault(); dropzone.classList.remove('dragover'); if (e.dataTransfer.files.length) processFiles(e.dataTransfer.files); });
   dropzone.addEventListener('click', function() { fileInput.click(); });
-  fileInput.addEventListener('change', function() {
-    if (fileInput.files.length) processFiles(fileInput.files);
-    fileInput.value = '';
-  });
-
-  // Full-page drop support
+  fileInput.addEventListener('change', function() { if (fileInput.files.length) processFiles(fileInput.files); fileInput.value = ''; });
   document.addEventListener('dragover', function(e) { e.preventDefault(); });
-  document.addEventListener('drop', function(e) {
-    if (e.target.closest('.dropzone')) return;
-    e.preventDefault();
-    if (e.dataTransfer.files.length) processFiles(e.dataTransfer.files);
-  });
+  document.addEventListener('drop', function(e) { if (!e.target.closest('.dropzone')) { e.preventDefault(); if (e.dataTransfer.files.length) processFiles(e.dataTransfer.files); } });
 
-  // Image list click — copy path or action buttons
   document.getElementById('imageList').addEventListener('click', function(e) {
     var row = e.target.closest('.image-row');
     if (!row) return;
     var id = row.getAttribute('data-id');
+    var btn = e.target.closest('[data-action]');
 
-    // Check if an action button was clicked
-    var actionBtn = e.target.closest('[data-action]');
-    if (actionBtn) {
-      var action = actionBtn.getAttribute('data-action');
-
-      if (action === 'download') {
-        getAllImages(function(images) {
-          var img = images.find(function(i) { return i.id === id; });
-          if (!img) return;
-          var a = document.createElement('a');
-          a.href = img.dataUrl;
-          a.download = img.fileName;
-          a.click();
-          showToast('Downloading ' + img.fileName);
-        });
-        return;
-      }
-
-      if (action === 'delete') {
-        deleteImage(id, function() { render(); showToast('Image removed'); });
-        return;
-      }
+    if (btn && btn.getAttribute('data-action') === 'delete') {
+      del(id, function() { render(); toast('Removed'); });
+      return;
     }
 
-    // Default click = copy path
-    var path = row.getAttribute('data-path');
-    navigator.clipboard.writeText(path).then(function() {
-      showToast('Copied: ' + path);
-      row.classList.add('copied');
-      setTimeout(function() { row.classList.remove('copied'); }, 1200);
+    // Default or cmd button: show command modal
+    getAll(function(images) {
+      var img = images.find(function(i) { return i.id === id; });
+      if (img) showCommand(img);
     });
   });
 
-  // Clear all
-  document.getElementById('clearAllBtn').addEventListener('click', function() {
-    if (!confirm('Remove all images?')) return;
-    clearAll(function() { render(); showToast('All images cleared'); });
+  document.getElementById('modalCopy').addEventListener('click', function() {
+    var modal = document.getElementById('modal');
+    navigator.clipboard.writeText(modal._copyData).then(function() {
+      toast('Copied! Paste this into Claude Code');
+      modal.classList.remove('open');
+    });
   });
+  document.getElementById('modalClose').addEventListener('click', function() { document.getElementById('modal').classList.remove('open'); });
+  document.getElementById('modal').addEventListener('click', function(e) { if (e.target === this) this.classList.remove('open'); });
+  document.getElementById('clearAllBtn').addEventListener('click', function() { if (confirm('Remove all images?')) clearAll(function() { render(); toast('Cleared'); }); });
 
-  // Init
   openDB(function() { render(); });
 })();
 </script>
