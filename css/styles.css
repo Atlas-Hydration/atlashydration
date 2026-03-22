@@ -4127,6 +4127,190 @@ img {
 }
 
 /* ========================================
+   Hydration Benefits Section (Cadence-style)
+   ======================================== */
+.hydration-benefits {
+  padding: 120px 0;
+  background: #ffffff;
+}
+
+.hb__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 40px;
+}
+
+.hb__card {
+  text-align: left;
+}
+
+.hb__card-image {
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+  margin-bottom: 24px;
+  border-radius: 0;
+  background: var(--color-bg-light);
+}
+
+.hb__card-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.5s ease;
+  filter: grayscale(0.15);
+}
+
+.hb__card:hover .hb__card-image img {
+  transform: scale(1.04);
+}
+
+.hb__card-title {
+  font-family: var(--font-sans);
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin-bottom: 12px;
+  letter-spacing: -0.01em;
+}
+
+.hb__card-text {
+  font-size: 0.88rem;
+  color: var(--color-text-muted);
+  line-height: 1.7;
+}
+
+@media (max-width: 768px) {
+  .hb__grid {
+    grid-template-columns: 1fr;
+    gap: 48px;
+    max-width: 500px;
+    margin: 0 auto;
+  }
+}
+
+/* ========================================
+   Electrolytes Daily Section
+   ======================================== */
+.electrolytes-daily {
+  padding: 120px 0;
+  background: var(--color-bg-light, #f7f7f5);
+}
+
+.ed__layout {
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  gap: 80px;
+  align-items: start;
+}
+
+.ed__heading {
+  font-family: var(--font-sans);
+  font-size: clamp(1.8rem, 3vw, 2.4rem);
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.025em;
+  margin-bottom: 16px;
+}
+
+.ed__intro {
+  font-size: 1rem;
+  color: var(--color-text-muted);
+  line-height: 1.7;
+  margin-bottom: 40px;
+}
+
+.ed__benefits {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.ed__benefit {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+}
+
+.ed__benefit-icon {
+  flex-shrink: 0;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-white, #fff);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  color: var(--color-primary);
+}
+
+.ed__benefit-title {
+  font-family: var(--font-sans);
+  font-size: 0.95rem;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.ed__benefit-text {
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+  line-height: 1.6;
+}
+
+.ed__visual {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  position: sticky;
+  top: 120px;
+}
+
+.ed__stat-card {
+  background: var(--color-white, #fff);
+  border: 1px solid var(--color-border);
+  border-radius: 0;
+  padding: 28px 24px;
+  text-align: center;
+  transition: border-color 0.25s ease;
+}
+
+.ed__stat-card:hover {
+  border-color: var(--color-primary);
+}
+
+.ed__stat-number {
+  font-family: var(--font-sans);
+  font-size: 2.2rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: var(--color-primary);
+  margin-bottom: 6px;
+  line-height: 1;
+}
+
+.ed__stat-label {
+  font-size: 0.78rem;
+  color: var(--color-text-muted);
+  line-height: 1.4;
+}
+
+@media (max-width: 900px) {
+  .ed__layout {
+    grid-template-columns: 1fr;
+    gap: 48px;
+  }
+  .ed__visual {
+    position: static;
+  }
+}
+
+@media (max-width: 480px) {
+  .ed__visual {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ========================================
    Blog Section
    ======================================== */
 .blog {
@@ -4138,6 +4322,11 @@ img {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 32px;
+}
+
+.blog__grid--4 {
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
 }
 
 .blog__card {
@@ -4250,8 +4439,15 @@ img {
   color: var(--color-text-dim);
 }
 
+@media (max-width: 1024px) {
+  .blog__grid--4 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
 @media (max-width: 768px) {
-  .blog__grid {
+  .blog__grid,
+  .blog__grid--4 {
     grid-template-columns: 1fr;
     max-width: 480px;
     margin: 0 auto;
