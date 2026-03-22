@@ -6199,3 +6199,384 @@ img {
     display: none;
   }
 }
+
+/* ========================================
+   SVG Animations — Wave Dividers
+   ======================================== */
+.svg-wave-divider {
+  position: absolute;
+  left: 0;
+  right: 0;
+  width: 100%;
+  height: 60px;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.svg-wave-divider--bottom {
+  bottom: -1px;
+}
+
+.svg-wave-divider--top {
+  top: -1px;
+  transform: rotate(180deg);
+}
+
+.svg-wave-divider__wave--back {
+  animation: waveDrift 8s ease-in-out infinite;
+}
+
+.svg-wave-divider__wave--front {
+  animation: waveDrift 6s ease-in-out infinite reverse;
+}
+
+@keyframes waveDrift {
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(-20px); }
+}
+
+/* ========================================
+   SVG Animations — Science Molecules
+   ======================================== */
+.science-molecules {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.science-molecule {
+  position: absolute;
+  color: #1a3a5c;
+}
+
+.science-molecule--1 {
+  top: 8%;
+  left: 5%;
+  animation: moleculeFloat 12s ease-in-out infinite;
+}
+
+.science-molecule--2 {
+  top: 15%;
+  right: 8%;
+  animation: moleculeFloat 10s ease-in-out infinite 2s;
+}
+
+.science-molecule--3 {
+  bottom: 20%;
+  left: 10%;
+  animation: moleculeFloat 14s ease-in-out infinite 4s;
+}
+
+.science-molecule--4 {
+  bottom: 10%;
+  right: 5%;
+  animation: moleculeFloat 11s ease-in-out infinite 1s;
+}
+
+.science-molecule--5 {
+  top: 50%;
+  left: 2%;
+  animation: moleculeFloat 9s ease-in-out infinite 3s;
+}
+
+.science-molecule--6 {
+  top: 40%;
+  right: 3%;
+  animation: moleculeSpin 20s linear infinite;
+}
+
+@keyframes moleculeFloat {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  25% { transform: translateY(-15px) rotate(5deg); }
+  50% { transform: translateY(-8px) rotate(-3deg); }
+  75% { transform: translateY(-20px) rotate(2deg); }
+}
+
+@keyframes moleculeSpin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* ========================================
+   SVG Animations — Line Draw
+   ======================================== */
+.svg-draw-path {
+  animation: svgLineDraw 1.2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes svgLineDraw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.svg-draw-active svg {
+  transform: scale(1);
+  animation: svgIconPop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+@keyframes svgIconPop {
+  0% { transform: scale(0.6); opacity: 0; }
+  60% { transform: scale(1.15); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+/* ========================================
+   SVG Animations — Stat Progress Rings
+   ======================================== */
+.stat-ring {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.4;
+}
+
+.ed__stat-card .ed__stat-number,
+.ed__stat-card .ed__stat-label {
+  position: relative;
+  z-index: 1;
+}
+
+/* ========================================
+   SVG Animations — Hero Particles
+   ======================================== */
+.hero-particles {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.hero-particle {
+  animation: heroParticleDrift 10s ease-in-out infinite;
+  transform-origin: center center;
+}
+
+@keyframes heroParticleDrift {
+  0% { transform: translate(0, 0) scale(1); opacity: 0; }
+  15% { opacity: 1; }
+  50% { transform: translate(30px, -40px) scale(1.3); }
+  85% { opacity: 1; }
+  100% { transform: translate(-20px, -80px) scale(0.8); opacity: 0; }
+}
+
+/* ========================================
+   SVG Animations — DNA Helix
+   ======================================== */
+.dna-helix {
+  position: absolute;
+  right: -30px;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 280px;
+  width: auto;
+  pointer-events: none;
+  color: #1a3a5c;
+  opacity: 0.6;
+}
+
+.dna-strand {
+  animation: dnaScroll 4s linear infinite;
+}
+
+.dna-strand--2 {
+  animation-delay: -2s;
+}
+
+.dna-rung {
+  animation: dnaRungPulse 3s ease-in-out infinite;
+}
+
+@keyframes dnaScroll {
+  from { stroke-dashoffset: 0; }
+  to { stroke-dashoffset: -100; }
+}
+
+.dna-strand {
+  stroke-dasharray: 10 5;
+}
+
+@keyframes dnaRungPulse {
+  0%, 100% { opacity: 0.08; }
+  50% { opacity: 0.18; }
+}
+
+/* ========================================
+   SVG Animations — Section Eyebrow Underline
+   ======================================== */
+.section-eyebrow {
+  position: relative;
+  display: inline-block;
+}
+
+.section-eyebrow::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 50%;
+  width: 0;
+  height: 2px;
+  background: var(--color-primary, #1a3a5c);
+  transition: width 0.8s cubic-bezier(0.25, 0.1, 0.25, 1), left 0.8s cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+
+.eyebrow-animated::after {
+  width: 100%;
+  left: 0;
+}
+
+/* ========================================
+   SVG Animations — Founder Illustrations
+   ======================================== */
+.founder__illus--plane.founder-illus-animate {
+  animation: founderPlane 3s ease-out forwards;
+}
+
+.founder__illus--compass.founder-illus-animate {
+  animation: founderCompass 4s ease-out forwards;
+}
+
+@keyframes founderPlane {
+  0% { opacity: 0; transform: rotate(-15deg) translate(40px, -40px); }
+  100% { opacity: 0.06; transform: rotate(-15deg) translate(0, 0); }
+}
+
+@keyframes founderCompass {
+  0% { opacity: 0; transform: rotate(0deg) scale(0.5); }
+  100% { opacity: 0.05; transform: rotate(360deg) scale(1); }
+}
+
+/* ========================================
+   SVG Animations — Blog Card Arrow
+   ======================================== */
+.blog__card-arrow {
+  margin-top: 16px;
+  display: inline-flex;
+  color: var(--color-primary, #1a3a5c);
+  opacity: 0;
+  transform: translateX(-8px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.blog__card:hover .blog__card-arrow {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.blog-arrow-circle {
+  stroke-dasharray: 113;
+  stroke-dashoffset: 113;
+  transition: stroke-dashoffset 0.5s ease;
+}
+
+.blog__card:hover .blog-arrow-circle {
+  stroke-dashoffset: 0;
+}
+
+/* ========================================
+   SVG Animations — Compare Table Rows
+   ======================================== */
+.compare-row-animate {
+  animation: compareRowSlide 0.6s cubic-bezier(0.25, 0.1, 0.25, 1) both;
+}
+
+@keyframes compareRowSlide {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* ========================================
+   SVG Animations — Hydration Benefits Cards
+   ======================================== */
+.hb-card-reveal {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 0.8s cubic-bezier(0.25, 0.1, 0.25, 1),
+              transform 0.8s cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+
+.hb-card-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ========================================
+   SVG Animations — Accordion Pulse Ring
+   ======================================== */
+.accordion-pulse-ring {
+  position: absolute;
+  left: -15px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 50px;
+  height: 50px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.science__accordion:hover .accordion-pulse-ring {
+  opacity: 1;
+}
+
+/* ========================================
+   SVG Animations — Responsive
+   ======================================== */
+@media (max-width: 768px) {
+  .svg-wave-divider {
+    height: 30px;
+  }
+
+  .science-molecules {
+    display: none;
+  }
+
+  .dna-helix {
+    display: none;
+  }
+
+  .hero-particles {
+    opacity: 0.5;
+  }
+
+  .stat-ring {
+    opacity: 0.25;
+  }
+}
+
+/* Reduce motion for accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .svg-wave-divider__wave--back,
+  .svg-wave-divider__wave--front,
+  .science-molecule,
+  .hero-particle,
+  .dna-strand,
+  .dna-rung,
+  .svg-draw-path {
+    animation: none !important;
+  }
+
+  .svg-draw-path {
+    stroke-dashoffset: 0 !important;
+  }
+
+  .hb-card-reveal {
+    opacity: 1;
+    transform: none;
+  }
+}
