@@ -1261,39 +1261,19 @@ img {
   align-items: center;
 }
 
-.cta-section__video {
+.cta-section__bg-img {
   position: absolute;
   inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
   z-index: 0;
-}
-
-.cta-section__video-wrap {
-  position: absolute;
-  inset: 0;
-  overflow: hidden;
-  z-index: 0;
-}
-
-.cta-section__video-yt {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 120vw;
-  height: 120vh;
-  min-width: 120%;
-  min-height: 120%;
-  transform: translate(-50%, -50%);
-  border: 0;
-  pointer-events: none;
 }
 
 .cta-section__overlay {
   position: absolute;
   inset: 0;
-  background: rgba(0, 0, 0, 0.55);
+  background: rgba(0, 0, 0, 0.5);
   z-index: 1;
 }
 
