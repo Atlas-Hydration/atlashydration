@@ -31,6 +31,20 @@ export const meta: MetaFunction = () => [
   { name: "theme-color", content: "#ffffff" },
 ];
 
+export function HydrateFallback() {
+  return (
+    <html lang="en">
+      <head>
+        <Meta />
+        <Links />
+      </head>
+      <body>
+        <Scripts />
+      </body>
+    </html>
+  );
+}
+
 export default function App() {
   return (
     <html lang="en">
