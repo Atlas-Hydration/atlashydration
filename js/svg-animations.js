@@ -23,12 +23,149 @@
     els.forEach(function(el) { observer.observe(el); });
   }
 
-  // ── 1. Animated SVG Wave Dividers — Realistic Flowing Water ──
-  // Uses requestAnimationFrame to animate sine-wave paths that
-  // undulate vertically AND drift horizontally like real water.
-  var activeWaves = [];
+  // ── 1. WebGL Water Wave Dividers ──
+  // Each section divider gets a <canvas> running a GLSL fragment shader
+  // that renders realistic flowing, translucent water.
+
+  var WAVE_VERT = [
+    'attribute vec2 a_pos;',
+    'void main() { gl_Position = vec4(a_pos, 0.0, 1.0); }'
+  ].join('\n');
+
+  var WAVE_FRAG = [
+    'precision mediump float;',
+    'uniform float u_time;',
+    'uniform vec2  u_res;',
+    'uniform vec3  u_color;',  // target fill color (section bg)
+    'uniform float u_flip;',   // 1.0 = bottom, -1.0 = top
+    '',
+    '// Smooth noise hash',
+    'float hash(vec2 p) {',
+    '  return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453);',
+    '}',
+    '',
+    '// Value noise',
+    'float noise(vec2 p) {',
+    '  vec2 i = floor(p);',
+    '  vec2 f = fract(p);',
+    '  f = f * f * (3.0 - 2.0 * f);',
+    '  float a = hash(i);',
+    '  float b = hash(i + vec2(1.0, 0.0));',
+    '  float c = hash(i + vec2(0.0, 1.0));',
+    '  float d = hash(i + vec2(1.0, 1.0));',
+    '  return mix(mix(a, b, f.x), mix(c, d, f.x), f.y);',
+    '}',
+    '',
+    'void main() {',
+    '  vec2 uv = gl_FragCoord.xy / u_res;',
+    '  float y = u_flip > 0.0 ? uv.y : 1.0 - uv.y;',
+    '',
+    '  // Build multiple wave layers',
+    '  float t = u_time;',
+    '  float wave = 0.0;',
+    '',
+    '  // Layer 1: broad, slow swell',
+    '  wave += sin(uv.x * 6.0 + t * 1.5) * 0.12;',
+    '  wave += sin(uv.x * 4.0 - t * 1.1 + 0.5) * 0.08;',
+    '',
+    '  // Layer 2: medium ripples',
+    '  wave += sin(uv.x * 14.0 + t * 2.5 + 1.0) * 0.04;',
+    '  wave += sin(uv.x * 10.0 - t * 1.8 + 2.0) * 0.05;',
+    '',
+    '  // Layer 3: fine surface detail via noise',
+    '  wave += noise(vec2(uv.x * 8.0 + t * 0.8, t * 0.3)) * 0.06;',
+    '  wave += noise(vec2(uv.x * 12.0 - t * 0.6, t * 0.5 + 5.0)) * 0.03;',
+    '',
+    '  // Wave threshold — position the water surface',
+    '  float surface = 0.45 + wave;',
+    '',
+    '  // Soft edge (anti-alias the water line)',
+    '  float edge = smoothstep(surface - 0.04, surface + 0.02, y);',
+    '',
+    '  // Water body with depth shading',
+    '  float depth = smoothstep(surface, 0.0, y);',
+    '',
+    '  // Caustic / light ripple on the surface',
+    '  float caustic = noise(vec2(uv.x * 20.0 + t * 1.2, y * 10.0 - t * 0.4));',
+    '  caustic = smoothstep(0.4, 0.8, caustic) * 0.15;',
+    '',
+    '  // Fresnel-like highlight at the water line',
+    '  float highlight = smoothstep(surface + 0.02, surface - 0.01, y);',
+    '  highlight *= smoothstep(surface - 0.06, surface, y);',
+    '  highlight *= 0.3 + caustic;',
+    '',
+    '  // Compose color: section bg color with water shading',
+    '  vec3 waterTint = u_color * (0.92 + depth * 0.08 + caustic);',
+    '  waterTint += highlight * vec3(0.12, 0.14, 0.16);',
+    '',
+    '  // Alpha: transparent above the wave, opaque below',
+    '  float alpha = edge;',
+    '',
+    '  gl_FragColor = vec4(waterTint, alpha);',
+    '}'
+  ].join('\n');
+
+  function createWaveGL(canvas, color, flip) {
+    var gl = canvas.getContext('webgl', { alpha: true, premultipliedAlpha: false, antialias: true });
+    if (!gl) return null;
+
+    function compileShader(type, src) {
+      var s = gl.createShader(type);
+      gl.shaderSource(s, src);
+      gl.compileShader(s);
+      if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) {
+        console.warn('Wave shader error:', gl.getShaderInfoLog(s));
+        return null;
+      }
+      return s;
+    }
+
+    var vs = compileShader(gl.VERTEX_SHADER, WAVE_VERT);
+    var fs = compileShader(gl.FRAGMENT_SHADER, WAVE_FRAG);
+    if (!vs || !fs) return null;
+
+    var prog = gl.createProgram();
+    gl.attachShader(prog, vs);
+    gl.attachShader(prog, fs);
+    gl.linkProgram(prog);
+    if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) return null;
+
+    gl.useProgram(prog);
+
+    // Full-screen quad
+    var buf = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1, 1,-1, -1,1, 1,1]), gl.STATIC_DRAW);
+
+    var aPos = gl.getAttribLocation(prog, 'a_pos');
+    gl.enableVertexAttribArray(aPos);
+    gl.vertexAttribPointer(aPos, 2, gl.FLOAT, false, 0, 0);
+
+    var uTime  = gl.getUniformLocation(prog, 'u_time');
+    var uRes   = gl.getUniformLocation(prog, 'u_res');
+    var uColor = gl.getUniformLocation(prog, 'u_color');
+    var uFlip  = gl.getUniformLocation(prog, 'u_flip');
+
+    // Parse hex color to 0-1 RGB
+    var r = parseInt(color.substring(1,3), 16) / 255;
+    var g = parseInt(color.substring(3,5), 16) / 255;
+    var b = parseInt(color.substring(5,7), 16) / 255;
+
+    gl.uniform3f(uColor, r, g, b);
+    gl.uniform1f(uFlip, flip);
+
+    gl.enable(gl.BLEND);
+    gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+
+    return { gl: gl, uTime: uTime, uRes: uRes };
+  }
+
+  var waveInstances = [];
 
   function insertWaveDividers() {
+    var reducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reducedMotion) return;
+
     var waveSections = [
       { selector: '.hero', position: 'bottom', color: '#ffffff', id: 'wave-hero' },
       { selector: '.science', position: 'top', color: '#f5f5f5', id: 'wave-science-top' },
@@ -42,37 +179,16 @@
     waveSections.forEach(function(w) {
       var section = document.querySelector(w.selector);
       if (!section) return;
-      if (section.querySelector('.svg-wave-divider--' + w.position)) return;
+      if (section.querySelector('.wave-gl-divider--' + w.position)) return;
 
       var wrapper = document.createElement('div');
-      wrapper.className = 'svg-wave-divider svg-wave-divider--' + w.position;
-      wrapper.id = w.id;
+      wrapper.className = 'wave-gl-divider wave-gl-divider--' + w.position;
       wrapper.setAttribute('aria-hidden', 'true');
 
-      // 4 wave layers with different amplitude, frequency, speed, vertical offset
-      var layers = [
-        { opacity: 0.15, amplitude: 12, frequency: 0.004, speed: 1.8,  yBase: 25 },
-        { opacity: 0.25, amplitude: 10, frequency: 0.006, speed: -1.3, yBase: 32 },
-        { opacity: 0.4,  amplitude: 8,  frequency: 0.005, speed: 1.0,  yBase: 40 },
-        { opacity: 1.0,  amplitude: 6,  frequency: 0.007, speed: -0.7, yBase: 48 }
-      ];
+      var canvas = document.createElement('canvas');
+      canvas.className = 'wave-gl-canvas';
+      wrapper.appendChild(canvas);
 
-      var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-      svg.setAttribute('class', 'wave-layer');
-      svg.setAttribute('viewBox', '0 0 1440 80');
-      svg.setAttribute('preserveAspectRatio', 'none');
-
-      var paths = [];
-
-      layers.forEach(function(layer) {
-        var path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-        path.setAttribute('fill', w.color);
-        path.setAttribute('opacity', layer.opacity);
-        svg.appendChild(path);
-        paths.push({ el: path, cfg: layer, phase: Math.random() * Math.PI * 2 });
-      });
-
-      wrapper.appendChild(svg);
       section.style.position = section.style.position || 'relative';
       if (w.position === 'top') {
         section.insertBefore(wrapper, section.firstChild);
@@ -80,59 +196,47 @@
         section.appendChild(wrapper);
       }
 
-      activeWaves.push({ paths: paths });
+      var flip = w.position === 'bottom' ? 1.0 : -1.0;
+      var inst = createWaveGL(canvas, w.color, flip);
+      if (inst) {
+        inst.canvas = canvas;
+        inst.wrapper = wrapper;
+        waveInstances.push(inst);
+      }
     });
 
-    // Single rAF loop drives all waves
-    var reducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    // Resize all canvases
+    function resizeAll() {
+      waveInstances.forEach(function(inst) {
+        var rect = inst.wrapper.getBoundingClientRect();
+        var dpr = Math.min(window.devicePixelRatio || 1, 2);
+        inst.canvas.width = rect.width * dpr;
+        inst.canvas.height = rect.height * dpr;
+        inst.gl.viewport(0, 0, inst.canvas.width, inst.canvas.height);
+        inst.gl.uniform2f(inst.uRes, inst.canvas.width, inst.canvas.height);
+      });
+    }
 
-    if (activeWaves.length && !window._waveAnimRunning) {
-      window._waveAnimRunning = true;
-      var startTime = performance.now();
+    resizeAll();
+    window.addEventListener('resize', resizeAll);
 
-      // Draw one static frame for reduced-motion users
-      function drawStatic() {
-        activeWaves.forEach(function(wave) {
-          wave.paths.forEach(function(p) {
-            var cfg = p.cfg;
-            var points = '';
-            for (var x = 0; x <= 1440; x += 20) {
-              var y = cfg.yBase + Math.sin(x * cfg.frequency + p.phase) * cfg.amplitude;
-              points += (x === 0 ? 'M' : 'L') + x + ',' + y.toFixed(1) + ' ';
-            }
-            p.el.setAttribute('d', points + 'L1440,80 L0,80 Z');
-          });
+    // Animation loop
+    if (waveInstances.length && !window._waveGLRunning) {
+      window._waveGLRunning = true;
+      var start = performance.now();
+
+      function frame(now) {
+        var t = (now - start) / 1000;
+        waveInstances.forEach(function(inst) {
+          inst.gl.uniform1f(inst.uTime, t);
+          inst.gl.clearColor(0, 0, 0, 0);
+          inst.gl.clear(inst.gl.COLOR_BUFFER_BIT);
+          inst.gl.drawArrays(inst.gl.TRIANGLE_STRIP, 0, 4);
         });
+        requestAnimationFrame(frame);
       }
 
-      if (reducedMotion) {
-        drawStatic();
-        return;
-      }
-
-      function tick(now) {
-        var t = (now - startTime) / 1000;
-
-        activeWaves.forEach(function(wave) {
-          wave.paths.forEach(function(p) {
-            var cfg = p.cfg;
-            var points = '';
-
-            for (var x = 0; x <= 1440; x += 20) {
-              var y = cfg.yBase
-                + Math.sin(x * cfg.frequency + t * cfg.speed + p.phase) * cfg.amplitude
-                + Math.sin(x * cfg.frequency * 0.5 + t * cfg.speed * 1.3 + p.phase + 1.5) * (cfg.amplitude * 0.4);
-              points += (x === 0 ? 'M' : 'L') + x + ',' + y.toFixed(1) + ' ';
-            }
-
-            p.el.setAttribute('d', points + 'L1440,80 L0,80 Z');
-          });
-        });
-
-        requestAnimationFrame(tick);
-      }
-
-      requestAnimationFrame(tick);
+      requestAnimationFrame(frame);
     }
   }
 

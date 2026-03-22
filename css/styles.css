@@ -6201,32 +6201,29 @@ img {
 }
 
 /* ========================================
-   SVG Animations — Flowing Water Wave Dividers
+   WebGL Water Wave Dividers
    ======================================== */
-.svg-wave-divider {
+.wave-gl-divider {
   position: absolute;
   left: 0;
   right: 0;
   width: 100%;
-  height: 80px;
+  height: 120px;
   z-index: 2;
   pointer-events: none;
   overflow: hidden;
 }
 
-.svg-wave-divider--bottom {
+.wave-gl-divider--bottom {
   bottom: -1px;
 }
 
-.svg-wave-divider--top {
+.wave-gl-divider--top {
   top: -1px;
-  transform: scaleY(-1);
 }
 
-.wave-layer {
-  position: absolute;
-  left: 0;
-  top: 0;
+.wave-gl-canvas {
+  display: block;
   width: 100%;
   height: 100%;
 }
@@ -6534,8 +6531,8 @@ img {
    SVG Animations — Responsive
    ======================================== */
 @media (max-width: 768px) {
-  .svg-wave-divider {
-    height: 40px;
+  .wave-gl-divider {
+    height: 60px;
   }
 
   .science-molecules {
@@ -6557,7 +6554,10 @@ img {
 
 /* Reduce motion for accessibility */
 @media (prefers-reduced-motion: reduce) {
-  .wave-layer,
+  .wave-gl-divider {
+    display: none;
+  }
+
   .science-molecule,
   .hero-particle,
   .dna-strand,
