@@ -6223,28 +6223,7 @@ img {
    WebGL Water Wave Dividers
    ======================================== */
 .wave-gl-divider {
-  position: absolute;
-  left: 0;
-  right: 0;
-  width: 100%;
-  height: 140px;
-  z-index: 2;
-  pointer-events: none;
-  overflow: hidden;
-}
-
-.wave-gl-divider--bottom {
-  bottom: -1px;
-}
-
-.wave-gl-divider--top {
-  top: -1px;
-}
-
-.wave-gl-canvas {
-  display: block;
-  width: 100%;
-  height: 100%;
+  display: none;
 }
 
 /* ========================================
