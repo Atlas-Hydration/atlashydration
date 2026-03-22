@@ -6509,10 +6509,6 @@ img {
    SVG Animations — Responsive
    ======================================== */
 @media (max-width: 768px) {
-  .wave-gl-divider {
-    height: 60px;
-  }
-
   .science-molecules {
     display: none;
   }
@@ -6532,10 +6528,6 @@ img {
 
 /* Reduce motion for accessibility */
 @media (prefers-reduced-motion: reduce) {
-  .wave-gl-divider {
-    display: none;
-  }
-
   .science-molecule,
   .hero-particle,
   .dna-strand,
