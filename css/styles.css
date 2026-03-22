@@ -5915,45 +5915,50 @@ img {
   left: 0;
   right: 0;
   z-index: 999;
-  background: var(--sticky-flavor);
+  /* Liquid glass: translucent white + blur */
+  background: rgba(255, 255, 255, 0.45);
+  -webkit-backdrop-filter: blur(24px) saturate(1.6);
+  backdrop-filter: blur(24px) saturate(1.6);
+  border-top: 1px solid rgba(255, 255, 255, 0.5);
+  box-shadow:
+    0 -4px 32px rgba(0, 0, 0, 0.08),
+    0 -1px 0 rgba(255, 255, 255, 0.6) inset,
+    0 2px 12px rgba(0, 0, 0, 0.04) inset;
   overflow: hidden;
   transform: translateY(100%);
-  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-  padding: 0 0 0 0;
+  transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+  padding: 0;
 }
 
 .sticky-buy--strawberry { --sticky-flavor: #e85d75; }
 .sticky-buy--lemon-lime { --sticky-flavor: #5a9e2f; }
 .sticky-buy--grapefruit { --sticky-flavor: #e8922a; }
 
-/* Animated wave on top edge */
+/* Hide old wave SVGs — replaced by glass edge */
 .sticky-buy__wave {
+  display: none;
+}
+
+/* Liquid glass top edge highlight */
+.sticky-buy::before {
+  content: '';
   position: absolute;
-  top: -18px;
+  top: 0;
   left: 0;
-  width: 200%;
-  height: 24px;
-  pointer-events: none;
-  animation: stickyWaveSlide 6s linear infinite;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.8) 20%,
+    rgba(255, 255, 255, 0.95) 50%,
+    rgba(255, 255, 255, 0.8) 80%,
+    transparent 100%
+  );
+  z-index: 3;
 }
 
-.sticky-buy__wave path {
-  fill: var(--sticky-flavor);
-}
-
-/* Second wave layer for depth */
-.sticky-buy__wave--back {
-  top: -12px;
-  opacity: 0.4;
-  animation: stickyWaveSlide 8s linear infinite reverse;
-}
-
-@keyframes stickyWaveSlide {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
-}
-
-/* Bubble particles */
+/* Bubble particles — now glass-tinted */
 .sticky-buy__bubbles {
   position: absolute;
   inset: 0;
@@ -5967,7 +5972,8 @@ img {
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.5);
+  box-shadow: 0 0 4px rgba(255, 255, 255, 0.3);
   animation: stickyBubbleRise 3s ease-in infinite;
 }
 
@@ -5982,10 +5988,10 @@ img {
 @keyframes stickyBubbleRise {
   0% {
     transform: translateY(0) scale(1);
-    opacity: 0.35;
+    opacity: 0.4;
   }
   60% {
-    opacity: 0.25;
+    opacity: 0.2;
   }
   100% {
     transform: translateY(-55px) scale(0.4);
@@ -5993,34 +5999,36 @@ img {
   }
 }
 
-/* Shimmer light sweep */
+/* Shimmer light sweep — glass refraction effect */
 .sticky-buy::after {
   content: '';
   position: absolute;
   top: 0;
   left: -100%;
-  width: 60%;
+  width: 50%;
   height: 100%;
   background: linear-gradient(
     105deg,
     transparent 30%,
-    rgba(255, 255, 255, 0.12) 50%,
+    rgba(255, 255, 255, 0.25) 45%,
+    rgba(255, 255, 255, 0.4) 50%,
+    rgba(255, 255, 255, 0.25) 55%,
     transparent 70%
   );
-  animation: stickyShimmer 4s ease-in-out infinite;
+  animation: stickyShimmer 5s ease-in-out infinite;
   pointer-events: none;
+  z-index: 1;
 }
 
 @keyframes stickyShimmer {
   0%, 100% { left: -100%; }
-  50% { left: 140%; }
+  50% { left: 150%; }
 }
 
 .sticky-buy.visible {
   transform: translateY(0);
 }
 
-/* Hide on scroll down */
 .sticky-buy.visible.sticky-buy--hidden {
   transform: translateY(100%);
 }
@@ -6045,13 +6053,16 @@ img {
 }
 
 .sticky-buy__thumb {
-  width: 44px;
-  height: 44px;
-  border-radius: 10px;
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
   object-fit: cover;
-  border: 2px solid rgba(255, 255, 255, 0.35);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  border: 2px solid rgba(255, 255, 255, 0.7);
+  box-shadow:
+    0 2px 12px rgba(0, 0, 0, 0.1),
+    0 0 0 1px rgba(255, 255, 255, 0.3);
   flex-shrink: 0;
+  background: rgba(255, 255, 255, 0.5);
 }
 
 .sticky-buy__info {
@@ -6064,15 +6075,14 @@ img {
   font-family: var(--font-sans);
   font-weight: 700;
   font-size: 0.95rem;
-  color: #ffffff;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+  color: var(--sticky-flavor);
 }
 
 .sticky-buy__price {
   font-family: var(--font-sans);
   font-size: 0.85rem;
-  color: rgba(255, 255, 255, 0.85);
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  color: rgba(0, 0, 0, 0.55);
+  font-weight: 500;
 }
 
 .sticky-buy__tag {
@@ -6083,10 +6093,13 @@ img {
   text-transform: uppercase;
   letter-spacing: 0.08em;
   color: var(--sticky-flavor);
-  background: rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 0.6);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
   padding: 3px 8px;
   border-radius: 4px;
   line-height: 1;
+  border: 1px solid rgba(255, 255, 255, 0.4);
 }
 
 /* Flavor switcher dots in sticky bar */
@@ -6098,13 +6111,14 @@ img {
 }
 
 .sticky-buy__flavor-dot {
-  width: 22px;
-  height: 22px;
+  width: 24px;
+  height: 24px;
   border-radius: 50%;
-  border: 2px solid rgba(255, 255, 255, 0.4);
+  border: 2px solid rgba(0, 0, 0, 0.1);
   cursor: pointer;
   transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
   position: relative;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
   padding: 0;
 }
 
@@ -6113,22 +6127,24 @@ img {
 .sticky-buy__flavor-dot--lemon-lime { background: #8bc34a; }
 
 .sticky-buy__flavor-dot.active {
-  border-color: #ffffff;
+  border-color: var(--sticky-flavor);
   transform: scale(1.15);
-  box-shadow: 0 0 8px rgba(255, 255, 255, 0.4);
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
 }
 
 .sticky-buy__flavor-dot:hover:not(.active) {
   transform: scale(1.1);
-  border-color: rgba(255, 255, 255, 0.7);
+  border-color: rgba(0, 0, 0, 0.25);
 }
 
-/* Buy Now button — bold with animated gradient border */
+/* Buy Now button — liquid glass pill */
 .sticky-buy__btn {
   position: relative;
-  background: #ffffff;
+  background: rgba(255, 255, 255, 0.7);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
   color: var(--sticky-flavor);
-  border: none;
+  border: 1px solid rgba(255, 255, 255, 0.6);
   padding: 14px 36px;
   font-family: var(--font-sans);
   font-weight: 800;
@@ -6138,9 +6154,11 @@ img {
   border-radius: 50px;
   cursor: pointer;
   white-space: nowrap;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  box-shadow:
+    0 4px 16px rgba(0, 0, 0, 0.08),
+    0 1px 0 rgba(255, 255, 255, 0.9) inset;
   overflow: hidden;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
   z-index: 1;
   flex-shrink: 0;
 }
@@ -6148,12 +6166,15 @@ img {
 .sticky-buy__btn::before {
   content: '';
   position: absolute;
-  inset: -2px;
-  border-radius: 52px;
-  background: linear-gradient(135deg, rgba(255,255,255,0.8), rgba(255,255,255,0.2), rgba(255,255,255,0.8));
-  background-size: 200% 200%;
-  animation: btnShine 3s ease-in-out infinite;
-  z-index: -1;
+  inset: 0;
+  border-radius: 50px;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.5) 0%,
+    rgba(255, 255, 255, 0.0) 50%,
+    rgba(255, 255, 255, 0.3) 100%
+  );
+  pointer-events: none;
 }
 
 .sticky-buy__btn::after {
@@ -6163,24 +6184,22 @@ img {
   left: -100%;
   width: 50%;
   height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
-  animation: btnGlint 3s ease-in-out infinite;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent);
+  animation: btnGlint 4s ease-in-out infinite;
   z-index: 1;
 }
 
-@keyframes btnShine {
-  0%, 100% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-}
-
 @keyframes btnGlint {
-  0%, 80% { left: -100%; }
+  0%, 75% { left: -100%; }
   100% { left: 200%; }
 }
 
 .sticky-buy__btn:hover {
-  transform: scale(1.06);
-  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.3);
+  transform: scale(1.04);
+  background: rgba(255, 255, 255, 0.85);
+  box-shadow:
+    0 6px 24px rgba(0, 0, 0, 0.1),
+    0 1px 0 rgba(255, 255, 255, 1) inset;
 }
 
 .sticky-buy__btn:active {
