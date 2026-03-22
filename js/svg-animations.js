@@ -93,49 +93,58 @@
     }, { threshold: 0.5 });
   }
 
-  // ── 4. Animated Circular Progress Rings for Stat Cards ──
+  // ── 4. Animated Stat Cards — Count Up + Staggered Reveal ──
   function insertProgressRings() {
     var statCards = document.querySelectorAll('.ed__stat-card');
     if (!statCards.length) return;
 
-    var ringData = [
-      { percent: 75, color: '#1a3a5c' },   // 75% dehydrated
-      { percent: 100, color: '#1a3a5c' },  // 1300mg = max
-      { percent: 0, color: '#22c55e' },     // 0g sugar = 0% on gauge (good)
-      { percent: 5, color: '#1a3a5c' }      // 5 calories
-    ];
-
-    statCards.forEach(function(card, i) {
-      if (card.querySelector('.stat-ring')) return;
-      var data = ringData[i] || { percent: 50, color: '#1a3a5c' };
-
-      var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-      svg.setAttribute('class', 'stat-ring');
-      svg.setAttribute('viewBox', '0 0 120 120');
-      svg.setAttribute('aria-hidden', 'true');
-
-      var circumference = 2 * Math.PI * 50;
-      var offset = circumference - (data.percent / 100) * circumference;
-
-      svg.innerHTML =
-        '<circle class="stat-ring__bg" cx="60" cy="60" r="50" fill="none" stroke="#e5e5e5" stroke-width="3"/>' +
-        '<circle class="stat-ring__fill" cx="60" cy="60" r="50" fill="none" stroke="' + data.color + '" stroke-width="4" stroke-linecap="round" stroke-dasharray="' + circumference + '" stroke-dashoffset="' + circumference + '" data-target-offset="' + offset + '" transform="rotate(-90 60 60)" opacity="0.25"/>';
-
-      card.style.position = 'relative';
-      card.insertBefore(svg, card.firstChild);
+    // Set bar widths from data attributes
+    statCards.forEach(function(card) {
+      var barFill = card.querySelector('.ed__stat-bar-fill');
+      if (barFill) {
+        var w = barFill.getAttribute('data-width') || 0;
+        card.style.setProperty('--bar-width', w + '%');
+      }
     });
 
-    // Animate on scroll
-    onReveal('.ed__stat-card', function(card) {
-      var fill = card.querySelector('.stat-ring__fill');
-      if (fill) {
-        var targetOffset = fill.getAttribute('data-target-offset');
-        fill.style.transition = 'stroke-dashoffset 1.5s cubic-bezier(0.4, 0, 0.2, 1)';
-        requestAnimationFrame(function() {
-          fill.setAttribute('stroke-dashoffset', targetOffset);
-        });
+    // Count-up animation
+    function animateCount(el) {
+      var target = parseInt(el.getAttribute('data-count'), 10);
+      var suffix = el.getAttribute('data-suffix') || '';
+      var useComma = el.getAttribute('data-format') === 'comma';
+      var duration = 1200;
+      var start = performance.now();
+
+      function tick(now) {
+        var elapsed = now - start;
+        var progress = Math.min(elapsed / duration, 1);
+        // Ease out cubic
+        var eased = 1 - Math.pow(1 - progress, 3);
+        var current = Math.round(eased * target);
+        var display = useComma ? current.toLocaleString() : String(current);
+        el.textContent = display + suffix;
+        if (progress < 1) requestAnimationFrame(tick);
       }
-    }, { threshold: 0.4 });
+
+      requestAnimationFrame(tick);
+    }
+
+    // Staggered reveal on scroll
+    var observer = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (!entry.isIntersecting) return;
+        var card = entry.target;
+        var delay = parseInt(card.getAttribute('data-stat-delay') || '0', 10);
+        setTimeout(function() {
+          card.classList.add('ed__stat-card--visible');
+          var numberEl = card.querySelector('.ed__stat-number[data-count]');
+          if (numberEl) animateCount(numberEl);
+        }, delay);
+        observer.unobserve(card);
+      });
+    }, { threshold: 0.3 });
+
+    statCards.forEach(function(card) { observer.observe(card); });
   }
 
   // ── 5. Hero Section Animated SVG Particles ──
