@@ -39,6 +39,8 @@ jobs:
           # Copy blog, dashboard, and other static HTML pages to build output
           cp -r blog build/client/ 2>/dev/null || true
           cp -r dashboard build/client/ 2>/dev/null || true
+          # Also serve dashboard at /app/ for backwards compatibility
+          cp -r dashboard build/client/app 2>/dev/null || true
           cp -r cloudflare-worker build/client/ 2>/dev/null || true
           cp shipping.html build/client/ 2>/dev/null || true
           cp privacy.html build/client/ 2>/dev/null || true
