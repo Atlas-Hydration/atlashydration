@@ -1388,20 +1388,6 @@ img {
   margin-bottom: 20px;
 }
 
-.footer__social {
-  display: flex;
-  gap: 16px;
-}
-
-.footer__social a {
-  color: rgba(255,255,255,0.4);
-  transition: color var(--transition);
-}
-
-.footer__social a:hover {
-  color: #ffffff;
-}
-
 .footer__links h4 {
   font-size: 0.8rem;
   font-weight: 700;
@@ -1411,30 +1397,9 @@ img {
   margin-bottom: 16px;
 }
 
-.footer__links nav {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.footer__links a {
-  font-size: 0.875rem;
-  color: rgba(255,255,255,0.5);
-  transition: color var(--transition);
-}
-
-.footer__links a:hover {
-  color: #ffffff;
-}
-
 .footer .logo-text--footer {
   color: #ffffff;
 }
-.footer__logo-img {
-  height: 24px;
-  width: auto;
-}
-
 .footer__bottom {
   border-top: 1px solid rgba(255,255,255,0.1);
   padding-top: 24px;
@@ -2432,32 +2397,33 @@ img {
 }
 
 /* ========================================
-   Product Gallery
+   Product Gallery — LMNT-style main + thumbs
    ======================================== */
 .product-gallery {
   position: relative;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .product-gallery__main {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 0;
-  margin-bottom: 0;
   position: relative;
+  margin-bottom: 12px;
+  overflow: hidden;
+  border-radius: 8px;
 }
 
 .product-gallery__slide {
-  display: flex;
+  display: none;
   width: 100%;
   aspect-ratio: 4 / 5;
   align-items: center;
   justify-content: center;
   position: relative;
-  border-radius: 0;
   overflow: hidden;
   background: var(--color-bg-light);
-  border: none;
+}
+
+.product-gallery__slide.active {
+  display: flex;
 }
 
 .product-gallery__slide img {
@@ -2627,30 +2593,38 @@ img {
 
 /* Thumbnails */
 .product-gallery__thumbs {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+.product-gallery__thumbs::-webkit-scrollbar {
   display: none;
 }
 
 .product-gallery__thumb {
-  aspect-ratio: 1;
-  border-radius: 0;
+  flex: 0 0 auto;
+  width: 72px;
+  height: 72px;
+  border-radius: 6px;
   overflow: hidden;
   cursor: pointer;
   border: 2px solid transparent;
-  transition: all var(--transition);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 8px;
-  opacity: 0.5;
+  transition: all 0.2s ease;
+  padding: 0;
+  opacity: 0.6;
+  background: var(--color-bg-light);
 }
 
 .product-gallery__thumb:hover {
-  opacity: 0.8;
+  opacity: 0.9;
   border-color: var(--color-border);
 }
 
 .product-gallery__thumb.active {
-  border-color: rgba(44, 95, 138, 0.4);
+  border-color: var(--color-primary, #2c5f8a);
   opacity: 1;
 }
 
@@ -2658,65 +2632,11 @@ img {
   outline: none;
 }
 
-.product-gallery__thumb--strawberry {
-  background: linear-gradient(135deg, #fef2f4, #fce4e8);
-}
-
-.product-gallery__thumb--lemon {
-  background: linear-gradient(135deg, #f5fce8, #eef9d6);
-}
-
-.product-gallery__thumb--brand {
-  background: linear-gradient(135deg, #1a1a1a, #2a2a2a);
-}
-
-.product-gallery__thumb--ingredients {
-  background: var(--color-bg-light);
-}
-
-.product-gallery__thumb--lifestyle {
-  background: var(--color-bg-light);
-}
-
-.product-gallery__thumb .sachet {
-  width: 30px;
-  animation: none;
-  filter: drop-shadow(0 2px 6px rgba(0,0,0,0.1));
-}
-
-.product-gallery__thumb .sachet__top {
-  height: 6px;
-  border-bottom-width: 1px;
-}
-
-.product-gallery__thumb .sachet__body {
-  min-height: 36px;
-  padding: 4px 3px;
-  gap: 1px;
-}
-
-.product-gallery__thumb .sachet__brand {
-  font-size: 0.35rem;
-}
-
-.product-gallery__thumb .sachet__flavor,
-.product-gallery__thumb .sachet__info {
-  display: none;
-}
-
-.product-gallery__thumb-icon {
-  color: var(--color-text-muted);
-}
-
-.product-gallery__thumb-label {
-  font-size: 0.5rem;
-  color: var(--color-text-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  font-weight: 600;
-  margin-top: 2px;
-  text-align: center;
-  line-height: 1.2;
+.product-gallery__thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 }
 
 /* ========================================
@@ -2850,12 +2770,6 @@ img {
   }
 }
 
-/* Water fill effect removed — clean Promix-style buttons */
-
-/* ========================================
-   Scroll Snap
-   ======================================== */
-/* Scroll snap removed for smoother browsing */
 
 /* ========================================
    WebGL Canvas
@@ -3627,18 +3541,7 @@ img {
   color: rgba(255,255,255,0.7);
 }
 
-@media (max-width: 600px) {
-  .popup__percent {
-    font-size: 4rem;
-  }
-  .popup {
-    padding: 0 20px;
-  }
-  .popup__close {
-    top: 16px;
-    right: 16px;
-  }
-}
+/* 600px popup overrides removed — identical rules exist in the 768px breakpoint */
 
 /* ========================================
    Animations
@@ -3797,40 +3700,35 @@ img {
 .featured-product__image {
   position: relative;
   border-radius: 0;
-  overflow: hidden;
-  background: var(--color-bg-light);
-  aspect-ratio: 4 / 5;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.featured-product__image img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+  overflow: visible;
+  background: transparent;
 }
 
 /* Featured product gallery */
 .fp-gallery {
   position: relative;
   width: 100%;
-  height: 100%;
-  overflow: hidden;
+  overflow: visible;
 }
 
-.fp-gallery__track {
-  display: flex;
+.fp-gallery__main {
+  position: relative;
   width: 100%;
-  height: 100%;
-  transition: transform 0.45s cubic-bezier(0.25, 0.1, 0.25, 1);
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  border-radius: 8px;
+  margin-bottom: 12px;
 }
 
 .fp-gallery__slide {
-  flex: 0 0 100%;
+  display: none;
   width: 100%;
   height: 100%;
   object-fit: cover;
+}
+
+.fp-gallery__slide.active {
+  display: block;
 }
 
 .fp-gallery__arrow {
@@ -3861,37 +3759,45 @@ img {
 .fp-gallery__arrow--prev { left: 12px; }
 .fp-gallery__arrow--next { right: 12px; }
 
-.fp-gallery__dots {
-  position: absolute;
-  bottom: 16px;
-  left: 50%;
-  transform: translateX(-50%);
+.fp-gallery__thumbs {
   display: flex;
-  gap: 10px;
-  z-index: 2;
-  background: rgba(0, 0, 0, 0.3);
-  padding: 6px 12px;
-  border-radius: 20px;
+  gap: 8px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
 }
 
-.fp-gallery__dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  border: none;
-  background: rgba(255, 255, 255, 0.5);
+.fp-gallery__thumbs::-webkit-scrollbar { display: none; }
+
+.fp-gallery__thumb {
+  flex: 0 0 auto;
+  width: 72px;
+  height: 72px;
+  border-radius: 6px;
+  overflow: hidden;
   cursor: pointer;
+  border: 2px solid transparent;
+  transition: all 0.2s ease;
   padding: 0;
-  transition: background 0.3s ease, box-shadow 0.3s ease;
+  opacity: 0.6;
+  background: var(--color-bg-light, #f7f7f5);
 }
 
-.fp-gallery__dot:hover {
-  background: rgba(255, 255, 255, 0.8);
+.fp-gallery__thumb:hover {
+  opacity: 0.9;
+  border-color: rgba(0,0,0,0.15);
 }
 
-.fp-gallery__dot.active {
-  background: #ffffff;
-  box-shadow: 0 0 6px rgba(255, 255, 255, 0.8), 0 0 14px rgba(255, 255, 255, 0.4);
+.fp-gallery__thumb.active {
+  border-color: var(--color-primary, #2c5f8a);
+  opacity: 1;
+}
+
+.fp-gallery__thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 }
 
 .featured-product__info {
@@ -4122,10 +4028,6 @@ img {
   opacity: 0.4;
 }
 
-.hero__content {
-  z-index: 2;
-}
-
 /* Old popup overrides removed — styles now in main popup block above */
 
 /* ========================================
@@ -4224,9 +4126,188 @@ img {
   z-index: 0;
 }
 
-.cta-dark__inner {
-  position: relative;
-  z-index: 1;
+/* ========================================
+   Hydration Benefits Section (Cadence-style)
+   ======================================== */
+.hydration-benefits {
+  padding: 120px 0;
+  background: #ffffff;
+}
+
+.hb__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 40px;
+}
+
+.hb__card {
+  text-align: left;
+}
+
+.hb__card-image {
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+  margin-bottom: 24px;
+  border-radius: 0;
+  background: var(--color-bg-light);
+}
+
+.hb__card-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.5s ease;
+  filter: grayscale(0.15);
+}
+
+.hb__card:hover .hb__card-image img {
+  transform: scale(1.04);
+}
+
+.hb__card-title {
+  font-family: var(--font-sans);
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin-bottom: 12px;
+  letter-spacing: -0.01em;
+}
+
+.hb__card-text {
+  font-size: 0.88rem;
+  color: var(--color-text-muted);
+  line-height: 1.7;
+}
+
+@media (max-width: 768px) {
+  .hb__grid {
+    grid-template-columns: 1fr;
+    gap: 48px;
+    max-width: 500px;
+    margin: 0 auto;
+  }
+}
+
+/* ========================================
+   Electrolytes Daily Section
+   ======================================== */
+.electrolytes-daily {
+  padding: 120px 0;
+  background: var(--color-bg-light, #f7f7f5);
+}
+
+.ed__layout {
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  gap: 80px;
+  align-items: start;
+}
+
+.ed__heading {
+  font-family: var(--font-sans);
+  font-size: clamp(1.8rem, 3vw, 2.4rem);
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.025em;
+  margin-bottom: 16px;
+}
+
+.ed__intro {
+  font-size: 1rem;
+  color: var(--color-text-muted);
+  line-height: 1.7;
+  margin-bottom: 40px;
+}
+
+.ed__benefits {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.ed__benefit {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+}
+
+.ed__benefit-icon {
+  flex-shrink: 0;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-white, #fff);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  color: var(--color-primary);
+}
+
+.ed__benefit-title {
+  font-family: var(--font-sans);
+  font-size: 0.95rem;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.ed__benefit-text {
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+  line-height: 1.6;
+}
+
+.ed__visual {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  position: sticky;
+  top: 120px;
+}
+
+.ed__stat-card {
+  background: var(--color-white, #fff);
+  border: 1px solid var(--color-border);
+  border-radius: 0;
+  padding: 28px 24px;
+  text-align: center;
+  transition: border-color 0.25s ease;
+}
+
+.ed__stat-card:hover {
+  border-color: var(--color-primary);
+}
+
+.ed__stat-number {
+  font-family: var(--font-sans);
+  font-size: 2.2rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: var(--color-primary);
+  margin-bottom: 6px;
+  line-height: 1;
+}
+
+.ed__stat-label {
+  font-size: 0.78rem;
+  color: var(--color-text-muted);
+  line-height: 1.4;
+}
+
+@media (max-width: 900px) {
+  .ed__layout {
+    grid-template-columns: 1fr;
+    gap: 48px;
+  }
+  .ed__visual {
+    position: static;
+  }
+}
+
+@media (max-width: 480px) {
+  .ed__visual {
+    grid-template-columns: 1fr;
+  }
 }
 
 /* ========================================
@@ -4241,6 +4322,11 @@ img {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 32px;
+}
+
+.blog__grid--4 {
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
 }
 
 .blog__card {
@@ -4353,8 +4439,15 @@ img {
   color: var(--color-text-dim);
 }
 
+@media (max-width: 1024px) {
+  .blog__grid--4 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
 @media (max-width: 768px) {
-  .blog__grid {
+  .blog__grid,
+  .blog__grid--4 {
     grid-template-columns: 1fr;
     max-width: 480px;
     margin: 0 auto;
@@ -4719,15 +4812,6 @@ img {
     align-items: center;
   }
 
-  .how-it-works {
-    padding: 80px 0;
-  }
-
-  .how-it-works__grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 24px;
-  }
-
   .how-it-works__number {
     font-size: 2.5rem;
   }
@@ -4845,39 +4929,10 @@ img {
     flex-wrap: wrap;
   }
 
-  /* Product gallery */
-  .product-gallery__main {
-    grid-template-columns: 1fr 1fr;
-    gap: 6px;
-  }
-
-  .product-gallery__slide .sachet {
-    width: 140px;
-  }
-
-  .product-gallery__slide .sachet__body {
-    min-height: 160px;
-    padding: 16px 12px;
-  }
-
-  .product-gallery__slide .sachet__brand {
-    font-size: 1.2rem;
-  }
-
-  .product-gallery__ingredients {
-    padding: 24px 16px;
-  }
-
-  .product-gallery__ingredients-title {
-    font-size: 1rem;
-  }
-
-  .product-gallery__lifestyle {
-    padding: 24px 16px;
-  }
-
-  .product-gallery__lifestyle-text {
-    font-size: 1.1rem;
+  /* Product gallery — keep single main image layout on tablet */
+  .product-gallery__thumb {
+    width: 64px;
+    height: 64px;
   }
 
   /* Popup */
@@ -4980,24 +5035,14 @@ img {
     font-size: 1.6rem;
   }
 
-  /* Mobile product gallery — swipeable carousel */
-  .product-gallery__main {
-    display: flex;
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    -webkit-overflow-scrolling: touch;
-    gap: 0;
-    scrollbar-width: none;
+  /* Mobile product gallery — keep main+thumb layout */
+  .product-gallery__thumb {
+    width: 56px;
+    height: 56px;
   }
 
-  .product-gallery__main::-webkit-scrollbar {
-    display: none;
-  }
-
-  .product-gallery__slide {
-    flex: 0 0 100%;
-    scroll-snap-align: start;
-    aspect-ratio: 4 / 5;
+  .product-gallery__thumbs {
+    gap: 6px;
   }
 
   .product-hero {
@@ -5075,21 +5120,15 @@ img {
     font-size: 0.65rem;
   }
 
-  /* Product gallery single column on small phones */
-  .product-gallery__main {
-    grid-template-columns: 1fr;
-  }
-
-  .product-gallery__slide:first-child {
+  /* Product gallery — smaller thumbs on small phones */
+  .product-gallery__slide {
     aspect-ratio: 1;
   }
 
-  .product-gallery__slide .sachet {
-    width: 160px;
-  }
-
-  .product-gallery__slide .sachet__body {
-    min-height: 180px;
+  .product-gallery__thumb {
+    width: 48px;
+    height: 48px;
+    border-radius: 4px;
   }
 
   /* Flavor pills stack */

@@ -318,9 +318,9 @@
     let queue = [];
 
     // Persist token
-    tokenInput.value = localStorage.getItem('gh_upload_token') || '';
+    tokenInput.value = sessionStorage.getItem('gh_upload_token') || '';
     tokenInput.addEventListener('input', () => {
-      localStorage.setItem('gh_upload_token', tokenInput.value);
+      sessionStorage.setItem('gh_upload_token', tokenInput.value);
     });
 
     // Drag and drop

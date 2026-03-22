@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Atlas Dev — Image Manager</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0a0a0b; --surface: #141416; --surface2: #1c1c1f;
+      --border: #2a2a2d; --text: #e8e8ed; --text-dim: #8e8e93;
+      --accent: #3b82f6; --accent-dim: rgba(59,130,246,0.12);
+      --green: #34d399; --green-dim: rgba(52,211,153,0.12);
+      --red: #f87171; --yellow: #fbbf24; --yellow-dim: rgba(251,191,36,0.12);
+      --font: 'Inter', -apple-system, system-ui, sans-serif;
+    }
+    body { font-family: var(--font); background: var(--bg); color: var(--text); min-height: 100vh; }
+    .topbar {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 32px; border-bottom: 1px solid var(--border);
+      background: rgba(10,10,11,0.92); backdrop-filter: blur(12px);
+      position: sticky; top: 0; z-index: 100;
+    }
+    .topbar__left { display: flex; align-items: center; gap: 12px; }
+    .topbar__logo { font-weight: 800; font-size: 0.95rem; }
+    .topbar__badge { font-size: 0.58rem; font-weight: 700; padding: 3px 8px; border-radius: 4px; background: var(--accent-dim); color: var(--accent); text-transform: uppercase; letter-spacing: 0.06em; }
+    .topbar__right { display: flex; align-items: center; gap: 12px; }
+    .topbar__back { font-size: 0.78rem; color: var(--text-dim); text-decoration: none; }
+    .topbar__back:hover { color: var(--text); }
+    .topbar__settings { font-family: var(--font); font-size: 0.68rem; font-weight: 600; padding: 5px 12px; border-radius: 6px; border: 1px solid var(--border); background: none; color: var(--text-dim); cursor: pointer; }
+    .topbar__settings:hover { border-color: var(--accent); color: var(--accent); }
+    .topbar__settings.connected { border-color: var(--green); color: var(--green); }
+    .container { max-width: 900px; margin: 0 auto; padding: 32px; }
+    .hero { margin-bottom: 28px; }
+    .hero__title { font-size: 1.5rem; font-weight: 800; letter-spacing: -0.03em; margin-bottom: 6px; }
+    .hero__desc { color: var(--text-dim); font-size: 0.82rem; line-height: 1.6; }
+
+    /* Setup banner */
+    .setup-banner { background: var(--accent-dim); border: 1px solid var(--accent); border-radius: 10px; padding: 20px; margin-bottom: 28px; }
+    .setup-banner h3 { font-size: 0.88rem; font-weight: 700; margin-bottom: 6px; color: var(--accent); }
+    .setup-banner p { font-size: 0.75rem; color: var(--text-dim); line-height: 1.6; margin-bottom: 12px; }
+    .setup-banner__form { display: flex; gap: 8px; }
+    .setup-banner__input { flex: 1; font-family: var(--font); font-size: 0.78rem; padding: 8px 14px; border-radius: 6px; border: 1px solid var(--border); background: var(--bg); color: var(--text); outline: none; }
+    .setup-banner__input:focus { border-color: var(--accent); }
+    .setup-banner__btn { font-family: var(--font); font-size: 0.78rem; font-weight: 700; padding: 8px 20px; border-radius: 6px; border: none; background: var(--accent); color: #fff; cursor: pointer; white-space: nowrap; }
+    .setup-banner__btn:hover { opacity: 0.85; }
+    .setup-banner__link { color: var(--accent); text-decoration: underline; font-size: 0.72rem; }
+
+    /* Steps */
+    .steps { display: flex; gap: 24px; margin-bottom: 32px; }
+    .step { flex: 1; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 20px; }
+    .step__num { font-size: 0.65rem; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 6px; }
+    .step__title { font-size: 0.88rem; font-weight: 700; margin-bottom: 4px; }
+    .step__desc { font-size: 0.75rem; color: var(--text-dim); line-height: 1.5; }
+
+    /* Dropzone */
+    .dropzone {
+      border: 2px dashed var(--border); border-radius: 12px;
+      padding: 48px 32px; text-align: center; cursor: pointer;
+      transition: all 0.2s; margin-bottom: 32px; background: var(--surface);
+    }
+    .dropzone:hover, .dropzone.dragover { border-color: var(--accent); background: var(--accent-dim); }
+    .dropzone__icon { width: 40px; height: 40px; margin: 0 auto 12px; color: var(--text-dim); }
+    .dropzone.dragover .dropzone__icon { color: var(--accent); }
+    .dropzone__title { font-size: 0.95rem; font-weight: 700; margin-bottom: 4px; }
+    .dropzone__hint { font-size: 0.75rem; color: var(--text-dim); }
+    .dropzone input { display: none; }
+
+    /* Processing */
+    .processing { display: none; align-items: center; gap: 10px; padding: 12px 20px; background: var(--accent-dim); border: 1px solid var(--accent); border-radius: 8px; margin-bottom: 16px; font-size: 0.8rem; color: var(--accent); }
+    .processing.active { display: flex; }
+    .spinner { width: 16px; height: 16px; border: 2px solid var(--accent-dim); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.6s linear infinite; flex-shrink: 0; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Image list */
+    .list-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; padding-bottom: 10px; border-bottom: 1px solid var(--border); }
+    .list-header__count { font-size: 0.82rem; font-weight: 700; }
+    .list-header__btn { font-family: var(--font); font-size: 0.68rem; font-weight: 600; padding: 5px 12px; border-radius: 6px; border: 1px solid var(--border); background: none; color: var(--text-dim); cursor: pointer; }
+    .list-header__btn:hover { border-color: var(--red); color: var(--red); }
+
+    .image-list { display: flex; flex-direction: column; gap: 3px; }
+    .image-row {
+      display: grid; grid-template-columns: 52px 1fr auto auto auto;
+      align-items: center; gap: 14px; padding: 10px 14px;
+      background: var(--surface); border: 1px solid transparent;
+      border-radius: 8px; transition: all 0.15s;
+    }
+    .image-row:hover { border-color: var(--border); background: var(--surface2); }
+    .image-row.pushed { border-color: var(--green); background: var(--green-dim); }
+    .image-row__thumb { width: 52px; height: 38px; border-radius: 4px; overflow: hidden; background: var(--surface2); }
+    .image-row__thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .image-row__info { min-width: 0; }
+    .image-row__name { font-size: 0.8rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 2px; }
+    .image-row__path { font-size: 0.7rem; color: var(--accent); font-family: 'SF Mono', Consolas, monospace; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .image-row__meta { font-size: 0.68rem; color: var(--text-dim); white-space: nowrap; text-align: right; }
+    .image-row__savings { font-size: 0.63rem; font-weight: 700; color: var(--green); padding: 2px 7px; background: var(--green-dim); border-radius: 4px; white-space: nowrap; }
+    .image-row__actions { display: flex; gap: 4px; }
+    .image-row__btn { font-family: var(--font); font-size: 0.63rem; font-weight: 600; padding: 4px 10px; border-radius: 5px; border: 1px solid var(--border); background: none; color: var(--text-dim); cursor: pointer; transition: all 0.15s; white-space: nowrap; }
+    .image-row__btn--push { color: var(--green); border-color: rgba(52,211,153,0.3); }
+    .image-row__btn--push:hover { background: var(--green-dim); border-color: var(--green); }
+    .image-row__btn--push:disabled { opacity: 0.4; cursor: not-allowed; }
+    .image-row__btn--del:hover { border-color: var(--red); color: var(--red); }
+
+    /* Toast */
+    .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px); padding: 10px 24px; border-radius: 8px; font-size: 0.8rem; font-weight: 600; z-index: 999; transition: transform 0.3s ease; pointer-events: none; box-shadow: 0 8px 32px rgba(0,0,0,0.5); }
+    .toast.visible { transform: translateX(-50%) translateY(0); }
+    .toast.success { background: #1a3a2a; border: 1px solid var(--green); color: var(--green); }
+    .toast.error { background: #3a1a1a; border: 1px solid var(--red); color: var(--red); }
+
+    .empty { text-align: center; padding: 60px 20px; color: var(--text-dim); }
+    .empty__title { font-size: 0.95rem; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+    .empty__text { font-size: 0.78rem; }
+
+    @media (max-width: 700px) {
+      .container { padding: 20px; }
+      .steps { flex-direction: column; gap: 12px; }
+      .image-row { grid-template-columns: 44px 1fr auto; gap: 10px; }
+      .image-row__meta, .image-row__savings { display: none; }
+      .setup-banner__form { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <div class="topbar__left">
+      <span class="topbar__logo">Atlas Dev</span>
+      <span class="topbar__badge">Image Manager</span>
+    </div>
+    <div class="topbar__right">
+      <button class="topbar__settings" id="settingsBtn">GitHub: Not Connected</button>
+      <a href="../app/" class="topbar__back">&larr; Dashboard</a>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="hero">
+      <h1 class="hero__title">Image Library</h1>
+      <p class="hero__desc">Drop images here. They get compressed and pushed directly to your GitHub repo. No downloading, no uploading, no file management.</p>
+    </div>
+
+    <div class="setup-banner" id="setupBanner">
+      <h3>Connect to GitHub</h3>
+      <p>To push images directly to your repo, you need a GitHub Personal Access Token (PAT) with <strong>repo</strong> scope. <a href="https://github.com/settings/tokens/new?scopes=repo&description=Atlas+Dev+Image+Manager" target="_blank" class="setup-banner__link">Generate one here</a> — it stays in your browser only, never sent anywhere else.</p>
+      <div class="setup-banner__form">
+        <input type="password" class="setup-banner__input" id="patInput" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx">
+        <button class="setup-banner__btn" id="patSave">Connect</button>
+      </div>
+    </div>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step__num">Step 1</div>
+        <div class="step__title">Drop Image</div>
+        <div class="step__desc">Drag any image onto this page. It auto-compresses to WebP, max 1600px.</div>
+      </div>
+      <div class="step">
+        <div class="step__num">Step 2</div>
+        <div class="step__title">Push to Repo</div>
+        <div class="step__desc">Click the green "Push" button. The image goes directly to your GitHub repo.</div>
+      </div>
+      <div class="step">
+        <div class="step__num">Step 3</div>
+        <div class="step__title">Done</div>
+        <div class="step__desc">Use the image path in your HTML. That's it. No other steps.</div>
+      </div>
+    </div>
+
+    <div class="dropzone" id="dropzone">
+      <input type="file" id="fileInput" multiple accept="image/*">
+      <svg class="dropzone__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
+        <polyline points="17 8 12 3 7 8"/>
+        <line x1="12" y1="3" x2="12" y2="15"/>
+      </svg>
+      <div class="dropzone__title">Drop images here</div>
+      <div class="dropzone__hint">Auto-compressed to WebP &bull; SEO-friendly filenames &bull; Click to browse</div>
+    </div>
+
+    <div class="processing" id="processing"><div class="spinner"></div><span id="processingText">Compressing...</span></div>
+
+    <div id="listHeader" style="display:none;">
+      <div class="list-header">
+        <span class="list-header__count" id="listCount"></span>
+        <button class="list-header__btn" id="clearAllBtn">Clear All</button>
+      </div>
+    </div>
+    <div class="image-list" id="imageList"></div>
+    <div class="empty" id="emptyState">
+      <div class="empty__title">No images yet</div>
+      <div class="empty__text">Drop images above to get started</div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+<script>
+(function() {
+  'use strict';
+
+  // GitHub config
+  var GH_OWNER = 'Atlas-Hydration';
+  var GH_REPO = 'atlashydration';
+  var GH_BRANCH = 'master';
+  var GH_KEY = 'atlas_gh_pat';
+
+  var DB_NAME = 'atlas_images_v3';
+  var STORE = 'images';
+  var db = null;
+
+  function getPAT() { return localStorage.getItem(GH_KEY) || ''; }
+  function setPAT(t) { localStorage.setItem(GH_KEY, t); updateSettingsUI(); }
+
+  function updateSettingsUI() {
+    var btn = document.getElementById('settingsBtn');
+    var banner = document.getElementById('setupBanner');
+    if (getPAT()) {
+      btn.textContent = 'GitHub: Connected';
+      btn.classList.add('connected');
+      banner.style.display = 'none';
+    } else {
+      btn.textContent = 'GitHub: Not Connected';
+      btn.classList.remove('connected');
+      banner.style.display = '';
+    }
+  }
+
+  // IndexedDB
+  function openDB(cb) {
+    if (db) return cb(db);
+    var r = indexedDB.open(DB_NAME, 1);
+    r.onupgradeneeded = function(e) { e.target.result.createObjectStore(STORE, { keyPath: 'id' }); };
+    r.onsuccess = function(e) { db = e.target.result; cb(db); };
+  }
+  function getAll(cb) {
+    openDB(function(d) {
+      var r = d.transaction(STORE).objectStore(STORE).getAll();
+      r.onsuccess = function() { cb(r.result || []); };
+    });
+  }
+  function put(img, cb) {
+    openDB(function(d) {
+      var tx = d.transaction(STORE, 'readwrite');
+      tx.objectStore(STORE).put(img);
+      tx.oncomplete = cb;
+    });
+  }
+  function del(id, cb) {
+    openDB(function(d) {
+      var tx = d.transaction(STORE, 'readwrite');
+      tx.objectStore(STORE).delete(id);
+      tx.oncomplete = cb;
+    });
+  }
+  function clearAll(cb) {
+    openDB(function(d) {
+      var tx = d.transaction(STORE, 'readwrite');
+      tx.objectStore(STORE).clear();
+      tx.oncomplete = cb;
+    });
+  }
+
+  // Compress
+  function compress(file, cb) {
+    var reader = new FileReader();
+    reader.onload = function(e) {
+      var img = new Image();
+      img.onload = function() {
+        var w = img.width, h = img.height;
+        if (w > 1600) { h = Math.round(h * 1600 / w); w = 1600; }
+        var c = document.createElement('canvas');
+        c.width = w; c.height = h;
+        c.getContext('2d').drawImage(img, 0, 0, w, h);
+        var webp = c.toDataURL('image/webp', 0.82);
+        var isWebP = webp.indexOf('data:image/webp') === 0;
+        var url = isWebP ? webp : c.toDataURL('image/jpeg', 0.82);
+        var ext = isWebP ? 'webp' : 'jpg';
+        var compressed = Math.round((url.length - url.indexOf(',') - 1) * 0.75);
+        cb({ dataUrl: url, width: w, height: h, ext: ext, originalSize: file.size, compressedSize: compressed });
+      };
+      img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function slugify(n) {
+    return n.replace(/\.[^.]+$/, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || 'image';
+  }
+  function fmtBytes(b) { return b > 1048576 ? (b/1048576).toFixed(1)+' MB' : Math.round(b/1024)+' KB'; }
+
+  var toastT;
+  function toast(m, type) {
+    var t = document.getElementById('toast');
+    t.textContent = m;
+    t.className = 'toast visible ' + (type || 'success');
+    clearTimeout(toastT);
+    toastT = setTimeout(function() { t.classList.remove('visible'); }, 3000);
+  }
+
+  // GitHub push
+  function pushToGitHub(img, cb) {
+    var pat = getPAT();
+    if (!pat) { toast('Connect GitHub first (click settings)', 'error'); return; }
+    var path = img.folder + '/' + img.fileName;
+    var url = 'https://api.github.com/repos/' + GH_OWNER + '/' + GH_REPO + '/contents/' + path;
+
+    // Check if file exists first (to get sha for update)
+    fetch(url + '?ref=' + GH_BRANCH, {
+      headers: { 'Authorization': 'token ' + pat, 'Accept': 'application/vnd.github.v3+json' }
+    }).then(function(r) { return r.ok ? r.json() : null; })
+    .then(function(existing) {
+      var body = {
+        message: 'Add image: ' + path,
+        content: img.base64,
+        branch: GH_BRANCH
+      };
+      if (existing && existing.sha) body.sha = existing.sha;
+
+      return fetch(url, {
+        method: 'PUT',
+        headers: {
+          'Authorization': 'token ' + pat,
+          'Accept': 'application/vnd.github.v3+json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(body)
+      });
+    }).then(function(r) {
+      if (!r.ok) return r.json().then(function(d) { throw new Error(d.message || 'Push failed'); });
+      return r.json();
+    }).then(function(data) {
+      toast('Pushed ' + img.fileName + ' to repo!');
+      img.pushed = true;
+      put(img, function() { render(); });
+      if (cb) cb(null, data);
+    }).catch(function(err) {
+      toast('Error: ' + err.message, 'error');
+      if (cb) cb(err);
+    });
+  }
+
+  // Process files
+  function processFiles(files) {
+    var arr = Array.from(files).filter(function(f) { return f.type.startsWith('image/'); });
+    if (!arr.length) return;
+    var proc = document.getElementById('processing');
+    var procText = document.getElementById('processingText');
+    proc.classList.add('active');
+    procText.textContent = 'Compressing ' + arr.length + ' image' + (arr.length > 1 ? 's' : '') + '...';
+    var done = 0;
+    arr.forEach(function(file) {
+      compress(file, function(res) {
+        var name = slugify(file.name) + '.' + res.ext;
+        var rec = {
+          id: Date.now() + '-' + Math.random().toString(36).substr(2,8),
+          fileName: name, folder: 'images',
+          dataUrl: res.dataUrl, base64: res.dataUrl.split(',')[1],
+          width: res.width, height: res.height, ext: res.ext,
+          originalSize: res.originalSize, compressedSize: res.compressedSize,
+          added: new Date().toISOString(), pushed: false
+        };
+        put(rec, function() {
+          done++;
+          if (done >= arr.length) {
+            proc.classList.remove('active');
+            render();
+            toast(done + ' image' + (done > 1 ? 's' : '') + ' compressed & ready');
+            // Auto-push if PAT is set
+            if (getPAT()) {
+              getAll(function(images) {
+                images.filter(function(i) { return !i.pushed; }).forEach(function(img) {
+                  pushToGitHub(img);
+                });
+              });
+            }
+          }
+        });
+      });
+    });
+  }
+
+  // Render
+  function render() {
+    getAll(function(images) {
+      var list = document.getElementById('imageList');
+      var empty = document.getElementById('emptyState');
+      var header = document.getElementById('listHeader');
+      if (!images.length) { list.innerHTML = ''; empty.style.display = ''; header.style.display = 'none'; return; }
+      images.sort(function(a, b) { return b.added > a.added ? 1 : -1; });
+      empty.style.display = 'none'; header.style.display = '';
+      document.getElementById('listCount').textContent = images.length + ' image' + (images.length !== 1 ? 's' : '');
+      list.innerHTML = images.map(function(img) {
+        var path = img.folder + '/' + img.fileName;
+        var sav = img.originalSize > 0 ? Math.round((1 - img.compressedSize / img.originalSize) * 100) : 0;
+        var pushed = img.pushed;
+        return '<div class="image-row' + (pushed ? ' pushed' : '') + '" data-id="' + img.id + '">' +
+          '<div class="image-row__thumb"><img src="' + img.dataUrl + '" alt="" loading="lazy"></div>' +
+          '<div class="image-row__info"><div class="image-row__name">' + img.fileName + '</div><div class="image-row__path">' + path + '</div></div>' +
+          '<div class="image-row__meta">' + img.width + '&times;' + img.height + '<br>' + fmtBytes(img.compressedSize) + '</div>' +
+          '<span class="image-row__savings">' + (sav > 0 ? '-' + sav + '%' : '~') + '</span>' +
+          '<div class="image-row__actions">' +
+            (pushed
+              ? '<button class="image-row__btn image-row__btn--push" disabled>Pushed</button>'
+              : '<button class="image-row__btn image-row__btn--push" data-action="push">Push to Repo</button>') +
+            '<button class="image-row__btn image-row__btn--del" data-action="delete">&times;</button>' +
+          '</div></div>';
+      }).join('');
+    });
+  }
+
+  // Events
+  var dropzone = document.getElementById('dropzone');
+  var fileInput = document.getElementById('fileInput');
+  dropzone.addEventListener('dragover', function(e) { e.preventDefault(); dropzone.classList.add('dragover'); });
+  dropzone.addEventListener('dragleave', function() { dropzone.classList.remove('dragover'); });
+  dropzone.addEventListener('drop', function(e) { e.preventDefault(); dropzone.classList.remove('dragover'); if (e.dataTransfer.files.length) processFiles(e.dataTransfer.files); });
+  dropzone.addEventListener('click', function() { fileInput.click(); });
+  fileInput.addEventListener('change', function() { if (fileInput.files.length) processFiles(fileInput.files); fileInput.value = ''; });
+  document.addEventListener('dragover', function(e) { e.preventDefault(); });
+  document.addEventListener('drop', function(e) { if (!e.target.closest('.dropzone')) { e.preventDefault(); if (e.dataTransfer.files.length) processFiles(e.dataTransfer.files); } });
+
+  document.getElementById('imageList').addEventListener('click', function(e) {
+    var row = e.target.closest('.image-row');
+    if (!row) return;
+    var id = row.getAttribute('data-id');
+    var btn = e.target.closest('[data-action]');
+    if (!btn) return;
+
+    if (btn.getAttribute('data-action') === 'delete') {
+      del(id, function() { render(); toast('Removed'); });
+      return;
+    }
+
+    if (btn.getAttribute('data-action') === 'push') {
+      btn.textContent = 'Pushing...';
+      btn.disabled = true;
+      getAll(function(images) {
+        var img = images.find(function(i) { return i.id === id; });
+        if (img) pushToGitHub(img);
+      });
+    }
+  });
+
+  // Settings
+  document.getElementById('patSave').addEventListener('click', function() {
+    var val = document.getElementById('patInput').value.trim();
+    if (!val) { toast('Enter a PAT', 'error'); return; }
+    // Verify PAT works
+    fetch('https://api.github.com/repos/' + GH_OWNER + '/' + GH_REPO, {
+      headers: { 'Authorization': 'token ' + val, 'Accept': 'application/vnd.github.v3+json' }
+    }).then(function(r) {
+      if (!r.ok) throw new Error('Invalid token or no access');
+      return r.json();
+    }).then(function() {
+      setPAT(val);
+      document.getElementById('patInput').value = '';
+      toast('GitHub connected! Drop images to auto-push.');
+    }).catch(function(err) {
+      toast('Failed: ' + err.message, 'error');
+    });
+  });
+
+  document.getElementById('settingsBtn').addEventListener('click', function() {
+    if (getPAT()) {
+      if (confirm('Disconnect GitHub? (removes stored token)')) {
+        localStorage.removeItem(GH_KEY);
+        updateSettingsUI();
+        toast('Disconnected');
+      }
+    } else {
+      document.getElementById('setupBanner').scrollIntoView({ behavior: 'smooth' });
+    }
+  });
+
+  document.getElementById('clearAllBtn').addEventListener('click', function() {
+    if (confirm('Remove all images?')) clearAll(function() { render(); toast('Cleared'); });
+  });
+
+  // Init
+  updateSettingsUI();
+  openDB(function() { render(); });
+})();
+</script>
+</body>
+</html>
