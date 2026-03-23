@@ -437,8 +437,8 @@ document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
 
 // Easter egg — click logo 5 times for confetti
 (function() {
-  var logo = document.querySelector('.header__logo-img');
-  if (!logo) return;
+  var logoLink = document.querySelector('.header__logo');
+  if (!logoLink) return;
   var clicks = 0;
   var timer = null;
   var colors = ['#e85d75', '#F5A623', '#22c55e', '#3b82f6', '#a855f7', '#ffffff'];
@@ -449,12 +449,14 @@ document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
     '1,769mg of easter egg detected.'
   ];
 
-  logo.addEventListener('click', function(e) {
+  logoLink.addEventListener('click', function(e) {
     clicks++;
+    if (clicks > 1) e.preventDefault();
     clearTimeout(timer);
     timer = setTimeout(function() { clicks = 0; }, 800);
 
     if (clicks >= 5) {
+      e.preventDefault();
       clicks = 0;
       // Confetti burst
       for (var i = 0; i < 60; i++) {
