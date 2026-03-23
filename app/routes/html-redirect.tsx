@@ -14,6 +14,7 @@ const STATIC_PAGES: Record<string, string> = {
   "app": "/atlashydration/app/index.html",
   "app/": "/atlashydration/app/index.html",
   "app/images": "/atlashydration/app/images.html",
+  "app/packaging": "/atlashydration/app/packaging.html",
 };
 
 export default function HtmlRedirect() {
