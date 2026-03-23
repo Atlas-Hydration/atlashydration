@@ -487,13 +487,35 @@ document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
       if (active) return;
       active = true;
 
-      // Eagle emoji that flies across
+      // SVG bald eagle that flies across
       var eagle = document.createElement('div');
       eagle.className = 'usa-eagle';
-      eagle.textContent = '\uD83E\uDD85';
+      eagle.innerHTML = '<svg viewBox="0 0 120 80" width="120" height="80" fill="none" xmlns="http://www.w3.org/2000/svg">' +
+        '<g>' +
+        // Body
+        '<ellipse cx="60" cy="48" rx="18" ry="14" fill="#3B2314"/>' +
+        // White head
+        '<circle cx="72" cy="36" r="11" fill="#FFFFFF"/>' +
+        // Eye
+        '<circle cx="76" cy="34" r="2" fill="#1a1a1a"/>' +
+        // Beak
+        '<polygon points="83,36 92,38 83,40" fill="#F5A623"/>' +
+        // Left wing (spread)
+        '<path d="M52 44 Q30 20 5 12 Q10 22 18 30 Q8 24 2 18 Q10 32 22 38 Q14 36 6 30 Q16 40 32 44 Z" fill="#3B2314"/>' +
+        // Right wing (spread)
+        '<path d="M68 44 Q78 24 98 10 Q92 22 86 28 Q94 20 102 14 Q92 30 82 36 Q90 32 100 26 Q88 38 76 44 Z" fill="#3B2314"/>' +
+        // Tail feathers
+        '<path d="M42 52 Q30 58 20 68 Q32 62 38 56 Q28 64 22 72 Q34 64 42 58 Z" fill="#3B2314"/>' +
+        // White tail tips
+        '<path d="M22 66 Q18 72 20 68" stroke="#fff" stroke-width="2"/>' +
+        '<path d="M24 70 Q20 76 22 72" stroke="#fff" stroke-width="2"/>' +
+        // Feet/talons
+        '<path d="M54 60 L50 70 L48 68 M50 70 L52 68" stroke="#F5A623" stroke-width="1.5" fill="none"/>' +
+        '<path d="M64 60 L66 70 L64 68 M66 70 L68 68" stroke="#F5A623" stroke-width="1.5" fill="none"/>' +
+        '</g></svg>';
       document.body.appendChild(eagle);
 
-      // Red-white-blue confetti burst from the element
+      // Red-white-blue star burst from the element
       var rect = el.getBoundingClientRect();
       var cx = rect.left + rect.width / 2;
       var cy = rect.top + rect.height / 2;
@@ -512,19 +534,6 @@ document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
         document.body.appendChild(star);
         setTimeout(function(s) { s.remove(); }.bind(null, star), 1200);
       }
-
-      // Flag toast
-      var toast = document.createElement('div');
-      toast.className = 'easter-egg-toast';
-      toast.textContent = '\uD83C\uDDFA\uD83C\uDDF8  Proudly made in America  \uD83C\uDDFA\uD83C\uDDF8';
-      document.body.appendChild(toast);
-      requestAnimationFrame(function() {
-        requestAnimationFrame(function() { toast.classList.add('active'); });
-      });
-      setTimeout(function() {
-        toast.classList.remove('active');
-        setTimeout(function() { toast.remove(); }, 500);
-      }, 2000);
 
       setTimeout(function() { eagle.remove(); active = false; }, 2500);
     });
