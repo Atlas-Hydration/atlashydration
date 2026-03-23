@@ -4003,8 +4003,8 @@ img {
    FAQ Accordion (Product Page)
    ======================================== */
 .product-faq {
-  padding: 80px 0;
-  background: #ffffff;
+  padding: 100px 0;
+  background: var(--color-bg);
 }
 
 /* Product page reviews section */
@@ -4021,13 +4021,42 @@ img {
   background: #ffffff;
 }
 
+.product-faq__grid {
+  display: grid;
+  grid-template-columns: 1fr 1.4fr;
+  gap: 80px;
+  align-items: start;
+}
+
+.product-faq__header {
+  position: sticky;
+  top: 120px;
+}
+
+.product-faq__title {
+  font-family: var(--font-display);
+  font-size: clamp(2.2rem, 4vw, 3.4rem);
+  font-weight: 700;
+  color: #ffffff;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  margin-bottom: 20px;
+}
+
+.product-faq__subtitle {
+  font-size: var(--text-md);
+  color: rgba(255, 255, 255, 0.4);
+  line-height: 1.7;
+  max-width: 320px;
+}
+
 .product-faq__list {
-  max-width: 800px;
-  margin: 48px auto 0;
+  display: flex;
+  flex-direction: column;
 }
 
 .product-faq__item {
-  border-bottom: 2px solid var(--color-primary);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .product-faq__question {
@@ -4040,26 +4069,33 @@ img {
   border: none;
   font-family: var(--font-sans);
   font-size: 1rem;
-  font-weight: 700;
-  color: var(--color-text);
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.8);
   cursor: pointer;
   text-align: left;
+  gap: 24px;
+  transition: color 0.2s ease;
 }
 
-.product-faq__question span {
-  font-size: 1.4rem;
-  font-weight: 300;
-  transition: transform 0.3s ease;
+.product-faq__question:hover {
+  color: #ffffff;
 }
 
-.product-faq__item.open .product-faq__question span {
+.product-faq__icon {
+  flex-shrink: 0;
+  color: rgba(255, 255, 255, 0.3);
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.product-faq__item.open .product-faq__icon {
   transform: rotate(45deg);
 }
 
 .product-faq__answer {
   max-height: 0;
   overflow: hidden;
-  transition: max-height 0.4s ease, padding 0.4s ease;
+  transition: max-height 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+              padding 0.5s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .product-faq__item.open .product-faq__answer {
@@ -4069,8 +4105,23 @@ img {
 
 .product-faq__answer p {
   font-size: var(--text-base);
-  color: var(--color-text-muted);
-  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.45);
+  line-height: 1.75;
+}
+
+.product-faq__answer strong {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+@media (max-width: 768px) {
+  .product-faq__grid {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+
+  .product-faq__header {
+    position: static;
+  }
 }
 
 /* ========================================
