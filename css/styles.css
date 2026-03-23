@@ -4903,6 +4903,22 @@ img {
   letter-spacing: 0.08em;
 }
 
+.founder__instagram {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 20px;
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  color: rgba(255, 255, 255, 0.45);
+  text-decoration: none;
+  transition: color 0.25s ease;
+}
+
+.founder__instagram:hover {
+  color: rgba(255, 255, 255, 0.8);
+}
+
 /* ========================================
    Footer Extras
    ======================================== */
