@@ -25,4 +25,7 @@ export default [
   // Utility pages
   route("privacy", "routes/privacy.tsx"),
   route("shipping", "routes/shipping.tsx"),
+
+  // Catch-all: redirect old .html URLs and show 404 for unknown pages
+  route("*", "routes/html-redirect.tsx"),
 ] satisfies RouteConfig;
