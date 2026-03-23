@@ -291,6 +291,135 @@
     });
   }
 
+  // ── Mobile WebGL Buy Button Shader ──
+  function initStickyBuyGL() {
+    if (window.innerWidth > 600) return;
+
+    var btn = document.getElementById('stickyBuyBtn');
+    if (!btn || btn.querySelector('canvas.sticky-gl')) return;
+
+    var canvas = document.createElement('canvas');
+    canvas.className = 'sticky-gl';
+    canvas.setAttribute('aria-hidden', 'true');
+    btn.insertBefore(canvas, btn.firstChild);
+
+    var gl = canvas.getContext('webgl', { alpha: true, premultipliedAlpha: false, antialias: false });
+    if (!gl) return;
+
+    var VERT = 'attribute vec2 a_pos; void main(){gl_Position=vec4(a_pos,0,1);}';
+    var FRAG = [
+      'precision mediump float;',
+      'uniform float u_time;',
+      'uniform vec2 u_res;',
+      'uniform vec3 u_color;',
+      '',
+      'float hash(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}',
+      'float noise(vec2 p){',
+      '  vec2 i=floor(p),f=fract(p);',
+      '  f=f*f*(3.0-2.0*f);',
+      '  return mix(mix(hash(i),hash(i+vec2(1,0)),f.x),mix(hash(i+vec2(0,1)),hash(i+vec2(1,1)),f.x),f.y);',
+      '}',
+      'void main(){',
+      '  vec2 uv=gl_FragCoord.xy/u_res;',
+      '  float t=u_time*0.6;',
+      '  float n1=noise(uv*4.0+vec2(t*0.7,t*0.5));',
+      '  float n2=noise(uv*6.0+vec2(-t*0.5,t*0.8)+3.0);',
+      '  float n3=noise(uv*10.0+vec2(t*1.2,-t*0.3)+7.0);',
+      '  float blend=n1*0.5+n2*0.3+n3*0.2;',
+      '  vec3 highlight=u_color+vec3(0.12,0.08,0.06);',
+      '  vec3 shadow=u_color*0.7;',
+      '  vec3 col=mix(shadow,highlight,blend);',
+      '  float specular=smoothstep(0.62,0.78,n1)*0.15;',
+      '  col+=specular;',
+      '  float edge=smoothstep(0.0,0.15,min(min(uv.x,1.0-uv.x),min(uv.y,1.0-uv.y)));',
+      '  col*=0.85+0.15*edge;',
+      '  gl_FragColor=vec4(col,0.55);',
+      '}'
+    ].join('\n');
+
+    function compile(type, src) {
+      var s = gl.createShader(type);
+      gl.shaderSource(s, src);
+      gl.compileShader(s);
+      return s;
+    }
+
+    var vs = compile(gl.VERTEX_SHADER, VERT);
+    var fs = compile(gl.FRAGMENT_SHADER, FRAG);
+    var prog = gl.createProgram();
+    gl.attachShader(prog, vs);
+    gl.attachShader(prog, fs);
+    gl.linkProgram(prog);
+    if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) return;
+    gl.useProgram(prog);
+
+    var buf = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1,1,-1,-1,1,1,1]), gl.STATIC_DRAW);
+    var aPos = gl.getAttribLocation(prog, 'a_pos');
+    gl.enableVertexAttribArray(aPos);
+    gl.vertexAttribPointer(aPos, 2, gl.FLOAT, false, 0, 0);
+
+    var uTime = gl.getUniformLocation(prog, 'u_time');
+    var uRes = gl.getUniformLocation(prog, 'u_res');
+    var uColor = gl.getUniformLocation(prog, 'u_color');
+
+    function getFlavorColor() {
+      var bar = document.getElementById('stickyBuy');
+      var style = getComputedStyle(bar);
+      var hex = style.getPropertyValue('--sticky-flavor').trim() || '#e85d75';
+      var r = parseInt(hex.substring(1, 3), 16) / 255;
+      var g = parseInt(hex.substring(3, 5), 16) / 255;
+      var b = parseInt(hex.substring(5, 7), 16) / 255;
+      return [r, g, b];
+    }
+
+    function resize() {
+      var dpr = Math.min(window.devicePixelRatio || 1, 2);
+      var rect = canvas.getBoundingClientRect();
+      canvas.width = rect.width * dpr;
+      canvas.height = rect.height * dpr;
+      gl.viewport(0, 0, canvas.width, canvas.height);
+      gl.uniform2f(uRes, canvas.width, canvas.height);
+    }
+
+    gl.enable(gl.BLEND);
+    gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+
+    var color = getFlavorColor();
+    gl.uniform3f(uColor, color[0], color[1], color[2]);
+    resize();
+
+    var start = performance.now();
+    var running = true;
+
+    function frame(now) {
+      if (!running) return;
+      gl.uniform1f(uTime, (now - start) / 1000);
+      gl.clearColor(0, 0, 0, 0);
+      gl.clear(gl.COLOR_BUFFER_BIT);
+      gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+      requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
+
+    // Update color when flavor changes
+    var observer = new MutationObserver(function() {
+      var c = getFlavorColor();
+      gl.uniform3f(uColor, c[0], c[1], c[2]);
+    });
+    observer.observe(document.getElementById('stickyBuy'), { attributes: true, attributeFilter: ['class'] });
+
+    window.addEventListener('resize', function() {
+      if (window.innerWidth > 600) {
+        running = false;
+        if (canvas.parentNode) canvas.parentNode.removeChild(canvas);
+      } else {
+        resize();
+      }
+    });
+  }
+
   // ── Initialize All Animations ──
   function init() {
     insertWaveDividers();
@@ -305,6 +434,7 @@
     setupCompareAnimations();
     setupBenefitCardAnimations();
     setupAccordionAnimations();
+    initStickyBuyGL();
   }
 
   // Run on DOM ready
