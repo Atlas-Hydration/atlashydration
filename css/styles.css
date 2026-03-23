@@ -4842,135 +4842,104 @@ img {
    Founder Section
    ======================================== */
 .founder {
-  padding: 120px 0;
-  background: #f5f5f5;
-}
-
-.founder__grid {
-  display: grid;
-  grid-template-columns: 1fr 1.2fr;
-  gap: 80px;
-  align-items: center;
-}
-
-.founder__image {
-  border-radius: var(--radius-lg);
-  overflow: hidden;
-  aspect-ratio: 4/5;
-  background: linear-gradient(135deg, #1a3a5c 0%, #2c5f8a 100%);
+  position: relative;
+  min-height: 80vh;
   display: flex;
   align-items: center;
-  justify-content: center;
-}
-
-.founder__image-placeholder {
-  opacity: 0.4;
-}
-
-.founder__video {
-  width: 100%;
-  height: 100%;
-  border: 0;
-  border-radius: var(--radius-lg);
-}
-
-.founder__content {
-  background: var(--color-white);
-  padding: 48px 40px;
-  border: 1px solid var(--color-border);
-  border-radius: 0;
-  position: relative;
   overflow: hidden;
 }
 
-.founder__illustrations {
+.founder__bg-image {
   position: absolute;
   inset: 0;
-  pointer-events: none;
   z-index: 0;
 }
 
-.founder__illus {
+.founder__bg-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+}
+
+.founder__overlay {
   position: absolute;
-}
-
-.founder__illus--plane {
-  top: 20px;
-  right: 20px;
-  transform: rotate(-15deg);
-}
-
-.founder__illus--compass {
-  bottom: 60px;
-  right: 40px;
-}
-
-.founder__illus--wings {
-  bottom: 20px;
-  left: 20px;
-}
-
-.founder__content .section-eyebrow,
-.founder__content .section-title,
-.founder__text,
-.founder__signature {
-  position: relative;
+  inset: 0;
   z-index: 1;
+  background: linear-gradient(
+    135deg,
+    rgba(0, 0, 0, 0.78) 0%,
+    rgba(0, 0, 0, 0.5) 40%,
+    rgba(0, 0, 0, 0.25) 100%
+  );
 }
 
-.founder__content .section-eyebrow {
-  text-align: left;
+.founder .container {
+  position: relative;
+  z-index: 2;
 }
 
-.founder__content .section-title {
-  font-size: clamp(1.5rem, 2.5vw, 2rem);
+.founder__layout {
+  max-width: 580px;
+  padding: 100px 0;
+}
+
+.founder__eyebrow {
+  font-family: var(--font-sans);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: rgba(255, 255, 255, 0.4);
+  margin-bottom: 20px;
+}
+
+.founder__heading {
+  font-family: var(--font-display);
+  font-size: var(--heading-xl);
+  font-weight: 700;
+  color: #ffffff;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  margin-bottom: 32px;
 }
 
 .founder__text {
-  margin-top: 16px;
+  margin-bottom: 40px;
 }
 
 .founder__text p {
-  font-family: var(--font-serif);
-  font-size: var(--text-base);
-  color: var(--color-text-muted);
+  font-size: var(--text-md);
+  color: rgba(255, 255, 255, 0.6);
   line-height: 1.8;
-  margin-bottom: 14px;
+  margin-bottom: 20px;
 }
 
-.founder__text p strong {
-  color: var(--color-text);
+.founder__text p:last-child {
+  margin-bottom: 0;
 }
 
 .founder__signature {
-  margin-top: 24px;
-  padding-top: 20px;
-  border-top: 1px solid var(--color-border);
+  padding-top: 28px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.founder__sig-script {
+.founder__sig-name {
   display: block;
-  font-family: 'Playfair Display', var(--font-serif);
-  font-size: 1.6rem;
+  font-family: var(--font-display);
   font-style: italic;
-  font-weight: 400;
-  color: var(--color-text);
+  font-size: 1.4rem;
+  color: #ffffff;
   margin-bottom: 4px;
-  letter-spacing: 0.02em;
 }
 
-.founder__name {
+.founder__sig-role {
   display: block;
-  font-weight: 700;
-  font-size: var(--text-btn);
-  color: var(--color-text);
-  margin-bottom: 2px;
-}
-
-.founder__role {
-  display: block;
+  font-family: var(--font-sans);
   font-size: var(--text-sm);
-  color: var(--color-text-dim);
+  color: rgba(255, 255, 255, 0.3);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
 }
 
 /* ========================================
@@ -5098,9 +5067,22 @@ img {
     gap: 48px;
   }
 
-  .founder__grid {
-    grid-template-columns: 1fr;
-    gap: 48px;
+  .founder__layout {
+    padding: 80px 0;
+    max-width: none;
+  }
+
+  .founder__heading {
+    font-size: clamp(1.8rem, 6vw, 2.4rem);
+  }
+
+  .founder__overlay {
+    background: linear-gradient(
+      180deg,
+      rgba(0, 0, 0, 0.3) 0%,
+      rgba(0, 0, 0, 0.75) 40%,
+      rgba(0, 0, 0, 0.88) 100%
+    );
   }
 
   .ingredients-grid__cards {
@@ -5388,12 +5370,7 @@ img {
   }
 
   .founder {
-    padding: 48px 0;
-  }
-
-  .founder__grid {
-    grid-template-columns: 1fr;
-    gap: 32px;
+    min-height: 60vh;
   }
 
   .cta-section {
@@ -6869,27 +6846,6 @@ img {
 .eyebrow-animated::after {
   width: 100%;
   left: 0;
-}
-
-/* ========================================
-   SVG Animations — Founder Illustrations
-   ======================================== */
-.founder__illus--plane.founder-illus-animate {
-  animation: founderPlane 3s ease-out forwards;
-}
-
-.founder__illus--compass.founder-illus-animate {
-  animation: founderCompass 4s ease-out forwards;
-}
-
-@keyframes founderPlane {
-  0% { opacity: 0; transform: rotate(-15deg) translate(40px, -40px); }
-  100% { opacity: 0.06; transform: rotate(-15deg) translate(0, 0); }
-}
-
-@keyframes founderCompass {
-  0% { opacity: 0; transform: rotate(0deg) scale(0.5); }
-  100% { opacity: 0.05; transform: rotate(360deg) scale(1); }
 }
 
 /* ========================================
