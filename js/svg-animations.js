@@ -98,12 +98,12 @@
     var statCards = document.querySelectorAll('.ed__stat-card');
     if (!statCards.length) return;
 
-    // Set bar widths from data attributes
+    // Set ring targets from data attributes
     statCards.forEach(function(card) {
-      var barFill = card.querySelector('.ed__stat-bar-fill');
-      if (barFill) {
-        var w = barFill.getAttribute('data-width') || 0;
-        card.style.setProperty('--bar-width', w + '%');
+      var ringFill = card.querySelector('.ed__ring-fill');
+      if (ringFill) {
+        var target = ringFill.getAttribute('data-target') || '327';
+        card.style.setProperty('--ring-target', target);
       }
     });
 
@@ -112,13 +112,12 @@
       var target = parseInt(el.getAttribute('data-count'), 10);
       var suffix = el.getAttribute('data-suffix') || '';
       var useComma = el.getAttribute('data-format') === 'comma';
-      var duration = 1200;
+      var duration = 1400;
       var start = performance.now();
 
       function tick(now) {
         var elapsed = now - start;
         var progress = Math.min(elapsed / duration, 1);
-        // Ease out cubic
         var eased = 1 - Math.pow(1 - progress, 3);
         var current = Math.round(eased * target);
         var display = useComma ? current.toLocaleString() : String(current);
