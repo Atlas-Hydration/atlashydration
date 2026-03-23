@@ -1314,26 +1314,45 @@ document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
 
   // --- Render table ---
   function render() {
-    var headHTML = '<th></th><th class="compare__th-atlas"><img src="logo.svg" alt="Atlas" height="18"></th>';
+    section.classList.remove('animated');
+
+    var headHTML = '<th></th><th class="compare__th-atlas"><img src="logo.svg" alt="Atlas" height="20"></th>';
     activeBrands.forEach(function(b) {
       headHTML += '<th><span class="compare__th-brand ' + BRANDS[b].cls + '">' + BRANDS[b].name + '</span></th>';
     });
     thead.innerHTML = headHTML;
 
+    var atlasWins = 0;
+    var totalCats = CATS.length;
+
     var bodyHTML = '';
     CATS.forEach(function(cat) {
+      // Determine if Atlas wins this row
+      var isWinner = true;
+      activeBrands.forEach(function(b) {
+        var val = cat[b];
+        if (cat.lowerBetter) {
+          if (val < cat.atlas) isWinner = false;
+        } else {
+          if (val > cat.atlas) isWinner = false;
+        }
+      });
+      if (isWinner) atlasWins++;
+
+      var winBadge = isWinner ? '<span class="compare__win-badge">Winner</span>' : '';
+
       bodyHTML += '<tr data-cat="' + cat.key + '">';
       bodyHTML += '<td class="compare__label">' + cat.label + '</td>';
-      bodyHTML += '<td class="compare__value compare__value--atlas"><div class="compare__bar" style="--bar-width:100%"><strong>' + fmtVal(cat.atlas, cat.unit) + '</strong></div></td>';
+      bodyHTML += '<td class="compare__value compare__value--atlas"><div class="compare__bar" style="--bar-width:100%"><strong>' + fmtVal(cat.atlas, cat.unit) + '</strong>' + winBadge + '</div></td>';
 
       activeBrands.forEach(function(b) {
         var val = cat[b];
         if (val === 0 && !cat.lowerBetter) {
-          bodyHTML += '<td class="compare__value"><span class="compare__zero">&#10005;</span></td>';
+          bodyHTML += '<td class="compare__value"><span class="compare__zero">&mdash;</span></td>';
         } else if (cat.key === 'sugar' && val > 0) {
           bodyHTML += '<td class="compare__value"><span class="compare__sugar-bad">' + fmtVal(val, cat.unit) + '</span></td>';
         } else if (cat.key === 'sugar' && val === 0) {
-          bodyHTML += '<td class="compare__value"><div class="compare__check"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg> ' + fmtVal(val, cat.unit) + '</div></td>';
+          bodyHTML += '<td class="compare__value"><div class="compare__check"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg> ' + fmtVal(val, cat.unit) + '</div></td>';
         } else {
           var pct = cat.atlas === 0 ? 100 : Math.min(100, (val / cat.atlas) * 100);
           bodyHTML += '<td class="compare__value"><div class="compare__bar" style="--bar-width:' + Math.round(pct) + '%">' + fmtVal(val, cat.unit) + '</div></td>';
@@ -1341,8 +1360,27 @@ document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
       });
       bodyHTML += '</tr>';
     });
+
+    // Score summary row
+    bodyHTML += '<tr class="compare__score-row">';
+    bodyHTML += '<td class="compare__label" style="color:rgba(255,255,255,0.3);font-size:var(--text-xs);text-transform:uppercase;letter-spacing:0.1em;">Categories Won</td>';
+    bodyHTML += '<td class="compare__value compare__value--atlas"><span class="compare__score-atlas">' + atlasWins + '/' + totalCats + '</span></td>';
+    activeBrands.forEach(function(b) {
+      var bWins = 0;
+      CATS.forEach(function(cat) {
+        var val = cat[b];
+        var atlasVal = cat.atlas;
+        var wins = cat.lowerBetter ? (val < atlasVal) : (val > atlasVal);
+        if (wins) bWins++;
+      });
+      bodyHTML += '<td class="compare__value"><span class="compare__score-rival">' + bWins + '/' + totalCats + '</span></td>';
+    });
+    bodyHTML += '</tr>';
+
     tbody.innerHTML = bodyHTML;
-    requestAnimationFrame(function() { section.classList.add('animated'); });
+    requestAnimationFrame(function() {
+      requestAnimationFrame(function() { section.classList.add('animated'); });
+    });
   }
 
   function fmtVal(val, unit) {
