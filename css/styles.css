@@ -56,15 +56,14 @@ html {
 }
 
 body {
-  font-family: var(--font-display);
+  font-family: var(--font-sans);
   background: var(--color-bg);
   color: var(--color-text);
   font-size: 1rem;
-  line-height: 1.7;
+  line-height: 1.6;
   overflow-x: hidden;
   -webkit-text-size-adjust: 100%;
   text-rendering: optimizeLegibility;
-  font-feature-settings: 'liga' 1, 'kern' 1;
 }
 
 a {
@@ -839,7 +838,7 @@ img {
 }
 
 .product-card__title {
-  font-family: var(--font-display);
+  font-family: var(--font-sans);
   font-size: 1.15rem;
   font-weight: 600;
   margin-bottom: 8px;
@@ -1498,7 +1497,7 @@ img {
 }
 
 .product-hero__title {
-  font-family: var(--font-display);
+  font-family: var(--font-sans);
   font-size: var(--heading-lg);
   font-weight: 700;
   margin-bottom: 12px;
@@ -3883,7 +3882,7 @@ img {
 }
 
 .featured-product__title {
-  font-family: var(--font-display);
+  font-family: var(--font-sans);
   font-size: var(--heading-md);
   font-weight: 700;
   letter-spacing: -0.025em;
@@ -4039,7 +4038,7 @@ img {
   padding: 24px 0;
   background: none;
   border: none;
-  font-family: var(--font-display);
+  font-family: var(--font-sans);
   font-size: 1rem;
   font-weight: 700;
   color: var(--color-text);
@@ -4285,7 +4284,7 @@ img {
 }
 
 .why-atlas__card-title {
-  font-family: var(--font-display);
+  font-family: var(--font-sans);
   font-size: 1.3rem;
   font-weight: 700;
   color: #ffffff;
@@ -4458,7 +4457,7 @@ img {
 }
 
 .hb__card-title {
-  font-family: var(--font-display);
+  font-family: var(--font-sans);
   font-size: 1.2rem;
   font-weight: 700;
   margin-bottom: 12px;
@@ -4537,7 +4536,7 @@ img {
 }
 
 .ed__benefit-title {
-  font-family: var(--font-display);
+  font-family: var(--font-sans);
   font-size: var(--text-md);
   font-weight: 700;
   margin-bottom: 4px;
@@ -4763,7 +4762,7 @@ img {
 }
 
 .blog__card-title {
-  font-family: var(--font-display);
+  font-family: var(--font-sans);
   font-size: 1.1rem;
   font-weight: 700;
   line-height: 1.3;
