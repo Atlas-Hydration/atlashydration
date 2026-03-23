@@ -1,54 +1,73 @@
 # Atlas Hydration
 
-Premium zero-sugar electrolyte drink mix brand website. Static HTML/CSS/JS site with Shopify Buy SDK integration for e-commerce checkout.
+Premium zero-sugar electrolyte drink mix brand website. Built with Remix (React Router v7) with Shopify Buy SDK integration for e-commerce checkout.
 
 ## Live Site
 
 **URL:** https://rwb8771.github.io/atlashydration/
 
+## Tech Stack
+
+- **Framework:** Remix / React Router v7 (SPA mode)
+- **Language:** TypeScript + React 19
+- **Build:** Vite
+- **E-commerce:** Shopify Storefront API via Buy SDK (CDN loaded)
+- **Fonts:** Google Fonts (Inter + Playfair Display)
+- **Styling:** Single CSS file with CSS custom properties, BEM naming
+- **Cart:** Shopify Buy SDK with localStorage fallback
+
+## Development
+
+```bash
+npm install
+npm run dev      # Start dev server
+npm run build    # Production build to build/client/
+npm run start    # Serve production build
+```
+
 ## Deployment
 
 - **Hosting:** GitHub Pages via GitHub Actions
 - **Workflow:** `.github/workflows/deploy.yml`
-- **Triggers:** Pushes to `main` and `claude/**` branches, plus manual `workflow_dispatch`
-- **Build:** No build step — the entire repo root is uploaded as a static artifact
-- **Deploy action:** `actions/deploy-pages@v4`
+- **Triggers:** Pushes to `main`, `master`, and `claude/**` branches, plus manual `workflow_dispatch`
+- **Build:** `npm ci && npm run build` → deploys `build/client/`
+- **SPA Routing:** `404.html` copied from `index.html` post-build for client-side routing fallback
 
 ## Key Files
 
 | File | Purpose |
 |------|---------|
-| `index.html` | Landing page — hero, products, science, mission, testimonials |
-| `products/strawberry-lemonade.html` | Strawberry Lemonade product detail page |
-| `products/lemon-lime.html` | Lemon Lime product detail page |
-| `css/styles.css` | All site styles (light theme, responsive) |
-| `js/shopify.js` | Shopify Buy SDK integration — cart, checkout, product variants |
-| `js/main.js` | UI interactions — mobile menu, scroll animations, counters |
-| `manifest.json` | PWA manifest |
-| `sitemap.xml` | SEO sitemap |
-| `robots.txt` | Search engine crawl rules |
-| `.github/workflows/deploy.yml` | GitHub Pages deployment workflow |
-
-## Navigation / Page Structure
-
-- **Landing page** (`/`) — Announcement bar, hero with split layout, vitamin strip, product grid, science section, how-it-works, mission, testimonials, CTA, footer
-- **Product pages** (`/products/*.html`) — Individual product detail pages with supplement facts, add-to-cart
-- **Cart** — Slide-out drawer cart (built in `js/shopify.js`), works with or without Shopify SDK
+| `app/root.tsx` | Root layout — HTML shell, global CSS, fonts, meta |
+| `app/routes.ts` | Route definitions |
+| `app/routes/home.tsx` | Landing page route |
+| `app/routes/products.strawberry-lemonade.tsx` | Strawberry Lemonade product page |
+| `app/routes/products.grapefruit.tsx` | Grapefruit product page |
+| `app/routes/blog.*.tsx` | Blog article routes |
+| `app/routes/privacy.tsx` | Privacy policy page |
+| `app/routes/shipping.tsx` | Shipping & returns page |
+| `app/hooks/useClientScripts.ts` | Hook for loading Shopify SDK + client JS |
+| `public/css/styles.css` | All site styles |
+| `public/js/shopify.js` | Shopify Buy SDK integration — cart, checkout |
+| `public/js/main.js` | UI interactions — mobile menu, scroll animations |
+| `public/js/svg-animations.js` | SVG animation effects |
+| `public/images/` | Static images |
+| `public/manifest.json` | PWA manifest |
+| `public/sitemap.xml` | SEO sitemap |
+| `public/robots.txt` | Search engine crawl rules |
 
 ## Architecture
 
-- **Framework:** None — vanilla HTML, CSS, JavaScript
-- **Build tools:** None — no bundler, preprocessor, or package manager
-- **E-commerce:** Shopify Storefront API via Buy SDK (CDN loaded)
-- **Fonts:** Google Fonts (Inter + Playfair Display)
-- **Styling:** Single CSS file with CSS custom properties, BEM naming
-- **Cart:** Shopify Buy SDK with localStorage fallback for offline/SDK-unavailable scenarios
+- **SPA Mode:** `ssr: false` — no server required, outputs static files
+- **Base Path:** `/atlashydration/` (configured in both `react-router.config.ts` and `vite.config.ts`)
+- **Client Scripts:** Loaded via `useClientScripts()` hook in each route — handles Shopify SDK + legacy JS initialization
+- **CSS:** Global stylesheet loaded via `root.tsx` links function
+- **Structured Data:** JSON-LD scripts rendered inline via `dangerouslySetInnerHTML`
 
 ## Shopify Integration
 
 - **Shop domain:** `7fa7b7-42.myshopify.com`
-- **Storefront token:** Configured in `js/shopify.js`
-- **Products:** Strawberry Lemonade (variant `7693950255178`), Lemon Lime (variant `7862662103114`)
+- **Storefront token:** Configured in `public/js/shopify.js`
+- **Products:** Strawberry Lemonade (variant `42739482067018`), Grapefruit (variant `41850457817162`)
 
 ## Claude Code Branch Constraints
 
