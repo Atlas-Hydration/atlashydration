@@ -435,12 +435,10 @@ document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
   });
 })();
 
-// Easter egg — click logo 5 times for confetti
+// Easter egg — double-click logo for confetti
 (function() {
   var logoLink = document.querySelector('.header__logo');
   if (!logoLink) return;
-  var clicks = 0;
-  var timer = null;
   var colors = ['#e85d75', '#F5A623', '#22c55e', '#3b82f6', '#a855f7', '#ffffff'];
   var messages = [
     'Stay hydrated, legend.',
@@ -449,33 +447,76 @@ document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
     '1,769mg of easter egg detected.'
   ];
 
-  logoLink.addEventListener('click', function(e) {
-    clicks++;
-    if (clicks > 1) e.preventDefault();
-    clearTimeout(timer);
-    timer = setTimeout(function() { clicks = 0; }, 800);
+  logoLink.addEventListener('dblclick', function(e) {
+    e.preventDefault();
+    // Confetti burst
+    for (var i = 0; i < 60; i++) {
+      var piece = document.createElement('div');
+      piece.className = 'confetti-piece';
+      piece.style.left = (Math.random() * 100) + 'vw';
+      piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+      piece.style.animationDelay = (Math.random() * 0.8) + 's';
+      piece.style.animationDuration = (1.5 + Math.random() * 2) + 's';
+      piece.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+      piece.style.width = (5 + Math.random() * 8) + 'px';
+      piece.style.height = (5 + Math.random() * 8) + 'px';
+      document.body.appendChild(piece);
+      setTimeout(function(p) { p.remove(); }.bind(null, piece), 4000);
+    }
+    // Toast message
+    var toast = document.createElement('div');
+    toast.className = 'easter-egg-toast';
+    toast.textContent = messages[Math.floor(Math.random() * messages.length)];
+    document.body.appendChild(toast);
+    requestAnimationFrame(function() {
+      requestAnimationFrame(function() { toast.classList.add('active'); });
+    });
+    setTimeout(function() {
+      toast.classList.remove('active');
+      setTimeout(function() { toast.remove(); }, 500);
+    }, 2500);
+  });
+})();
 
-    if (clicks >= 5) {
-      e.preventDefault();
-      clicks = 0;
-      // Confetti burst
-      for (var i = 0; i < 60; i++) {
-        var piece = document.createElement('div');
-        piece.className = 'confetti-piece';
-        piece.style.left = (Math.random() * 100) + 'vw';
-        piece.style.background = colors[Math.floor(Math.random() * colors.length)];
-        piece.style.animationDelay = (Math.random() * 0.8) + 's';
-        piece.style.animationDuration = (1.5 + Math.random() * 2) + 's';
-        piece.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
-        piece.style.width = (5 + Math.random() * 8) + 'px';
-        piece.style.height = (5 + Math.random() * 8) + 'px';
-        document.body.appendChild(piece);
-        setTimeout(function(p) { p.remove(); }.bind(null, piece), 4000);
+// Patriotic "Made in USA" hover — bald eagle flies across
+(function() {
+  var usaEls = document.querySelectorAll('.js-usa-hover');
+  usaEls.forEach(function(el) {
+    var active = false;
+    el.addEventListener('mouseenter', function() {
+      if (active) return;
+      active = true;
+
+      // Eagle emoji that flies across
+      var eagle = document.createElement('div');
+      eagle.className = 'usa-eagle';
+      eagle.textContent = '\uD83E\uDD85';
+      document.body.appendChild(eagle);
+
+      // Red-white-blue confetti burst from the element
+      var rect = el.getBoundingClientRect();
+      var cx = rect.left + rect.width / 2;
+      var cy = rect.top + rect.height / 2;
+      var patriotColors = ['#B22234', '#FFFFFF', '#3C3B6E'];
+      for (var i = 0; i < 24; i++) {
+        var star = document.createElement('div');
+        star.className = 'usa-star';
+        var angle = (Math.PI * 2 / 24) * i;
+        var dist = 40 + Math.random() * 80;
+        star.style.setProperty('--tx', (Math.cos(angle) * dist) + 'px');
+        star.style.setProperty('--ty', (Math.sin(angle) * dist) - 30 + 'px');
+        star.style.left = cx + 'px';
+        star.style.top = cy + 'px';
+        star.style.background = patriotColors[i % 3];
+        star.style.animationDelay = (Math.random() * 0.15) + 's';
+        document.body.appendChild(star);
+        setTimeout(function(s) { s.remove(); }.bind(null, star), 1200);
       }
-      // Toast message
+
+      // Flag toast
       var toast = document.createElement('div');
       toast.className = 'easter-egg-toast';
-      toast.textContent = messages[Math.floor(Math.random() * messages.length)];
+      toast.textContent = '\uD83C\uDDFA\uD83C\uDDF8  Proudly made in America  \uD83C\uDDFA\uD83C\uDDF8';
       document.body.appendChild(toast);
       requestAnimationFrame(function() {
         requestAnimationFrame(function() { toast.classList.add('active'); });
@@ -483,8 +524,10 @@ document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
       setTimeout(function() {
         toast.classList.remove('active');
         setTimeout(function() { toast.remove(); }, 500);
-      }, 2500);
-    }
+      }, 2000);
+
+      setTimeout(function() { eagle.remove(); active = false; }, 2500);
+    });
   });
 })();
 
