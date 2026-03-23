@@ -27,6 +27,7 @@
   --color-white: #f5f5f5;
   --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
   --font-serif: 'Playfair Display', Georgia, serif;
+  --font-display: 'Playfair Display', Georgia, serif;
 
   /* Type Scale */
   --text-xs: 0.7rem;      /* 11.2px — eyebrows, tiny labels, tags */
@@ -55,14 +56,15 @@ html {
 }
 
 body {
-  font-family: var(--font-sans);
+  font-family: var(--font-display);
   background: var(--color-bg);
   color: var(--color-text);
   font-size: 1rem;
-  line-height: 1.6;
+  line-height: 1.7;
   overflow-x: hidden;
   -webkit-text-size-adjust: 100%;
   text-rendering: optimizeLegibility;
+  font-feature-settings: 'liga' 1, 'kern' 1;
 }
 
 a {
@@ -459,7 +461,7 @@ img {
 }
 
 .hero__title {
-  font-family: var(--font-sans);
+  font-family: var(--font-display);
   font-size: var(--heading-xl);
   font-weight: 700;
   line-height: 1.08;
@@ -652,7 +654,7 @@ img {
 }
 
 .section-title {
-  font-family: var(--font-sans);
+  font-family: var(--font-display);
   font-size: var(--heading-lg);
   font-weight: 700;
   margin-bottom: 20px;
@@ -837,7 +839,7 @@ img {
 }
 
 .product-card__title {
-  font-family: var(--font-sans);
+  font-family: var(--font-display);
   font-size: 1.15rem;
   font-weight: 600;
   margin-bottom: 8px;
@@ -926,7 +928,7 @@ img {
 }
 
 .science__heading {
-  font-family: var(--font-sans);
+  font-family: var(--font-display);
   font-size: var(--heading-lg);
   font-weight: 700;
   line-height: 1.15;
@@ -1313,7 +1315,7 @@ img {
 }
 
 .cta-section__title {
-  font-family: var(--font-sans);
+  font-family: var(--font-display);
   font-size: var(--heading-xl);
   font-weight: 700;
   margin-bottom: 20px;
@@ -1496,7 +1498,7 @@ img {
 }
 
 .product-hero__title {
-  font-family: var(--font-sans);
+  font-family: var(--font-display);
   font-size: var(--heading-lg);
   font-weight: 700;
   margin-bottom: 12px;
@@ -3881,7 +3883,7 @@ img {
 }
 
 .featured-product__title {
-  font-family: var(--font-sans);
+  font-family: var(--font-display);
   font-size: var(--heading-md);
   font-weight: 700;
   letter-spacing: -0.025em;
@@ -4037,7 +4039,7 @@ img {
   padding: 24px 0;
   background: none;
   border: none;
-  font-family: var(--font-sans);
+  font-family: var(--font-display);
   font-size: 1rem;
   font-weight: 700;
   color: var(--color-text);
@@ -4141,7 +4143,7 @@ img {
 }
 
 .cta-dark__title {
-  font-family: var(--font-sans);
+  font-family: var(--font-display);
   font-size: var(--heading-xl);
   font-weight: 800;
   color: #ffffff;
@@ -4283,7 +4285,7 @@ img {
 }
 
 .why-atlas__card-title {
-  font-family: var(--font-sans);
+  font-family: var(--font-display);
   font-size: 1.3rem;
   font-weight: 700;
   color: #ffffff;
@@ -4456,7 +4458,7 @@ img {
 }
 
 .hb__card-title {
-  font-family: var(--font-sans);
+  font-family: var(--font-display);
   font-size: 1.2rem;
   font-weight: 700;
   margin-bottom: 12px;
@@ -4494,7 +4496,7 @@ img {
 }
 
 .ed__heading {
-  font-family: var(--font-sans);
+  font-family: var(--font-display);
   font-size: var(--heading-md);
   font-weight: 700;
   line-height: 1.15;
@@ -4535,7 +4537,7 @@ img {
 }
 
 .ed__benefit-title {
-  font-family: var(--font-sans);
+  font-family: var(--font-display);
   font-size: var(--text-md);
   font-weight: 700;
   margin-bottom: 4px;
@@ -4745,7 +4747,7 @@ img {
 }
 
 .blog__card-title {
-  font-family: var(--font-sans);
+  font-family: var(--font-display);
   font-size: 1.1rem;
   font-weight: 700;
   line-height: 1.3;
