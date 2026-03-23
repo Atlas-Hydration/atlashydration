@@ -4804,45 +4804,40 @@ img {
    ======================================== */
 .founder {
   position: relative;
-  min-height: 80vh;
-  display: flex;
-  align-items: center;
+  background: var(--color-bg);
   overflow: hidden;
 }
 
-.founder__bg-image {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
+.founder .container {
+  max-width: none;
+  padding: 0;
 }
 
-.founder__bg-image img {
+.founder__layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: 85vh;
+  gap: 0;
+}
+
+.founder__image {
+  position: relative;
+  overflow: hidden;
+}
+
+.founder__image img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   object-position: center top;
+  display: block;
 }
 
-.founder__overlay {
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  background: linear-gradient(
-    135deg,
-    rgba(0, 0, 0, 0.78) 0%,
-    rgba(0, 0, 0, 0.5) 40%,
-    rgba(0, 0, 0, 0.25) 100%
-  );
-}
-
-.founder .container {
-  position: relative;
-  z-index: 2;
-}
-
-.founder__layout {
-  max-width: 580px;
-  padding: 100px 0;
+.founder__content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 80px 64px;
 }
 
 .founder__eyebrow {
@@ -4850,30 +4845,30 @@ img {
   font-size: var(--text-xs);
   font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.15em;
-  color: rgba(255, 255, 255, 0.4);
-  margin-bottom: 20px;
+  letter-spacing: 0.2em;
+  color: rgba(255, 255, 255, 0.35);
+  margin-bottom: 24px;
 }
 
 .founder__heading {
   font-family: var(--font-display);
-  font-size: var(--heading-xl);
+  font-size: clamp(2rem, 3.5vw, 3.2rem);
   font-weight: 700;
   color: #ffffff;
   line-height: 1.1;
   letter-spacing: -0.02em;
-  margin-bottom: 32px;
+  margin-bottom: 36px;
 }
 
 .founder__text {
-  margin-bottom: 40px;
+  margin-bottom: 48px;
 }
 
 .founder__text p {
   font-size: var(--text-md);
-  color: rgba(255, 255, 255, 0.6);
-  line-height: 1.8;
-  margin-bottom: 20px;
+  color: rgba(255, 255, 255, 0.55);
+  line-height: 1.85;
+  margin-bottom: 24px;
 }
 
 .founder__text p:last-child {
@@ -4881,42 +4876,57 @@ img {
 }
 
 .founder__signature {
-  padding-top: 28px;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding-top: 32px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .founder__sig-name {
   display: block;
   font-family: var(--font-display);
   font-style: italic;
-  font-size: 1.4rem;
+  font-size: 1.5rem;
   color: #ffffff;
-  margin-bottom: 4px;
+  margin-bottom: 6px;
 }
 
 .founder__sig-role {
   display: block;
   font-family: var(--font-sans);
-  font-size: var(--text-sm);
+  font-size: var(--text-xs);
   color: rgba(255, 255, 255, 0.3);
   text-transform: uppercase;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.1em;
 }
 
 .founder__instagram {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  margin-top: 20px;
+  gap: 7px;
+  margin-top: 18px;
   font-family: var(--font-sans);
   font-size: var(--text-sm);
-  color: rgba(255, 255, 255, 0.45);
+  color: rgba(255, 255, 255, 0.35);
   text-decoration: none;
   transition: color 0.25s ease;
 }
 
 .founder__instagram:hover {
-  color: rgba(255, 255, 255, 0.8);
+  color: rgba(255, 255, 255, 0.75);
+}
+
+@media (max-width: 900px) {
+  .founder__layout {
+    grid-template-columns: 1fr;
+    min-height: auto;
+  }
+
+  .founder__image {
+    height: 50vh;
+  }
+
+  .founder__content {
+    padding: 48px 24px 64px;
+  }
 }
 
 /* ========================================
