@@ -2,18 +2,37 @@ import { useEffect } from "react";
 import { useParams, useNavigate } from "react-router";
 
 /**
- * Catch-all route that redirects old .html URLs to clean Remix equivalents.
- * Works client-side in SPA mode.
+ * Catch-all route that handles:
+ * 1. Old .html URLs → redirect to clean Remix routes
+ * 2. Static tool pages (dev, app) → redirect to static HTML
+ * 3. Everything else → 404
  */
+
+const STATIC_PAGES: Record<string, string> = {
+  "dev": "/atlashydration/dev/index.html",
+  "dev/": "/atlashydration/dev/index.html",
+  "app": "/atlashydration/app/index.html",
+  "app/": "/atlashydration/app/index.html",
+  "app/images": "/atlashydration/app/images.html",
+};
+
 export default function HtmlRedirect() {
   const params = useParams();
   const navigate = useNavigate();
   const path = params["*"] || "";
 
   useEffect(() => {
+    // Check if this is a static tool page
+    if (STATIC_PAGES[path]) {
+      window.location.href = STATIC_PAGES[path];
+      return;
+    }
+
+    // Redirect old .html URLs to clean routes
     if (path.endsWith(".html")) {
       const clean = path.replace(/\.html$/, "").replace(/\/index$/, "").replace(/^index$/, "");
       navigate(`/${clean}`, { replace: true });
+      return;
     }
   }, [path, navigate]);
 
