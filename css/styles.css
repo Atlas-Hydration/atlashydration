@@ -4645,24 +4645,21 @@ img {
   gap: 16px;
   position: sticky;
   top: 120px;
-  overflow: hidden;
 }
 
 .ed__stat-card {
-  background: rgba(20, 20, 22, 0.6);
-  -webkit-backdrop-filter: blur(40px) saturate(1.8);
-  backdrop-filter: blur(40px) saturate(1.8);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 24px;
-  padding: 28px;
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 20px;
+  padding: 32px 24px;
   text-align: center;
   position: relative;
   overflow: hidden;
-  transform: translateY(24px);
+  transform: translateY(30px);
   opacity: 0;
-  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1),
-              opacity 0.6s ease,
-              border-color 0.35s ease;
+  transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+              opacity 0.7s ease,
+              box-shadow 0.35s ease;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -4673,31 +4670,20 @@ img {
   opacity: 1;
 }
 
-.ed__stat-card::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 1px;
-  background: linear-gradient(90deg, transparent 10%, rgba(255,255,255,0.15) 50%, transparent 90%);
-  z-index: 2;
-}
-
 .ed__stat-card:hover {
-  border-color: rgba(255, 255, 255, 0.15);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
 }
 
 /* Animated ring */
 .ed__ring {
-  width: 88px;
-  height: 88px;
+  width: 80px;
+  height: 80px;
   margin-bottom: 20px;
   flex-shrink: 0;
 }
 
 .ed__ring-fill {
-  transition: stroke-dashoffset 1.4s cubic-bezier(0.25, 0.1, 0.25, 1);
+  transition: stroke-dashoffset 1.6s cubic-bezier(0.25, 0.1, 0.25, 1);
 }
 
 .ed__stat-card--visible .ed__ring-fill {
@@ -4710,21 +4696,19 @@ img {
 }
 
 .ed__stat-number {
-  font-family: var(--font-sans);
-  font-size: clamp(1.6rem, 3.5vw, 2.2rem);
+  font-family: var(--font-display);
+  font-size: clamp(1.8rem, 3.5vw, 2.4rem);
   font-weight: 800;
   letter-spacing: -0.04em;
-  color: #ffffff;
+  color: var(--color-text);
   margin-bottom: 8px;
   line-height: 1;
 }
 
 .ed__stat-label {
   font-size: var(--text-xs);
-  color: rgba(255, 255, 255, 0.4);
+  color: var(--color-text-muted);
   line-height: 1.5;
-  position: relative;
-  z-index: 1;
 }
 
 @media (max-width: 900px) {
@@ -4895,31 +4879,27 @@ img {
    ======================================== */
 .founder {
   position: relative;
-  background: var(--color-bg);
+  background: #0a0a0a;
   overflow: hidden;
-}
-
-.founder .container {
-  max-width: none;
-  padding: 0;
+  padding: 100px 0;
 }
 
 .founder__layout {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  min-height: 85vh;
-  gap: 0;
+  grid-template-columns: 1fr 0.6fr;
+  gap: 80px;
+  align-items: center;
 }
 
 .founder__image {
   position: relative;
   overflow: hidden;
-  min-height: 600px;
+  border-radius: 20px;
+  aspect-ratio: 3 / 4;
+  max-height: 520px;
 }
 
 .founder__image img {
-  position: absolute;
-  inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -4931,7 +4911,6 @@ img {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding: 80px 64px;
 }
 
 .founder__eyebrow {
@@ -5011,11 +4990,11 @@ img {
 @media (max-width: 900px) {
   .founder__layout {
     grid-template-columns: 1fr;
-    min-height: auto;
+    gap: 40px;
   }
 
   .founder__image {
-    height: 50vh;
+    max-height: 400px;
   }
 
   .founder__content {
