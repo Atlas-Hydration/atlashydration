@@ -4950,46 +4950,95 @@ img {
 }
 
 .ed__stat-card {
-  background: #ffffff;
-  border: 1px solid rgba(0, 0, 0, 0.06);
+  background: #0d0d0d;
+  border: 1px solid rgba(255, 255, 255, 0.06);
   border-radius: 20px;
   padding: 32px 24px;
   text-align: center;
   position: relative;
   overflow: hidden;
-  transform: translateY(30px);
+  transform: translateY(30px) scale(0.95);
   opacity: 0;
-  transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1),
-              opacity 0.7s ease,
-              box-shadow 0.35s ease;
+  transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+              opacity 0.8s ease,
+              border-color 0.4s ease,
+              box-shadow 0.4s ease;
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
+.ed__stat-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent);
+}
+
 .ed__stat-card.ed__stat-card--visible {
-  transform: translateY(0);
+  transform: translateY(0) scale(1);
   opacity: 1;
 }
 
 .ed__stat-card:hover {
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
+  border-color: rgba(255, 255, 255, 0.12);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  transform: translateY(-4px) scale(1);
 }
 
-/* Animated ring */
-.ed__ring {
-  width: 80px;
-  height: 80px;
+/* Ring container */
+.ed__ring-wrap {
+  position: relative;
+  width: 100px;
+  height: 100px;
   margin-bottom: 20px;
   flex-shrink: 0;
 }
 
+.ed__ring {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  z-index: 1;
+}
+
+/* Glow behind ring */
+.ed__ring-glow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 70px;
+  height: 70px;
+  transform: translate(-50%, -50%);
+  background: var(--glow-color, #e85d75);
+  border-radius: 50%;
+  filter: blur(25px);
+  opacity: 0;
+  transition: opacity 1s ease 0.5s;
+  z-index: 0;
+}
+
+.ed__stat-card--visible .ed__ring-glow {
+  opacity: 0.25;
+  animation: ring-glow-pulse 3s ease-in-out infinite 1.5s;
+}
+
+@keyframes ring-glow-pulse {
+  0%, 100% { opacity: 0.2; transform: translate(-50%, -50%) scale(1); }
+  50% { opacity: 0.35; transform: translate(-50%, -50%) scale(1.15); }
+}
+
+/* Animated ring fill */
 .ed__ring-fill {
-  transition: stroke-dashoffset 1.6s cubic-bezier(0.25, 0.1, 0.25, 1);
+  transition: stroke-dashoffset 2s cubic-bezier(0.16, 1, 0.3, 1);
+  filter: drop-shadow(0 0 4px currentColor);
 }
 
 .ed__stat-card--visible .ed__ring-fill {
-  stroke-dashoffset: var(--ring-target, 327);
+  stroke-dashoffset: var(--ring-target, 302);
 }
 
 .ed__stat-value {
@@ -4998,19 +5047,28 @@ img {
 }
 
 .ed__stat-number {
-  font-family: var(--font-display);
+  font-family: var(--font-sans);
   font-size: clamp(1.8rem, 3.5vw, 2.4rem);
   font-weight: 800;
   letter-spacing: -0.04em;
-  color: var(--color-text);
+  color: #ffffff;
   margin-bottom: 8px;
   line-height: 1;
 }
 
 .ed__stat-label {
   font-size: var(--text-xs);
-  color: var(--color-text-muted);
+  color: rgba(255, 255, 255, 0.4);
   line-height: 1.5;
+}
+
+/* Hover: amplify glow */
+.ed__stat-card:hover .ed__ring-glow {
+  opacity: 0.45;
+}
+
+.ed__stat-card:hover .ed__ring-fill {
+  filter: drop-shadow(0 0 8px currentColor);
 }
 
 @media (max-width: 900px) {
