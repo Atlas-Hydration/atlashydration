@@ -1,88 +1,69 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Shipping & Returns | Atlas Hydration</title>
-  <meta name="description" content="Atlas Hydration shipping and returns policy. Free shipping on orders over $40. Learn about processing times, shipping rates, and our return policy.">
-  <meta name="robots" content="index, follow">
-  <link rel="canonical" href="https://rwb8771.github.io/atlashydration/shipping.html">
-  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+import { useClientScripts } from "~/hooks/useClientScripts";
 
-  <!-- Open Graph -->
-  <meta property="og:type" content="website">
-  <meta property="og:title" content="Shipping & Returns | Atlas Hydration">
-  <meta property="og:description" content="Free shipping on orders over $40. Learn about processing times, shipping rates, and our return policy.">
-  <meta property="og:url" content="https://rwb8771.github.io/atlashydration/shipping.html">
-  <meta property="og:image" content="https://rwb8771.github.io/atlashydration/images/og-default.jpg">
-  <meta property="og:site_name" content="Atlas Hydration">
+export function meta() {
+  return [
+    { title: "Shipping & Returns | Atlas Hydration" },
+    { name: "description", content: "Atlas Hydration shipping and returns policy. Free shipping on orders over $40. Learn about processing times, shipping rates, and our return policy." },
+    { property: "og:type", content: "website" },
+    { property: "og:title", content: "Shipping & Returns | Atlas Hydration" },
+    { property: "og:description", content: "Free shipping on orders over $40. Learn about processing times, shipping rates, and our return policy." },
+    { property: "og:url", content: "https://rwb8771.github.io/atlashydration/shipping.html" },
+    { property: "og:image", content: "https://rwb8771.github.io/atlashydration/images/og-default.jpg" },
+    { property: "og:site_name", content: "Atlas Hydration" },
+    { tagName: "link", rel: "canonical", href: "https://rwb8771.github.io/atlashydration/shipping.html" },
+  ];
+}
 
-  <!-- Preconnect for performance -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+export default function ShippingPage() {
+  useClientScripts();
 
-  <link rel="stylesheet" href="css/styles.css">
-  <meta name="theme-color" content="#ffffff">
-
-  <style>
-    .policy-page { padding: 60px 0 120px; }
-    .policy-page__title { font-family: 'Playfair Display', Georgia, serif; font-size: clamp(2rem, 4vw, 3rem); font-weight: 700; color: #1a1a1a; margin-bottom: 40px; }
-    .policy-page__content { max-width: 720px; }
-    .policy-page__content h2 { font-size: 1.25rem; font-weight: 700; color: #1a1a1a; margin-top: 32px; margin-bottom: 12px; }
-    .policy-page__content h2:first-child { margin-top: 0; }
-    .policy-page__content p, .policy-page__content li { font-size: 0.95rem; color: #555; line-height: 1.8; margin-bottom: 12px; }
-    .policy-page__content ul { padding-left: 20px; list-style-type: disc; }
-    .policy-page__content a { color: #333; text-decoration: underline; }
-    .policy-page__content a:hover { color: #000; }
-  </style>
-</head>
-<body>
-  <!-- Announcement Bar -->
-  <div class="announcement-bar" role="banner">
-    <div class="announcement-bar__inner">
+  return (
+    <>
+      {/*  Announcement Bar  */}
+  <div className="announcement-bar" role="banner">
+    <div className="announcement-bar__inner">
       <span>UNLOCK 10% OFF</span>
     </div>
   </div>
 
-  <!-- Header -->
-  <header class="header" role="navigation">
-    <nav class="header__nav" aria-label="Main navigation">
-      <a href="index.html" class="header__logo" aria-label="Atlas Hydration Home">
-        <img src="logo.svg" alt="Atlas" class="header__logo-img" height="28">
+  {/*  Header  */}
+  <header className="header" role="navigation">
+    <nav className="header__nav" aria-label="Main navigation">
+      <a href="/atlashydration/" className="header__logo" aria-label="Atlas Hydration Home">
+        <img src="/atlashydration/logo.svg" alt="Atlas" className="header__logo-img" height="28" />
       </a>
-      <div class="header__right">
-        <button class="header__icon js-cart-toggle" aria-label="Shopping cart">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
-          <span class="cart-count" style="display:none">0</span>
+      <div className="header__right">
+        <button className="header__icon js-cart-toggle" aria-label="Shopping cart">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+          <span className="cart-count" style={{display: "none"}}>0</span>
         </button>
       </div>
-      <button class="header__hamburger" aria-label="Open menu" id="menuToggle">
+      <button className="header__hamburger" aria-label="Open menu" id="menuToggle">
         <span></span><span></span><span></span>
       </button>
     </nav>
 
-    <!-- Mobile Menu -->
-    <div class="mobile-menu" id="mobileMenu" aria-hidden="true">
+    {/*  Mobile Menu  */}
+    <div className="mobile-menu" id="mobileMenu" aria-hidden="true">
       <a href="index.html#products">Shop</a>
       <a href="index.html#science">Science</a>
       <a href="index.html#mission">Mission</a>
-      <a href="#" class="js-cart-toggle">Cart</a>
+      <a href="#" className="js-cart-toggle">Cart</a>
     </div>
   </header>
 
   <main>
-    <section class="policy-page">
-      <div class="container">
-        <nav aria-label="Breadcrumb" style="margin-bottom: 24px; font-size: 0.875rem; color: #888;">
-          <a href="index.html" style="color: #888; text-decoration: none;">Home</a>
-          <span style="margin: 0 8px;">&gt;</span>
-          <span style="color: #1a1a1a;">Shipping &amp; Returns</span>
+    <section className="policy-page">
+      <div className="container">
+        <nav aria-label="Breadcrumb" style={{marginBottom: "24px", fontSize: "0.875rem", color: "#888"}}>
+          <a href="/atlashydration/" style={{color: "#888", textDecoration: "none"}}>Home</a>
+          <span style={{margin: "0 8px"}}>&gt;</span>
+          <span style={{color: "#1a1a1a"}}>Shipping &amp; Returns</span>
         </nav>
 
-        <h1 class="policy-page__title">Shipping &amp; Returns</h1>
+        <h1 className="policy-page__title">Shipping &amp; Returns</h1>
 
-        <div class="policy-page__content">
+        <div className="policy-page__content">
           <h2>Returns</h2>
           <p>All sales are final, unless the product is defective! However, we stand by our formula. If you are unhappy with your purchase or experience issues with your order, please contact us at <a href="mailto:support@atlas-hydration.com">support@atlas-hydration.com</a>.</p>
 
@@ -118,14 +99,14 @@
     </section>
   </main>
 
-  <!-- Footer -->
-  <footer class="footer" role="contentinfo">
-    <div class="container">
-      <div class="footer__grid">
-        <div class="footer__brand">
-          <img src="logo.svg" alt="Atlas" class="footer__logo-img" height="24">
-          <p class="footer__tagline">Hydrate. Recover. Thrive.</p>
-          <div class="footer__social">
+  {/*  Footer  */}
+  <footer className="footer" role="contentinfo">
+    <div className="container">
+      <div className="footer__grid">
+        <div className="footer__brand">
+          <img src="/atlashydration/logo.svg" alt="Atlas" className="footer__logo-img" height="24" />
+          <p className="footer__tagline">Hydrate. Recover. Thrive.</p>
+          <div className="footer__social">
             <a href="https://www.instagram.com/atlashydration" target="_blank" rel="noopener noreferrer" aria-label="Follow us on Instagram">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
             </a>
@@ -134,37 +115,35 @@
             </a>
           </div>
         </div>
-        <div class="footer__links">
+        <div className="footer__links">
           <h4>Shop</h4>
           <nav aria-label="Shop links">
-            <a href="products/strawberry-lemonade.html">Strawberry Lemonade</a>
-            <a href="products/grapefruit.html">Grapefruit</a>
+            <a href="/atlashydration/products/strawberry-lemonade">Strawberry Lemonade</a>
+            <a href="/atlashydration/products/grapefruit">Grapefruit</a>
           </nav>
         </div>
-        <div class="footer__links">
+        <div className="footer__links">
           <h4>Company</h4>
           <nav aria-label="Company links">
-            <a href="shipping.html">Shipping &amp; Returns</a>
-            <a href="privacy.html">Privacy Policy</a>
+            <a href="/atlashydration/shipping">Shipping &amp; Returns</a>
+            <a href="/atlashydration/privacy">Privacy Policy</a>
           </nav>
         </div>
-        <div class="footer__links">
+        <div className="footer__links">
           <h4>Support</h4>
           <nav aria-label="Support links">
             <a href="mailto:support@atlas-hydration.com">Contact Us</a>
           </nav>
         </div>
       </div>
-      <div class="footer__bottom">
+      <div className="footer__bottom">
         <p>&copy; 2026 Atlas Hydration. All rights reserved.</p>
         <p>Non-GMO &bull; Made in USA &bull; Zero Sugar</p>
       </div>
     </div>
   </footer>
 
-  <!-- Shopify Buy SDK (CDN) -->
-  <script src="https://sdks.shopifycdn.com/buy-button/latest/buy-button-storefront.min.js" defer></script>
-  <script src="js/shopify.js" defer></script>
-  <script src="js/main.js" defer></script>
-</body>
-</html>
+  {/*  Shopify Buy SDK (CDN)  */}
+    </>
+  );
+}
