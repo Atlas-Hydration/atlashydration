@@ -421,6 +421,71 @@ document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
   }
 })();
 
+// Why Atlas cards — mouse-follow glow effect
+(function() {
+  var cards = document.querySelectorAll('.why-atlas__card');
+  cards.forEach(function(card) {
+    card.addEventListener('mousemove', function(e) {
+      var rect = card.getBoundingClientRect();
+      var x = ((e.clientX - rect.left) / rect.width * 100).toFixed(1);
+      var y = ((e.clientY - rect.top) / rect.height * 100).toFixed(1);
+      card.style.setProperty('--mouse-x', x + '%');
+      card.style.setProperty('--mouse-y', y + '%');
+    });
+  });
+})();
+
+// Easter egg — click logo 5 times for confetti
+(function() {
+  var logo = document.querySelector('.header__logo-img');
+  if (!logo) return;
+  var clicks = 0;
+  var timer = null;
+  var colors = ['#e85d75', '#F5A623', '#22c55e', '#3b82f6', '#a855f7', '#ffffff'];
+  var messages = [
+    'Stay hydrated, legend.',
+    'You found the secret. Now drink water.',
+    'Atlas approves this curiosity.',
+    '1,769mg of easter egg detected.'
+  ];
+
+  logo.addEventListener('click', function(e) {
+    clicks++;
+    clearTimeout(timer);
+    timer = setTimeout(function() { clicks = 0; }, 800);
+
+    if (clicks >= 5) {
+      clicks = 0;
+      // Confetti burst
+      for (var i = 0; i < 60; i++) {
+        var piece = document.createElement('div');
+        piece.className = 'confetti-piece';
+        piece.style.left = (Math.random() * 100) + 'vw';
+        piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+        piece.style.animationDelay = (Math.random() * 0.8) + 's';
+        piece.style.animationDuration = (1.5 + Math.random() * 2) + 's';
+        piece.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+        piece.style.width = (5 + Math.random() * 8) + 'px';
+        piece.style.height = (5 + Math.random() * 8) + 'px';
+        document.body.appendChild(piece);
+        setTimeout(function(p) { p.remove(); }.bind(null, piece), 4000);
+      }
+      // Toast message
+      var toast = document.createElement('div');
+      toast.className = 'easter-egg-toast';
+      toast.textContent = messages[Math.floor(Math.random() * messages.length)];
+      document.body.appendChild(toast);
+      requestAnimationFrame(function() {
+        requestAnimationFrame(function() { toast.classList.add('active'); });
+      });
+      setTimeout(function() {
+        toast.classList.remove('active');
+        setTimeout(function() { toast.remove(); }, 500);
+      }, 2500);
+    }
+  });
+})();
+
 // FAQ accordion toggle
 (function() {
   var questions = document.querySelectorAll('.product-faq__question');
