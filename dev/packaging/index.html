@@ -129,9 +129,226 @@ body {
 .card__preview svg { transition: transform 0.3s; cursor: zoom-in; }
 .card__preview svg:hover { transform: scale(1.05); }
 
+/* ─── 3D Box System ─── */
+.box-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 2rem;
+}
+.box-card {
+  background: var(--surface);
+  border-radius: 16px;
+  border: 1px solid var(--border);
+  overflow: hidden;
+}
+.box-card__viewport {
+  height: 420px;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--surface-2);
+  perspective: 900px;
+  cursor: grab;
+  user-select: none;
+  position: relative;
+  overflow: hidden;
+}
+.box-card__viewport:active { cursor: grabbing; }
+.box-card__viewport .hint {
+  position: absolute; bottom: 12px; left: 50%; transform: translateX(-50%);
+  font-size: 0.65rem; color: var(--text-dim); opacity: 0.5;
+  pointer-events: none; transition: opacity 0.3s;
+}
+.box-card__viewport.dragged .hint { opacity: 0; }
+.box-card__info {
+  padding: 1rem 1.25rem;
+  border-top: 1px solid var(--border);
+}
+.box-card__flavor { font-size: 0.85rem; font-weight: 700; }
+.box-card__meta { font-size: 0.7rem; color: var(--text-dim); margin-top: 0.25rem; }
+.box-card__tags { display: flex; gap: 0.4rem; margin-top: 0.5rem; flex-wrap: wrap; }
+
+/* 3D box container */
+.box3d {
+  width: 200px; height: 280px;
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 0.1s ease-out;
+}
+.box3d__face {
+  position: absolute;
+  backface-visibility: visible;
+  overflow: hidden;
+  border: 1px solid rgba(0,0,0,0.1);
+}
+/* Front face */
+.box3d__face--front {
+  width: 200px; height: 280px;
+  transform: translateZ(50px);
+}
+/* Back face */
+.box3d__face--back {
+  width: 200px; height: 280px;
+  transform: rotateY(180deg) translateZ(50px);
+}
+/* Left face */
+.box3d__face--left {
+  width: 100px; height: 280px;
+  transform: rotateY(-90deg) translateZ(100px);
+  left: 0;
+}
+/* Right face */
+.box3d__face--right {
+  width: 100px; height: 280px;
+  transform: rotateY(90deg) translateZ(100px);
+  right: 0;
+}
+/* Top face */
+.box3d__face--top {
+  width: 200px; height: 100px;
+  transform: rotateX(90deg) translateZ(140px);
+  top: 0;
+}
+/* Bottom face */
+.box3d__face--bottom {
+  width: 200px; height: 100px;
+  transform: rotateX(-90deg) translateZ(140px);
+  bottom: 0;
+}
+
+/* Face content styling */
+.face-content {
+  width: 100%; height: 100%;
+  display: flex; flex-direction: column;
+  padding: 16px;
+  position: relative;
+  font-family: 'Inter', sans-serif;
+  overflow: hidden;
+}
+.face-content .wave-bg {
+  position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+  pointer-events: none; opacity: 0.15;
+}
+.face-content .brand-row {
+  display: flex; align-items: center; gap: 6px;
+  position: relative; z-index: 1;
+}
+.face-content .brand-row svg { width: 22px; height: 22px; }
+.face-content .brand-name {
+  font-size: 18px; font-weight: 800; letter-spacing: 0.5px;
+}
+.face-content .stats-col {
+  position: absolute; right: 14px; top: 14px;
+  display: flex; flex-direction: column; gap: 8px;
+  z-index: 1;
+}
+.face-content .stat { text-align: right; }
+.face-content .stat-val { font-size: 16px; font-weight: 800; line-height: 1; }
+.face-content .stat-val sub { font-size: 9px; font-weight: 600; }
+.face-content .stat-label { font-size: 7px; font-weight: 600; opacity: 0.7; text-transform: uppercase; letter-spacing: 0.04em; }
+.face-content .hero-text {
+  margin-top: auto; position: relative; z-index: 1;
+}
+.face-content .hero-title {
+  font-size: 32px; font-weight: 300; line-height: 1.05; letter-spacing: -0.5px;
+}
+.face-content .hero-sub {
+  font-size: 11px; font-weight: 400; opacity: 0.7; margin-top: 4px;
+}
+.face-content .flavor-pill {
+  display: inline-block;
+  padding: 6px 16px; border-radius: 20px;
+  font-size: 12px; font-weight: 600;
+  margin-top: 10px;
+}
+.face-content .stick-count {
+  font-size: 9px; font-weight: 500; opacity: 0.6; margin-top: 8px;
+}
+.face-content .bottom-row {
+  display: flex; justify-content: space-between; align-items: flex-end;
+  margin-top: 8px; position: relative; z-index: 1;
+}
+.face-content .natural-stat { text-align: right; }
+
+/* Side face content */
+.side-content {
+  width: 100%; height: 100%;
+  display: flex; flex-direction: column; align-items: center;
+  justify-content: center; text-align: center;
+  padding: 12px 8px;
+  font-family: 'Inter', sans-serif;
+  position: relative; overflow: hidden;
+}
+.side-content .side-brand { font-size: 14px; font-weight: 800; margin-bottom: 12px; }
+.side-content .side-vertical {
+  writing-mode: vertical-rl; text-orientation: mixed;
+  font-size: 10px; font-weight: 700; letter-spacing: 2px;
+  text-transform: uppercase; opacity: 0.8;
+  transform: rotate(180deg);
+  flex: 1;
+}
+.side-content .side-flavor { font-size: 9px; font-weight: 600; margin-top: 12px; }
+.side-content .side-weight { font-size: 7px; opacity: 0.5; margin-top: 4px; }
+
+/* Back face content */
+.back-content {
+  width: 100%; height: 100%;
+  display: flex; flex-direction: column;
+  padding: 20px 16px;
+  font-family: 'Inter', sans-serif;
+  position: relative; overflow: hidden;
+}
+.back-content .back-title {
+  font-size: 20px; font-weight: 300; line-height: 1.15; margin-bottom: 6px;
+}
+.back-content .back-sub {
+  font-size: 8px; opacity: 0.6; margin-bottom: 16px; line-height: 1.4;
+}
+.back-content .back-feature {
+  display: flex; align-items: flex-start; gap: 8px;
+  margin-bottom: 12px;
+}
+.back-content .back-icon {
+  width: 24px; height: 24px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; font-size: 10px; font-weight: 800;
+}
+.back-content .back-feat-title { font-size: 9px; font-weight: 700; }
+.back-content .back-feat-desc { font-size: 7px; opacity: 0.6; line-height: 1.3; margin-top: 1px; }
+.back-content .back-bottom {
+  margin-top: auto; font-size: 6px; opacity: 0.4; text-align: center; line-height: 1.4;
+}
+
+/* Top face */
+.top-content {
+  width: 100%; height: 100%;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  font-family: 'Inter', sans-serif;
+  position: relative; overflow: hidden;
+}
+.top-content .top-brand { font-size: 20px; font-weight: 800; }
+.top-content .top-tear { font-size: 7px; opacity: 0.4; margin-top: 6px; text-transform: uppercase; letter-spacing: 1px; }
+.top-content .top-tear-line {
+  width: 60%; height: 0; border-top: 1px dashed; opacity: 0.3; margin-top: 4px;
+}
+
+/* Bottom face */
+.bottom-content {
+  width: 100%; height: 100%;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  font-family: 'Inter', sans-serif;
+  text-align: center;
+}
+.bottom-content .btm-weight { font-size: 8px; font-weight: 600; }
+.bottom-content .btm-info { font-size: 6px; opacity: 0.5; margin-top: 4px; line-height: 1.4; }
+.bottom-content .btm-barcode {
+  width: 60px; height: 30px; margin-top: 8px;
+  background: repeating-linear-gradient(90deg, currentColor 0px, currentColor 1px, transparent 1px, transparent 3px);
+  opacity: 0.3;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
   .grid { grid-template-columns: 1fr; }
+  .box-grid { grid-template-columns: 1fr; }
   .header { padding: 0.75rem 1rem; }
   .tabs { padding: 0 1rem; }
   .section { padding: 1rem; }
@@ -161,8 +378,8 @@ body {
 </section>
 
 <section class="section" id="section-boxes">
-  <div class="section-title">Box Designs (Liquid IV size) — 5 Variations</div>
-  <div class="grid" id="grid-boxes"></div>
+  <div class="section-title">3D Retail Box Designs — Drag to spin — 5 Variations</div>
+  <div class="box-grid" id="grid-boxes"></div>
 </section>
 
 <section class="section" id="section-pouches">
@@ -298,98 +515,123 @@ function generateStickPack(flavor, layoutType) {
   return svg;
 }
 
-// ─── Box Generator (Liquid IV style) ─────────────────────
-function generateBox(flavor, layoutType) {
-  // Liquid IV box proportions: roughly 160w x 220h front + 60w side
-  var fw = 160, fh = 220, sw = 55;
-  var totalW = fw + sw + 4;
+// ─── 3D Box Generator ────────────────────────────────────
+// Wing SVG inline for HTML faces
+function wingHTML(size, color) {
+  return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="${color}"><path d="M12 22 Q3 14 7 4 Q12 10 12 22Z" opacity="0.9"/><path d="M12 22 Q21 14 17 4 Q12 10 12 22Z" opacity="0.9"/></svg>`;
+}
+
+// Wave SVG background
+function waveBgSVG(color1, color2) {
+  return `<svg class="wave-bg" viewBox="0 0 400 560" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+    <defs><linearGradient id="wg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="${color1}" stop-opacity="0.3"/><stop offset="100%" stop-color="${color2}" stop-opacity="0.1"/></linearGradient></defs>
+    <path d="M0 200 Q100 150 200 200 T400 180 L400 400 Q300 350 200 380 T0 360Z" fill="url(#wg)"/>
+    <path d="M0 300 Q150 260 300 300 T400 280 L400 560 L0 560Z" fill="url(#wg)" opacity="0.5"/>
+  </svg>`;
+}
+
+function generate3DBox(flavor, layoutIdx) {
   var f = flavor;
-  var svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${totalW} ${fh+10}" width="${totalW*1.4}" height="${(fh+10)*1.4}">`;
-
-  // Box front
-  svg += `<rect x="2" y="5" width="${fw}" height="${fh}" rx="4" fill="${f.primary}"/>`;
-
-  // Front layout variations
-  switch(layoutType) {
-    case 'diagonal':
-      svg += `<polygon points="2,${fh*0.35+5} ${fw+2},${fh*0.2+5} ${fw+2},${fh*0.7+5} 2,${fh*0.8+5}" fill="${f.accent}" opacity="0.15"/>`;
-      svg += `<polygon points="2,${fh*0.75+5} ${fw+2},${fh*0.6+5} ${fw+2},${fh+5} 2,${fh+5}" fill="${f.accent}" opacity="0.08"/>`;
-      break;
-    case 'split':
-      svg += `<rect x="2" y="${fh*0.5+5}" width="${fw}" height="${fh*0.5}" fill="${f.accent}" opacity="0.12"/>`;
-      break;
-    case 'centered':
-      svg += `<circle cx="${fw/2+2}" cy="${fh*0.45+5}" r="${fw*0.45}" fill="${f.accent}" opacity="0.08"/>`;
-      svg += `<circle cx="${fw/2+2}" cy="${fh*0.45+5}" r="${fw*0.3}" fill="${f.accent}" opacity="0.05"/>`;
-      break;
-    case 'minimal':
-      svg += `<rect x="${fw*0.08+2}" y="${fh*0.08+5}" width="${fw*0.84}" height="${fh*0.84}" rx="4" fill="none" stroke="${f.accent}" stroke-width="0.8" opacity="0.2"/>`;
-      break;
-    case 'bold-stripe':
-      svg += `<rect x="2" y="${fh*0.35+5}" width="${fw}" height="${fh*0.12}" fill="${f.dark}"/>`;
-      svg += `<rect x="2" y="${fh*0.82+5}" width="${fw}" height="${fh*0.04}" fill="${f.accent}" opacity="0.3"/>`;
-      break;
-    case 'wave':
-      svg += `<path d="M2,${fh*0.4+5} Q${fw*0.3+2},${fh*0.3+5} ${fw*0.5+2},${fh*0.4+5} T${fw+2},${fh*0.35+5} L${fw+2},${fh*0.65+5} Q${fw*0.7+2},${fh*0.55+5} ${fw*0.5+2},${fh*0.6+5} T2,${fh*0.6+5}Z" fill="${f.accent}" opacity="0.1"/>`;
-      break;
-    case 'geometric':
-      svg += `<polygon points="${fw*0.5+2},${fh*0.15+5} ${fw+2},${fh*0.35+5} ${fw*0.5+2},${fh*0.55+5} 2,${fh*0.35+5}" fill="${f.accent}" opacity="0.08"/>`;
-      break;
-  }
-
-  // Top line: stick count
   var stickCount = pick(['8', '10', '14', '16']);
-  svg += `<text x="${fw*0.08+2}" y="${fh*0.07+5}" font-family="Inter,sans-serif" font-size="8" font-weight="700" fill="${f.accent}" opacity="0.8">${stickCount}</text>`;
-  svg += `<text x="${fw*0.08+2}" y="${fh*0.1+5}" font-family="Inter,sans-serif" font-size="5" font-weight="500" fill="${f.accent}" opacity="0.6">ON-THE-GO STICKS</text>`;
+  var textColor = f.accent;
+  // For light-bg flavors, use the primary as text on white bg variant
+  var useDarkBg = layoutIdx % 2 === 0; // alternate between colored and light
+  var bgColor = useDarkBg ? f.primary : '#f7f3ef';
+  var fgColor = useDarkBg ? '#ffffff' : '#1d1d1f';
+  var pillBg = useDarkBg ? 'rgba(255,255,255,0.15)' : 'rgba(0,0,0,0.05)';
+  var pillColor = useDarkBg ? '#ffffff' : f.primary;
+  var statColor = useDarkBg ? 'rgba(255,255,255,0.9)' : f.primary;
+  var dimColor = useDarkBg ? 'rgba(255,255,255,0.6)' : 'rgba(0,0,0,0.5)';
+  var iconBg = useDarkBg ? 'rgba(255,255,255,0.15)' : f.secondary;
+  var iconColor = useDarkBg ? '#fff' : f.dark;
+  var gradA = useDarkBg ? f.secondary : f.secondary;
+  var gradB = useDarkBg ? f.dark : '#e8e4e0';
+  var sideBg = useDarkBg ? f.bg : '#ede9e5';
 
-  // Wing + Atlas
-  svg += wingIcon(fw*0.2+2, fh*0.11+5, 18, f.accent);
-  svg += `<text x="${fw*0.42+2}" y="${fh*0.15+5}" font-family="Inter,sans-serif" font-size="18" font-weight="800" fill="${f.accent}" letter-spacing="1">Atlas</text>`;
+  // FRONT FACE
+  var front = `<div class="face-content" style="background:${bgColor};color:${fgColor};">
+    ${waveBgSVG(gradA, gradB)}
+    <div class="brand-row">
+      ${wingHTML(22, fgColor)}
+      <span class="brand-name" style="color:${fgColor}">Atlas</span>
+    </div>
+    <div class="stats-col">
+      <div class="stat"><div class="stat-val" style="color:${statColor}">500<sub>mg</sub></div><div class="stat-label" style="color:${dimColor}">Potassium</div></div>
+      <div class="stat"><div class="stat-val" style="color:${statColor}">200<sub>mg</sub></div><div class="stat-label" style="color:${dimColor}">Magnesium</div></div>
+      <div class="stat"><div class="stat-val" style="color:${statColor}">600<sub>mg</sub></div><div class="stat-label" style="color:${dimColor}">Sodium</div></div>
+      <div class="stat"><div class="stat-val" style="color:${statColor}">100%+</div><div class="stat-label" style="color:${dimColor}">B-Vitamins</div></div>
+      <div class="stat"><div class="stat-val" style="color:${statColor}">0<sub>g</sub></div><div class="stat-label" style="color:${dimColor}">Sugar</div></div>
+    </div>
+    <div class="hero-text">
+      <div class="hero-title">Daily<br>Hydration</div>
+      <div class="hero-sub" style="color:${dimColor}">Electrolytes with Vitamins</div>
+      <span class="flavor-pill" style="background:${pillBg};color:${pillColor}">${f.name}</span>
+      <div class="bottom-row">
+        <div class="stick-count" style="color:${dimColor}">${stickCount} Stick Packs</div>
+        <div class="natural-stat"><div class="stat-val" style="color:${statColor};font-size:14px">0</div><div class="stat-label" style="color:${dimColor}">Natural Flavors</div></div>
+      </div>
+    </div>
+  </div>`;
 
-  // Big triangle logo
-  svg += atlasLogoSVG(fw*0.15+2, fh*0.2+5, fw*0.7, f.accent);
+  // BACK FACE
+  var back = `<div class="back-content" style="background:${useDarkBg ? f.bg : '#f0ece8'};color:${fgColor};">
+    ${waveBgSVG(gradA, gradB)}
+    <div class="brand-row" style="margin-bottom:12px;">
+      ${wingHTML(18, fgColor)}
+      <span style="font-size:14px;font-weight:800;color:${fgColor}">Atlas</span>
+    </div>
+    <div class="back-title" style="position:relative;z-index:1">Our Winning<br>Difference</div>
+    <div class="back-sub" style="color:${dimColor};position:relative;z-index:1">Science-backed hydration with higher electrolytes than leading sports drinks.</div>
+    <div class="back-feature" style="position:relative;z-index:1">
+      <div class="back-icon" style="background:${iconBg};color:${iconColor}">3x</div>
+      <div><div class="back-feat-title">3X THE ELECTROLYTES</div><div class="back-feat-desc" style="color:${dimColor}">of the leading sports drink</div></div>
+    </div>
+    <div class="back-feature" style="position:relative;z-index:1">
+      <div class="back-icon" style="background:${iconBg};color:${iconColor}">B+</div>
+      <div><div class="back-feat-title">100% DAILY B-VITAMINS</div><div class="back-feat-desc" style="color:${dimColor}">B3, B5, B6, B12 for natural energy</div></div>
+    </div>
+    <div class="back-feature" style="position:relative;z-index:1">
+      <div class="back-icon" style="background:${iconBg};color:${iconColor}">90</div>
+      <div><div class="back-feat-title">90mg VITAMIN C</div><div class="back-feat-desc" style="color:${dimColor}">Immune system support</div></div>
+    </div>
+    <div class="back-feature" style="position:relative;z-index:1">
+      <div class="back-icon" style="background:${iconBg};color:${iconColor}">0g</div>
+      <div><div class="back-feat-title">ZERO SUGAR</div><div class="back-feat-desc" style="color:${dimColor}">Naturally sweetened with stevia &amp; allulose</div></div>
+    </div>
+    <div class="back-bottom" style="color:${dimColor};position:relative;z-index:1">SEE NUTRITION INFORMATION FOR SODIUM CONTENT<br>DISTRIBUTED BY ATLAS HYDRATION LLC</div>
+  </div>`;
 
-  // Flavor name large
-  var flavorWords = f.name.split(' ');
-  svg += `<text x="${fw/2+2}" y="${fh*0.67+5}" font-family="Inter,sans-serif" font-size="14" font-weight="800" fill="${f.accent}" text-anchor="middle">${flavorWords[0]}</text>`;
-  if (flavorWords[1]) {
-    svg += `<text x="${fw/2+2}" y="${fh*0.73+5}" font-family="Inter,sans-serif" font-size="14" font-weight="800" fill="${f.accent}" text-anchor="middle">${flavorWords[1]}</text>`;
-  }
+  // LEFT SIDE
+  var left = `<div class="side-content" style="background:${sideBg};color:${fgColor};">
+    <div class="side-brand" style="color:${useDarkBg ? '#fff' : f.primary}">Atlas</div>
+    <div class="side-vertical" style="color:${useDarkBg ? 'rgba(255,255,255,0.7)' : f.dark}">ELECTROLYTE DRINK MIX</div>
+    <div class="side-flavor" style="color:${useDarkBg ? '#fff' : f.primary}">${f.name}</div>
+    <div class="side-weight" style="color:${dimColor}">NET WT. ${(parseInt(stickCount)*0.45).toFixed(1)} OZ</div>
+  </div>`;
 
-  // Sugar-free badge
-  svg += `<rect x="${fw*0.2+2}" y="${fh*0.76+5}" width="${fw*0.6}" height="${fh*0.06}" rx="3" fill="${f.dark}" opacity="0.8"/>`;
-  svg += `<text x="${fw/2+2}" y="${fh*0.8+5}" font-family="Inter,sans-serif" font-size="9" font-weight="800" fill="${f.accent}" text-anchor="middle">${pick(BADGE_TEXTS).toUpperCase()}</text>`;
+  // RIGHT SIDE
+  var right = `<div class="side-content" style="background:${sideBg};color:${fgColor};">
+    <div class="side-brand" style="color:${useDarkBg ? '#fff' : f.primary}">Atlas</div>
+    <div class="side-vertical" style="color:${useDarkBg ? 'rgba(255,255,255,0.7)' : f.dark}">DAILY HYDRATION</div>
+    <div class="side-flavor" style="color:${useDarkBg ? '#fff' : f.primary}">${pick(BADGE_TEXTS)}</div>
+    <div class="side-weight" style="color:${dimColor}">${stickCount} Stick Packs</div>
+  </div>`;
 
-  // Tagline
-  svg += `<text x="${fw/2+2}" y="${fh*0.87+5}" font-family="Inter,sans-serif" font-size="5" font-weight="500" fill="${f.accent}" text-anchor="middle" opacity="0.6">${pick(TAGLINES)}</text>`;
+  // TOP
+  var top = `<div class="top-content" style="background:${useDarkBg ? f.dark : '#eae6e2'};color:${fgColor};">
+    <div class="top-brand" style="color:${useDarkBg ? '#fff' : f.primary}">Atlas</div>
+    <div class="top-tear" style="color:${dimColor}">Tear Here</div>
+    <div class="top-tear-line" style="border-color:${dimColor}"></div>
+  </div>`;
 
-  // Bottom details
-  svg += `<text x="${fw/2+2}" y="${fh*0.93+5}" font-family="Inter,sans-serif" font-size="4.5" font-weight="600" fill="${f.accent}" text-anchor="middle" opacity="0.5">${stickCount} x 0.45oz (13g) sticks</text>`;
-  svg += `<text x="${fw/2+2}" y="${fh*0.965+5}" font-family="Inter,sans-serif" font-size="3.5" fill="${f.accent}" text-anchor="middle" opacity="0.4">NET WT. ${(parseInt(stickCount)*0.45).toFixed(1)} OZ (${parseInt(stickCount)*13}g)</text>`;
+  // BOTTOM
+  var bottom = `<div class="bottom-content" style="background:${useDarkBg ? f.dark : '#e5e1dd'};color:${fgColor};">
+    <div class="btm-weight" style="color:${useDarkBg ? 'rgba(255,255,255,0.8)' : '#555'}">NET WT. ${(parseInt(stickCount)*0.45).toFixed(1)} OZ (${parseInt(stickCount)*13}g)</div>
+    <div class="btm-info" style="color:${dimColor}">${stickCount} - 0.45oz (13g) sticks<br>Atlas Hydration LLC</div>
+    <div class="btm-barcode" style="color:${useDarkBg ? '#fff' : '#333'}"></div>
+  </div>`;
 
-  // ─── Side panel ───
-  var sx = fw + 6;
-  svg += `<rect x="${sx}" y="5" width="${sw}" height="${fh}" rx="4" fill="${f.bg}"/>`;
-
-  // Side: brand
-  svg += `<text x="${sx+sw/2}" y="${fh*0.06+5}" font-family="Inter,sans-serif" font-size="8" font-weight="800" fill="${f.accent}" text-anchor="middle" letter-spacing="0.5">Atlas</text>`;
-
-  // Side: vertical text
-  svg += `<g transform="translate(${sx+sw*0.45},${fh*0.5+5}) rotate(-90)">
-    <text font-family="Inter,sans-serif" font-size="6.5" font-weight="700" fill="${f.accent}" text-anchor="middle" opacity="0.9">ELECTROLYTE DRINK MIX</text>
-  </g>`;
-
-  // Side: flavor
-  svg += `<text x="${sx+sw/2}" y="${fh*0.85+5}" font-family="Inter,sans-serif" font-size="5.5" font-weight="700" fill="${f.accent}" text-anchor="middle">${f.name}</text>`;
-
-  // Side: sugar free
-  svg += `<text x="${sx+sw/2}" y="${fh*0.9+5}" font-family="Inter,sans-serif" font-size="4.5" font-weight="600" fill="${f.accent}" text-anchor="middle" opacity="0.7">${pick(BADGE_TEXTS)}</text>`;
-
-  // Side: net weight
-  svg += `<text x="${sx+sw/2}" y="${fh*0.96+5}" font-family="Inter,sans-serif" font-size="3.5" fill="${f.accent}" text-anchor="middle" opacity="0.4">NET WT. 0.45 OZ (13g)</text>`;
-
-  svg += `</svg>`;
-  return { svg: svg, stickCount: stickCount };
+  return { front, back, left, right, top, bottom, stickCount, useDarkBg };
 }
 
 // ─── Pouch Generator ─────────────────────────────────────
@@ -499,13 +741,37 @@ function generate() {
     sticksGrid.innerHTML += createCard(svgStr, stickFlavors[i].name, stickLayouts[i], 'stick-pack', '0.45oz (13g)');
   }
 
-  // Render boxes
+  // Render 3D boxes
   var boxesGrid = document.getElementById('grid-boxes');
   boxesGrid.innerHTML = '';
   for (var i = 0; i < 5; i++) {
-    var result = generateBox(boxFlavors[i], boxLayouts[i]);
-    boxesGrid.innerHTML += createCard(result.svg, boxFlavors[i].name, boxLayouts[i], 'retail-box', result.stickCount + ' sticks');
+    var result = generate3DBox(boxFlavors[i], i);
+    var cardId = 'box3d-' + i;
+    boxesGrid.innerHTML += `<div class="box-card">
+      <div class="box-card__viewport" id="vp-${cardId}">
+        <div class="box3d" id="${cardId}" style="transform:rotateX(-15deg) rotateY(-25deg);">
+          <div class="box3d__face box3d__face--front">${result.front}</div>
+          <div class="box3d__face box3d__face--back">${result.back}</div>
+          <div class="box3d__face box3d__face--left">${result.left}</div>
+          <div class="box3d__face box3d__face--right">${result.right}</div>
+          <div class="box3d__face box3d__face--top">${result.top}</div>
+          <div class="box3d__face box3d__face--bottom">${result.bottom}</div>
+        </div>
+        <span class="hint">Drag to rotate</span>
+      </div>
+      <div class="box-card__info">
+        <div class="box-card__flavor">${boxFlavors[i].name}</div>
+        <div class="box-card__meta">${result.stickCount} sticks &middot; ${result.useDarkBg ? 'Colored' : 'Light'} theme</div>
+        <div class="box-card__tags">
+          <span class="tag">3d-box</span>
+          <span class="tag">retail</span>
+          <span class="tag">interactive</span>
+        </div>
+      </div>
+    </div>`;
   }
+  // Attach drag handlers after rendering
+  init3DDrag();
 
   // Render pouches
   var pouchesGrid = document.getElementById('grid-pouches');
@@ -560,6 +826,54 @@ function downloadAll() {
     a.download = 'atlas-' + section + '-design-' + (i + 1) + '.svg';
     a.click();
     URL.revokeObjectURL(a.href);
+  });
+}
+
+// ─── 3D Drag-to-rotate ──────────────────────────────────
+function init3DDrag() {
+  document.querySelectorAll('.box-card__viewport').forEach(function(vp) {
+    var box = vp.querySelector('.box3d');
+    if (!box) return;
+    var rotX = -15, rotY = -25;
+    var dragging = false, startX = 0, startY = 0, startRotX = 0, startRotY = 0;
+
+    function onStart(x, y) {
+      dragging = true;
+      startX = x; startY = y;
+      startRotX = rotX; startRotY = rotY;
+      box.style.transition = 'none';
+      vp.classList.add('dragged');
+    }
+    function onMove(x, y) {
+      if (!dragging) return;
+      var dx = x - startX;
+      var dy = y - startY;
+      rotY = startRotY + dx * 0.5;
+      rotX = startRotX - dy * 0.5;
+      rotX = Math.max(-80, Math.min(80, rotX));
+      box.style.transform = 'rotateX(' + rotX + 'deg) rotateY(' + rotY + 'deg)';
+    }
+    function onEnd() {
+      dragging = false;
+      box.style.transition = 'transform 0.1s ease-out';
+    }
+
+    // Mouse events
+    vp.addEventListener('mousedown', function(e) { e.preventDefault(); onStart(e.clientX, e.clientY); });
+    window.addEventListener('mousemove', function(e) { onMove(e.clientX, e.clientY); });
+    window.addEventListener('mouseup', onEnd);
+
+    // Touch events
+    vp.addEventListener('touchstart', function(e) {
+      if (e.touches.length === 1) { onStart(e.touches[0].clientX, e.touches[0].clientY); }
+    }, { passive: true });
+    vp.addEventListener('touchmove', function(e) {
+      if (e.touches.length === 1) {
+        e.preventDefault();
+        onMove(e.touches[0].clientX, e.touches[0].clientY);
+      }
+    }, { passive: false });
+    vp.addEventListener('touchend', onEnd);
   });
 }
 
