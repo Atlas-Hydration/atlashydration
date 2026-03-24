@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Atlas Hydration — Packaging Design Generator</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #0e0e10;
+  --surface: #1a1a1e;
+  --surface-2: #222226;
+  --text: #f5f5f5;
+  --text-dim: #888;
+  --accent: #e85d75;
+  --border: rgba(255,255,255,0.08);
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.5;
+  min-height: 100vh;
+}
+
+/* Header */
+.header {
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(14,14,16,0.92);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border);
+  padding: 1rem 2rem;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.header h1 {
+  font-size: 1.1rem; font-weight: 700; letter-spacing: -0.02em;
+}
+.header h1 span { color: var(--accent); }
+.header-actions { display: flex; gap: 0.75rem; align-items: center; }
+.btn {
+  padding: 0.55rem 1.2rem;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+  font-family: inherit;
+}
+.btn:hover { background: var(--surface-2); }
+.btn--primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+.btn--primary:hover { opacity: 0.9; }
+.seed-display {
+  font-size: 0.75rem; color: var(--text-dim);
+  font-family: 'SF Mono', monospace;
+}
+
+/* Section tabs */
+.tabs {
+  display: flex; gap: 0; border-bottom: 1px solid var(--border);
+  padding: 0 2rem; background: var(--surface);
+}
+.tab {
+  padding: 0.8rem 1.5rem;
+  font-size: 0.8rem; font-weight: 600;
+  color: var(--text-dim);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: all 0.15s;
+  background: none; border-top: none; border-left: none; border-right: none;
+  font-family: inherit;
+}
+.tab:hover { color: var(--text); }
+.tab.active { color: var(--text); border-bottom-color: var(--accent); }
+
+/* Grid */
+.section { display: none; padding: 2rem; }
+.section.active { display: block; }
+.section-title {
+  font-size: 0.75rem; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.1em; color: var(--text-dim); margin-bottom: 1.5rem;
+}
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 1.5rem;
+}
+.card {
+  background: var(--surface);
+  border-radius: 16px;
+  border: 1px solid var(--border);
+  overflow: hidden;
+  transition: transform 0.2s;
+}
+.card:hover { transform: translateY(-2px); }
+.card__preview {
+  display: flex; align-items: center; justify-content: center;
+  padding: 2rem;
+  background: var(--surface-2);
+  min-height: 400px;
+}
+.card__info {
+  padding: 1rem 1.25rem;
+  border-top: 1px solid var(--border);
+}
+.card__flavor {
+  font-size: 0.85rem; font-weight: 700;
+}
+.card__meta {
+  font-size: 0.7rem; color: var(--text-dim); margin-top: 0.25rem;
+}
+.card__tags {
+  display: flex; gap: 0.4rem; margin-top: 0.5rem; flex-wrap: wrap;
+}
+.tag {
+  font-size: 0.6rem; font-weight: 600;
+  padding: 0.2rem 0.5rem; border-radius: 4px;
+  background: rgba(255,255,255,0.06);
+  color: var(--text-dim);
+  text-transform: uppercase; letter-spacing: 0.05em;
+}
+
+/* SVG hover zoom */
+.card__preview svg { transition: transform 0.3s; cursor: zoom-in; }
+.card__preview svg:hover { transform: scale(1.05); }
+
+/* Responsive */
+@media (max-width: 768px) {
+  .grid { grid-template-columns: 1fr; }
+  .header { padding: 0.75rem 1rem; }
+  .tabs { padding: 0 1rem; }
+  .section { padding: 1rem; }
+}
+</style>
+</head>
+<body>
+
+<header class="header">
+  <h1>Atlas <span>Packaging Lab</span></h1>
+  <div class="header-actions">
+    <span class="seed-display" id="seedDisplay"></span>
+    <button class="btn" onclick="generate()">Regenerate (R)</button>
+    <button class="btn btn--primary" onclick="downloadAll()">Export SVGs</button>
+  </div>
+</header>
+
+<nav class="tabs">
+  <button class="tab active" data-tab="sticks">Stick Packs</button>
+  <button class="tab" data-tab="boxes">Boxes</button>
+  <button class="tab" data-tab="pouches">Pouches</button>
+</nav>
+
+<section class="section active" id="section-sticks">
+  <div class="section-title">Stick Pack Designs — 5 Variations</div>
+  <div class="grid" id="grid-sticks"></div>
+</section>
+
+<section class="section" id="section-boxes">
+  <div class="section-title">Box Designs (Liquid IV size) — 5 Variations</div>
+  <div class="grid" id="grid-boxes"></div>
+</section>
+
+<section class="section" id="section-pouches">
+  <div class="section-title">Pouch Designs — 5 Variations</div>
+  <div class="grid" id="grid-pouches"></div>
+</section>
+
+<script>
+// ─── Config ──────────────────────────────────────────────
+const FLAVORS = [
+  { name: 'Strawberry Lemonade', primary: '#c17354', secondary: '#e8a089', accent: '#ffffff', bg: '#b5624a', dark: '#8b4332' },
+  { name: 'Grapefruit',         primary: '#d4836a', secondary: '#f0b8a0', accent: '#ffffff', bg: '#c27258', dark: '#9e5a44' },
+  { name: 'Lemon Lime',         primary: '#8bc34a', secondary: '#c5e1a5', accent: '#ffffff', bg: '#6fa03a', dark: '#4a7a22' },
+  { name: 'Tropical Mango',     primary: '#f5a623', secondary: '#fdd97a', accent: '#ffffff', bg: '#d48e1a', dark: '#a06b0f' },
+  { name: 'Berry Blast',        primary: '#7c4dff', secondary: '#b388ff', accent: '#ffffff', bg: '#6a3de8', dark: '#4a2aaa' },
+  { name: 'Watermelon',         primary: '#e85d75', secondary: '#f8a4b4', accent: '#ffffff', bg: '#d14d64', dark: '#a83a4e' },
+  { name: 'Cucumber Mint',      primary: '#4db6ac', secondary: '#80cbc4', accent: '#ffffff', bg: '#399e94', dark: '#2a7a72' },
+  { name: 'Pineapple Coconut',  primary: '#ffb74d', secondary: '#ffe0b2', accent: '#ffffff', bg: '#e8a040', dark: '#b57c2a' },
+];
+
+const LAYOUTS = ['diagonal', 'split', 'centered', 'minimal', 'bold-stripe', 'wave', 'geometric'];
+const BADGE_TEXTS = ['Zero Sugar', '0g Sugar', 'Sugar Free'];
+const CALORIE_TEXTS = ['25 cal', '25 Calories'];
+const TAGLINES = [
+  'Vitamin-Infused Electrolyte Drink Mix',
+  'Premium Electrolyte Drink Mix',
+  'Advanced Hydration Formula',
+  'Performance Electrolyte Mix',
+];
+
+let seed = Date.now();
+
+// Seeded random
+function mulberry32(a) {
+  return function() {
+    a |= 0; a = a + 0x6D2B79F5 | 0;
+    var t = Math.imul(a ^ a >>> 15, 1 | a);
+    t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+    return ((t ^ t >>> 14) >>> 0) / 4294967296;
+  }
+}
+
+let rand;
+
+function pick(arr) { return arr[Math.floor(rand() * arr.length)]; }
+function pickN(arr, n) {
+  var shuffled = arr.slice().sort(function() { return rand() - 0.5; });
+  return shuffled.slice(0, n);
+}
+
+// ─── Atlas Logo SVG (triangle A with wings) ─────────────
+function atlasLogoSVG(x, y, size, color) {
+  var s = size;
+  // Simplified Atlas "A" triangle logo
+  return `<g transform="translate(${x},${y})">
+    <polygon points="${s*0.5},${s*0.08} ${s*0.12},${s*0.88} ${s*0.88},${s*0.88}"
+      fill="none" stroke="${color}" stroke-width="${s*0.06}" stroke-linejoin="round"/>
+    <line x1="${s*0.3}" y1="${s*0.6}" x2="${s*0.7}" y2="${s*0.6}"
+      stroke="${color}" stroke-width="${s*0.05}"/>
+  </g>`;
+}
+
+// Small wing icon for "Atlas" wordmark
+function wingIcon(x, y, size, color) {
+  var s = size;
+  return `<g transform="translate(${x},${y})">
+    <path d="M${s*0.5} ${s*0.9} Q${s*0.1} ${s*0.5} ${s*0.3} ${s*0.1} Q${s*0.5} ${s*0.4} ${s*0.5} ${s*0.9}Z" fill="${color}" opacity="0.9"/>
+    <path d="M${s*0.5} ${s*0.9} Q${s*0.9} ${s*0.5} ${s*0.7} ${s*0.1} Q${s*0.5} ${s*0.4} ${s*0.5} ${s*0.9}Z" fill="${color}" opacity="0.9"/>
+  </g>`;
+}
+
+// ─── Stick Pack Generator ────────────────────────────────
+function generateStickPack(flavor, layoutType) {
+  var w = 100, h = 320;
+  var f = flavor;
+  var svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}" width="130" height="416">`;
+
+  // Background
+  svg += `<rect width="${w}" height="${h}" rx="6" fill="${f.primary}"/>`;
+
+  // Layout variations
+  switch(layoutType) {
+    case 'diagonal':
+      svg += `<polygon points="0,${h*0.3} ${w},${h*0.15} ${w},${h*0.65} 0,${h*0.75}" fill="${f.accent}" opacity="0.15"/>`;
+      svg += `<polygon points="0,${h*0.55} ${w},${h*0.4} ${w},${h} 0,${h}" fill="${f.accent}" opacity="0.08"/>`;
+      break;
+    case 'split':
+      svg += `<rect y="${h*0.45}" width="${w}" height="${h*0.55}" rx="0" fill="${f.accent}" opacity="0.12"/>`;
+      svg += `<line x1="0" y1="${h*0.45}" x2="${w}" y2="${h*0.45}" stroke="${f.accent}" stroke-width="0.5" opacity="0.3"/>`;
+      break;
+    case 'centered':
+      svg += `<circle cx="${w/2}" cy="${h*0.45}" r="${w*0.55}" fill="${f.accent}" opacity="0.08"/>`;
+      break;
+    case 'minimal':
+      svg += `<rect x="${w*0.08}" y="${h*0.12}" width="${w*0.84}" height="${h*0.76}" rx="4" fill="none" stroke="${f.accent}" stroke-width="0.5" opacity="0.2"/>`;
+      break;
+    case 'bold-stripe':
+      svg += `<rect y="${h*0.3}" width="${w}" height="${h*0.12}" fill="${f.dark}"/>`;
+      svg += `<rect y="${h*0.7}" width="${w}" height="${h*0.04}" fill="${f.accent}" opacity="0.2"/>`;
+      break;
+    case 'wave':
+      svg += `<path d="M0,${h*0.35} Q${w*0.3},${h*0.25} ${w*0.5},${h*0.35} T${w},${h*0.3} L${w},${h*0.6} Q${w*0.7},${h*0.5} ${w*0.5},${h*0.55} T0,${h*0.55}Z" fill="${f.accent}" opacity="0.1"/>`;
+      break;
+    case 'geometric':
+      svg += `<polygon points="${w*0.5},${h*0.2} ${w},${h*0.4} ${w*0.5},${h*0.6} 0,${h*0.4}" fill="${f.accent}" opacity="0.08"/>`;
+      break;
+  }
+
+  // Wing + "Atlas" wordmark at top
+  svg += wingIcon(w*0.28, h*0.03, 14, f.accent);
+  svg += `<text x="${w*0.58}" y="${h*0.065}" font-family="Inter,sans-serif" font-size="10" font-weight="800" fill="${f.accent}" letter-spacing="0.5">Atlas</text>`;
+
+  // Big triangle logo
+  svg += atlasLogoSVG(w*0.15, h*0.15, w*0.7, f.accent);
+
+  // Flavor name
+  var flavorWords = f.name.split(' ');
+  svg += `<text x="${w/2}" y="${h*0.72}" font-family="Inter,sans-serif" font-size="7.5" font-weight="700" fill="${f.accent}" text-anchor="middle">${flavorWords[0]}</text>`;
+  if (flavorWords[1]) {
+    svg += `<text x="${w/2}" y="${h*0.755}" font-family="Inter,sans-serif" font-size="7.5" font-weight="700" fill="${f.accent}" text-anchor="middle">${flavorWords[1]}</text>`;
+  }
+
+  // Badge
+  svg += `<text x="${w/2}" y="${h*0.82}" font-family="Inter,sans-serif" font-size="4.5" font-weight="600" fill="${f.accent}" text-anchor="middle" opacity="0.7">${pick(BADGE_TEXTS)}</text>`;
+
+  // Bottom info
+  svg += `<text x="${w/2}" y="${h*0.88}" font-family="Inter,sans-serif" font-size="3.5" fill="${f.accent}" text-anchor="middle" opacity="0.5">NET WT. 0.45 OZ (13g)</text>`;
+
+  // Wing icon bottom
+  svg += wingIcon(w*0.4, h*0.9, 10, f.accent);
+
+  svg += `</svg>`;
+  return svg;
+}
+
+// ─── Box Generator (Liquid IV style) ─────────────────────
+function generateBox(flavor, layoutType) {
+  // Liquid IV box proportions: roughly 160w x 220h front + 60w side
+  var fw = 160, fh = 220, sw = 55;
+  var totalW = fw + sw + 4;
+  var f = flavor;
+  var svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${totalW} ${fh+10}" width="${totalW*1.4}" height="${(fh+10)*1.4}">`;
+
+  // Box front
+  svg += `<rect x="2" y="5" width="${fw}" height="${fh}" rx="4" fill="${f.primary}"/>`;
+
+  // Front layout variations
+  switch(layoutType) {
+    case 'diagonal':
+      svg += `<polygon points="2,${fh*0.35+5} ${fw+2},${fh*0.2+5} ${fw+2},${fh*0.7+5} 2,${fh*0.8+5}" fill="${f.accent}" opacity="0.15"/>`;
+      svg += `<polygon points="2,${fh*0.75+5} ${fw+2},${fh*0.6+5} ${fw+2},${fh+5} 2,${fh+5}" fill="${f.accent}" opacity="0.08"/>`;
+      break;
+    case 'split':
+      svg += `<rect x="2" y="${fh*0.5+5}" width="${fw}" height="${fh*0.5}" fill="${f.accent}" opacity="0.12"/>`;
+      break;
+    case 'centered':
+      svg += `<circle cx="${fw/2+2}" cy="${fh*0.45+5}" r="${fw*0.45}" fill="${f.accent}" opacity="0.08"/>`;
+      svg += `<circle cx="${fw/2+2}" cy="${fh*0.45+5}" r="${fw*0.3}" fill="${f.accent}" opacity="0.05"/>`;
+      break;
+    case 'minimal':
+      svg += `<rect x="${fw*0.08+2}" y="${fh*0.08+5}" width="${fw*0.84}" height="${fh*0.84}" rx="4" fill="none" stroke="${f.accent}" stroke-width="0.8" opacity="0.2"/>`;
+      break;
+    case 'bold-stripe':
+      svg += `<rect x="2" y="${fh*0.35+5}" width="${fw}" height="${fh*0.12}" fill="${f.dark}"/>`;
+      svg += `<rect x="2" y="${fh*0.82+5}" width="${fw}" height="${fh*0.04}" fill="${f.accent}" opacity="0.3"/>`;
+      break;
+    case 'wave':
+      svg += `<path d="M2,${fh*0.4+5} Q${fw*0.3+2},${fh*0.3+5} ${fw*0.5+2},${fh*0.4+5} T${fw+2},${fh*0.35+5} L${fw+2},${fh*0.65+5} Q${fw*0.7+2},${fh*0.55+5} ${fw*0.5+2},${fh*0.6+5} T2,${fh*0.6+5}Z" fill="${f.accent}" opacity="0.1"/>`;
+      break;
+    case 'geometric':
+      svg += `<polygon points="${fw*0.5+2},${fh*0.15+5} ${fw+2},${fh*0.35+5} ${fw*0.5+2},${fh*0.55+5} 2,${fh*0.35+5}" fill="${f.accent}" opacity="0.08"/>`;
+      break;
+  }
+
+  // Top line: stick count
+  var stickCount = pick(['8', '10', '14', '16']);
+  svg += `<text x="${fw*0.08+2}" y="${fh*0.07+5}" font-family="Inter,sans-serif" font-size="8" font-weight="700" fill="${f.accent}" opacity="0.8">${stickCount}</text>`;
+  svg += `<text x="${fw*0.08+2}" y="${fh*0.1+5}" font-family="Inter,sans-serif" font-size="5" font-weight="500" fill="${f.accent}" opacity="0.6">ON-THE-GO STICKS</text>`;
+
+  // Wing + Atlas
+  svg += wingIcon(fw*0.2+2, fh*0.11+5, 18, f.accent);
+  svg += `<text x="${fw*0.42+2}" y="${fh*0.15+5}" font-family="Inter,sans-serif" font-size="18" font-weight="800" fill="${f.accent}" letter-spacing="1">Atlas</text>`;
+
+  // Big triangle logo
+  svg += atlasLogoSVG(fw*0.15+2, fh*0.2+5, fw*0.7, f.accent);
+
+  // Flavor name large
+  var flavorWords = f.name.split(' ');
+  svg += `<text x="${fw/2+2}" y="${fh*0.67+5}" font-family="Inter,sans-serif" font-size="14" font-weight="800" fill="${f.accent}" text-anchor="middle">${flavorWords[0]}</text>`;
+  if (flavorWords[1]) {
+    svg += `<text x="${fw/2+2}" y="${fh*0.73+5}" font-family="Inter,sans-serif" font-size="14" font-weight="800" fill="${f.accent}" text-anchor="middle">${flavorWords[1]}</text>`;
+  }
+
+  // Sugar-free badge
+  svg += `<rect x="${fw*0.2+2}" y="${fh*0.76+5}" width="${fw*0.6}" height="${fh*0.06}" rx="3" fill="${f.dark}" opacity="0.8"/>`;
+  svg += `<text x="${fw/2+2}" y="${fh*0.8+5}" font-family="Inter,sans-serif" font-size="9" font-weight="800" fill="${f.accent}" text-anchor="middle">${pick(BADGE_TEXTS).toUpperCase()}</text>`;
+
+  // Tagline
+  svg += `<text x="${fw/2+2}" y="${fh*0.87+5}" font-family="Inter,sans-serif" font-size="5" font-weight="500" fill="${f.accent}" text-anchor="middle" opacity="0.6">${pick(TAGLINES)}</text>`;
+
+  // Bottom details
+  svg += `<text x="${fw/2+2}" y="${fh*0.93+5}" font-family="Inter,sans-serif" font-size="4.5" font-weight="600" fill="${f.accent}" text-anchor="middle" opacity="0.5">${stickCount} x 0.45oz (13g) sticks</text>`;
+  svg += `<text x="${fw/2+2}" y="${fh*0.965+5}" font-family="Inter,sans-serif" font-size="3.5" fill="${f.accent}" text-anchor="middle" opacity="0.4">NET WT. ${(parseInt(stickCount)*0.45).toFixed(1)} OZ (${parseInt(stickCount)*13}g)</text>`;
+
+  // ─── Side panel ───
+  var sx = fw + 6;
+  svg += `<rect x="${sx}" y="5" width="${sw}" height="${fh}" rx="4" fill="${f.bg}"/>`;
+
+  // Side: brand
+  svg += `<text x="${sx+sw/2}" y="${fh*0.06+5}" font-family="Inter,sans-serif" font-size="8" font-weight="800" fill="${f.accent}" text-anchor="middle" letter-spacing="0.5">Atlas</text>`;
+
+  // Side: vertical text
+  svg += `<g transform="translate(${sx+sw*0.45},${fh*0.5+5}) rotate(-90)">
+    <text font-family="Inter,sans-serif" font-size="6.5" font-weight="700" fill="${f.accent}" text-anchor="middle" opacity="0.9">ELECTROLYTE DRINK MIX</text>
+  </g>`;
+
+  // Side: flavor
+  svg += `<text x="${sx+sw/2}" y="${fh*0.85+5}" font-family="Inter,sans-serif" font-size="5.5" font-weight="700" fill="${f.accent}" text-anchor="middle">${f.name}</text>`;
+
+  // Side: sugar free
+  svg += `<text x="${sx+sw/2}" y="${fh*0.9+5}" font-family="Inter,sans-serif" font-size="4.5" font-weight="600" fill="${f.accent}" text-anchor="middle" opacity="0.7">${pick(BADGE_TEXTS)}</text>`;
+
+  // Side: net weight
+  svg += `<text x="${sx+sw/2}" y="${fh*0.96+5}" font-family="Inter,sans-serif" font-size="3.5" fill="${f.accent}" text-anchor="middle" opacity="0.4">NET WT. 0.45 OZ (13g)</text>`;
+
+  svg += `</svg>`;
+  return { svg: svg, stickCount: stickCount };
+}
+
+// ─── Pouch Generator ─────────────────────────────────────
+function generatePouch(flavor, layoutType) {
+  var w = 260, h = 300;
+  var f = flavor;
+  var svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}">`;
+
+  // Pouch shape (stand-up with rounded top + ziplock notch)
+  svg += `<path d="M${w*0.08},${h*0.08} Q${w*0.08},${h*0.02} ${w*0.18},${h*0.02} L${w*0.82},${h*0.02} Q${w*0.92},${h*0.02} ${w*0.92},${h*0.08}
+    L${w*0.95},${h*0.92} Q${w*0.95},${h*0.98} ${w*0.88},${h*0.98} L${w*0.12},${h*0.98} Q${w*0.05},${h*0.98} ${w*0.05},${h*0.92} Z" fill="${f.primary}"/>`;
+
+  // Ziplock line
+  svg += `<line x1="${w*0.1}" y1="${h*0.1}" x2="${w*0.9}" y2="${h*0.1}" stroke="${f.dark}" stroke-width="1" opacity="0.3"/>`;
+  svg += `<line x1="${w*0.1}" y1="${h*0.115}" x2="${w*0.9}" y2="${h*0.115}" stroke="${f.dark}" stroke-width="0.5" opacity="0.2"/>`;
+
+  // Tear notch
+  svg += `<rect x="${w*0.88}" y="${h*0.08}" width="${w*0.04}" height="${h*0.05}" rx="1" fill="${f.dark}" opacity="0.2"/>`;
+
+  // Layout variations
+  switch(layoutType) {
+    case 'diagonal':
+      svg += `<polygon points="${w*0.05},${h*0.45} ${w*0.95},${h*0.3} ${w*0.95},${h*0.7} ${w*0.05},${h*0.8}" fill="${f.accent}" opacity="0.12"/>`;
+      break;
+    case 'split':
+      svg += `<path d="M${w*0.05},${h*0.5} L${w*0.95},${h*0.5} L${w*0.95},${h*0.92} Q${w*0.95},${h*0.98} ${w*0.88},${h*0.98} L${w*0.12},${h*0.98} Q${w*0.05},${h*0.98} ${w*0.05},${h*0.92} Z" fill="${f.accent}" opacity="0.1"/>`;
+      break;
+    case 'centered':
+      svg += `<circle cx="${w/2}" cy="${h*0.48}" r="${w*0.35}" fill="${f.accent}" opacity="0.07"/>`;
+      break;
+    case 'minimal':
+      // Just clean, no extra shapes
+      break;
+    case 'bold-stripe':
+      svg += `<rect x="${w*0.05}" y="${h*0.4}" width="${w*0.9}" height="${h*0.1}" fill="${f.dark}" opacity="0.5"/>`;
+      break;
+    case 'wave':
+      svg += `<path d="M${w*0.05},${h*0.45} Q${w*0.3},${h*0.35} ${w*0.5},${h*0.45} T${w*0.95},${h*0.4} L${w*0.95},${h*0.65} Q${w*0.7},${h*0.55} ${w*0.5},${h*0.6} T${w*0.05},${h*0.6}Z" fill="${f.accent}" opacity="0.08"/>`;
+      break;
+    case 'geometric':
+      svg += `<polygon points="${w*0.5},${h*0.2} ${w*0.85},${h*0.45} ${w*0.5},${h*0.65} ${w*0.15},${h*0.45}" fill="${f.accent}" opacity="0.07"/>`;
+      break;
+  }
+
+  // Wing + "Atlas" top
+  svg += wingIcon(w*0.24, h*0.13, 24, f.accent);
+  svg += `<text x="${w*0.47}" y="${h*0.19}" font-family="Inter,sans-serif" font-size="20" font-weight="800" fill="${f.accent}" letter-spacing="1">Atlas</text>`;
+
+  // Big triangle logo
+  svg += atlasLogoSVG(w*0.2, h*0.24, w*0.6, f.accent);
+
+  // Flavor name
+  var flavorWords = f.name.split(' ');
+  svg += `<text x="${w/2}" y="${h*0.72}" font-family="Inter,sans-serif" font-size="13" font-weight="700" fill="${f.accent}" text-anchor="middle">${flavorWords[0]}${flavorWords[1] ? ' ' + flavorWords[1] : ''}</text>`;
+
+  // Tagline
+  svg += `<text x="${w/2}" y="${h*0.78}" font-family="Inter,sans-serif" font-size="6" font-weight="500" fill="${f.accent}" text-anchor="middle" opacity="0.6">${pick(TAGLINES)}</text>`;
+
+  // Bullet badges
+  var badges = [pick(BADGE_TEXTS), pick(CALORIE_TEXTS), 'Non-GMO'];
+  var badgeY = h * 0.84;
+  var badgeStartX = w * 0.15;
+  var badgeSpacing = w * 0.25;
+  for (var b = 0; b < 3; b++) {
+    var bx = badgeStartX + b * badgeSpacing;
+    svg += `<circle cx="${bx}" cy="${badgeY}" r="8" fill="${f.dark}" opacity="0.4"/>`;
+    svg += `<text x="${bx}" y="${badgeY + 12}" font-family="Inter,sans-serif" font-size="4" font-weight="600" fill="${f.accent}" text-anchor="middle" opacity="0.7">${badges[b]}</text>`;
+  }
+
+  // Stick count + weight at bottom
+  var stickCount = pick(['14', '16', '20']);
+  svg += `<text x="${w*0.15}" y="${h*0.95}" font-family="Inter,sans-serif" font-size="5.5" font-weight="600" fill="${f.accent}" opacity="0.5">${stickCount} Stick Packs</text>`;
+
+  // Wing bottom right
+  svg += wingIcon(w*0.78, h*0.9, 14, f.accent);
+
+  svg += `</svg>`;
+  return { svg: svg, stickCount: stickCount };
+}
+
+// ─── Generate all ────────────────────────────────────────
+function generate() {
+  seed = Date.now();
+  rand = mulberry32(seed);
+  document.getElementById('seedDisplay').textContent = 'Seed: ' + seed;
+
+  // Pick 5 flavors for each section (can repeat across sections but unique within)
+  var stickFlavors = pickN(FLAVORS, 5);
+  var boxFlavors = pickN(FLAVORS, 5);
+  var pouchFlavors = pickN(FLAVORS, 5);
+
+  // Pick layout for each
+  var stickLayouts = [];
+  var boxLayouts = [];
+  var pouchLayouts = [];
+  for (var i = 0; i < 5; i++) {
+    stickLayouts.push(pick(LAYOUTS));
+    boxLayouts.push(pick(LAYOUTS));
+    pouchLayouts.push(pick(LAYOUTS));
+  }
+
+  // Render stick packs
+  var sticksGrid = document.getElementById('grid-sticks');
+  sticksGrid.innerHTML = '';
+  for (var i = 0; i < 5; i++) {
+    var svgStr = generateStickPack(stickFlavors[i], stickLayouts[i]);
+    sticksGrid.innerHTML += createCard(svgStr, stickFlavors[i].name, stickLayouts[i], 'stick-pack', '0.45oz (13g)');
+  }
+
+  // Render boxes
+  var boxesGrid = document.getElementById('grid-boxes');
+  boxesGrid.innerHTML = '';
+  for (var i = 0; i < 5; i++) {
+    var result = generateBox(boxFlavors[i], boxLayouts[i]);
+    boxesGrid.innerHTML += createCard(result.svg, boxFlavors[i].name, boxLayouts[i], 'retail-box', result.stickCount + ' sticks');
+  }
+
+  // Render pouches
+  var pouchesGrid = document.getElementById('grid-pouches');
+  pouchesGrid.innerHTML = '';
+  for (var i = 0; i < 5; i++) {
+    var result = generatePouch(pouchFlavors[i], pouchLayouts[i]);
+    pouchesGrid.innerHTML += createCard(result.svg, pouchFlavors[i].name, pouchLayouts[i], 'stand-up-pouch', result.stickCount + ' packs');
+  }
+}
+
+function createCard(svgStr, flavorName, layout, type, detail) {
+  return `<div class="card">
+    <div class="card__preview">${svgStr}</div>
+    <div class="card__info">
+      <div class="card__flavor">${flavorName}</div>
+      <div class="card__meta">${detail}</div>
+      <div class="card__tags">
+        <span class="tag">${type}</span>
+        <span class="tag">${layout}</span>
+      </div>
+    </div>
+  </div>`;
+}
+
+// ─── Tab switching ───────────────────────────────────────
+document.querySelectorAll('.tab').forEach(function(tab) {
+  tab.addEventListener('click', function() {
+    document.querySelectorAll('.tab').forEach(function(t) { t.classList.remove('active'); });
+    document.querySelectorAll('.section').forEach(function(s) { s.classList.remove('active'); });
+    tab.classList.add('active');
+    document.getElementById('section-' + tab.dataset.tab).classList.add('active');
+  });
+});
+
+// ─── Keyboard shortcut ──────────────────────────────────
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'r' || e.key === 'R') {
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+    e.preventDefault();
+    generate();
+  }
+});
+
+// ─── Export SVGs ─────────────────────────────────────────
+function downloadAll() {
+  var cards = document.querySelectorAll('.section.active .card__preview svg');
+  cards.forEach(function(svg, i) {
+    var blob = new Blob([svg.outerHTML], { type: 'image/svg+xml' });
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    var section = document.querySelector('.tab.active').dataset.tab;
+    a.download = 'atlas-' + section + '-design-' + (i + 1) + '.svg';
+    a.click();
+    URL.revokeObjectURL(a.href);
+  });
+}
+
+// ─── Init ────────────────────────────────────────────────
+generate();
+</script>
+</body>
+</html>
