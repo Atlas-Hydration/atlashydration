@@ -421,6 +421,125 @@ document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
   }
 })();
 
+// Why Atlas cards — mouse-follow glow effect
+(function() {
+  var cards = document.querySelectorAll('.why-atlas__card');
+  cards.forEach(function(card) {
+    card.addEventListener('mousemove', function(e) {
+      var rect = card.getBoundingClientRect();
+      var x = ((e.clientX - rect.left) / rect.width * 100).toFixed(1);
+      var y = ((e.clientY - rect.top) / rect.height * 100).toFixed(1);
+      card.style.setProperty('--mouse-x', x + '%');
+      card.style.setProperty('--mouse-y', y + '%');
+    });
+  });
+})();
+
+// Easter egg — double-click logo for confetti
+(function() {
+  var logoLink = document.querySelector('.header__logo');
+  if (!logoLink) return;
+  var colors = ['#e85d75', '#F5A623', '#22c55e', '#3b82f6', '#a855f7', '#ffffff'];
+  var messages = [
+    'Stay hydrated, legend.',
+    'You found the secret. Now drink water.',
+    'Atlas approves this curiosity.',
+    '1,769mg of easter egg detected.'
+  ];
+
+  logoLink.addEventListener('dblclick', function(e) {
+    e.preventDefault();
+    // Confetti burst
+    for (var i = 0; i < 60; i++) {
+      var piece = document.createElement('div');
+      piece.className = 'confetti-piece';
+      piece.style.left = (Math.random() * 100) + 'vw';
+      piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+      piece.style.animationDelay = (Math.random() * 0.8) + 's';
+      piece.style.animationDuration = (1.5 + Math.random() * 2) + 's';
+      piece.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+      piece.style.width = (5 + Math.random() * 8) + 'px';
+      piece.style.height = (5 + Math.random() * 8) + 'px';
+      document.body.appendChild(piece);
+      setTimeout(function(p) { p.remove(); }.bind(null, piece), 4000);
+    }
+    // Toast message
+    var toast = document.createElement('div');
+    toast.className = 'easter-egg-toast';
+    toast.textContent = messages[Math.floor(Math.random() * messages.length)];
+    document.body.appendChild(toast);
+    requestAnimationFrame(function() {
+      requestAnimationFrame(function() { toast.classList.add('active'); });
+    });
+    setTimeout(function() {
+      toast.classList.remove('active');
+      setTimeout(function() { toast.remove(); }, 500);
+    }, 2500);
+  });
+})();
+
+// Patriotic "Made in USA" hover — bald eagle flies across
+(function() {
+  var usaEls = document.querySelectorAll('.js-usa-hover');
+  usaEls.forEach(function(el) {
+    var active = false;
+    el.addEventListener('mouseenter', function() {
+      if (active) return;
+      active = true;
+
+      // SVG bald eagle that flies across
+      var eagle = document.createElement('div');
+      eagle.className = 'usa-eagle';
+      eagle.innerHTML = '<svg viewBox="0 0 120 80" width="120" height="80" fill="none" xmlns="http://www.w3.org/2000/svg">' +
+        '<g>' +
+        // Body
+        '<ellipse cx="60" cy="48" rx="18" ry="14" fill="#3B2314"/>' +
+        // White head
+        '<circle cx="72" cy="36" r="11" fill="#FFFFFF"/>' +
+        // Eye
+        '<circle cx="76" cy="34" r="2" fill="#1a1a1a"/>' +
+        // Beak
+        '<polygon points="83,36 92,38 83,40" fill="#F5A623"/>' +
+        // Left wing (spread)
+        '<path d="M52 44 Q30 20 5 12 Q10 22 18 30 Q8 24 2 18 Q10 32 22 38 Q14 36 6 30 Q16 40 32 44 Z" fill="#3B2314"/>' +
+        // Right wing (spread)
+        '<path d="M68 44 Q78 24 98 10 Q92 22 86 28 Q94 20 102 14 Q92 30 82 36 Q90 32 100 26 Q88 38 76 44 Z" fill="#3B2314"/>' +
+        // Tail feathers
+        '<path d="M42 52 Q30 58 20 68 Q32 62 38 56 Q28 64 22 72 Q34 64 42 58 Z" fill="#3B2314"/>' +
+        // White tail tips
+        '<path d="M22 66 Q18 72 20 68" stroke="#fff" stroke-width="2"/>' +
+        '<path d="M24 70 Q20 76 22 72" stroke="#fff" stroke-width="2"/>' +
+        // Feet/talons
+        '<path d="M54 60 L50 70 L48 68 M50 70 L52 68" stroke="#F5A623" stroke-width="1.5" fill="none"/>' +
+        '<path d="M64 60 L66 70 L64 68 M66 70 L68 68" stroke="#F5A623" stroke-width="1.5" fill="none"/>' +
+        '</g></svg>';
+      document.body.appendChild(eagle);
+
+      // Red-white-blue star burst from the element
+      var rect = el.getBoundingClientRect();
+      var cx = rect.left + rect.width / 2;
+      var cy = rect.top + rect.height / 2;
+      var patriotColors = ['#B22234', '#FFFFFF', '#3C3B6E'];
+      for (var i = 0; i < 24; i++) {
+        var star = document.createElement('div');
+        star.className = 'usa-star';
+        var angle = (Math.PI * 2 / 24) * i;
+        var dist = 40 + Math.random() * 80;
+        star.style.setProperty('--tx', (Math.cos(angle) * dist) + 'px');
+        star.style.setProperty('--ty', (Math.sin(angle) * dist) - 30 + 'px');
+        star.style.left = cx + 'px';
+        star.style.top = cy + 'px';
+        star.style.background = patriotColors[i % 3];
+        star.style.animationDelay = (Math.random() * 0.15) + 's';
+        document.body.appendChild(star);
+        setTimeout(function(s) { s.remove(); }.bind(null, star), 1200);
+      }
+
+      setTimeout(function() { eagle.remove(); active = false; }, 2500);
+    });
+  });
+})();
+
 // FAQ accordion toggle
 (function() {
   var questions = document.querySelectorAll('.product-faq__question');
@@ -1314,26 +1433,45 @@ document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
 
   // --- Render table ---
   function render() {
-    var headHTML = '<th></th><th class="compare__th-atlas"><img src="logo.svg" alt="Atlas" height="18"></th>';
+    section.classList.remove('animated');
+
+    var headHTML = '<th></th><th class="compare__th-atlas"><img src="logo.svg" alt="Atlas" height="20"></th>';
     activeBrands.forEach(function(b) {
       headHTML += '<th><span class="compare__th-brand ' + BRANDS[b].cls + '">' + BRANDS[b].name + '</span></th>';
     });
     thead.innerHTML = headHTML;
 
+    var atlasWins = 0;
+    var totalCats = CATS.length;
+
     var bodyHTML = '';
     CATS.forEach(function(cat) {
+      // Determine if Atlas wins this row
+      var isWinner = true;
+      activeBrands.forEach(function(b) {
+        var val = cat[b];
+        if (cat.lowerBetter) {
+          if (val < cat.atlas) isWinner = false;
+        } else {
+          if (val > cat.atlas) isWinner = false;
+        }
+      });
+      if (isWinner) atlasWins++;
+
+      var winBadge = isWinner ? '<span class="compare__win-badge">Winner</span>' : '';
+
       bodyHTML += '<tr data-cat="' + cat.key + '">';
       bodyHTML += '<td class="compare__label">' + cat.label + '</td>';
-      bodyHTML += '<td class="compare__value compare__value--atlas"><div class="compare__bar" style="--bar-width:100%"><strong>' + fmtVal(cat.atlas, cat.unit) + '</strong></div></td>';
+      bodyHTML += '<td class="compare__value compare__value--atlas"><div class="compare__bar" style="--bar-width:100%"><strong>' + fmtVal(cat.atlas, cat.unit) + '</strong>' + winBadge + '</div></td>';
 
       activeBrands.forEach(function(b) {
         var val = cat[b];
         if (val === 0 && !cat.lowerBetter) {
-          bodyHTML += '<td class="compare__value"><span class="compare__zero">&#10005;</span></td>';
+          bodyHTML += '<td class="compare__value"><span class="compare__zero">&mdash;</span></td>';
         } else if (cat.key === 'sugar' && val > 0) {
           bodyHTML += '<td class="compare__value"><span class="compare__sugar-bad">' + fmtVal(val, cat.unit) + '</span></td>';
         } else if (cat.key === 'sugar' && val === 0) {
-          bodyHTML += '<td class="compare__value"><div class="compare__check"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg> ' + fmtVal(val, cat.unit) + '</div></td>';
+          bodyHTML += '<td class="compare__value"><div class="compare__check"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg> ' + fmtVal(val, cat.unit) + '</div></td>';
         } else {
           var pct = cat.atlas === 0 ? 100 : Math.min(100, (val / cat.atlas) * 100);
           bodyHTML += '<td class="compare__value"><div class="compare__bar" style="--bar-width:' + Math.round(pct) + '%">' + fmtVal(val, cat.unit) + '</div></td>';
@@ -1341,8 +1479,27 @@ document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
       });
       bodyHTML += '</tr>';
     });
+
+    // Score summary row
+    bodyHTML += '<tr class="compare__score-row">';
+    bodyHTML += '<td class="compare__label" style="color:rgba(255,255,255,0.3);font-size:var(--text-xs);text-transform:uppercase;letter-spacing:0.1em;">Categories Won</td>';
+    bodyHTML += '<td class="compare__value compare__value--atlas"><span class="compare__score-atlas">' + atlasWins + '/' + totalCats + '</span></td>';
+    activeBrands.forEach(function(b) {
+      var bWins = 0;
+      CATS.forEach(function(cat) {
+        var val = cat[b];
+        var atlasVal = cat.atlas;
+        var wins = cat.lowerBetter ? (val < atlasVal) : (val > atlasVal);
+        if (wins) bWins++;
+      });
+      bodyHTML += '<td class="compare__value"><span class="compare__score-rival">' + bWins + '/' + totalCats + '</span></td>';
+    });
+    bodyHTML += '</tr>';
+
     tbody.innerHTML = bodyHTML;
-    requestAnimationFrame(function() { section.classList.add('animated'); });
+    requestAnimationFrame(function() {
+      requestAnimationFrame(function() { section.classList.add('animated'); });
+    });
   }
 
   function fmtVal(val, unit) {
