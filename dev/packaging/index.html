@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Atlas Dev — Packaging Lab</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0a0a0b;
+      --surface: #141416;
+      --surface2: #1c1c1f;
+      --border: #2a2a2d;
+      --text: #e8e8ed;
+      --text-dim: #8e8e93;
+      --accent: #3b82f6;
+      --accent-dim: rgba(59,130,246,0.12);
+      --coral: #e8735a;
+      --coral-light: #f0907a;
+      --cream: #f5f0e8;
+      --font: 'Inter', -apple-system, system-ui, sans-serif;
+      --serif: 'Playfair Display', Georgia, serif;
+    }
+    body { font-family: var(--font); background: var(--bg); color: var(--text); min-height: 100vh; }
+
+    /* Top bar */
+    .topbar {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 32px; border-bottom: 1px solid var(--border);
+      background: rgba(10,10,11,0.92); backdrop-filter: blur(12px);
+      position: sticky; top: 0; z-index: 100;
+    }
+    .topbar__left { display: flex; align-items: center; gap: 12px; }
+    .topbar__logo { font-weight: 800; font-size: 0.95rem; }
+    .topbar__badge { font-size: 0.58rem; font-weight: 700; padding: 3px 8px; border-radius: 4px; background: var(--accent-dim); color: var(--accent); text-transform: uppercase; letter-spacing: 0.06em; }
+    .topbar__back { font-size: 0.78rem; color: var(--text-dim); text-decoration: none; }
+    .topbar__back:hover { color: var(--text); }
+
+    /* Layout */
+    .container { max-width: 1200px; margin: 0 auto; padding: 40px 32px; }
+    .hero { margin-bottom: 48px; }
+    .hero__title { font-size: 1.8rem; font-weight: 800; letter-spacing: -0.03em; margin-bottom: 8px; }
+    .hero__desc { color: var(--text-dim); font-size: 0.85rem; line-height: 1.6; }
+
+    /* Section */
+    .section { margin-bottom: 80px; }
+    .section__title { font-size: 1.1rem; font-weight: 700; margin-bottom: 8px; color: var(--text); }
+    .section__subtitle { font-size: 0.78rem; color: var(--text-dim); margin-bottom: 40px; }
+
+    /* ==================== 3D BOX ==================== */
+    .box-scene {
+      width: 520px; height: 400px;
+      perspective: 1200px;
+      margin: 0 auto 60px;
+    }
+    .box-wrap {
+      width: 100%; height: 100%;
+      position: relative;
+      transform-style: preserve-3d;
+      transform: rotateY(-18deg) rotateX(5deg);
+      transition: transform 0.6s cubic-bezier(0.25,0.46,0.45,0.94);
+    }
+    .box-scene:hover .box-wrap {
+      transform: rotateY(-35deg) rotateX(8deg);
+    }
+
+    .box-face {
+      position: absolute;
+      backface-visibility: hidden;
+    }
+
+    /* Front face — dark panel */
+    .box-front {
+      width: 320px; height: 380px;
+      background: #1a1a1e;
+      border-radius: 6px;
+      left: 50%; top: 50%;
+      transform: translateX(-50%) translateY(-50%) translateZ(40px);
+      padding: 36px 32px 28px;
+      display: flex; flex-direction: column;
+      box-shadow: 0 4px 40px rgba(0,0,0,0.4);
+      overflow: hidden;
+    }
+    .box-front::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 6px;
+      pointer-events: none;
+    }
+
+    .front-logo {
+      display: flex; align-items: center; gap: 10px;
+      margin-bottom: 32px;
+    }
+    .front-logo svg { width: 28px; height: 28px; }
+    .front-logo__text { font-size: 1.3rem; font-weight: 700; color: #fff; letter-spacing: 0.02em; }
+
+    .front-product { margin-bottom: auto; }
+    .front-product__name { font-size: 1.7rem; font-weight: 700; color: #fff; line-height: 1.2; margin-bottom: 6px; }
+    .front-product__sub { font-size: 0.72rem; color: rgba(255,255,255,0.5); margin-bottom: 12px; }
+    .front-product__flavor { font-size: 1.05rem; font-weight: 700; color: var(--coral); }
+
+    .front-stats {
+      position: absolute; right: 28px; top: 120px;
+      display: flex; flex-direction: column; gap: 10px;
+      text-align: right;
+    }
+    .front-stat { display: flex; align-items: baseline; justify-content: flex-end; gap: 3px; }
+    .front-stat__val { font-size: 1.1rem; font-weight: 800; color: #fff; }
+    .front-stat__unit { font-size: 0.55rem; font-weight: 600; color: rgba(255,255,255,0.4); text-transform: lowercase; }
+    .front-stat__label { font-size: 0.52rem; color: rgba(255,255,255,0.35); display: block; text-align: right; }
+
+    .front-bottom {
+      font-size: 0.6rem; color: rgba(255,255,255,0.3);
+      letter-spacing: 0.04em;
+    }
+
+    /* Back face — light cream panel */
+    .box-back {
+      width: 320px; height: 380px;
+      background: var(--cream);
+      border-radius: 6px;
+      left: 50%; top: 50%;
+      transform: translateX(-50%) translateY(-50%) translateZ(-40px) rotateY(180deg);
+      padding: 24px 22px;
+      box-shadow: 0 4px 40px rgba(0,0,0,0.3);
+      color: #1a1a1e;
+      overflow: hidden;
+    }
+
+    /* Right spine */
+    .box-spine {
+      width: 80px; height: 380px;
+      background: linear-gradient(90deg, #1a1a1e, #222226);
+      position: absolute;
+      left: calc(50% + 160px);
+      top: 50%;
+      transform: translateY(-50%) rotateY(90deg) translateZ(40px);
+      box-shadow: inset -2px 0 8px rgba(0,0,0,0.3);
+    }
+
+    /* Top face */
+    .box-top {
+      width: 320px; height: 80px;
+      background: linear-gradient(180deg, #222226, #1a1a1e);
+      position: absolute;
+      left: 50%; top: calc(50% - 190px);
+      transform: translateX(-50%) rotateX(90deg) translateZ(40px);
+    }
+
+    /* Back panel content */
+    .back-badges {
+      display: flex; gap: 12px; margin-bottom: 14px; justify-content: center;
+    }
+    .back-badge {
+      width: 38px; height: 38px; border-radius: 50%;
+      border: 1.5px solid #333;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.45rem; font-weight: 700; color: #333; text-align: center;
+      line-height: 1.1;
+    }
+    .back-headline {
+      font-family: var(--serif);
+      font-style: italic; font-weight: 700;
+      font-size: 0.82rem; color: var(--coral);
+      text-align: center; margin-bottom: 10px;
+      line-height: 1.3;
+    }
+    .back-desc {
+      font-size: 0.42rem; color: #555; text-align: center;
+      line-height: 1.5; margin-bottom: 14px;
+      padding: 0 8px;
+    }
+
+    /* Supplement Facts mini */
+    .supp-facts {
+      background: #fff; border: 1px solid #ccc;
+      border-radius: 3px; padding: 8px 10px;
+      margin-bottom: 12px; float: right; width: 130px;
+    }
+    .supp-facts__title { font-size: 0.55rem; font-weight: 800; border-bottom: 2px solid #333; padding-bottom: 2px; margin-bottom: 4px; color: #111; }
+    .supp-facts__row { display: flex; justify-content: space-between; font-size: 0.38rem; color: #333; padding: 1px 0; border-bottom: 0.5px solid #ddd; }
+    .supp-facts__row:last-child { border-bottom: none; }
+
+    /* Icons row */
+    .back-icons {
+      display: flex; gap: 10px; justify-content: center;
+      margin-bottom: 10px; clear: both;
+    }
+    .back-icon-item { text-align: center; width: 70px; }
+    .back-icon-item__circle {
+      width: 28px; height: 28px; border-radius: 50%;
+      border: 1px solid #555; margin: 0 auto 4px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .back-icon-item__circle svg { width: 14px; height: 14px; fill: #333; }
+    .back-icon-item__label { font-size: 0.38rem; font-weight: 700; color: #333; margin-bottom: 1px; }
+    .back-icon-item__desc { font-size: 0.32rem; color: #777; line-height: 1.3; }
+
+    /* Why no natural flavors */
+    .back-section-title { font-family: var(--serif); font-style: italic; font-size: 0.5rem; font-weight: 700; color: #333; margin-bottom: 3px; margin-top: 8px; }
+    .back-section-text { font-size: 0.35rem; color: #666; line-height: 1.4; margin-bottom: 8px; }
+
+    .back-connect { display: flex; align-items: center; gap: 8px; margin-top: 6px; }
+    .back-connect__label { font-size: 0.42rem; font-weight: 700; color: #333; }
+    .back-connect__url { font-size: 0.35rem; color: #666; }
+
+    /* ==================== STICK PACKS ==================== */
+    .sticks-row {
+      display: flex; justify-content: center; gap: 40px;
+      perspective: 800px;
+      flex-wrap: wrap;
+    }
+
+    .stick-scene {
+      width: 90px; height: 320px;
+      perspective: 600px;
+      cursor: pointer;
+    }
+    .stick-wrap {
+      width: 100%; height: 100%;
+      position: relative;
+      transform-style: preserve-3d;
+      transform: rotateY(-8deg) rotateX(2deg);
+      transition: transform 0.5s cubic-bezier(0.25,0.46,0.45,0.94);
+    }
+    .stick-scene:hover .stick-wrap {
+      transform: rotateY(12deg) rotateX(-3deg);
+    }
+
+    .stick-face {
+      position: absolute;
+      backface-visibility: hidden;
+      border-radius: 6px 6px 4px 4px;
+    }
+
+    /* Stick front */
+    .stick-front {
+      width: 90px; height: 320px;
+      display: flex; flex-direction: column;
+      padding: 16px 10px 12px;
+      transform: translateZ(4px);
+      box-shadow: 0 8px 30px rgba(0,0,0,0.5);
+    }
+    .stick-front::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 6px 6px 4px 4px;
+      pointer-events: none;
+    }
+
+    /* Stick color variants */
+    .stick--grapefruit .stick-front { background: linear-gradient(180deg, #e8735a 0%, #d4604a 100%); }
+    .stick--strawberry .stick-front { background: linear-gradient(180deg, #c94060 0%, #a83350 100%); }
+    .stick--lemon .stick-front { background: linear-gradient(180deg, #e8c94a 0%, #d4b63a 100%); }
+
+    /* Stick back */
+    .stick-back {
+      width: 90px; height: 320px;
+      transform: translateZ(-4px) rotateY(180deg);
+      box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+    }
+    .stick--grapefruit .stick-back { background: linear-gradient(180deg, #d4604a, #c05040); }
+    .stick--strawberry .stick-back { background: linear-gradient(180deg, #a83350, #8e2840); }
+    .stick--lemon .stick-back { background: linear-gradient(180deg, #d4b63a, #c0a430); }
+
+    /* Stick spine */
+    .stick-spine-r {
+      width: 8px; height: 320px;
+      position: absolute;
+      left: 86px; top: 0;
+      transform: rotateY(90deg) translateZ(4px);
+      border-radius: 0 2px 2px 0;
+    }
+    .stick--grapefruit .stick-spine-r { background: linear-gradient(180deg, #d06048, #bc4e3e); }
+    .stick--strawberry .stick-spine-r { background: linear-gradient(180deg, #9e2e48, #8a2238); }
+    .stick--lemon .stick-spine-r { background: linear-gradient(180deg, #c8ae38, #b49c2e); }
+
+    .stick-spine-l {
+      width: 8px; height: 320px;
+      position: absolute;
+      left: -4px; top: 0;
+      transform: rotateY(-90deg) translateZ(4px);
+      border-radius: 2px 0 0 2px;
+    }
+    .stick--grapefruit .stick-spine-l { background: linear-gradient(180deg, #d06048, #bc4e3e); }
+    .stick--strawberry .stick-spine-l { background: linear-gradient(180deg, #9e2e48, #8a2238); }
+    .stick--lemon .stick-spine-l { background: linear-gradient(180deg, #c8ae38, #b49c2e); }
+
+    /* Stick front content */
+    .stick-flavor-tag {
+      font-size: 0.42rem; font-weight: 700; color: #fff;
+      background: rgba(0,0,0,0.2); border-radius: 3px;
+      padding: 2px 6px; align-self: flex-start;
+      margin-bottom: 6px;
+    }
+    .stick-logo-area {
+      flex: 1; display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 4px;
+    }
+    .stick-logo-area svg { width: 26px; height: 26px; }
+    .stick-brand {
+      font-size: 1rem; font-weight: 800; color: #fff;
+      letter-spacing: 0.01em; writing-mode: vertical-rl;
+      text-orientation: mixed; transform: rotate(180deg);
+      line-height: 1;
+    }
+    .stick-product-type {
+      font-size: 0.38rem; font-weight: 700; color: rgba(255,255,255,0.7);
+      text-transform: uppercase; letter-spacing: 0.12em;
+      text-align: center; margin-top: auto;
+    }
+    .stick-sub-line {
+      font-size: 0.28rem; color: rgba(255,255,255,0.5);
+      text-align: center; margin-top: 2px;
+    }
+
+    /* Tear notch */
+    .stick-front::after {
+      content: '';
+      position: absolute;
+      top: 12px; left: 50%; transform: translateX(-50%);
+      width: 50px; height: 1px;
+      border-top: 1px dashed rgba(255,255,255,0.3);
+    }
+
+    /* Responsive */
+    @media (max-width: 700px) {
+      .box-scene { width: 100%; }
+      .sticks-row { gap: 20px; }
+      .container { padding: 24px 16px; }
+    }
+
+    /* Floor reflection */
+    .scene-container {
+      position: relative;
+      padding-bottom: 20px;
+    }
+    .scene-container::after {
+      content: '';
+      position: absolute; bottom: 0; left: 10%; right: 10%;
+      height: 60px;
+      background: radial-gradient(ellipse at center, rgba(255,255,255,0.03) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    /* Divider */
+    .divider {
+      border: none; border-top: 1px solid var(--border);
+      margin: 60px 0;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Bar -->
+  <div class="topbar">
+    <div class="topbar__left">
+      <span class="topbar__logo">Atlas Dev</span>
+      <span class="topbar__badge">Packaging Lab</span>
+    </div>
+    <a href="../" class="topbar__back">&larr; Back to Dev</a>
+  </div>
+
+  <div class="container">
+    <div class="hero">
+      <h1 class="hero__title">Packaging Lab</h1>
+      <p class="hero__desc">3D product packaging renders — box &amp; stick pack mockups</p>
+    </div>
+
+    <!-- ==================== 3D BOX SECTION ==================== -->
+    <div class="section">
+      <h2 class="section__title">Grapefruit Box — 16 Stick Packs</h2>
+      <p class="section__subtitle">Hover to rotate. Front &amp; back panels with full design.</p>
+
+      <div class="scene-container">
+        <div class="box-scene">
+          <div class="box-wrap">
+
+            <!-- FRONT PANEL -->
+            <div class="box-face box-front">
+              <div class="front-logo">
+                <svg viewBox="0 0 171 171" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M85.5 10C85.5 10 60 40 45 70C30 100 25 130 50 155C65 170 85.5 165 85.5 165C85.5 165 106 170 121 155C146 130 141 100 126 70C111 40 85.5 10 85.5 10Z" fill="white" opacity="0.9"/>
+                  <path d="M85.5 30L75 55L60 80L55 110L65 135L85.5 145L106 135L116 110L111 80L96 55L85.5 30Z" fill="none" stroke="white" stroke-width="1.5" opacity="0.4"/>
+                  <path d="M70 60L85.5 20L101 60" fill="none" stroke="white" stroke-width="2" opacity="0.6"/>
+                  <path d="M60 90H111" stroke="white" stroke-width="0.5" opacity="0.3"/>
+                </svg>
+                <span class="front-logo__text">Atlas</span>
+              </div>
+
+              <div class="front-product">
+                <div class="front-product__name">Daily<br>Hydration</div>
+                <div class="front-product__sub">Electrolytes with Vitamins</div>
+                <div class="front-product__flavor">Grapefruit</div>
+              </div>
+
+              <div class="front-stats">
+                <div class="front-stat">
+                  <span class="front-stat__val">500</span>
+                  <span class="front-stat__unit">mg</span>
+                </div>
+                <div class="front-stat__label">Potassium</div>
+
+                <div class="front-stat">
+                  <span class="front-stat__val">200</span>
+                  <span class="front-stat__unit">mg</span>
+                </div>
+                <div class="front-stat__label">Magnesium</div>
+
+                <div class="front-stat">
+                  <span class="front-stat__val">600</span>
+                  <span class="front-stat__unit">mg</span>
+                </div>
+                <div class="front-stat__label">Sodium</div>
+
+                <div class="front-stat">
+                  <span class="front-stat__val">100%+</span>
+                </div>
+                <div class="front-stat__label">B-Vitamins</div>
+
+                <div class="front-stat">
+                  <span class="front-stat__val">0</span>
+                  <span class="front-stat__unit">g</span>
+                </div>
+                <div class="front-stat__label">Sugar</div>
+              </div>
+
+              <div class="front-bottom">16 Stick Packs</div>
+            </div>
+
+            <!-- BACK PANEL -->
+            <div class="box-face box-back">
+              <div class="back-badges">
+                <div class="back-badge">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="1.5"><path d="M12 2L3 7v6c0 5.25 3.75 10.13 9 11.25C17.25 23.13 21 18.25 21 13V7l-9-5z"/><text x="6" y="16" font-size="6" fill="#333" stroke="none" font-weight="700">USA</text></svg>
+                </div>
+                <div class="back-badge">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M8 12l3 3 5-5"/></svg>
+                </div>
+                <div class="back-badge">
+                  <span>0g<br>Sugar</span>
+                </div>
+              </div>
+
+              <div class="back-headline">Unapologetically Clean.<br>Undeniably Effective.</div>
+
+              <div class="back-desc">Atlas Hydration delivers rapid, powerful hydration with 1,300mg of essential electrolytes and 1,200mg of highly bioavailable amino acids. Designed with clean ingredients and exceptional performance in mind.</div>
+
+              <!-- Supplement Facts -->
+              <div class="supp-facts">
+                <div class="supp-facts__title">Supplement Facts</div>
+                <div class="supp-facts__row"><span>Serving Size</span><span>1 stick (7g)</span></div>
+                <div class="supp-facts__row"><span>Calories</span><span>5</span></div>
+                <div class="supp-facts__row"><span>Sodium</span><span>600mg</span></div>
+                <div class="supp-facts__row"><span>Potassium</span><span>500mg</span></div>
+                <div class="supp-facts__row"><span>Magnesium</span><span>200mg</span></div>
+                <div class="supp-facts__row"><span>Vitamin C</span><span>90mg</span></div>
+                <div class="supp-facts__row"><span>Niacin (B3)</span><span>20mg</span></div>
+                <div class="supp-facts__row"><span>Vitamin B6</span><span>2.5mg</span></div>
+                <div class="supp-facts__row"><span>Vitamin B12</span><span>6mcg</span></div>
+                <div class="supp-facts__row"><span>L-Glutamine</span><span>600mg</span></div>
+                <div class="supp-facts__row"><span>L-Alanine</span><span>600mg</span></div>
+              </div>
+
+              <!-- Icons -->
+              <div class="back-icons">
+                <div class="back-icon-item">
+                  <div class="back-icon-item__circle">
+                    <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zM17.9 17.39c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41C18.93 5.77 22 8.65 22 12c0 2.08-.8 3.97-2.1 5.39z"/></svg>
+                  </div>
+                  <div class="back-icon-item__label">Hydration</div>
+                  <div class="back-icon-item__desc">Replenish key electrolytes for rapid cellular hydration</div>
+                </div>
+                <div class="back-icon-item">
+                  <div class="back-icon-item__circle">
+                    <svg viewBox="0 0 24 24"><path d="M12 2L4.5 20.29l.71.71L12 18l6.79 3 .71-.71z"/></svg>
+                  </div>
+                  <div class="back-icon-item__label">Immunity</div>
+                  <div class="back-icon-item__desc">Vitamin C &amp; B-complex for immune support</div>
+                </div>
+                <div class="back-icon-item">
+                  <div class="back-icon-item__circle">
+                    <svg viewBox="0 0 24 24"><path d="M13.5 5.5c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zM9.8 8.9L7 23h2.1l1.8-8 2.1 2v6h2v-7.5l-2.1-2 .6-3C14.8 12 16.8 13 19 13v-2c-1.9 0-3.5-1-4.3-2.4l-1-1.6c-.4-.6-1-1-1.7-1-.3 0-.5.1-.8.1L6 8.3V13h2V9.6l1.8-.7z"/></svg>
+                  </div>
+                  <div class="back-icon-item__label">Recovery</div>
+                  <div class="back-icon-item__desc">L-Glutamine &amp; L-Alanine for muscle recovery</div>
+                </div>
+              </div>
+
+              <div class="back-section-title">Why No "Natural Flavors"?</div>
+              <div class="back-section-text">We use real cold-pressed grapefruit oil for a clean, authentic flavor. No proprietary blends, nothing hidden — just grapefruit.</div>
+
+              <div class="back-connect">
+                <div class="back-connect__label">Connect with Atlas community</div>
+                <div class="back-connect__url">www.atlas-hydration.com &bull; @atlas.hydration</div>
+              </div>
+            </div>
+
+            <!-- SPINE (right side) -->
+            <div class="box-face box-spine"></div>
+
+            <!-- TOP -->
+            <div class="box-face box-top"></div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <hr class="divider">
+
+    <!-- ==================== STICK PACKS SECTION ==================== -->
+    <div class="section">
+      <h2 class="section__title">Stick Packs — 3D Renders</h2>
+      <p class="section__subtitle">Individual stick pack mockups. Hover to rotate.</p>
+
+      <div class="scene-container">
+        <div class="sticks-row">
+
+          <!-- Grapefruit Stick -->
+          <div class="stick-scene">
+            <div class="stick-wrap stick--grapefruit">
+              <div class="stick-face stick-front">
+                <div class="stick-flavor-tag">Grapefruit</div>
+                <div class="stick-logo-area">
+                  <svg viewBox="0 0 171 171" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M85.5 10C85.5 10 60 40 45 70C30 100 25 130 50 155C65 170 85.5 165 85.5 165C85.5 165 106 170 121 155C146 130 141 100 126 70C111 40 85.5 10 85.5 10Z" fill="white" opacity="0.9"/>
+                  </svg>
+                  <span class="stick-brand">Atlas</span>
+                </div>
+                <div class="stick-product-type">Daily<br>Hydration</div>
+                <div class="stick-sub-line">Electrolytes + Vitamins</div>
+              </div>
+              <div class="stick-face stick-back"></div>
+              <div class="stick-face stick-spine-r"></div>
+              <div class="stick-face stick-spine-l"></div>
+            </div>
+          </div>
+
+          <!-- Strawberry Lemonade Stick -->
+          <div class="stick-scene">
+            <div class="stick-wrap stick--strawberry">
+              <div class="stick-face stick-front">
+                <div class="stick-flavor-tag">Strawberry Lemonade</div>
+                <div class="stick-logo-area">
+                  <svg viewBox="0 0 171 171" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M85.5 10C85.5 10 60 40 45 70C30 100 25 130 50 155C65 170 85.5 165 85.5 165C85.5 165 106 170 121 155C146 130 141 100 126 70C111 40 85.5 10 85.5 10Z" fill="white" opacity="0.9"/>
+                  </svg>
+                  <span class="stick-brand">Atlas</span>
+                </div>
+                <div class="stick-product-type">Daily<br>Hydration</div>
+                <div class="stick-sub-line">Electrolytes + Vitamins</div>
+              </div>
+              <div class="stick-face stick-back"></div>
+              <div class="stick-face stick-spine-r"></div>
+              <div class="stick-face stick-spine-l"></div>
+            </div>
+          </div>
+
+          <!-- Lemon Lime Stick -->
+          <div class="stick-scene">
+            <div class="stick-wrap stick--lemon">
+              <div class="stick-face stick-front">
+                <div class="stick-flavor-tag">Lemon Lime</div>
+                <div class="stick-logo-area">
+                  <svg viewBox="0 0 171 171" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M85.5 10C85.5 10 60 40 45 70C30 100 25 130 50 155C65 170 85.5 165 85.5 165C85.5 165 106 170 121 155C146 130 141 100 126 70C111 40 85.5 10 85.5 10Z" fill="white" opacity="0.9"/>
+                  </svg>
+                  <span class="stick-brand">Atlas</span>
+                </div>
+                <div class="stick-product-type">Daily<br>Hydration</div>
+                <div class="stick-sub-line">Electrolytes + Vitamins</div>
+              </div>
+              <div class="stick-face stick-back"></div>
+              <div class="stick-face stick-spine-r"></div>
+              <div class="stick-face stick-spine-l"></div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</body>
+</html>
