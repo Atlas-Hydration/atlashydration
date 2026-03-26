@@ -2056,56 +2056,42 @@ document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
 
 })();
 
-// Product page gallery — main image + thumbnails (LMNT-style)
+// Product page gallery — stacked (desktop) / swipeable carousel (mobile)
 (function() {
-  var gallery = document.querySelector('.product-gallery');
+  var gallery = document.querySelector('.product-gallery--stacked');
   if (!gallery) return;
 
-  var slides = gallery.querySelectorAll('.product-gallery__slide');
-  var thumbs = gallery.querySelectorAll('.product-gallery__thumb');
-  var prevBtn = gallery.querySelector('.product-gallery__nav--prev');
-  var nextBtn = gallery.querySelector('.product-gallery__nav--next');
-  if (!slides.length) return;
+  var container = gallery.querySelector('.product-gallery__stacked-images');
+  var imgs = gallery.querySelectorAll('.product-gallery__stacked-img');
+  var dotsWrap = gallery.querySelector('.product-gallery__dots');
+  if (!container || !imgs.length) return;
 
-  var current = 0;
-
-  function goTo(index) {
-    current = (index + slides.length) % slides.length;
-    slides.forEach(function(s) { s.classList.remove('active'); });
-    slides[current].classList.add('active');
-    thumbs.forEach(function(t) { t.classList.remove('active'); });
-    if (thumbs[current]) thumbs[current].classList.add('active');
-  }
-
-  if (prevBtn) prevBtn.addEventListener('click', function() { goTo(current - 1); });
-  if (nextBtn) nextBtn.addEventListener('click', function() { goTo(current + 1); });
-
-  thumbs.forEach(function(thumb) {
-    thumb.addEventListener('click', function() {
-      goTo(parseInt(this.getAttribute('data-index')));
+  // Build dot indicators
+  imgs.forEach(function(_, i) {
+    var dot = document.createElement('button');
+    dot.className = 'product-gallery__dot' + (i === 0 ? ' active' : '');
+    dot.setAttribute('aria-label', 'Image ' + (i + 1));
+    dot.addEventListener('click', function() {
+      imgs[i].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
     });
+    dotsWrap.appendChild(dot);
   });
 
-  // Touch swipe on main image
-  var main = gallery.querySelector('.product-gallery__main');
-  var startX = 0, deltaX = 0, swiping = false;
-  if (main) {
-    main.addEventListener('touchstart', function(e) {
-      startX = e.touches[0].clientX;
-      swiping = true;
-      deltaX = 0;
-    }, { passive: true });
-    main.addEventListener('touchmove', function(e) {
-      if (!swiping) return;
-      deltaX = e.touches[0].clientX - startX;
-    }, { passive: true });
-    main.addEventListener('touchend', function() {
-      if (!swiping) return;
-      swiping = false;
-      if (deltaX > 50) goTo(current - 1);
-      else if (deltaX < -50) goTo(current + 1);
-    });
-  }
+  var dots = dotsWrap.querySelectorAll('.product-gallery__dot');
+
+  // Track scroll position to update active dot
+  var scrollTimeout;
+  container.addEventListener('scroll', function() {
+    clearTimeout(scrollTimeout);
+    scrollTimeout = setTimeout(function() {
+      var scrollLeft = container.scrollLeft;
+      var width = container.offsetWidth;
+      var index = Math.round(scrollLeft / width);
+      dots.forEach(function(d, i) {
+        d.classList.toggle('active', i === index);
+      });
+    }, 50);
+  }, { passive: true });
 })();
 
 // Featured product gallery — main image + thumbnails (LMNT-style)
