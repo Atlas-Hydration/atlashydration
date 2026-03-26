@@ -5549,13 +5549,20 @@ img {
   }
 
   .header__center,
-  .header__right,
   .header__links {
     display: none;
   }
 
-  .header__hamburger {
+  .header__right {
     display: flex;
+  }
+
+  .header__hamburger {
+    display: none;
+  }
+
+  .mobile-menu {
+    display: none !important;
   }
 
   .header__nav {
@@ -5649,6 +5656,11 @@ img {
 
   .testimonials__grid {
     grid-template-columns: 1fr;
+  }
+
+  .testimonial__text {
+    font-size: 1rem;
+    line-height: 1.7;
   }
 
   .footer__grid {
@@ -6378,8 +6390,94 @@ img {
 [class*="junip"] a[href*="juniphq"],
 .junip-review-section-wrapper > div > a,
 .junip-store-review-branding,
-.junip-product-review-branding {
+.junip-product-review-branding,
+.junip-store-key,
+[class*="junip"][class*="branding"] {
   display: none !important;
+}
+
+/* Blog — Investigative Series styling */
+.blog__card--coming-soon {
+  position: relative;
+  pointer-events: none;
+  opacity: 0.7;
+}
+
+.blog__card--coming-soon .blog__card-image {
+  filter: grayscale(40%);
+}
+
+.blog__card--coming-soon .blog__coming-soon-badge {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: var(--color-primary);
+  color: #fff;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 6px 14px;
+  z-index: 2;
+}
+
+.blog__card-episode {
+  display: inline-block;
+  font-size: 0.6rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--color-text-dim);
+  margin-bottom: 6px;
+}
+
+/* Product gallery — vertical thumbs layout (desktop) */
+@media (min-width: 1025px) {
+  .product-gallery {
+    display: flex;
+    flex-direction: row-reverse;
+    gap: 12px;
+  }
+
+  .product-gallery__main {
+    flex: 1;
+    margin-bottom: 0;
+  }
+
+  .product-gallery__thumbs {
+    flex-direction: column;
+    overflow-y: auto;
+    overflow-x: hidden;
+    max-height: 600px;
+    gap: 8px;
+    width: 80px;
+    flex-shrink: 0;
+  }
+
+  .product-gallery__thumb {
+    width: 72px;
+    height: 72px;
+  }
+
+  .product-gallery__nav {
+    display: none;
+  }
+
+  .product-hero__info {
+    max-height: 85vh;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(0,0,0,0.15) transparent;
+  }
+
+  .product-hero__info::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  .product-hero__info::-webkit-scrollbar-thumb {
+    background: rgba(0,0,0,0.15);
+    border-radius: 4px;
+  }
 }
 
 /* Mobile / Desktop visibility helpers */
@@ -7656,5 +7754,215 @@ img {
 
   .hero {
     min-height: 100svh;
+  }
+}
+
+/* ========================================
+   Mobile Optimization Pass
+   ======================================== */
+
+/* Ensure minimum readable font sizes on mobile */
+@media (max-width: 768px) {
+  /* Increase tap targets to minimum 44px */
+  .product-gallery__thumb {
+    width: 60px;
+    height: 60px;
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  .frequency-selector__btn {
+    min-height: 44px;
+  }
+
+  .purchase-option {
+    min-height: 44px;
+  }
+
+  .product-faq__question {
+    min-height: 48px;
+    padding: 14px 16px;
+  }
+
+  /* Product hero stacks nicely */
+  .product-hero__grid {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+
+  .product-hero__info {
+    position: static;
+    max-width: 100%;
+  }
+
+  .product-hero__title {
+    font-size: 1.8rem;
+  }
+
+  .product-hero__desc {
+    font-size: 1rem;
+    line-height: 1.7;
+  }
+
+  /* Gallery nav arrows visible on mobile */
+  .product-gallery__nav {
+    display: flex;
+  }
+
+  /* Thumbs horizontal scroll on mobile */
+  .product-gallery {
+    display: block;
+  }
+
+  .product-gallery__thumbs {
+    flex-direction: row;
+    overflow-x: auto;
+    max-height: none;
+    width: 100%;
+  }
+
+  /* Better hero benefit readability */
+  .hero__benefit {
+    font-size: 0.7rem;
+    gap: 5px;
+  }
+
+  .hero__benefit-icon {
+    width: 34px;
+    height: 34px;
+  }
+
+  .hero__benefit-icon svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  /* Comparison table readability */
+  .compare__table-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Footer tap targets */
+  .footer__links a {
+    padding: 6px 0;
+    display: inline-block;
+    min-height: 36px;
+    line-height: 2;
+  }
+
+  .footer__social a {
+    min-width: 44px;
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Blog cards on mobile */
+  .blog__card-title {
+    font-size: 1rem;
+  }
+
+  .blog__card-excerpt {
+    font-size: 0.9rem;
+    line-height: 1.6;
+  }
+
+  /* Science section readability */
+  .science__desc {
+    font-size: 0.95rem;
+    line-height: 1.7;
+  }
+
+  /* How it works readability */
+  .how-it-works__step p {
+    font-size: 0.9rem;
+    line-height: 1.6;
+  }
+
+  /* Mission text */
+  .mission__text {
+    font-size: 0.95rem;
+    line-height: 1.7;
+  }
+
+  /* Founder text readability */
+  .founder__text p {
+    font-size: 0.95rem;
+    line-height: 1.7;
+  }
+
+  /* CTA readability */
+  .cta-section__text,
+  .cta-dark__text {
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+
+  /* Sticky buy bar bottom padding for content */
+  main {
+    padding-bottom: 80px;
+  }
+}
+
+/* Small phones — improve readability */
+@media (max-width: 480px) {
+  .testimonial {
+    padding: 28px 20px;
+  }
+
+  .testimonial__text {
+    font-size: 0.95rem;
+  }
+
+  /* Blog episode labels */
+  .blog__card-content {
+    padding: 20px 16px;
+  }
+
+  /* Ensure product info is fully readable */
+  .purchase-option__label {
+    font-size: 0.85rem;
+  }
+
+  .purchase-option__price {
+    font-size: 1rem;
+    font-weight: 700;
+  }
+
+  .purchase-option__per {
+    font-size: 0.75rem;
+  }
+
+  /* Benefits bar */
+  .benefits-bar__label {
+    font-size: 0.78rem;
+  }
+
+  .benefits-bar__icon svg {
+    width: 28px;
+    height: 28px;
+  }
+}
+
+/* Extra small phones — prevent text from being illegible */
+@media (max-width: 360px) {
+  .hero__benefit {
+    font-size: 0.6rem;
+  }
+
+  .hero__benefit span {
+    font-size: 0.55rem;
+  }
+
+  .announcement-bar__inner {
+    font-size: 0.6rem;
+    padding: 8px 12px;
+  }
+
+  .product-gallery__thumb {
+    width: 48px;
+    height: 48px;
   }
 }
