@@ -4,6 +4,11 @@ import VitaminStrip from "~/components/home/VitaminStrip";
 import FeaturedProduct from "~/components/home/FeaturedProduct";
 import ScienceSection from "~/components/home/ScienceSection";
 import CompareSection from "~/components/home/CompareSection";
+import ReviewsSection from "~/components/home/ReviewsSection";
+import WhyAtlasSection from "~/components/home/WhyAtlasSection";
+import HydrationBenefits from "~/components/home/HydrationBenefits";
+import DailyElectrolytes from "~/components/home/DailyElectrolytes";
+import BlogSection from "~/components/home/BlogSection";
 
 export function meta() {
   return [
@@ -37,6 +42,11 @@ export default function Home() {
       <FeaturedProduct />
       <ScienceSection />
       <CompareSection />
+      <ReviewsSection />
+      <WhyAtlasSection />
+      <HydrationBenefits />
+      <DailyElectrolytes />
+      <BlogSection />
       <Popup />
     </>
   );
