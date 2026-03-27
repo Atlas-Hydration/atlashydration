@@ -1268,11 +1268,11 @@ document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
 
   // --- Data ---
   var BRANDS = {
-    lmnt:  { name: 'LMNT',       cls: 'compare__th-brand--lmnt', domain: 'drinklmnt.com' },
-    liv:   { name: 'Liquid I.V.', cls: 'compare__th-brand--liv',  domain: 'liquid-iv.com' },
-    wb:    { name: 'WaterBoy',    cls: 'compare__th-brand--wb',   domain: 'drinkwaterboy.com' },
-    drip:  { name: 'DripDrop',    cls: 'compare__th-brand--drip', domain: 'dripdrop.com' },
-    nuun:  { name: 'Nuun',        cls: 'compare__th-brand--nuun', domain: 'nuunlife.com' }
+    lmnt:  { name: 'LMNT',       cls: 'compare__th-brand--lmnt',  logo: 'images/logos/lmnt.svg' },
+    liv:   { name: 'Liquid I.V.', cls: 'compare__th-brand--liv',   logo: 'images/logos/liquid-iv.svg' },
+    wb:    { name: 'WaterBoy',    cls: 'compare__th-brand--wb',    logo: 'images/logos/waterboy.svg' },
+    drip:  { name: 'DripDrop',    cls: 'compare__th-brand--drip',  logo: 'images/logos/dripdrop.svg' },
+    nuun:  { name: 'Nuun',        cls: 'compare__th-brand--nuun',  logo: 'images/logos/nuun.svg' }
   };
 
   var CATS = [
@@ -1343,8 +1343,7 @@ document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
     var headHTML = '<th></th><th class="compare__th-atlas"><img src="logo.svg" alt="Atlas" height="20"></th>';
     activeBrands.forEach(function(b) {
       var brand = BRANDS[b];
-      var logoUrl = 'https://cdn.brandfetch.io/' + brand.domain + '/h/32/w/80/logo?c=1id3n10pdBTarCHI0db';
-      headHTML += '<th class="compare__th-logo"><img src="' + logoUrl + '" alt="' + brand.name + '" width="60" height="20" class="compare__brand-logo" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'inline\'"><span class="compare__th-brand ' + brand.cls + '" style="display:none">' + brand.name + '</span></th>';
+      headHTML += '<th class="compare__th-logo"><img src="' + brand.logo + '" alt="' + brand.name + '" width="60" height="20" class="compare__brand-logo" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'inline\'"><span class="compare__th-brand ' + brand.cls + '" style="display:none">' + brand.name + '</span></th>';
     });
     thead.innerHTML = headHTML;
 
@@ -1963,7 +1962,7 @@ document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
 
 })();
 
-// Product page gallery — stacked (desktop) / swipeable carousel (mobile)
+// Product page gallery — stacked (desktop) / swipeable carousel with arrows + thumbs (mobile)
 (function() {
   var gallery = document.querySelector('.product-gallery--stacked');
   if (!gallery) return;
@@ -1971,32 +1970,66 @@ document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
   var container = gallery.querySelector('.product-gallery__stacked-images');
   var imgs = gallery.querySelectorAll('.product-gallery__stacked-img');
   var dotsWrap = gallery.querySelector('.product-gallery__dots');
+  var thumbsWrap = gallery.querySelector('.product-gallery__thumbs');
+  var prevBtn = gallery.querySelector('.product-gallery__arrow--prev');
+  var nextBtn = gallery.querySelector('.product-gallery__arrow--next');
   if (!container || !imgs.length) return;
+
+  var currentIndex = 0;
+
+  function goTo(index) {
+    if (index < 0) index = 0;
+    if (index >= imgs.length) index = imgs.length - 1;
+    currentIndex = index;
+    container.scrollTo({ left: index * container.offsetWidth, behavior: 'smooth' });
+    updateActive(index);
+  }
+
+  function updateActive(index) {
+    dots.forEach(function(d, i) { d.classList.toggle('active', i === index); });
+    thumbImgs.forEach(function(t, i) { t.classList.toggle('active', i === index); });
+  }
 
   // Build dot indicators
   imgs.forEach(function(_, i) {
     var dot = document.createElement('button');
     dot.className = 'product-gallery__dot' + (i === 0 ? ' active' : '');
     dot.setAttribute('aria-label', 'Image ' + (i + 1));
-    dot.addEventListener('click', function() {
-      imgs[i].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
-    });
+    dot.addEventListener('click', function() { goTo(i); });
     dotsWrap.appendChild(dot);
   });
 
-  var dots = dotsWrap.querySelectorAll('.product-gallery__dot');
+  // Build thumbnail strip
+  imgs.forEach(function(slide, i) {
+    var thumb = document.createElement('div');
+    thumb.className = 'product-gallery__thumb-img' + (i === 0 ? ' active' : '');
+    var img = slide.querySelector('img');
+    if (img) {
+      var thumbImg = document.createElement('img');
+      thumbImg.src = img.src;
+      thumbImg.alt = img.alt || '';
+      thumbImg.loading = 'lazy';
+      thumb.appendChild(thumbImg);
+    }
+    thumb.addEventListener('click', function() { goTo(i); });
+    thumbsWrap.appendChild(thumb);
+  });
 
-  // Track scroll position to update active dot
+  var dots = dotsWrap.querySelectorAll('.product-gallery__dot');
+  var thumbImgs = thumbsWrap.querySelectorAll('.product-gallery__thumb-img');
+
+  // Arrow navigation
+  if (prevBtn) prevBtn.addEventListener('click', function() { goTo(currentIndex - 1); });
+  if (nextBtn) nextBtn.addEventListener('click', function() { goTo(currentIndex + 1); });
+
+  // Track scroll position to sync dots/thumbs
   var scrollTimeout;
   container.addEventListener('scroll', function() {
     clearTimeout(scrollTimeout);
     scrollTimeout = setTimeout(function() {
-      var scrollLeft = container.scrollLeft;
-      var width = container.offsetWidth;
-      var index = Math.round(scrollLeft / width);
-      dots.forEach(function(d, i) {
-        d.classList.toggle('active', i === index);
-      });
+      var index = Math.round(container.scrollLeft / container.offsetWidth);
+      currentIndex = index;
+      updateActive(index);
     }, 50);
   }, { passive: true });
 })();
