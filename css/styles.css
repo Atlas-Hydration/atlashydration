@@ -2841,7 +2841,10 @@ img {
 }
 
 .compare__toggle {
-  padding: 8px 18px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
   border-radius: 100px;
   border: 1px solid rgba(255,255,255,0.1);
   background: transparent;
@@ -2851,6 +2854,37 @@ img {
   color: rgba(255,255,255,0.35);
   cursor: pointer;
   transition: all 0.25s;
+}
+
+.compare__toggle-logo {
+  height: 18px;
+  width: auto;
+  border-radius: 4px;
+  opacity: 0.5;
+  transition: opacity 0.2s;
+}
+
+.compare__toggle.active .compare__toggle-logo {
+  opacity: 1;
+  filter: brightness(10);
+}
+
+.compare__toggle:hover .compare__toggle-logo {
+  opacity: 0.8;
+}
+
+/* Table header brand logos */
+.compare__brand-logo {
+  height: 24px;
+  width: auto;
+  display: block;
+  margin: 0 auto;
+  opacity: 0.6;
+}
+
+.compare__th-logo {
+  text-align: center;
+  vertical-align: middle;
 }
 
 .compare__toggle:hover {

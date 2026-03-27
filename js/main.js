@@ -1363,11 +1363,11 @@ document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
 
   // --- Data ---
   var BRANDS = {
-    lmnt:  { name: 'LMNT',       cls: 'compare__th-brand--lmnt' },
-    liv:   { name: 'Liquid I.V.', cls: 'compare__th-brand--liv'  },
-    wb:    { name: 'WaterBoy',    cls: 'compare__th-brand--wb'   },
-    drip:  { name: 'DripDrop',    cls: 'compare__th-brand--drip' },
-    nuun:  { name: 'Nuun',        cls: 'compare__th-brand--nuun' }
+    lmnt:  { name: 'LMNT',       cls: 'compare__th-brand--lmnt', domain: 'drinklmnt.com' },
+    liv:   { name: 'Liquid I.V.', cls: 'compare__th-brand--liv',  domain: 'liquid-iv.com' },
+    wb:    { name: 'WaterBoy',    cls: 'compare__th-brand--wb',   domain: 'drinkwaterboy.com' },
+    drip:  { name: 'DripDrop',    cls: 'compare__th-brand--drip', domain: 'dripdrop.com' },
+    nuun:  { name: 'Nuun',        cls: 'compare__th-brand--nuun', domain: 'nuunlife.com' }
   };
 
   var CATS = [
@@ -1437,7 +1437,9 @@ document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
 
     var headHTML = '<th></th><th class="compare__th-atlas"><img src="logo.svg" alt="Atlas" height="20"></th>';
     activeBrands.forEach(function(b) {
-      headHTML += '<th><span class="compare__th-brand ' + BRANDS[b].cls + '">' + BRANDS[b].name + '</span></th>';
+      var brand = BRANDS[b];
+      var logoUrl = 'https://cdn.brandfetch.io/' + brand.domain + '/h/40/icon?c=1id3n10pdBTarCHI0db';
+      headHTML += '<th class="compare__th-logo"><img src="' + logoUrl + '" alt="' + brand.name + '" class="compare__brand-logo" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'inline\'"><span class="compare__th-brand ' + brand.cls + '" style="display:none">' + brand.name + '</span></th>';
     });
     thead.innerHTML = headHTML;
 
