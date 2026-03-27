@@ -29,7 +29,7 @@ export default function FounderSection() {
           </div>
           <div className="founder__image">
             <img
-              src="images/gemini-generated-image-544vz0544vz0544v-1.webp"
+              src="/atlashydration/images/gemini-generated-image-544vz0544vz0544v-1.webp"
               alt="Garrett Ray — airline captain and founder of Atlas Hydration"
               loading="lazy"
             />

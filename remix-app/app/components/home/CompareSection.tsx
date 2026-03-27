@@ -17,11 +17,11 @@ interface Category {
 }
 
 const BRANDS: Brand[] = [
-  { key: "lmnt", name: "LMNT", logo: "images/logos/lmnt.svg" },
-  { key: "liv", name: "Liquid I.V.", logo: "images/logos/liquid-iv.svg" },
-  { key: "wb", name: "WaterBoy", logo: "images/logos/waterboy.svg" },
-  { key: "drip", name: "DripDrop", logo: "images/logos/dripdrop.svg" },
-  { key: "nuun", name: "Nuun", logo: "images/logos/nuun.svg" },
+  { key: "lmnt", name: "LMNT", logo: "/atlashydration/images/logos/lmnt.svg" },
+  { key: "liv", name: "Liquid I.V.", logo: "/atlashydration/images/logos/liquid-iv.svg" },
+  { key: "wb", name: "WaterBoy", logo: "/atlashydration/images/logos/waterboy.svg" },
+  { key: "drip", name: "DripDrop", logo: "/atlashydration/images/logos/dripdrop.svg" },
+  { key: "nuun", name: "Nuun", logo: "/atlashydration/images/logos/nuun.svg" },
 ];
 
 const CATS: Category[] = [
@@ -130,7 +130,7 @@ export default function CompareSection() {
                 <tr>
                   <th></th>
                   <th className="compare__th-atlas">
-                    <img src="logo.svg" alt="Atlas" height="20" />
+                    <img src="/atlashydration/logo.svg" alt="Atlas" height="20" />
                   </th>
                   {activeBrandData.map((b) => (
                     <th key={b.key} className="compare__th-logo">
