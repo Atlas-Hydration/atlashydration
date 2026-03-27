@@ -1438,8 +1438,8 @@ document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
     var headHTML = '<th></th><th class="compare__th-atlas"><img src="logo.svg" alt="Atlas" height="20"></th>';
     activeBrands.forEach(function(b) {
       var brand = BRANDS[b];
-      var logoUrl = 'https://cdn.brandfetch.io/' + brand.domain + '/h/40/icon?c=1id3n10pdBTarCHI0db';
-      headHTML += '<th class="compare__th-logo"><img src="' + logoUrl + '" alt="' + brand.name + '" class="compare__brand-logo" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'inline\'"><span class="compare__th-brand ' + brand.cls + '" style="display:none">' + brand.name + '</span></th>';
+      var logoUrl = 'https://cdn.brandfetch.io/' + brand.domain + '/h/32/w/80/logo?c=1id3n10pdBTarCHI0db';
+      headHTML += '<th class="compare__th-logo"><img src="' + logoUrl + '" alt="' + brand.name + '" width="60" height="20" class="compare__brand-logo" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'inline\'"><span class="compare__th-brand ' + brand.cls + '" style="display:none">' + brand.name + '</span></th>';
     });
     thead.innerHTML = headHTML;
 
