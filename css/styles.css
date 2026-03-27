@@ -1862,7 +1862,7 @@ img {
   border: 1px solid var(--color-border);
   border-radius: 12px;
   padding: 32px;
-  min-height: 280px;
+  min-height: 480px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -3872,9 +3872,9 @@ img {
 .fp-gallery__thumbs::-webkit-scrollbar { display: none; }
 
 .fp-gallery__thumb {
-  flex: 0 0 auto;
-  width: 72px;
-  height: 72px;
+  flex: 1 1 0;
+  min-width: 0;
+  aspect-ratio: 1;
   border-radius: 6px;
   overflow: hidden;
   cursor: pointer;
@@ -6497,8 +6497,8 @@ img {
 
   .product-hero__info {
     position: sticky;
-    top: 120px;
-    max-height: calc(100vh - 140px);
+    top: var(--sticky-top, 120px);
+    max-height: calc(100vh - var(--sticky-top, 120px) - 20px);
     overflow-y: auto;
     scrollbar-width: thin;
     scrollbar-color: rgba(0,0,0,0.12) transparent;
@@ -6911,31 +6911,53 @@ img {
    ======================================== */
 .sticky-buy {
   --sticky-flavor: #e85d75;
+  --sticky-flavor-rgb: 232, 93, 117;
   position: fixed;
   bottom: 0;
   left: 0;
   right: 0;
   z-index: 999;
-  background: color-mix(in srgb, var(--sticky-flavor) 70%, transparent);
-  -webkit-backdrop-filter: blur(20px) saturate(1.6);
-  backdrop-filter: blur(20px) saturate(1.6);
-  border-top: 1px solid color-mix(in srgb, var(--sticky-flavor) 40%, rgba(255,255,255,0.3));
+  background: rgba(var(--sticky-flavor-rgb), 0.15);
+  backdrop-filter: saturate(180%) blur(24px);
+  -webkit-backdrop-filter: saturate(180%) blur(24px);
+  border-top: 1px solid rgba(var(--sticky-flavor-rgb), 0.2);
   overflow: hidden;
   transform: translateY(100%);
   transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
   padding: 0;
 }
 
-.sticky-buy--strawberry { --sticky-flavor: #e85d75; }
-.sticky-buy--lemon-lime { --sticky-flavor: #5a9e2f; }
-.sticky-buy--grapefruit { --sticky-flavor: #e8922a; }
+.sticky-buy--strawberry {
+  --sticky-flavor: #e85d75;
+  --sticky-flavor-rgb: 232, 93, 117;
+}
+.sticky-buy--lemon-lime {
+  --sticky-flavor: #5a9e2f;
+  --sticky-flavor-rgb: 90, 158, 47;
+}
+.sticky-buy--grapefruit {
+  --sticky-flavor: #e8922a;
+  --sticky-flavor-rgb: 232, 146, 42;
+}
 
 .sticky-buy__wave {
   display: none;
 }
 
-.sticky-buy::before {
-  display: none;
+.sticky-buy__wave path {
+  fill: rgba(var(--sticky-flavor-rgb), 0.15);
+}
+
+/* Second wave layer for depth */
+.sticky-buy__wave--back {
+  top: -12px;
+  opacity: 0.3;
+  animation: stickyWaveSlide 8s linear infinite reverse;
+}
+
+@keyframes stickyWaveSlide {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
 }
 
 /* Bubble particles */
@@ -6952,7 +6974,7 @@ img {
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.3);
+  background: rgba(var(--sticky-flavor-rgb), 0.25);
   animation: stickyBubbleRise 3s ease-in infinite;
 }
 
@@ -6978,7 +7000,7 @@ img {
   }
 }
 
-/* Shimmer light sweep */
+/* Shimmer light sweep — glass refraction */
 .sticky-buy::after {
   content: '';
   position: absolute;
@@ -6989,10 +7011,10 @@ img {
   background: linear-gradient(
     105deg,
     transparent 30%,
-    rgba(255, 255, 255, 0.12) 50%,
+    rgba(255, 255, 255, 0.15) 50%,
     transparent 70%
   );
-  animation: stickyShimmer 4s ease-in-out infinite;
+  animation: stickyShimmer 5s ease-in-out infinite;
   pointer-events: none;
 }
 
@@ -7033,8 +7055,8 @@ img {
   height: 44px;
   border-radius: 10px;
   object-fit: cover;
-  border: 2px solid rgba(255, 255, 255, 0.35);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
   flex-shrink: 0;
 }
 
@@ -7047,16 +7069,14 @@ img {
 .sticky-buy__name {
   font-family: var(--font-sans);
   font-weight: 700;
-  font-size: var(--text-md);
-  color: #ffffff;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+  font-size: 0.95rem;
+  color: var(--color-text);
 }
 
 .sticky-buy__price {
   font-family: var(--font-sans);
-  font-size: var(--text-btn);
-  color: rgba(255, 255, 255, 0.85);
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
 }
 
 .sticky-buy__tag {
@@ -7066,8 +7086,8 @@ img {
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: var(--sticky-flavor);
-  background: rgba(255, 255, 255, 0.9);
+  color: #fff;
+  background: var(--sticky-flavor);
   padding: 3px 8px;
   border-radius: 4px;
   line-height: 1;
@@ -7085,7 +7105,7 @@ img {
   width: 22px;
   height: 22px;
   border-radius: 50%;
-  border: 2px solid rgba(255, 255, 255, 0.4);
+  border: 2px solid rgba(0, 0, 0, 0.1);
   cursor: pointer;
   transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
   position: relative;
@@ -7097,21 +7117,21 @@ img {
 .sticky-buy__flavor-dot--lemon-lime { background: #8bc34a; }
 
 .sticky-buy__flavor-dot.active {
-  border-color: #ffffff;
+  border-color: var(--color-text);
   transform: scale(1.15);
-  box-shadow: 0 0 8px rgba(255, 255, 255, 0.4);
+  box-shadow: 0 0 8px rgba(var(--sticky-flavor-rgb), 0.4);
 }
 
 .sticky-buy__flavor-dot:hover:not(.active) {
   transform: scale(1.1);
-  border-color: rgba(255, 255, 255, 0.7);
+  border-color: rgba(0, 0, 0, 0.25);
 }
 
-/* Buy Now button */
+/* Buy Now button — glass accent */
 .sticky-buy__btn {
   position: relative;
-  background: #ffffff;
-  color: var(--sticky-flavor);
+  background: var(--sticky-flavor);
+  color: #ffffff;
   border: none;
   padding: 14px 36px;
   font-family: var(--font-sans);
@@ -7122,7 +7142,7 @@ img {
   border-radius: 50px;
   cursor: pointer;
   white-space: nowrap;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 20px rgba(var(--sticky-flavor-rgb), 0.35);
   overflow: hidden;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   z-index: 1;
