@@ -1286,6 +1286,27 @@ img {
   z-index: 0;
 }
 
+.cta-section__video-wrap {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.cta-section__video-yt {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 120%;
+  height: 120%;
+  min-width: 100%;
+  min-height: 100%;
+  transform: translate(-50%, -50%);
+  border: none;
+  pointer-events: none;
+  object-fit: cover;
+}
+
 .cta-section__overlay {
   position: absolute;
   inset: 0;
