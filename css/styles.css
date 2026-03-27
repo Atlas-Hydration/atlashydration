@@ -1432,6 +1432,7 @@ img {
 .product-hero {
   padding: 110px 0 60px;
   background: #ffffff;
+  overflow-x: hidden;
 }
 
 .product-hero__grid {
@@ -7867,6 +7868,8 @@ img {
   .product-hero__info {
     position: static;
     max-width: 100%;
+    padding: 0 16px;
+    box-sizing: border-box;
   }
 
   .product-hero__title {
@@ -7876,6 +7879,78 @@ img {
   .product-hero__desc {
     font-size: 1rem;
     line-height: 1.7;
+  }
+
+  /* Gallery thumbnails — fit row */
+  .product-gallery__thumbs {
+    padding: 8px 0;
+  }
+
+  .product-gallery__thumb-img {
+    flex: 1 1 0;
+    min-width: 0;
+    width: auto;
+    height: auto;
+    aspect-ratio: 1;
+  }
+
+  /* Purchase options full width */
+  .purchase-options {
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .purchase-option {
+    overflow: hidden;
+  }
+
+  .purchase-option__header {
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+
+  .purchase-option__pricing {
+    text-align: right;
+    min-width: 0;
+  }
+
+  .frequency-selector {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+  }
+
+  .frequency-selector__btn {
+    font-size: 0.7rem;
+    padding: 8px 4px;
+    text-align: center;
+    white-space: nowrap;
+  }
+
+  /* Flavor selector */
+  .flavor-selector {
+    width: 100%;
+  }
+
+  .flavor-selector__btn {
+    font-size: 0.75rem;
+    padding: 10px 8px;
+  }
+
+  /* Buy row */
+  .product-hero__buy {
+    flex-direction: row;
+    width: 100%;
+  }
+
+  .product-hero__buy .btn {
+    flex: 1;
+    min-width: 0;
+  }
+
+  /* Tags wrap */
+  .product-hero__tags {
+    flex-wrap: wrap;
   }
 
   /* Gallery nav arrows visible on mobile */
