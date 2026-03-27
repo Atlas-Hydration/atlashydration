@@ -6519,12 +6519,7 @@ img {
   }
 
   .product-hero__info {
-    position: sticky;
-    top: var(--sticky-top, 120px);
-    max-height: calc(100vh - var(--sticky-top, 120px) - 20px);
-    overflow-y: auto;
-    scrollbar-width: thin;
-    scrollbar-color: rgba(0,0,0,0.12) transparent;
+    position: static;
   }
 
   .product-hero__info::-webkit-scrollbar {
