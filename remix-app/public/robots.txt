@@ -1,8 +1,5 @@
 User-agent: *
 Allow: /
-Disallow: /seo.html
-Disallow: /upload.html
-Disallow: /bg-preview.html
 
 # Explicitly allow AI crawlers for GEO (Generative Engine Optimization)
 User-agent: GPTBot

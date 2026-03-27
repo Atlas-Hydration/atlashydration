@@ -8181,3 +8181,54 @@ img {
     height: 48px;
   }
 }
+
+/* ── Policy Pages ── */
+.policy-page {
+  padding: 60px 0 120px;
+}
+
+.policy-page__title {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 700;
+  color: #1a1a1a;
+  margin-bottom: 40px;
+}
+
+.policy-page__content {
+  max-width: 720px;
+}
+
+.policy-page__content h2 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin-top: 32px;
+  margin-bottom: 12px;
+}
+
+.policy-page__content h2:first-child {
+  margin-top: 0;
+}
+
+.policy-page__content p,
+.policy-page__content li {
+  font-size: 0.95rem;
+  color: #555;
+  line-height: 1.8;
+  margin-bottom: 12px;
+}
+
+.policy-page__content ul {
+  padding-left: 20px;
+  list-style-type: disc;
+}
+
+.policy-page__content a {
+  color: #333;
+  text-decoration: underline;
+}
+
+.policy-page__content a:hover {
+  color: #000;
+}
