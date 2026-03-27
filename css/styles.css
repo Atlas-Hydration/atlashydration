@@ -1826,6 +1826,20 @@ img {
   margin: 2px 0;
 }
 
+/* Remove grey line on the row right before a thick section divider */
+.sf-row + .sf-section-divider {
+  margin-top: -1px;
+}
+
+.sf-row:has(+ .sf-section-divider) {
+  border-bottom: none;
+}
+
+/* Fallback for browsers without :has() */
+.sf-row--last-in-section {
+  border-bottom: none;
+}
+
 .sf-other {
   font-size: var(--text-xs);
   color: #555;
