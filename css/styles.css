@@ -7072,13 +7072,13 @@ img {
   font-family: var(--font-sans);
   font-weight: 700;
   font-size: 0.95rem;
-  color: var(--color-text);
+  color: #ffffff;
 }
 
 .sticky-buy__price {
   font-family: var(--font-sans);
   font-size: 0.85rem;
-  color: var(--color-text-muted);
+  color: rgba(255, 255, 255, 0.7);
 }
 
 .sticky-buy__tag {
@@ -7129,68 +7129,42 @@ img {
   border-color: rgba(0, 0, 0, 0.25);
 }
 
-/* Buy Now button — glass accent */
+/* Buy Now button */
 .sticky-buy__btn {
   position: relative;
-  background: var(--sticky-flavor);
+  background: #111;
   color: #ffffff;
   border: none;
   padding: 14px 36px;
   font-family: var(--font-sans);
-  font-weight: 800;
-  font-size: var(--text-base);
-  letter-spacing: 0.1em;
+  font-weight: 700;
+  font-size: 0.8rem;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
-  border-radius: 50px;
+  border-radius: 6px;
   cursor: pointer;
   white-space: nowrap;
-  box-shadow: 0 4px 20px rgba(var(--sticky-flavor-rgb), 0.35);
   overflow: hidden;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition: background 0.2s ease, transform 0.15s ease;
   z-index: 1;
   flex-shrink: 0;
 }
 
 .sticky-buy__btn::before {
-  content: '';
-  position: absolute;
-  inset: -2px;
-  border-radius: 52px;
-  background: linear-gradient(135deg, rgba(255,255,255,0.8), rgba(255,255,255,0.2), rgba(255,255,255,0.8));
-  background-size: 200% 200%;
-  animation: btnShine 3s ease-in-out infinite;
-  z-index: -1;
+  display: none;
 }
 
 .sticky-buy__btn::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 50%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
-  animation: btnGlint 3s ease-in-out infinite;
-  z-index: 1;
-}
-
-@keyframes btnShine {
-  0%, 100% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-}
-
-@keyframes btnGlint {
-  0%, 80% { left: -100%; }
-  100% { left: 200%; }
+  display: none;
 }
 
 .sticky-buy__btn:hover {
-  transform: scale(1.06);
-  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.3);
+  background: #333;
+  transform: translateY(-1px);
 }
 
 .sticky-buy__btn:active {
-  transform: scale(0.97);
+  transform: scale(0.98);
 }
 
 @media (max-width: 600px) {
