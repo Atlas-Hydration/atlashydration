@@ -4161,7 +4161,7 @@ img {
 /* --- Landing-page FAQ override (light bg, two-column grid, SVG icons) --- */
 .product-faq--dark {
   padding: 100px 0;
-  background: #ffffff;
+  background: #f5f5f5;
 }
 
 .product-faq--dark .product-faq__grid {
