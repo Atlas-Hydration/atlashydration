@@ -9,6 +9,11 @@ import WhyAtlasSection from "~/components/home/WhyAtlasSection";
 import HydrationBenefits from "~/components/home/HydrationBenefits";
 import DailyElectrolytes from "~/components/home/DailyElectrolytes";
 import BlogSection from "~/components/home/BlogSection";
+import FounderSection from "~/components/home/FounderSection";
+import FaqSection from "~/components/home/FaqSection";
+import CtaSection from "~/components/home/CtaSection";
+import DarkCta from "~/components/home/DarkCta";
+import StickyBuyBar from "~/components/home/StickyBuyBar";
 
 export function meta() {
   return [
@@ -47,6 +52,11 @@ export default function Home() {
       <HydrationBenefits />
       <DailyElectrolytes />
       <BlogSection />
+      <FounderSection />
+      <FaqSection />
+      <CtaSection />
+      <DarkCta />
+      <StickyBuyBar />
       <Popup />
     </>
   );
