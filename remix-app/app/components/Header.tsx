@@ -11,7 +11,7 @@ const NAV_LINKS = [
 ];
 
 export default function Header() {
-  const { totalItems, toggleCart } = useCart();
+  const { cartCount, toggleCart } = useCart();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [headerVisible, setHeaderVisible] = useState(true);
   const lastScrollY = useRef(0);
@@ -95,8 +95,8 @@ export default function Header() {
                 <circle cx="20" cy="21" r="1" />
                 <path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6" />
               </svg>
-              {totalItems > 0 && (
-                <span className="cart-count">{totalItems}</span>
+              {cartCount > 0 && (
+                <span className="cart-count">{cartCount}</span>
               )}
             </button>
           </div>
@@ -134,7 +134,7 @@ export default function Header() {
               toggleCart();
             }}
           >
-            Cart{totalItems > 0 ? ` (${totalItems})` : ""}
+            Cart{cartCount > 0 ? ` (${cartCount})` : ""}
           </button>
         </div>
       </header>
