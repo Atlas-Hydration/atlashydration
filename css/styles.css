@@ -4723,7 +4723,7 @@ img {
    ======================================== */
 .hydration-benefits {
   padding: 120px 0;
-  background: #ffffff;
+  background: #f5f5f5;
 }
 
 .hb__grid {
@@ -4990,7 +4990,8 @@ img {
    ======================================== */
 .electrolytes-daily {
   padding: 120px 0;
-  background: var(--color-bg-light, #f7f7f5);
+  background: #0a0a0a;
+  color: #ffffff;
 }
 
 .ed__layout {
@@ -5011,7 +5012,7 @@ img {
 
 .ed__intro {
   font-size: var(--text-md);
-  color: var(--color-text-muted);
+  color: rgba(255, 255, 255, 0.55);
   line-height: 1.7;
   margin-bottom: 40px;
 }
@@ -5035,10 +5036,10 @@ img {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--color-white, #fff);
-  border: 1px solid var(--color-border);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 12px;
-  color: var(--color-primary);
+  color: #ffffff;
 }
 
 .ed__benefit-title {
@@ -5050,7 +5051,7 @@ img {
 
 .ed__benefit-text {
   font-size: var(--text-btn);
-  color: var(--color-text-muted);
+  color: rgba(255, 255, 255, 0.5);
   line-height: 1.6;
 }
 
@@ -5208,7 +5209,7 @@ img {
    ======================================== */
 .blog {
   padding: 100px 0;
-  background: #ffffff;
+  background: #f5f5f5;
 }
 
 .blog__grid {
@@ -5352,7 +5353,7 @@ img {
    ======================================== */
 .founder {
   position: relative;
-  background: #0a0a0a;
+  background: #ffffff;
   overflow: hidden;
   padding: 100px 0;
 }
@@ -5392,7 +5393,7 @@ img {
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.2em;
-  color: rgba(255, 255, 255, 0.35);
+  color: rgba(0, 0, 0, 0.4);
   margin-bottom: 24px;
 }
 
@@ -5400,7 +5401,7 @@ img {
   font-family: var(--font-display);
   font-size: clamp(2rem, 3.5vw, 3.2rem);
   font-weight: 700;
-  color: #ffffff;
+  color: #111;
   line-height: 1.1;
   letter-spacing: -0.02em;
   margin-bottom: 36px;
@@ -5412,7 +5413,7 @@ img {
 
 .founder__text p {
   font-size: var(--text-md);
-  color: rgba(255, 255, 255, 0.55);
+  color: rgba(0, 0, 0, 0.6);
   line-height: 1.85;
   margin-bottom: 24px;
 }
@@ -5423,7 +5424,7 @@ img {
 
 .founder__signature {
   padding-top: 32px;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
 }
 
 .founder__sig-name {
@@ -5431,7 +5432,7 @@ img {
   font-family: var(--font-display);
   font-style: italic;
   font-size: 1.5rem;
-  color: #ffffff;
+  color: #111;
   margin-bottom: 6px;
 }
 
@@ -5439,7 +5440,7 @@ img {
   display: block;
   font-family: var(--font-sans);
   font-size: var(--text-xs);
-  color: rgba(255, 255, 255, 0.3);
+  color: rgba(0, 0, 0, 0.4);
   text-transform: uppercase;
   letter-spacing: 0.1em;
 }
@@ -5451,7 +5452,7 @@ img {
   margin-top: 18px;
   font-family: var(--font-sans);
   font-size: var(--text-sm);
-  color: rgba(255, 255, 255, 0.35);
+  color: rgba(0, 0, 0, 0.4);
   text-decoration: none;
   transition: color 0.25s ease;
 }
@@ -6519,7 +6520,8 @@ img {
   }
 
   .product-hero__info {
-    position: static;
+    position: sticky;
+    top: var(--sticky-top, 120px);
   }
 
   .product-hero__info::-webkit-scrollbar {
@@ -6935,10 +6937,10 @@ img {
   left: 0;
   right: 0;
   z-index: 999;
-  background: rgba(var(--sticky-flavor-rgb), 0.15);
+  background: rgba(var(--sticky-flavor-rgb), 0.55);
   backdrop-filter: saturate(180%) blur(24px);
   -webkit-backdrop-filter: saturate(180%) blur(24px);
-  border-top: 1px solid rgba(var(--sticky-flavor-rgb), 0.2);
+  border-top: 1px solid rgba(var(--sticky-flavor-rgb), 0.3);
   overflow: hidden;
   transform: translateY(100%);
   transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
