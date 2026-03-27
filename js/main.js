@@ -278,7 +278,7 @@ document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
   });
 })();
 
-// 10% Off Popup — email signup with WebGL water background
+// 10% Off Popup — minimalist email signup
 (function() {
   var overlay = document.getElementById('popupOverlay');
   if (!overlay) return;
@@ -286,121 +286,26 @@ document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
   var dismissBtn = document.getElementById('popupDismiss');
   var emailInput = document.getElementById('popupEmail');
   var emailSubmit = document.getElementById('popupEmailSubmit');
-  var canvas = document.getElementById('popupCanvas');
 
   if (sessionStorage.getItem('atlas_popup_dismissed')) return;
-
-  // --- WebGL fluid water shader ---
-  var gl, program, timeUniform, resUniform, startTime, animId;
-  function initWaterGL() {
-    if (!canvas) return;
-    gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
-    if (!gl) return;
-
-    var vs = 'attribute vec2 p;void main(){gl_Position=vec4(p,0,1);}';
-    var fs = [
-      'precision mediump float;',
-      'uniform float t;',
-      'uniform vec2 r;',
-      '',
-      'void main(){',
-      '  vec2 uv=gl_FragCoord.xy/r;',
-      '  vec2 p=uv*2.0-1.0;',
-      '  p.x*=r.x/r.y;',
-      '',
-      // Warm coral/salmon gradient — top-left saturated, bottom-right soft pink
-      '  vec3 topLeft=vec3(0.95,0.35,0.35);',
-      '  vec3 topRight=vec3(0.96,0.50,0.45);',
-      '  vec3 botLeft=vec3(0.95,0.55,0.50);',
-      '  vec3 botRight=vec3(0.92,0.72,0.70);',
-      '  vec3 top=mix(topLeft,topRight,uv.x);',
-      '  vec3 bot=mix(botLeft,botRight,uv.x);',
-      '  vec3 col=mix(bot,top,uv.y);',
-      '',
-      // Slow-moving soft wave highlights (like the reference image)
-      '  float w1=sin(uv.x*2.5+uv.y*1.8-t*0.15)*0.5+0.5;',
-      '  float w2=sin(uv.x*1.2-uv.y*2.2+t*0.12+1.0)*0.5+0.5;',
-      '  float w3=sin(uv.x*3.0+uv.y*0.8-t*0.1+2.5)*0.5+0.5;',
-      '',
-      // Broad, soft glowing bands
-      '  float band1=smoothstep(0.4,0.6,w1)*smoothstep(0.8,0.6,w1)*0.08;',
-      '  float band2=smoothstep(0.45,0.65,w2)*smoothstep(0.85,0.65,w2)*0.06;',
-      '  float band3=smoothstep(0.42,0.58,w3)*smoothstep(0.78,0.58,w3)*0.05;',
-      '  col+=vec3(1.0,0.9,0.88)*(band1+band2+band3);',
-      '',
-      // Very subtle center brightening for text readability
-      '  float center=smoothstep(0.8,0.0,length(p)*0.6)*0.06;',
-      '  col+=vec3(1.0,0.92,0.9)*center;',
-      '',
-      '  gl_FragColor=vec4(col,1.0);',
-      '}'
-    ].join('\n');
-
-    function sh(type, src) {
-      var s = gl.createShader(type);
-      gl.shaderSource(s, src);
-      gl.compileShader(s);
-      return s;
-    }
-    program = gl.createProgram();
-    gl.attachShader(program, sh(gl.VERTEX_SHADER, vs));
-    gl.attachShader(program, sh(gl.FRAGMENT_SHADER, fs));
-    gl.linkProgram(program);
-    gl.useProgram(program);
-
-    var buf = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, buf);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1,1,-1,-1,1,1,1]), gl.STATIC_DRAW);
-    var pos = gl.getAttribLocation(program, 'p');
-    gl.enableVertexAttribArray(pos);
-    gl.vertexAttribPointer(pos, 2, gl.FLOAT, false, 0, 0);
-
-    timeUniform = gl.getUniformLocation(program, 't');
-    resUniform = gl.getUniformLocation(program, 'r');
-    startTime = Date.now();
-  }
-
-  function resizeCanvas() {
-    if (!canvas) return;
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-    if (gl) gl.viewport(0, 0, canvas.width, canvas.height);
-  }
-
-  function renderWater() {
-    if (!gl) return;
-    var elapsed = (Date.now() - startTime) / 1000;
-    gl.uniform1f(timeUniform, elapsed);
-    gl.uniform2f(resUniform, canvas.width, canvas.height);
-    gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
-    animId = requestAnimationFrame(renderWater);
-  }
 
   setTimeout(function() {
     overlay.classList.add('active');
     document.body.style.overflow = 'hidden';
-    initWaterGL();
-    resizeCanvas();
-    renderWater();
-    window.addEventListener('resize', resizeCanvas);
   }, 3000);
 
   function closePopup() {
     overlay.classList.remove('active');
     document.body.style.overflow = '';
     sessionStorage.setItem('atlas_popup_dismissed', '1');
-    if (animId) cancelAnimationFrame(animId);
-    window.removeEventListener('resize', resizeCanvas);
   }
 
   closeBtn.addEventListener('click', closePopup);
   dismissBtn.addEventListener('click', closePopup);
   overlay.addEventListener('click', function(e) {
-    if (e.target === emailInput || e.target === emailSubmit) return;
-    closePopup();
+    if (e.target === overlay) closePopup();
   });
 
-  // Email submit
   if (emailSubmit) {
     emailSubmit.addEventListener('click', function() {
       var email = emailInput.value.trim();

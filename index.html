@@ -1213,28 +1213,53 @@
     </div>
   </footer>
 
-  <!-- 10% Off Popup — Fullscreen with WebGL water -->
+  <!-- 10% Off Popup — Minimalist packaging style -->
   <div class="popup-overlay" id="popupOverlay">
-    <canvas class="popup__canvas" id="popupCanvas"></canvas>
     <button class="popup__close" id="popupClose" aria-label="Close">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
     </button>
     <div class="popup">
       <div class="popup__inner">
-        <div class="popup__logo">
-          <img src="logo.svg" alt="Atlas Hydration" height="36">
-        </div>
-        <div class="popup__heading">Unlock</div>
-        <div class="popup__percent">10% Off</div>
-        <div class="popup__subheading">Join the hydration movement</div>
-        <div class="popup__form" id="popupForm">
-          <div class="popup__input-wrap">
-            <svg class="popup__input-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 7l-10 7L2 7"/></svg>
-            <input type="email" class="popup__input" id="popupEmail" placeholder="Enter your email" autocomplete="email">
+        <div class="popup__layout">
+          <div class="popup__left">
+            <div class="popup__logo">
+              <img src="logo.svg" alt="Atlas Hydration" height="24">
+            </div>
+            <div class="popup__title-block">
+              <div class="popup__heading">Daily</div>
+              <div class="popup__heading">Hydration</div>
+              <div class="popup__sub">Electrolytes with Vitamins</div>
+            </div>
+            <div class="popup__percent">10% Off</div>
+            <div class="popup__form" id="popupForm">
+              <input type="email" class="popup__input" id="popupEmail" placeholder="Enter your email" autocomplete="email">
+              <button class="popup__btn" id="popupEmailSubmit">Get My Code</button>
+            </div>
+            <p class="popup__fine">Zero spam. Unsubscribe anytime.</p>
           </div>
-          <button class="popup__btn" id="popupEmailSubmit">Get My Code</button>
+          <div class="popup__right">
+            <div class="popup__stat">
+              <span class="popup__stat-val">500<small>mg</small></span>
+              <span class="popup__stat-label">Potassium</span>
+            </div>
+            <div class="popup__stat">
+              <span class="popup__stat-val">200<small>mg</small></span>
+              <span class="popup__stat-label">Magnesium</span>
+            </div>
+            <div class="popup__stat">
+              <span class="popup__stat-val">600<small>mg</small></span>
+              <span class="popup__stat-label">Sodium</span>
+            </div>
+            <div class="popup__stat">
+              <span class="popup__stat-val">100%<small>+</small></span>
+              <span class="popup__stat-label">B-Vitamins</span>
+            </div>
+            <div class="popup__stat">
+              <span class="popup__stat-val">0<small>g</small></span>
+              <span class="popup__stat-label">Sugar</span>
+            </div>
+          </div>
         </div>
-        <p class="popup__fine">Zero spam. Unsubscribe anytime.</p>
         <button class="popup__dismiss" id="popupDismiss">No thanks</button>
       </div>
     </div>

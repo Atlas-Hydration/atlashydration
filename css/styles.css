@@ -3394,18 +3394,18 @@ img {
 /* ========================================
    Popup Modal
    ======================================== */
-/* ---- Fullscreen signup popup ---- */
+/* ---- Minimalist signup popup ---- */
 .popup-overlay {
   position: fixed;
   inset: 0;
-  background: #e8706a;
+  background: rgba(0, 0, 0, 0.45);
   z-index: 2000;
   display: flex;
   align-items: center;
   justify-content: center;
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.6s cubic-bezier(0.25, 0.1, 0.25, 1);
+  transition: opacity 0.5s ease;
 }
 
 .popup-overlay.active {
@@ -3413,258 +3413,265 @@ img {
   pointer-events: auto;
 }
 
-.popup__canvas {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 0;
-}
-
-
 .popup {
   position: relative;
   z-index: 1;
-  max-width: 460px;
-  width: 100%;
-  padding: 48px 40px;
-  text-align: center;
-  color: #ffffff;
-  transform: translateY(30px);
-  opacity: 0;
-  transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.15s, opacity 0.5s ease 0.15s;
-  background: rgba(255, 255, 255, 0.08);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border-radius: 20px;
+  max-width: 680px;
+  width: 92%;
+  background: #ffffff;
+  border-radius: 16px;
   overflow: hidden;
-}
-
-/* Animated rotating border */
-.popup::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: 20px;
-  padding: 2px;
-  background: conic-gradient(
-    from var(--popup-border-angle, 0deg),
-    rgba(255,255,255,0.6),
-    rgba(255,255,255,0.1),
-    rgba(255,255,255,0.05),
-    rgba(255,255,255,0.1),
-    rgba(255,255,255,0.6)
-  );
-  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  mask-composite: exclude;
-  animation: popupBorderSpin 4s linear infinite;
-  pointer-events: none;
-}
-
-@property --popup-border-angle {
-  syntax: '<angle>';
-  initial-value: 0deg;
-  inherits: false;
-}
-
-@keyframes popupBorderSpin {
-  to { --popup-border-angle: 360deg; }
-}
-
-/* Inner wrapper for content above the border pseudo-element */
-.popup__inner {
-  position: relative;
-  z-index: 1;
+  transform: translateY(24px) scale(0.97);
+  opacity: 0;
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.1s,
+              opacity 0.4s ease 0.1s;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.15);
 }
 
 .popup-overlay.active .popup {
-  transform: translateY(0);
+  transform: translateY(0) scale(1);
   opacity: 1;
 }
 
+.popup__inner {
+  position: relative;
+}
+
+/* Two-column layout */
+.popup__layout {
+  display: flex;
+  min-height: 420px;
+}
+
+.popup__left {
+  flex: 1;
+  padding: 40px 36px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.popup__right {
+  width: 220px;
+  background: #f8f8f8;
+  padding: 40px 28px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 24px;
+  border-left: 1px solid #eee;
+}
+
+/* Close button */
 .popup__close {
-  position: fixed;
-  top: 24px;
-  right: 24px;
+  position: absolute;
+  top: 14px;
+  right: 14px;
   z-index: 2;
-  width: 44px;
-  height: 44px;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
-  border: 1px solid rgba(255,255,255,0.15);
-  background: rgba(255,255,255,0.06);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  color: rgba(255,255,255,0.7);
+  border: none;
+  background: transparent;
+  color: #999;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.25s;
+  transition: color 0.2s, background 0.2s;
 }
 
 .popup__close:hover {
-  background: rgba(255,255,255,0.12);
-  color: #ffffff;
-  border-color: rgba(255,255,255,0.3);
+  background: #f0f0f0;
+  color: #333;
 }
 
+/* Logo */
 .popup__logo {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 24px;
+  margin-bottom: 28px;
 }
 
 .popup__logo img {
-  filter: brightness(0) invert(1);
-  height: 36px;
+  height: 22px;
+  filter: none;
+}
+
+/* Title block */
+.popup__title-block {
+  margin-bottom: 24px;
 }
 
 .popup__heading {
-  font-weight: 300;
-  text-transform: uppercase;
-  letter-spacing: 0.2em;
-  font-size: var(--text-btn);
-  color: rgba(255,255,255,0.6);
-  margin-bottom: 8px;
+  font-family: var(--font-serif, 'Playfair Display', serif);
+  font-weight: 600;
+  font-size: 2rem;
+  line-height: 1.1;
+  color: #111;
+  letter-spacing: -0.01em;
+  text-transform: none;
+  margin-bottom: 0;
 }
 
+.popup__sub {
+  font-size: 0.8rem;
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #999;
+  margin-top: 8px;
+}
+
+/* 10% Off text */
 .popup__percent {
   font-family: var(--font-sans);
-  font-size: 5.5rem;
-  font-weight: 800;
-  line-height: 1;
-  margin-bottom: 8px;
-  letter-spacing: -0.04em;
-  color: #ffffff;
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #111;
+  margin-bottom: 20px;
+  letter-spacing: -0.02em;
 }
 
-.popup__subheading {
-  font-weight: 400;
-  letter-spacing: 0.04em;
-  font-size: 1rem;
-  margin-bottom: 36px;
-  color: rgba(255,255,255,0.5);
-}
-
+/* Form */
 .popup__form {
   display: flex;
   flex-direction: column;
-  gap: 14px;
-}
-
-/* Email input — frosted glass with animated border glow on focus */
-.popup__input-wrap {
-  position: relative;
-}
-
-.popup__input-icon {
-  position: absolute;
-  left: 18px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: rgba(255,255,255,0.4);
-  transition: color 0.3s;
-  pointer-events: none;
-}
-
-.popup__input-wrap:focus-within .popup__input-icon {
-  color: rgba(255,255,255,0.8);
+  gap: 10px;
 }
 
 .popup__input {
   width: 100%;
-  padding: 18px 22px 18px 48px;
-  border-radius: 14px;
-  border: 1.5px solid rgba(255,255,255,0.2);
-  font-size: var(--text-md);
+  padding: 14px 16px;
+  border-radius: 8px;
+  border: 1.5px solid #ddd;
+  font-size: 0.9rem;
   font-family: var(--font-sans);
-  background: rgba(255,255,255,0.1);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  color: #ffffff;
+  background: #fff;
+  color: #111;
   outline: none;
-  transition: border-color 0.3s, background 0.3s, box-shadow 0.3s;
+  transition: border-color 0.2s;
 }
 
 .popup__input:focus {
-  border-color: rgba(255,255,255,0.5);
-  background: rgba(255,255,255,0.15);
-  box-shadow: 0 0 20px rgba(255,255,255,0.1), inset 0 0 12px rgba(255,255,255,0.05);
+  border-color: #111;
 }
 
 .popup__input::placeholder {
-  color: rgba(255,255,255,0.4);
-  letter-spacing: 0.02em;
+  color: #bbb;
 }
 
 .popup__btn {
   width: 100%;
-  padding: 18px 24px;
-  border-radius: 14px;
+  padding: 14px 24px;
+  border-radius: 8px;
   border: none;
-  font-size: var(--text-btn-lg);
-  font-weight: 700;
+  font-size: 0.85rem;
+  font-weight: 600;
   font-family: var(--font-sans);
-  background: #ffffff;
-  color: #d94f4f;
+  background: #111;
+  color: #fff;
   cursor: pointer;
-  transition: all 0.25s;
-  letter-spacing: 0.06em;
+  transition: background 0.2s;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-  position: relative;
-  overflow: hidden;
-}
-
-.popup__btn::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 50%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.6), transparent);
-  animation: popupBtnShine 3s ease-in-out infinite;
-}
-
-@keyframes popupBtnShine {
-  0%, 70% { left: -100%; }
-  100% { left: 200%; }
 }
 
 .popup__btn:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 6px 24px rgba(0,0,0,0.15);
+  background: #333;
 }
 
 .popup__fine {
-  font-size: var(--text-xs);
-  color: rgba(255,255,255,0.3);
-  margin-top: 16px;
-  letter-spacing: 0.02em;
+  font-size: 0.7rem;
+  color: #bbb;
+  margin-top: 10px;
 }
 
+/* Stat items on the right */
+.popup__stat {
+  text-align: center;
+}
+
+.popup__stat-val {
+  display: block;
+  font-family: var(--font-sans);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #111;
+  line-height: 1.2;
+}
+
+.popup__stat-val small {
+  font-size: 0.7em;
+  font-weight: 500;
+  color: #666;
+}
+
+.popup__stat-label {
+  display: block;
+  font-size: 0.65rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #999;
+  margin-top: 2px;
+}
+
+/* Dismiss link */
 .popup__dismiss {
   display: block;
-  margin-top: 24px;
-  font-size: var(--text-sm);
-  font-weight: 500;
-  color: rgba(255,255,255,0.35);
+  text-align: center;
+  padding: 12px;
+  font-size: 0.75rem;
+  font-weight: 400;
+  color: #bbb;
   background: none;
   border: none;
+  border-top: 1px solid #f0f0f0;
   cursor: pointer;
   transition: color 0.2s;
   letter-spacing: 0.02em;
+  width: 100%;
 }
 
 .popup__dismiss:hover {
-  color: rgba(255,255,255,0.7);
+  color: #666;
 }
 
-/* 600px popup overrides removed — identical rules exist in the 768px breakpoint */
+/* Mobile: stack columns */
+@media (max-width: 600px) {
+  .popup__layout {
+    flex-direction: column;
+    min-height: auto;
+  }
+
+  .popup__left {
+    padding: 32px 28px 24px;
+  }
+
+  .popup__right {
+    width: 100%;
+    border-left: none;
+    border-top: 1px solid #eee;
+    padding: 24px 28px;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 16px;
+  }
+
+  .popup__stat {
+    flex: 0 0 auto;
+    min-width: 70px;
+  }
+
+  .popup__heading {
+    font-size: 1.6rem;
+  }
+
+  .popup__close {
+    top: 10px;
+    right: 10px;
+  }
+}
 
 /* ========================================
    Animations
@@ -5820,16 +5827,7 @@ img {
 
   /* Popup */
   .popup__percent {
-    font-size: 4rem;
-  }
-
-  .popup {
-    padding: 0 20px;
-  }
-
-  .popup__close {
-    top: 16px;
-    right: 16px;
+    font-size: 1.4rem;
   }
 
   /* Supplement facts */
@@ -6038,26 +6036,11 @@ img {
 
   /* Popup */
   .popup__percent {
-    font-size: 3.2rem;
+    font-size: 1.3rem;
   }
 
   .popup__heading {
-    font-size: var(--text-sm);
-  }
-
-  .popup__subheading {
-    font-size: var(--text-btn);
-    margin-bottom: 28px;
-  }
-
-  .popup__input {
-    padding: 14px 18px;
-    font-size: var(--text-base);
-  }
-
-  .popup__btn {
-    padding: 14px 20px;
-    font-size: var(--text-base);
+    font-size: 1.4rem;
   }
 }
 
@@ -6109,7 +6092,7 @@ img {
   }
 
   .popup__percent {
-    font-size: 2.8rem;
+    font-size: 1.2rem;
   }
 
   .flavor-selector--circles .flavor-circle {
