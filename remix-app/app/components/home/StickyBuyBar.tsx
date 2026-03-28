@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useCart } from "~/context/CartContext";
 
 const flavors = [
@@ -20,11 +20,21 @@ const flavors = [
 
 export default function StickyBuyBar() {
   const [activeFlavor, setActiveFlavor] = useState(0);
+  const [visible, setVisible] = useState(false);
   const { addToCart } = useCart();
   const flavor = flavors[activeFlavor];
 
+  useEffect(() => {
+    const handleScroll = () => {
+      setVisible(window.scrollY > 600);
+    };
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    handleScroll();
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   return (
-    <div className="sticky-buy sticky-buy--strawberry" id="stickyBuy">
+    <div className={`sticky-buy sticky-buy--${flavor.key}${visible ? " visible" : ""}`} id="stickyBuy">
       <svg className="sticky-buy__wave" viewBox="0 0 1200 24" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M0,18 C150,6 300,24 450,14 C600,4 750,22 900,12 C1050,2 1200,18 1200,18 L1200,24 L0,24 Z" />
       </svg>

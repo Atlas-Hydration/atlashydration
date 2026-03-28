@@ -1443,9 +1443,7 @@ img {
 }
 
 .product-hero__info {
-  position: sticky;
-  top: var(--sticky-top, 90px);
-  transition: top 0.35s cubic-bezier(0.25, 0.1, 0.25, 1);
+  position: static;
 }
 
 .product-hero__image {
@@ -6553,12 +6551,7 @@ img {
   }
 
   .product-hero__info {
-    position: sticky;
-    top: var(--sticky-top, 120px);
-  }
-
-  .product-hero__info::-webkit-scrollbar {
-    width: 4px;
+    position: static;
   }
 
   .product-hero__info::-webkit-scrollbar-thumb {

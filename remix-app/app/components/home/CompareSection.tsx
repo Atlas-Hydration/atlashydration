@@ -17,11 +17,11 @@ interface Category {
 }
 
 const BRANDS: Brand[] = [
-  { key: "lmnt", name: "LMNT", logo: "/atlashydration/images/logos/lmnt.svg" },
-  { key: "liv", name: "Liquid I.V.", logo: "/atlashydration/images/logos/liquid-iv.svg" },
-  { key: "wb", name: "WaterBoy", logo: "/atlashydration/images/logos/waterboy.svg" },
-  { key: "drip", name: "DripDrop", logo: "/atlashydration/images/logos/dripdrop.svg" },
-  { key: "nuun", name: "Nuun", logo: "/atlashydration/images/logos/nuun.svg" },
+  { key: "lmnt", name: "LMNT", logo: "https://cdn.brandfetch.io/domain/drinklmnt.com?c=1id3n10pdBTarCHI0db" },
+  { key: "liv", name: "Liquid I.V.", logo: "https://cdn.brandfetch.io/domain/liquid-iv.com?c=1id3n10pdBTarCHI0db" },
+  { key: "wb", name: "WaterBoy", logo: "https://cdn.brandfetch.io/domain/drinkwaterboy.com?c=1id3n10pdBTarCHI0db" },
+  { key: "drip", name: "DripDrop", logo: "https://cdn.brandfetch.io/domain/dripdrop.com?c=1id3n10pdBTarCHI0db" },
+  { key: "nuun", name: "Nuun", logo: "https://cdn.brandfetch.io/domain/nuunlife.com?c=1id3n10pdBTarCHI0db" },
 ];
 
 const CATS: Category[] = [
@@ -134,7 +134,8 @@ export default function CompareSection() {
                   </th>
                   {activeBrandData.map((b) => (
                     <th key={b.key} className="compare__th-logo">
-                      <span className={`compare__th-brand compare__th-brand--${b.key}`}>{b.name}</span>
+                      <img src={b.logo} alt={b.name} width="60" height="20" className="compare__brand-logo" onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; (e.target as HTMLImageElement).nextElementSibling!.removeAttribute("style"); }} />
+                      <span className={`compare__th-brand compare__th-brand--${b.key}`} style={{ display: "none" }}>{b.name}</span>
                     </th>
                   ))}
                 </tr>

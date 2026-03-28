@@ -82,6 +82,67 @@ function AnimatedNumber({ count, suffix, format }: { count: number; suffix: stri
   return <div className="ed__stat-number" ref={ref}>{display}</div>;
 }
 
+function StatCards() {
+  const ref = useRef<HTMLDivElement>(null);
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) { setVisible(true); observer.disconnect(); } },
+      { threshold: 0.2 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <div className="ed__visual" ref={ref}>
+      {stats.map((s, i) => (
+        <div
+          className={`ed__stat-card${visible ? " ed__stat-card--visible" : ""}`}
+          key={i}
+          style={{
+            "--stat-delay": `${i * 150}ms`,
+            "--ring-target": String(s.ringTarget),
+            transitionDelay: `${i * 150}ms`,
+          } as React.CSSProperties}
+        >
+          <div className="ed__ring-wrap">
+            <svg className="ed__ring" viewBox="0 0 120 120" aria-hidden="true">
+              <defs>
+                <linearGradient id={s.gradientId} x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stopColor={s.gradientColors[0]} />
+                  <stop offset="100%" stopColor={s.gradientColors[1]} />
+                </linearGradient>
+              </defs>
+              <circle cx="60" cy="60" r="48" fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="6" />
+              <circle
+                className="ed__ring-fill"
+                cx="60" cy="60" r="48"
+                fill="none"
+                stroke={`url(#${s.gradientId})`}
+                strokeWidth="6"
+                strokeLinecap="round"
+                strokeDasharray="302"
+                strokeDashoffset={visible ? s.ringTarget : 302}
+                transform="rotate(-90 60 60)"
+                style={{ transition: "stroke-dashoffset 1.5s cubic-bezier(0.16, 1, 0.3, 1)" }}
+              />
+            </svg>
+            <div className="ed__ring-glow" style={{ "--glow-color": s.glowColor } as React.CSSProperties} />
+          </div>
+          <div className="ed__stat-value">
+            <AnimatedNumber count={s.count} suffix={s.suffix} format={s.format} />
+            <div className="ed__stat-label" dangerouslySetInnerHTML={{ __html: s.label.replace("\n", "<br/>") }} />
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 export default function DailyElectrolytes() {
   return (
     <section className="electrolytes-daily" id="electrolytes" aria-label="Daily Electrolyte Benefits">
@@ -105,9 +166,7 @@ export default function DailyElectrolytes() {
               ))}
             </div>
           </div>
-          <div className="ed__visual">
-            {stats.map((s, i) => (
-              <div className="ed__stat-card" key={i} style={{ "--stat-delay": `${i * 150}ms` } as React.CSSProperties}>
+          <StatCards />
                 <div className="ed__ring-wrap">
                   <svg className="ed__ring" viewBox="0 0 120 120" aria-hidden="true">
                     <defs>
@@ -136,9 +195,6 @@ export default function DailyElectrolytes() {
                   <AnimatedNumber count={s.count} suffix={s.suffix} format={s.format} />
                   <div className="ed__stat-label" dangerouslySetInnerHTML={{ __html: s.label.replace("\n", "<br/>") }} />
                 </div>
-              </div>
-            ))}
-          </div>
         </div>
       </div>
     </section>
