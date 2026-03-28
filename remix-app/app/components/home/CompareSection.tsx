@@ -240,6 +240,12 @@ function CompareModal({ cat, rival, onClose }: { cat: Category; rival: Brand; on
   const maxVal = Math.max(av, rv, 1);
   const atlasWins = cat.lowerBetter ? av < rv : av > rv;
   const isTie = av === rv;
+  const [animReady, setAnimReady] = useState(false);
+
+  useEffect(() => {
+    const raf = requestAnimationFrame(() => setAnimReady(true));
+    return () => cancelAnimationFrame(raf);
+  }, []);
 
   let verdictBadge: string;
   let verdictClass: string;
@@ -278,29 +284,37 @@ function CompareModal({ cat, rival, onClose }: { cat: Category; rival: Brand; on
         <button className="compare-modal__close" onClick={onClose} aria-label="Close">&times;</button>
         <div className="compare-modal__header">
           <div className="compare-modal__vs">
-            <span className="compare-modal__brand compare-modal__brand--atlas">Atlas</span>
+            <span className="compare-modal__brand compare-modal__brand--atlas">
+              <img src="/atlashydration/logo.svg" alt="Atlas" height="22" />
+            </span>
             <span className="compare-modal__vs-text">vs</span>
-            <span className="compare-modal__brand compare-modal__brand--rival">{rival.name}</span>
+            <span className="compare-modal__brand compare-modal__brand--rival">
+              <img src={rival.logo} alt={rival.name} height="18" className="compare__brand-logo" style={{ display: "inline", margin: 0 }} />
+            </span>
           </div>
           <p className="compare-modal__cat">{cat.label}</p>
         </div>
         <div className="compare-modal__bars">
           <div className="compare-modal__row">
             <div className="compare-modal__label compare-modal__label--atlas">
-              <span className="compare-modal__name">Atlas</span>
+              <span className="compare-modal__name">
+                <img src="/atlashydration/logo.svg" alt="Atlas" height="16" />
+              </span>
               <span className="compare-modal__val">{fmtVal(av, cat.unit)}</span>
             </div>
             <div className="compare-modal__track">
-              <div className="compare-modal__fill compare-modal__fill--atlas" style={{ width: `${(av / maxVal) * 100}%` }} />
+              <div className="compare-modal__fill compare-modal__fill--atlas" style={{ width: animReady ? `${(av / maxVal) * 100}%` : "0%" }} />
             </div>
           </div>
           <div className="compare-modal__row">
             <div className="compare-modal__label">
-              <span className="compare-modal__name">{rival.name}</span>
+              <span className="compare-modal__name">
+                <img src={rival.logo} alt={rival.name} height="14" className="compare__brand-logo" style={{ display: "inline", margin: 0 }} />
+              </span>
               <span className="compare-modal__val">{fmtVal(rv, cat.unit)}</span>
             </div>
             <div className="compare-modal__track">
-              <div className="compare-modal__fill compare-modal__fill--rival" style={{ width: `${(rv / maxVal) * 100}%` }} />
+              <div className="compare-modal__fill compare-modal__fill--rival" style={{ width: animReady ? `${(rv / maxVal) * 100}%` : "0%" }} />
             </div>
           </div>
         </div>

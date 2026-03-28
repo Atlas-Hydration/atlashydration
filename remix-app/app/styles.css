@@ -6552,7 +6552,9 @@ img {
   }
 
   .product-hero__info {
-    position: static;
+    position: sticky;
+    top: 80px;
+    align-self: start;
   }
 
   .product-hero__info::-webkit-scrollbar-thumb {
