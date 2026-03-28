@@ -1,24 +1,32 @@
 import { useState, useEffect, useRef } from "react";
-import { Link } from "react-router";
+import { Link, useLocation } from "react-router";
 import { useCart } from "~/context/CartContext";
 
 const NAV_LINKS = [
   { label: "Shop", href: "/#products" },
-  { label: "Science", href: "/#science" },
-  { label: "Compare", href: "/#compare" },
-  { label: "About", href: "/#founder" },
-  { label: "FAQ", href: "/#faq" },
 ];
 
 export default function Header() {
   const { cartCount, toggleCart } = useCart();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [headerVisible, setHeaderVisible] = useState(true);
+  const [solid, setSolid] = useState(false);
   const lastScrollY = useRef(0);
+  const location = useLocation();
+
+  // Inner pages (non-home) always get solid header
+  const isHome = location.pathname === "/" || location.pathname === "/atlashydration/";
 
   useEffect(() => {
+    if (!isHome) {
+      setSolid(true);
+      return;
+    }
+
     const handleScroll = () => {
       const currentY = window.scrollY;
+      setSolid(currentY > 50);
+
       if (currentY < 60) {
         setHeaderVisible(true);
       } else if (currentY > lastScrollY.current) {
@@ -31,7 +39,7 @@ export default function Header() {
 
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  }, [isHome]);
 
   // Lock body scroll when mobile menu is open
   useEffect(() => {
@@ -43,6 +51,14 @@ export default function Header() {
 
   const closeMobileMenu = () => setMobileMenuOpen(false);
 
+  const headerClass = [
+    "header",
+    headerVisible ? "" : "header--hidden",
+    solid ? "header--solid" : "",
+  ]
+    .filter(Boolean)
+    .join(" ");
+
   return (
     <>
       {/* Announcement Bar */}
@@ -53,10 +69,7 @@ export default function Header() {
       </div>
 
       {/* Header */}
-      <header
-        className={`header${headerVisible ? "" : " header--hidden"}`}
-        role="banner"
-      >
+      <header className={headerClass} role="banner">
         <nav className="header__nav" aria-label="Main navigation">
           <Link to="/" className="header__logo" aria-label="Atlas Hydration Home">
             <img
@@ -115,7 +128,7 @@ export default function Header() {
 
         {/* Mobile Menu */}
         <div
-          className={`mobile-menu${mobileMenuOpen ? " mobile-menu--open" : ""}`}
+          className={`mobile-menu${mobileMenuOpen ? " active" : ""}`}
           aria-hidden={!mobileMenuOpen}
         >
           {NAV_LINKS.map((link) => (

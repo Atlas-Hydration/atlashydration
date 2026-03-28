@@ -1,4 +1,16 @@
+import { useEffect } from "react";
+
 export default function ReviewsSection() {
+  useEffect(() => {
+    // Load Junip widget script
+    if (typeof window !== "undefined" && !document.querySelector('script[src*="juniphq"]')) {
+      const script = document.createElement("script");
+      script.src = "https://widgets.juniphq.com/v1/junip_shopify.js";
+      script.async = true;
+      document.body.appendChild(script);
+    }
+  }, []);
+
   return (
     <section className="testimonials" id="reviews" aria-label="Customer reviews">
       <div className="container">
@@ -6,48 +18,23 @@ export default function ReviewsSection() {
           <p className="section-eyebrow">Reviews</p>
           <h2 className="section-title">What Our Customers Are Saying</h2>
         </div>
-        <div className="testimonials__grid">
-          {reviews.map((r, i) => (
-            <div className="testimonial" key={i}>
-              <div className="testimonial__stars">
-                {"★★★★★"}
-              </div>
-              <p className="testimonial__text">{r.text}</p>
-              <div className="testimonial__author">
-                <span className="testimonial__name">{r.name}</span>
-                <span className="testimonial__badge">Verified Buyer</span>
-              </div>
-            </div>
-          ))}
-        </div>
+        {/* Junip Store Key */}
+        <span
+          className="junip-store-key"
+          data-store-key="anLwjMqeGdCvG9w79wSpfM16"
+          style={{ display: "none" }}
+        />
+        {/* Junip Review Section */}
+        <span
+          className="junip-review-section"
+          data-layout="grid"
+          data-reviews-type="all"
+          data-show-summary="true"
+          data-reviews-count="6"
+        >
+          <span className="junip-review-section-wrapper" />
+        </span>
       </div>
     </section>
   );
 }
-
-const reviews = [
-  {
-    name: "Jake M.",
-    text: "Best electrolyte mix I've tried. No sugar crash, great taste, and I feel the difference during my workouts. The stick packs are super convenient for travel.",
-  },
-  {
-    name: "Sarah L.",
-    text: "I switched from Liquid IV to Atlas and I'm never going back. Way more electrolytes, no sugar, and the Strawberry Lemonade flavor is delicious.",
-  },
-  {
-    name: "Chris D.",
-    text: "As a pilot, I need to stay hydrated on long flights. Atlas is the only product that checks every box — clean ingredients, high electrolytes, zero sugar.",
-  },
-  {
-    name: "Emily R.",
-    text: "I use Atlas every morning and before every workout. My energy is more consistent and I've stopped getting afternoon headaches. Game changer.",
-  },
-  {
-    name: "Marcus T.",
-    text: "Tried LMNT, Nuun, and DripDrop. Atlas has more electrolytes than all of them and actually tastes good. The subscription price is unbeatable.",
-  },
-  {
-    name: "Amanda K.",
-    text: "Finally an electrolyte mix that doesn't taste like medicine or have a ton of sugar. My whole family uses Atlas now. The B vitamins are a nice bonus too.",
-  },
-];
