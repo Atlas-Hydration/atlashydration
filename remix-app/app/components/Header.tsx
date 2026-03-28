@@ -17,6 +17,7 @@ export default function Header() {
   useEffect(() => {
     if (!isHome) {
       setSolid(true);
+      setHeaderVisible(true);
       return;
     }
 
