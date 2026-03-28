@@ -2,9 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { Link, useLocation } from "react-router";
 import { useCart } from "~/context/CartContext";
 
-const NAV_LINKS = [
-  { label: "Shop", href: "/#products" },
-];
+const NAV_LINKS: { label: string; href: string }[] = [];
 
 export default function Header() {
   const { cartCount, toggleCart } = useCart();

@@ -2921,6 +2921,7 @@ img {
   margin: 0 auto;
   opacity: 0.9;
   object-fit: contain;
+  filter: brightness(0) invert(1);
 }
 
 .compare__th-logo {

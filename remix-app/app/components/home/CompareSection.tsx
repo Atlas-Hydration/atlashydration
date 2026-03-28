@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 
 interface Brand {
   key: string;
@@ -86,6 +86,20 @@ export default function CompareSection() {
 
   const activeBrandData = BRANDS.filter((b) => activeBrands.includes(b.key));
 
+  const sectionRef = useRef<HTMLElement>(null);
+  const [animated, setAnimated] = useState(false);
+
+  useEffect(() => {
+    const el = sectionRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) { setAnimated(true); observer.disconnect(); } },
+      { threshold: 0.2 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
   // Count wins
   const atlasWins = CATS.filter((cat) => {
     return activeBrandData.every((b) => {
@@ -100,7 +114,7 @@ export default function CompareSection() {
 
   return (
     <>
-      <section className="compare" id="compare" aria-label="How Atlas Compares">
+      <section className={`compare${animated ? " animated" : ""}`} id="compare" aria-label="How Atlas Compares" ref={sectionRef}>
         <div className="container">
           <div className="section-header">
             <p className="section-eyebrow">Compare</p>
@@ -125,7 +139,7 @@ export default function CompareSection() {
 
           {/* Table */}
           <div className="compare__table-wrap">
-            <table className="compare__table animated" role="table">
+            <table className="compare__table" role="table">
               <thead>
                 <tr>
                   <th></th>
