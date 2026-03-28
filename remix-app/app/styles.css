@@ -1453,8 +1453,6 @@ img {
   display: flex;
   align-items: center;
   justify-content: center;
-  position: sticky;
-  top: 120px;
 }
 
 .product-hero__image--strawberry {
@@ -6552,9 +6550,7 @@ img {
   }
 
   .product-hero__info {
-    position: sticky;
-    top: 80px;
-    align-self: start;
+    position: static;
   }
 
   .product-hero__info::-webkit-scrollbar-thumb {
