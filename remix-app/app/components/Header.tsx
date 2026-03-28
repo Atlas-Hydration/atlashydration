@@ -8,14 +8,13 @@ const NAV_LINKS = [
 
 export default function Header() {
   const { cartCount, toggleCart } = useCart();
+  const location = useLocation();
+  const isHome = location.pathname === "/" || location.pathname === "/atlashydration/";
+
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [headerVisible, setHeaderVisible] = useState(true);
-  const [solid, setSolid] = useState(false);
+  const [solid, setSolid] = useState(!isHome);
   const lastScrollY = useRef(0);
-  const location = useLocation();
-
-  // Inner pages (non-home) always get solid header
-  const isHome = location.pathname === "/" || location.pathname === "/atlashydration/";
 
   useEffect(() => {
     if (!isHome) {
