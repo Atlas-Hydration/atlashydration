@@ -167,34 +167,6 @@ export default function DailyElectrolytes() {
             </div>
           </div>
           <StatCards />
-                <div className="ed__ring-wrap">
-                  <svg className="ed__ring" viewBox="0 0 120 120" aria-hidden="true">
-                    <defs>
-                      <linearGradient id={s.gradientId} x1="0%" y1="0%" x2="100%" y2="100%">
-                        <stop offset="0%" stopColor={s.gradientColors[0]} />
-                        <stop offset="100%" stopColor={s.gradientColors[1]} />
-                      </linearGradient>
-                    </defs>
-                    <circle cx="60" cy="60" r="48" fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="6" />
-                    <circle
-                      className="ed__ring-fill"
-                      cx="60" cy="60" r="48"
-                      fill="none"
-                      stroke={`url(#${s.gradientId})`}
-                      strokeWidth="6"
-                      strokeLinecap="round"
-                      strokeDasharray="302"
-                      strokeDashoffset="302"
-                      transform="rotate(-90 60 60)"
-                      data-target={s.ringTarget}
-                    />
-                  </svg>
-                  <div className="ed__ring-glow" style={{ "--glow-color": s.glowColor } as React.CSSProperties} />
-                </div>
-                <div className="ed__stat-value">
-                  <AnimatedNumber count={s.count} suffix={s.suffix} format={s.format} />
-                  <div className="ed__stat-label" dangerouslySetInnerHTML={{ __html: s.label.replace("\n", "<br/>") }} />
-                </div>
         </div>
       </div>
     </section>
