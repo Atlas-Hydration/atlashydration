@@ -153,7 +153,7 @@ export default function FeaturedProduct() {
                 className={`btn btn--primary btn--lg${adding ? " btn--added" : ""}`}
                 onClick={handleAdd}
               >
-                {adding ? "Added!" : "Add to Cart"}
+                {adding ? "Added!" : "Pre-Order"}
               </button>
             </div>
           </div>

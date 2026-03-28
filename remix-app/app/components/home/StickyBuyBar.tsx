@@ -14,7 +14,7 @@ const flavors = [
     product: "grapefruit" as const,
     name: "Grapefruit",
     price: "$29.99",
-    thumb: "https://cdn.shopify.com/s/files/1/0595/8133/3578/files/grapefruit-1.webp",
+    thumb: "https://cdn.shopify.com/s/files/1/0595/8133/3578/files/1_1a252c57-dc62-4c7b-a6b1-0f9677ce6b6f.jpg?v=1769181320",
   },
 ];
 
@@ -74,7 +74,7 @@ export default function StickyBuyBar() {
           className="sticky-buy__btn"
           onClick={() => addToCart(flavor.product, 1)}
         >
-          <span className="sticky-buy__btn-text">Buy Now</span>
+          <span className="sticky-buy__btn-text">Pre-Order</span>
         </button>
       </div>
     </div>

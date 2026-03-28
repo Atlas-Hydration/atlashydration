@@ -2,9 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { Link, useLocation } from "react-router";
 import { useCart } from "~/context/CartContext";
 
-const NAV_LINKS = [
-  { label: "Shop", href: "/#products" },
-];
+const NAV_LINKS: { label: string; href: string }[] = [];
 
 export default function Header() {
   const { cartCount, toggleCart } = useCart();
@@ -14,16 +12,22 @@ export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [headerVisible, setHeaderVisible] = useState(true);
   const [solid, setSolid] = useState(!isHome);
+  const [headerTop, setHeaderTop] = useState(36);
   const lastScrollY = useRef(0);
+  const announcementRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (!isHome) {
-      setSolid(true);
-      return;
-    }
-
     const handleScroll = () => {
       const currentY = window.scrollY;
+      const barHeight = announcementRef.current?.offsetHeight ?? 36;
+      setHeaderTop(Math.max(0, barHeight - currentY));
+
+      if (!isHome) {
+        setSolid(true);
+        setHeaderVisible(true);
+        return;
+      }
+
       setSolid(currentY > 50);
 
       if (currentY < 60) {
@@ -37,6 +41,7 @@ export default function Header() {
     };
 
     window.addEventListener("scroll", handleScroll, { passive: true });
+    handleScroll();
     return () => window.removeEventListener("scroll", handleScroll);
   }, [isHome]);
 
@@ -61,14 +66,14 @@ export default function Header() {
   return (
     <>
       {/* Announcement Bar */}
-      <div className="announcement-bar" role="banner">
+      <div className="announcement-bar" role="banner" ref={announcementRef}>
         <div className="announcement-bar__inner">
           <span>UNLOCK 10% OFF</span>
         </div>
       </div>
 
       {/* Header */}
-      <header className={headerClass} role="banner">
+      <header className={headerClass} role="banner" style={{ top: headerTop }}>
         <nav className="header__nav" aria-label="Main navigation">
           <Link to="/" className="header__logo" aria-label="Atlas Hydration Home">
             <img

@@ -35,6 +35,8 @@ jobs:
       - name: Build Remix app
         run: npm run build
         working-directory: remix-app
+      - name: Create 404.html for SPA routing
+        run: cp remix-app/build/client/index.html remix-app/build/client/404.html
       - name: Setup Pages
         uses: actions/configure-pages@v5
       - name: Upload artifact
