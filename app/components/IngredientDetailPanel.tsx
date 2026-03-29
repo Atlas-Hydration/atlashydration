@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useCallback, useEffect, useRef, type ReactNode } from "react";
 
 interface IngredientInfo {
   name: string;
@@ -133,249 +133,209 @@ const INGREDIENT_DATA: Record<string, IngredientInfo> = {
   },
 };
 
-export default function IngredientDetailPanel() {
-  const [activeIngredient, setActiveIngredient] = useState<string | null>(null);
-  const data = activeIngredient ? INGREDIENT_DATA[activeIngredient] : null;
-
-  return { activeIngredient, setActiveIngredient, data, INGREDIENT_DATA };
+interface RowDef {
+  key: string;
+  label: ReactNode;
+  dv: string;
 }
 
-export function SupplementFactsWithPanel() {
-  const [activeIngredient, setActiveIngredient] = useState<string | null>(null);
-  const data = activeIngredient ? INGREDIENT_DATA[activeIngredient] : null;
+const ELECTROLYTE_ROWS: RowDef[] = [
+  { key: "sodium", label: <><strong>Sodium</strong> (as Sodium Citrate and Pink Himalayan Salt) 600mg</>, dv: "26%" },
+  { key: "magnesium", label: <><strong>Magnesium</strong> (as Magnesium Malate) 200mg</>, dv: "48%" },
+  { key: "potassium", label: <><strong>Potassium</strong> (as Potassium Citrate) 500mg</>, dv: "11%" },
+];
 
-  const handleHover = (key: string) => setActiveIngredient(key);
-  const handleLeave = () => setActiveIngredient(null);
-  const handleTap = (key: string) => {
-    setActiveIngredient(activeIngredient === key ? null : key);
-  };
+const VITAMIN_ROWS: RowDef[] = [
+  { key: "vitaminb3", label: <><strong>Vitamin B3</strong> (as Niacin) 24mg</>, dv: "150%" },
+  { key: "vitaminb5", label: <><strong>Vitamin B5</strong> (as Pantothenic acid) 5mg</>, dv: "100%" },
+  { key: "vitaminb6", label: <><strong>Vitamin B6</strong> (as Pyridoxal-5-phosphate) 2mg</>, dv: "118%" },
+  { key: "vitaminb12", label: <><strong>Vitamin B12</strong> (as Methylcobalamin) 8mcg</>, dv: "333%" },
+  { key: "vitaminc", label: <><strong>Vitamin C</strong> (Ascorbic Acid) 90mg</>, dv: "100%" },
+];
 
+const AMINO_ROWS: RowDef[] = [
+  { key: "glutamine", label: <><strong>L-Glutamine</strong> 1000mg</>, dv: "+" },
+  { key: "alanine", label: <><strong>L-Alanine</strong> 200mg</>, dv: "+" },
+];
+
+function DetailPanelContent({ data, ingredientKey }: { data: IngredientInfo; ingredientKey: string }) {
   return (
-    <div className="supplement-facts__grid">
-      <div className="supplement-facts__table" role="table" aria-label="Supplement Facts">
-        <h3>Supplement Facts</h3>
-        <p className="sf-meta">16 servings per container</p>
-        <p className="sf-meta">Serving Size <strong>1 Stick (8g)</strong></p>
-        <div className="sf-divider" />
-        <p className="sf-meta" style={{ fontSize: "var(--text-xs)" }}>Amount per serving</p>
-        <div className="sf-row sf-row--calories"><span>Calories</span><span>5</span></div>
-        <div className="sf-row sf-row--header"><span>% Daily Value*</span></div>
-        <div className="sf-row"><span><strong>Total Carbohydrate</strong> 1g</span><span>&lt;1%*</span></div>
-        <div className="sf-row"><span><strong>Total Sugar</strong> 0g</span><span>0%</span></div>
-        <div className="sf-row"><span><strong>Protein</strong> 0g</span><span>0%</span></div>
-        <div className="sf-section-divider" />
-        {[
-          { key: "sodium", label: <><strong>Sodium</strong> (as Sodium Citrate and Pink Himalayan Salt) 600mg</>, dv: "26%" },
-          { key: "magnesium", label: <><strong>Magnesium</strong> (as Magnesium Malate) 200mg</>, dv: "48%" },
-          { key: "potassium", label: <><strong>Potassium</strong> (as Potassium Citrate) 500mg</>, dv: "11%" },
-        ].map((row) => (
-          <div
-            key={row.key}
-            className={`sf-row sf-row--hoverable${activeIngredient === row.key ? " sf-row--active" : ""}`}
-            data-ingredient={row.key}
-            onMouseEnter={() => handleHover(row.key)}
-            onMouseLeave={handleLeave}
-            onClick={() => handleTap(row.key)}
-          >
-            <span>{row.label}</span><span>{row.dv}</span>
-          </div>
-        ))}
-        <div className="sf-section-divider" />
-        {[
-          { key: "vitaminb3", label: <><strong>Vitamin B3</strong> (as Niacin) 24mg</>, dv: "150%" },
-          { key: "vitaminb5", label: <><strong>Vitamin B5</strong> (as Pantothenic acid) 5mg</>, dv: "100%" },
-          { key: "vitaminb6", label: <><strong>Vitamin B6</strong> (as Pyridoxal-5-phosphate) 2mg</>, dv: "118%" },
-          { key: "vitaminb12", label: <><strong>Vitamin B12</strong> (as Methylcobalamin) 8mcg</>, dv: "333%" },
-          { key: "vitaminc", label: <><strong>Vitamin C</strong> (Ascorbic Acid) 90mg</>, dv: "100%" },
-        ].map((row) => (
-          <div
-            key={row.key}
-            className={`sf-row sf-row--hoverable${activeIngredient === row.key ? " sf-row--active" : ""}`}
-            data-ingredient={row.key}
-            onMouseEnter={() => handleHover(row.key)}
-            onMouseLeave={handleLeave}
-            onClick={() => handleTap(row.key)}
-          >
-            <span>{row.label}</span><span>{row.dv}</span>
-          </div>
-        ))}
-        <div className="sf-section-divider" />
-        {[
-          { key: "glutamine", label: <><strong>L-Glutamine</strong> 1000mg</>, dv: "+" },
-          { key: "alanine", label: <><strong>L-Alanine</strong> 200mg</>, dv: "+" },
-        ].map((row) => (
-          <div
-            key={row.key}
-            className={`sf-row sf-row--hoverable${activeIngredient === row.key ? " sf-row--active" : ""}`}
-            data-ingredient={row.key}
-            onMouseEnter={() => handleHover(row.key)}
-            onMouseLeave={handleLeave}
-            onClick={() => handleTap(row.key)}
-          >
-            <span>{row.label}</span><span>{row.dv}</span>
-          </div>
-        ))}
-        <div className="sf-divider" />
-        <p className="sf-other"><strong>Other Ingredients:</strong> Citric Acid, Natural Strawberry &amp; Lemon Flavors, Bamboo Extract, Annatto Seed Extract (color)</p>
-        <p className="sf-other">*Percent Daily Values Are Based on a 2000 Calorie Diet</p>
+    <div className="sf-detail-panel__content" key={ingredientKey}>
+      <div className="sf-detail-panel__header">
+        <span className="sf-detail-panel__name">{data.name}</span>
+        <span className="sf-detail-panel__dose">{data.dose}</span>
       </div>
-
-      <div className="sf-detail-panel">
-        {!data ? (
-          <div className="sf-detail-panel__default">
-            <div className="sf-detail-panel__icon">
-              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M12 2C10 6 6 10 6 14a6 6 0 1012 0c0-4-4-8-6-12z" /></svg>
-            </div>
-            <p className="sf-detail-panel__prompt">Hover over any ingredient to learn how it works in your body</p>
+      <div className="sf-detail-panel__body">
+        <p className="sf-detail-panel__desc">{data.desc}</p>
+        <div className="sf-detail-panel__effects">
+          <h4>How it affects your body</h4>
+          <ul className="sf-detail-panel__list">
+            {data.effects.map((effect, i) => (
+              <li key={i}>{effect}</li>
+            ))}
+          </ul>
+        </div>
+        <div className="sf-detail-panel__goodfor">
+          <h4>Good For</h4>
+          <div className="sf-detail-panel__goodfor-tags">
+            {data.goodFor.map((tag) => (
+              <span key={tag} className="sf-detail-panel__goodfor-tag">{tag}</span>
+            ))}
           </div>
-        ) : (
-          <div className="sf-detail-panel__content" key={activeIngredient}>
-            <div className="sf-detail-panel__header">
-              <span className="sf-detail-panel__name">{data.name}</span>
-              <span className="sf-detail-panel__dose">{data.dose}</span>
-            </div>
-            <div className="sf-detail-panel__body">
-              <p className="sf-detail-panel__desc">{data.desc}</p>
-              <div className="sf-detail-panel__effects">
-                <h4>How it affects your body</h4>
-                <ul className="sf-detail-panel__list">
-                  {data.effects.map((effect, i) => (
-                    <li key={i}>{effect}</li>
-                  ))}
-                </ul>
-              </div>
-              <div className="sf-detail-panel__goodfor">
-                <h4>Good For</h4>
-                <div className="sf-detail-panel__goodfor-tags">
-                  {data.goodFor.map((tag) => (
-                    <span key={tag} className="sf-detail-panel__goodfor-tag">{tag}</span>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
+        </div>
       </div>
     </div>
   );
 }
 
-export function SupplementFactsWithPanelGrapefruit() {
+function MobileIngredientSheet({ data, onClose }: { data: IngredientInfo | null; onClose: () => void }) {
+  const sheetRef = useRef<HTMLDivElement>(null);
+  const startY = useRef(0);
+  const deltaY = useRef(0);
+
+  useEffect(() => {
+    if (data) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => { document.body.style.overflow = ""; };
+  }, [data]);
+
+  const handleTouchStart = useCallback((e: React.TouchEvent) => {
+    startY.current = e.touches[0].clientY;
+    if (sheetRef.current) sheetRef.current.style.transition = "none";
+  }, []);
+
+  const handleTouchMove = useCallback((e: React.TouchEvent) => {
+    deltaY.current = e.touches[0].clientY - startY.current;
+    if (deltaY.current > 0 && sheetRef.current) {
+      sheetRef.current.style.transform = `translateY(${deltaY.current}px)`;
+    }
+  }, []);
+
+  const handleTouchEnd = useCallback(() => {
+    if (sheetRef.current) sheetRef.current.style.transition = "";
+    if (deltaY.current > 80) {
+      onClose();
+    }
+    if (sheetRef.current) sheetRef.current.style.transform = "";
+    deltaY.current = 0;
+  }, [onClose]);
+
+  return (
+    <>
+      <div
+        className={`ingredient-sheet__overlay${data ? " active" : ""}`}
+        onClick={onClose}
+      />
+      <div
+        ref={sheetRef}
+        className={`ingredient-sheet${data ? " active" : ""}`}
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
+      >
+        <div className="ingredient-sheet__handle"><div className="ingredient-sheet__handle-bar" /></div>
+        {data && (
+          <>
+            <div className="ingredient-sheet__name">{data.name}</div>
+            <div className="ingredient-sheet__dose">{data.dose}</div>
+            <div className="ingredient-sheet__desc">{data.desc}</div>
+            <div className="ingredient-sheet__effects">
+              <h4>How it affects your body</h4>
+              <ul>
+                {data.effects.map((effect, i) => (
+                  <li key={i}>{effect}</li>
+                ))}
+              </ul>
+            </div>
+            <div className="ingredient-sheet__tags">
+              {data.goodFor.map((tag) => (
+                <span key={tag} className="ingredient-sheet__tag">{tag}</span>
+              ))}
+            </div>
+          </>
+        )}
+      </div>
+    </>
+  );
+}
+
+export function SupplementFactsWithPanel({ otherIngredients }: { otherIngredients?: string }) {
   const [activeIngredient, setActiveIngredient] = useState<string | null>(null);
+  const [mobileSheet, setMobileSheet] = useState<string | null>(null);
   const data = activeIngredient ? INGREDIENT_DATA[activeIngredient] : null;
+  const sheetData = mobileSheet ? INGREDIENT_DATA[mobileSheet] : null;
 
   const handleHover = (key: string) => setActiveIngredient(key);
   const handleLeave = () => setActiveIngredient(null);
-  const handleTap = (key: string) => {
-    setActiveIngredient(activeIngredient === key ? null : key);
+  const handleClick = (key: string) => {
+    if (window.innerWidth <= 768) {
+      setMobileSheet(mobileSheet === key ? null : key);
+    } else {
+      setActiveIngredient(activeIngredient === key ? null : key);
+    }
   };
 
+  const renderRows = (rows: RowDef[]) =>
+    rows.map((row) => (
+      <div
+        key={row.key}
+        className={`sf-row sf-row--hoverable${activeIngredient === row.key ? " sf-row--active" : ""}`}
+        data-ingredient={row.key}
+        onMouseEnter={() => handleHover(row.key)}
+        onMouseLeave={handleLeave}
+        onClick={() => handleClick(row.key)}
+      >
+        <span>{row.label}</span><span>{row.dv}</span>
+      </div>
+    ));
+
+  const other = otherIngredients || "Citric Acid, Natural Strawberry & Lemon Flavors, Bamboo Extract, Annatto Seed Extract (color)";
+
   return (
-    <div className="supplement-facts__grid">
-      <div className="supplement-facts__table" role="table" aria-label="Supplement Facts">
-        <h3>Supplement Facts</h3>
-        <p className="sf-meta">16 servings per container</p>
-        <p className="sf-meta">Serving Size <strong>1 Stick (8g)</strong></p>
-        <div className="sf-divider" />
-        <p className="sf-meta" style={{ fontSize: "var(--text-xs)" }}>Amount per serving</p>
-        <div className="sf-row sf-row--calories"><span>Calories</span><span>5</span></div>
-        <div className="sf-row sf-row--header"><span>% Daily Value*</span></div>
-        <div className="sf-row"><span><strong>Total Carbohydrate</strong> 1g</span><span>&lt;1%*</span></div>
-        <div className="sf-row"><span><strong>Total Sugar</strong> 0g</span><span>0%</span></div>
-        <div className="sf-row"><span><strong>Protein</strong> 0g</span><span>0%</span></div>
-        <div className="sf-section-divider" />
-        {[
-          { key: "sodium", label: <><strong>Sodium</strong> (as Sodium Citrate and Pink Himalayan Salt) 600mg</>, dv: "26%" },
-          { key: "magnesium", label: <><strong>Magnesium</strong> (as Magnesium Malate) 200mg</>, dv: "48%" },
-          { key: "potassium", label: <><strong>Potassium</strong> (as Potassium Citrate) 500mg</>, dv: "11%" },
-        ].map((row) => (
-          <div
-            key={row.key}
-            className={`sf-row sf-row--hoverable${activeIngredient === row.key ? " sf-row--active" : ""}`}
-            data-ingredient={row.key}
-            onMouseEnter={() => handleHover(row.key)}
-            onMouseLeave={handleLeave}
-            onClick={() => handleTap(row.key)}
-          >
-            <span>{row.label}</span><span>{row.dv}</span>
-          </div>
-        ))}
-        <div className="sf-section-divider" />
-        {[
-          { key: "vitaminb3", label: <><strong>Vitamin B3</strong> (as Niacin) 24mg</>, dv: "150%" },
-          { key: "vitaminb5", label: <><strong>Vitamin B5</strong> (as Pantothenic acid) 5mg</>, dv: "100%" },
-          { key: "vitaminb6", label: <><strong>Vitamin B6</strong> (as Pyridoxal-5-phosphate) 2mg</>, dv: "118%" },
-          { key: "vitaminb12", label: <><strong>Vitamin B12</strong> (as Methylcobalamin) 8mcg</>, dv: "333%" },
-          { key: "vitaminc", label: <><strong>Vitamin C</strong> (Ascorbic Acid) 90mg</>, dv: "100%" },
-        ].map((row) => (
-          <div
-            key={row.key}
-            className={`sf-row sf-row--hoverable${activeIngredient === row.key ? " sf-row--active" : ""}`}
-            data-ingredient={row.key}
-            onMouseEnter={() => handleHover(row.key)}
-            onMouseLeave={handleLeave}
-            onClick={() => handleTap(row.key)}
-          >
-            <span>{row.label}</span><span>{row.dv}</span>
-          </div>
-        ))}
-        <div className="sf-section-divider" />
-        {[
-          { key: "glutamine", label: <><strong>L-Glutamine</strong> 1000mg</>, dv: "+" },
-          { key: "alanine", label: <><strong>L-Alanine</strong> 200mg</>, dv: "+" },
-        ].map((row) => (
-          <div
-            key={row.key}
-            className={`sf-row sf-row--hoverable${activeIngredient === row.key ? " sf-row--active" : ""}`}
-            data-ingredient={row.key}
-            onMouseEnter={() => handleHover(row.key)}
-            onMouseLeave={handleLeave}
-            onClick={() => handleTap(row.key)}
-          >
-            <span>{row.label}</span><span>{row.dv}</span>
-          </div>
-        ))}
-        <div className="sf-divider" />
-        <p className="sf-other"><strong>Other Ingredients:</strong> Citric Acid, Bamboo Extract, Grapefruit Oil, Annatto Seed Extract (color)</p>
-        <p className="sf-other">*Percent Daily Values Are Based on a 2000 Calorie Diet</p>
+    <>
+      <div className="supplement-facts__grid">
+        <div className="supplement-facts__table" role="table" aria-label="Supplement Facts">
+          <h3>Supplement Facts</h3>
+          <p className="sf-meta">16 servings per container</p>
+          <p className="sf-meta">Serving Size <strong>1 Stick (8g)</strong></p>
+          <div className="sf-divider" />
+          <p className="sf-meta" style={{ fontSize: "var(--text-xs)" }}>Amount per serving</p>
+          <div className="sf-row sf-row--calories"><span>Calories</span><span>5</span></div>
+          <div className="sf-row sf-row--header"><span>% Daily Value*</span></div>
+          <div className="sf-row"><span><strong>Total Carbohydrate</strong> 1g</span><span>&lt;1%*</span></div>
+          <div className="sf-row"><span><strong>Total Sugar</strong> 0g</span><span>0%</span></div>
+          <div className="sf-row"><span><strong>Protein</strong> 0g</span><span>0%</span></div>
+          <div className="sf-section-divider" />
+          {renderRows(ELECTROLYTE_ROWS)}
+          <div className="sf-section-divider" />
+          {renderRows(VITAMIN_ROWS)}
+          <div className="sf-section-divider" />
+          {renderRows(AMINO_ROWS)}
+          <div className="sf-divider" />
+          <p className="sf-other"><strong>Other Ingredients:</strong> {other}</p>
+          <p className="sf-other">*Percent Daily Values Are Based on a 2000 Calorie Diet</p>
+        </div>
+
+        <div className="sf-detail-panel">
+          {!data ? (
+            <div className="sf-detail-panel__default">
+              <div className="sf-detail-panel__icon">
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M12 2C10 6 6 10 6 14a6 6 0 1012 0c0-4-4-8-6-12z" /></svg>
+              </div>
+              <p className="sf-detail-panel__prompt">Hover over any ingredient to learn how it works in your body</p>
+            </div>
+          ) : (
+            <DetailPanelContent data={data} ingredientKey={activeIngredient!} />
+          )}
+        </div>
       </div>
 
-      <div className="sf-detail-panel">
-        {!data ? (
-          <div className="sf-detail-panel__default">
-            <div className="sf-detail-panel__icon">
-              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M12 2C10 6 6 10 6 14a6 6 0 1012 0c0-4-4-8-6-12z" /></svg>
-            </div>
-            <p className="sf-detail-panel__prompt">Hover over any ingredient to learn how it works in your body</p>
-          </div>
-        ) : (
-          <div className="sf-detail-panel__content" key={activeIngredient}>
-            <div className="sf-detail-panel__header">
-              <span className="sf-detail-panel__name">{data.name}</span>
-              <span className="sf-detail-panel__dose">{data.dose}</span>
-            </div>
-            <div className="sf-detail-panel__body">
-              <p className="sf-detail-panel__desc">{data.desc}</p>
-              <div className="sf-detail-panel__effects">
-                <h4>How it affects your body</h4>
-                <ul className="sf-detail-panel__list">
-                  {data.effects.map((effect, i) => (
-                    <li key={i}>{effect}</li>
-                  ))}
-                </ul>
-              </div>
-              <div className="sf-detail-panel__goodfor">
-                <h4>Good For</h4>
-                <div className="sf-detail-panel__goodfor-tags">
-                  {data.goodFor.map((tag) => (
-                    <span key={tag} className="sf-detail-panel__goodfor-tag">{tag}</span>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-      </div>
-    </div>
+      <MobileIngredientSheet data={sheetData} onClose={() => setMobileSheet(null)} />
+    </>
   );
 }
+
+export { SupplementFactsWithPanel as SupplementFactsWithPanelGrapefruit };

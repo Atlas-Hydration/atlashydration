@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { useCart } from "@/app/context/CartContext";
-import { SupplementFactsWithPanelGrapefruit } from "@/app/components/IngredientDetailPanel";
+import { SupplementFactsWithPanel } from "@/app/components/IngredientDetailPanel";
 
 const images = [
   { src: "https://cdn.shopify.com/s/files/1/0595/8133/3578/files/1_1a252c57-dc62-4c7b-a6b1-0f9677ce6b6f.jpg?v=1769181320", alt: "Atlas Grapefruit pouch and stick pack" },
@@ -230,7 +230,7 @@ export default function Grapefruit() {
             <h2 className="section-title">Supplement Facts</h2>
             <p className="section-subtitle">Every ingredient listed. No proprietary blends. No hidden fillers.</p>
           </div>
-          <SupplementFactsWithPanelGrapefruit />
+          <SupplementFactsWithPanel otherIngredients="Citric Acid, Bamboo Extract, Grapefruit Oil, Annatto Seed Extract (color)" />
         </div>
       </section>
 
