@@ -19,11 +19,11 @@ interface Category {
 }
 
 const BRANDS: Brand[] = [
-  { key: "lmnt", name: "LMNT", logo: "https://cdn.brandfetch.io/domain/drinklmnt.com?c=1id3n10pdBTarCHI0db" },
-  { key: "liv", name: "Liquid I.V.", logo: "https://cdn.brandfetch.io/domain/liquid-iv.com?c=1id3n10pdBTarCHI0db" },
-  { key: "wb", name: "WaterBoy", logo: "https://cdn.brandfetch.io/domain/drinkwaterboy.com?c=1id3n10pdBTarCHI0db" },
-  { key: "drip", name: "DripDrop", logo: "https://cdn.brandfetch.io/domain/dripdrop.com?c=1id3n10pdBTarCHI0db" },
-  { key: "nuun", name: "Nuun", logo: "https://cdn.brandfetch.io/domain/nuunlife.com?c=1id3n10pdBTarCHI0db" },
+  { key: "lmnt", name: "LMNT", logo: "" },
+  { key: "liv", name: "Liquid I.V.", logo: "" },
+  { key: "wb", name: "WaterBoy", logo: "" },
+  { key: "drip", name: "DripDrop", logo: "" },
+  { key: "nuun", name: "Nuun", logo: "" },
 ];
 
 const CATS: Category[] = [
@@ -146,8 +146,7 @@ export default function CompareSection() {
                   </th>
                   {activeBrandData.map((b) => (
                     <th key={b.key} className="compare__th-logo">
-                      <img src={b.logo} alt={b.name} width="60" height="20" className="compare__brand-logo" onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; (e.target as HTMLImageElement).nextElementSibling!.removeAttribute("style"); }} />
-                      <span className={`compare__th-brand compare__th-brand--${b.key}`} style={{ display: "none" }}>{b.name}</span>
+                      <span className={`compare__th-brand compare__th-brand--${b.key}`}>{b.name}</span>
                     </th>
                   ))}
                 </tr>
@@ -199,7 +198,7 @@ export default function CompareSection() {
                   );
                 })}
                 <tr className="compare__score-row">
-                  <td className="compare__label" style={{ color: "rgba(255,255,255,0.3)", fontSize: "var(--text-xs)", textTransform: "uppercase", letterSpacing: "0.1em" }}>
+                  <td className="compare__label compare__label--score">
                     Categories Won
                   </td>
                   <td className="compare__value compare__value--atlas">
@@ -280,22 +279,16 @@ function CompareModal({ cat, rival, onClose }: { cat: Category; rival: Brand; on
         <button className="compare-modal__close" onClick={onClose} aria-label="Close">&times;</button>
         <div className="compare-modal__header">
           <div className="compare-modal__vs">
-            <span className="compare-modal__brand compare-modal__brand--atlas">
-              <img src="/logo.svg" alt="Atlas" height="22" />
-            </span>
+            <span className="compare-modal__brand compare-modal__brand--atlas">Atlas</span>
             <span className="compare-modal__vs-text">vs</span>
-            <span className="compare-modal__brand compare-modal__brand--rival">
-              <img src={rival.logo} alt={rival.name} height="18" className="compare__brand-logo" style={{ display: "inline", margin: 0 }} />
-            </span>
+            <span className="compare-modal__brand compare-modal__brand--rival">{rival.name}</span>
           </div>
           <p className="compare-modal__cat">{cat.label}</p>
         </div>
         <div className="compare-modal__bars">
           <div className="compare-modal__row">
             <div className="compare-modal__label compare-modal__label--atlas">
-              <span className="compare-modal__name">
-                <img src="/logo.svg" alt="Atlas" height="16" />
-              </span>
+              <span className="compare-modal__name">Atlas</span>
               <span className="compare-modal__val">{fmtVal(av, cat.unit)}</span>
             </div>
             <div className="compare-modal__track">
@@ -304,9 +297,7 @@ function CompareModal({ cat, rival, onClose }: { cat: Category; rival: Brand; on
           </div>
           <div className="compare-modal__row">
             <div className="compare-modal__label">
-              <span className="compare-modal__name">
-                <img src={rival.logo} alt={rival.name} height="14" className="compare__brand-logo" style={{ display: "inline", margin: 0 }} />
-              </span>
+              <span className="compare-modal__name">{rival.name}</span>
               <span className="compare-modal__val">{fmtVal(rv, cat.unit)}</span>
             </div>
             <div className="compare-modal__track">
