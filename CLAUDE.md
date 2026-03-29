@@ -8,12 +8,11 @@ Premium zero-sugar electrolyte drink mix brand website. Next.js app with Shopify
 - **Workflow:** `.github/workflows/deploy.yml` (GitHub Pages)
 - **Triggers:** Pushes to `main` and `claude/**` branches, plus manual `workflow_dispatch`
 - **Build:** `next build` with static export (`output: "export"`)
-- **Output:** `next-app/out/`
+- **Output:** `out/`
 
 ## Project Structure
 
 ```
-next-app/                    # Next.js application root
 ├── app/
 │   ├── layout.tsx           # Root layout (fonts, CartProvider, Header, Footer)
 │   ├── page.tsx             # Home page (all 15 sections + Popup)
