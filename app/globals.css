@@ -1433,7 +1433,7 @@ img {
 .product-hero {
   padding: 90px 0 40px;
   background: #ffffff;
-  overflow-x: hidden;
+  overflow-x: clip;
 }
 
 .product-hero__grid {
@@ -6609,7 +6609,9 @@ img {
   }
 
   .product-hero__info {
-    position: static;
+    position: sticky;
+    top: 90px;
+    align-self: start;
   }
 
   .product-hero__info::-webkit-scrollbar-thumb {
@@ -8045,7 +8047,7 @@ img {
   }
 
   .product-hero {
-    overflow-x: hidden;
+    overflow-x: clip;
   }
 
   .purchase-option__header {
