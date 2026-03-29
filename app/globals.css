@@ -61,7 +61,7 @@ body {
   color: var(--color-text);
   font-size: 1rem;
   line-height: 1.6;
-  overflow-x: hidden;
+  overflow-x: clip;
   -webkit-text-size-adjust: 100%;
   text-rendering: optimizeLegibility;
 }
@@ -8301,7 +8301,7 @@ img {
 
   /* Product info — prevent overflow */
   .product-hero__info {
-    overflow-x: hidden;
+    overflow-x: clip;
     max-width: 100%;
     box-sizing: border-box;
   }
