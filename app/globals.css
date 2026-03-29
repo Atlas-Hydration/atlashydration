@@ -6743,6 +6743,32 @@ img {
     align-self: start;
   }
 
+  .product-gallery--stacked {
+    overflow: hidden;
+    position: relative;
+  }
+
+  .product-gallery--stacked .product-gallery__stacked-images {
+    flex-direction: row;
+    gap: 0;
+    overflow: hidden;
+    scroll-behavior: smooth;
+  }
+
+  .product-gallery--stacked .product-gallery__stacked-img {
+    flex: 0 0 100%;
+    min-width: 100%;
+    scroll-snap-align: start;
+  }
+
+  .product-gallery__arrow {
+    display: flex;
+  }
+
+  .product-gallery__thumbs {
+    display: flex;
+  }
+
   .product-hero__info::-webkit-scrollbar-thumb {
     background: rgba(0,0,0,0.12);
     border-radius: 4px;
