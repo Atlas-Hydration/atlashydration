@@ -1431,7 +1431,7 @@ img {
    Product Page Styles
    ======================================== */
 .product-hero {
-  padding: 110px 0 60px;
+  padding: 90px 0 40px;
   background: #ffffff;
   overflow-x: hidden;
 }
@@ -1439,12 +1439,13 @@ img {
 .product-hero__grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 80px;
+  gap: 60px;
   align-items: start;
 }
 
 .product-hero__info {
-  position: static;
+  position: sticky;
+  top: 90px;
 }
 
 .product-hero__image {
@@ -1837,6 +1838,43 @@ img {
 .sf-row span {
   color: #555;
   font-weight: 600;
+}
+
+/* Hoverable rows with tooltip */
+.sf-row--hoverable {
+  position: relative;
+  cursor: help;
+  transition: background 0.2s;
+}
+
+.sf-row--hoverable:hover {
+  background: rgba(232, 93, 117, 0.06);
+}
+
+.sf-row--hoverable::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  left: 0;
+  top: 100%;
+  z-index: 10;
+  width: 100%;
+  padding: 10px 14px;
+  background: #1a1a1a;
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: 400;
+  line-height: 1.5;
+  border-radius: 8px;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(4px);
+  transition: opacity 0.2s, transform 0.2s;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+}
+
+.sf-row--hoverable:hover::after {
+  opacity: 1;
+  transform: translateY(2px);
 }
 
 .sf-section-divider {
@@ -2719,6 +2757,8 @@ img {
 }
 .product-accordion__body {
   overflow: hidden;
+  max-height: 0;
+  transition: max-height 0.35s ease;
 }
 .product-accordion__content {
   padding: 0 0 20px;
@@ -2764,6 +2804,17 @@ img {
   align-items: center;
   justify-content: center;
   color: var(--color-text);
+  animation: benefits-icon-float 3s ease-in-out infinite;
+}
+
+.benefits-bar__item:nth-child(2) .benefits-bar__icon { animation-delay: 0.3s; }
+.benefits-bar__item:nth-child(3) .benefits-bar__icon { animation-delay: 0.6s; }
+.benefits-bar__item:nth-child(4) .benefits-bar__icon { animation-delay: 0.9s; }
+.benefits-bar__item:nth-child(5) .benefits-bar__icon { animation-delay: 1.2s; }
+
+@keyframes benefits-icon-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
 }
 
 .benefits-bar__icon svg {

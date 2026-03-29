@@ -32,6 +32,7 @@ export default function Grapefruit() {
   const [frequency, setFrequency] = useState(2);
   const [quantity, setQuantity] = useState(1);
   const [openFaq, setOpenFaq] = useState<number | null>(null);
+  const [openAccordion, setOpenAccordion] = useState<number | null>(null);
   const [currentImage, setCurrentImage] = useState(0);
   const galleryRef = useRef<HTMLDivElement>(null);
 
@@ -153,51 +154,55 @@ export default function Grapefruit() {
               </div>
 
               <div className="product-accordions" style={{ marginTop: 16 }}>
-                <div className="product-accordion__divider" />
-                <div className="product-accordion">
-                  <button className="product-accordion__header" aria-expanded="false">
-                    <svg className="product-accordion__icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" /></svg>
-                    <span className="product-accordion__title">Description &amp; Ingredients</span>
-                    <svg className="product-accordion__chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M6 9l6 6 6-6" /></svg>
-                  </button>
-                  <div className="product-accordion__body">
-                    <div className="product-accordion__content">
-                      <p><strong>Atlas Hydration Grapefruit</strong> is a premium zero-sugar electrolyte drink mix engineered for superior hydration, recovery, and everyday performance. Each box contains 16 individually wrapped stick packs — perfect for the gym, office, or travel.</p>
-                      <p><strong>Key Electrolytes:</strong> Sodium 500mg, Potassium 400mg, Magnesium 60mg. <strong>Vitamins:</strong> Vitamin C 90mg, Niacin (B3) 20mg, Pantothenic Acid (B5) 10mg, Vitamin B6 2mg, Vitamin B12 8mcg. <strong>Amino Acids:</strong> L-Glutamine 1,000mg, L-Taurine 200mg.</p>
-                      <p><strong>Other Ingredients:</strong> Citric Acid, Natural Grapefruit Flavor, Bamboo Extract, Grapefruit Oil, Annatto Seed Extract (color), Stevia Leaf Extract, Allulose.</p>
+                {[
+                  {
+                    icon: <svg className="product-accordion__icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" /></svg>,
+                    title: "Description & Ingredients",
+                    content: (
+                      <>
+                        <p><strong>Atlas Hydration Grapefruit</strong> is a premium zero-sugar electrolyte drink mix engineered for superior hydration, recovery, and everyday performance. Each box contains 16 individually wrapped stick packs — perfect for the gym, office, or travel.</p>
+                        <p><strong>Key Electrolytes:</strong> Sodium 500mg, Potassium 400mg, Magnesium 60mg. <strong>Vitamins:</strong> Vitamin C 90mg, Niacin (B3) 20mg, Pantothenic Acid (B5) 10mg, Vitamin B6 2mg, Vitamin B12 8mcg. <strong>Amino Acids:</strong> L-Glutamine 1,000mg, L-Taurine 200mg.</p>
+                        <p><strong>Other Ingredients:</strong> Citric Acid, Natural Grapefruit Flavor, Bamboo Extract, Grapefruit Oil, Annatto Seed Extract (color), Stevia Leaf Extract, Allulose.</p>
+                      </>
+                    ),
+                  },
+                  {
+                    icon: <svg className="product-accordion__icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M12 2.69l5.66 5.66a8 8 0 11-11.31 0z" /></svg>,
+                    title: "How to Use",
+                    content: (
+                      <>
+                        <p>Mix one stick pack with 12–16 oz of cold water and shake or stir until dissolved. Adjust water to taste — less water for a stronger flavor, more for a lighter drink.</p>
+                        <p><strong>When to drink:</strong> First thing in the morning, during or after workouts, while traveling, or anytime you need a hydration boost. Use daily for best results.</p>
+                        <p><strong>Storage:</strong> Store in a cool, dry place. No refrigeration needed until mixed.</p>
+                      </>
+                    ),
+                  },
+                  {
+                    icon: <svg className="product-accordion__icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><rect x="1" y="3" width="15" height="13" rx="2" /><path d="M16 8h4l3 3v5h-7V8z" /><circle cx="5.5" cy="18.5" r="2.5" /><circle cx="18.5" cy="18.5" r="2.5" /></svg>,
+                    title: "Shipping & Returns",
+                    content: (
+                      <>
+                        <p><strong>Free shipping</strong> on all U.S. orders over $50. Standard shipping (3–5 business days) is $4.99. Expedited options available at checkout.</p>
+                        <p><strong>Satisfaction guaranteed:</strong> If you&apos;re not completely happy with your order, contact us within 30 days for a full refund or exchange — no questions asked.</p>
+                        <p>We currently ship within the United States. International shipping coming soon.</p>
+                      </>
+                    ),
+                  },
+                ].map((acc, i) => (
+                  <div key={i}>
+                    <div className="product-accordion__divider" />
+                    <div className="product-accordion">
+                      <button className="product-accordion__header" aria-expanded={openAccordion === i} onClick={() => setOpenAccordion(openAccordion === i ? null : i)}>
+                        {acc.icon}
+                        <span className="product-accordion__title">{acc.title}</span>
+                        <svg className="product-accordion__chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M6 9l6 6 6-6" /></svg>
+                      </button>
+                      <div className="product-accordion__body" style={{ maxHeight: openAccordion === i ? 500 : 0, transition: "max-height 0.35s ease" }}>
+                        <div className="product-accordion__content">{acc.content}</div>
+                      </div>
                     </div>
                   </div>
-                </div>
-                <div className="product-accordion__divider" />
-                <div className="product-accordion">
-                  <button className="product-accordion__header" aria-expanded="false">
-                    <svg className="product-accordion__icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M12 2.69l5.66 5.66a8 8 0 11-11.31 0z" /></svg>
-                    <span className="product-accordion__title">How to Use</span>
-                    <svg className="product-accordion__chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M6 9l6 6 6-6" /></svg>
-                  </button>
-                  <div className="product-accordion__body">
-                    <div className="product-accordion__content">
-                      <p>Mix one stick pack with 12–16 oz of cold water and shake or stir until dissolved. Adjust water to taste — less water for a stronger flavor, more for a lighter drink.</p>
-                      <p><strong>When to drink:</strong> First thing in the morning, during or after workouts, while traveling, or anytime you need a hydration boost. Use daily for best results.</p>
-                      <p><strong>Storage:</strong> Store in a cool, dry place. No refrigeration needed until mixed.</p>
-                    </div>
-                  </div>
-                </div>
-                <div className="product-accordion__divider" />
-                <div className="product-accordion">
-                  <button className="product-accordion__header" aria-expanded="false">
-                    <svg className="product-accordion__icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><rect x="1" y="3" width="15" height="13" rx="2" /><path d="M16 8h4l3 3v5h-7V8z" /><circle cx="5.5" cy="18.5" r="2.5" /><circle cx="18.5" cy="18.5" r="2.5" /></svg>
-                    <span className="product-accordion__title">Shipping &amp; Returns</span>
-                    <svg className="product-accordion__chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M6 9l6 6 6-6" /></svg>
-                  </button>
-                  <div className="product-accordion__body">
-                    <div className="product-accordion__content">
-                      <p><strong>Free shipping</strong> on all U.S. orders over $50. Standard shipping (3–5 business days) is $4.99. Expedited options available at checkout.</p>
-                      <p><strong>Satisfaction guaranteed:</strong> If you&apos;re not completely happy with your order, contact us within 30 days for a full refund or exchange — no questions asked.</p>
-                      <p>We currently ship within the United States. International shipping coming soon.</p>
-                    </div>
-                  </div>
-                </div>
+                ))}
                 <div className="product-accordion__divider" />
               </div>
             </div>
@@ -237,18 +242,18 @@ export default function Grapefruit() {
               <div className="sf-row"><span><strong>Total Sugar</strong> 0g</span><span>0%</span></div>
               <div className="sf-row"><span><strong>Protein</strong> 0g</span><span>0%</span></div>
               <div className="sf-section-divider" />
-              <div className="sf-row"><span><strong>Sodium</strong> (as Sodium Citrate and Pink Himalayan Salt) 600mg</span><span>26%</span></div>
-              <div className="sf-row"><span><strong>Magnesium</strong> (as Magnesium Malate) 200mg</span><span>48%</span></div>
-              <div className="sf-row"><span><strong>Potassium</strong> (as Potassium Citrate) 500mg</span><span>11%</span></div>
+              <div className="sf-row sf-row--hoverable" data-tooltip="Essential for fluid balance, nerve function, and muscle contractions. Sourced from Sodium Citrate and Pink Himalayan Salt for better absorption."><span><strong>Sodium</strong> (as Sodium Citrate and Pink Himalayan Salt) 600mg</span><span>26%</span></div>
+              <div className="sf-row sf-row--hoverable" data-tooltip="Supports muscle relaxation, nerve function, and sleep quality. Magnesium Malate is highly bioavailable and gentle on the stomach."><span><strong>Magnesium</strong> (as Magnesium Malate) 200mg</span><span>48%</span></div>
+              <div className="sf-row sf-row--hoverable" data-tooltip="Regulates fluid balance, supports heart rhythm, and prevents muscle cramps. Potassium Citrate is easily absorbed."><span><strong>Potassium</strong> (as Potassium Citrate) 500mg</span><span>11%</span></div>
               <div className="sf-section-divider" />
-              <div className="sf-row"><span><strong>Vitamin B3</strong> (as Niacin) 24mg</span><span>150%</span></div>
-              <div className="sf-row"><span><strong>Vitamin B5</strong> (as Pantothenic acid) 5mg</span><span>100%</span></div>
-              <div className="sf-row"><span><strong>Vitamin B6</strong> (as Pyridoxal-5-phosphate) 2mg</span><span>118%</span></div>
-              <div className="sf-row"><span><strong>Vitamin B12</strong> (as Methylcobalamin) 8mcg</span><span>333%</span></div>
-              <div className="sf-row"><span><strong>Vitamin C</strong> (Ascorbic Acid) 90mg</span><span>100%</span></div>
+              <div className="sf-row sf-row--hoverable" data-tooltip="Converts food into energy, supports brain function, and helps maintain healthy skin. 150% of your daily value."><span><strong>Vitamin B3</strong> (as Niacin) 24mg</span><span>150%</span></div>
+              <div className="sf-row sf-row--hoverable" data-tooltip="Helps produce energy from food, supports adrenal function, and aids in hormone production."><span><strong>Vitamin B5</strong> (as Pantothenic acid) 5mg</span><span>100%</span></div>
+              <div className="sf-row sf-row--hoverable" data-tooltip="Critical for brain development, immune function, and converting protein into energy. Active P5P form for superior absorption."><span><strong>Vitamin B6</strong> (as Pyridoxal-5-phosphate) 2mg</span><span>118%</span></div>
+              <div className="sf-row sf-row--hoverable" data-tooltip="Supports red blood cell formation, neurological function, and DNA synthesis. Methylcobalamin is the most bioactive form."><span><strong>Vitamin B12</strong> (as Methylcobalamin) 8mcg</span><span>333%</span></div>
+              <div className="sf-row sf-row--hoverable" data-tooltip="Powerful antioxidant that supports immune defense, collagen production, and iron absorption. 100% of your daily value."><span><strong>Vitamin C</strong> (Ascorbic Acid) 90mg</span><span>100%</span></div>
               <div className="sf-section-divider" />
-              <div className="sf-row"><span><strong>L-Glutamine</strong> 1000mg</span><span>+</span></div>
-              <div className="sf-row"><span><strong>L-Alanine</strong> 200mg</span><span>+</span></div>
+              <div className="sf-row sf-row--hoverable" data-tooltip="The most abundant amino acid in the body. Supports gut health, immune function, and muscle recovery after exercise."><span><strong>L-Glutamine</strong> 1000mg</span><span>+</span></div>
+              <div className="sf-row sf-row--hoverable" data-tooltip="Supports muscle endurance, reduces exercise fatigue, and aids in glucose regulation during intense activity."><span><strong>L-Alanine</strong> 200mg</span><span>+</span></div>
               <div className="sf-divider" />
               <p className="sf-other"><strong>Other Ingredients:</strong> Citric Acid, Bamboo Extract, Grapefruit Oil, Annatto Seed Extract (color)</p>
               <p className="sf-other">*Percent Daily Values Are Based on a 2000 Calorie Diet</p>
