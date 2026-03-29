@@ -1444,8 +1444,7 @@ img {
 }
 
 .product-hero__info {
-  position: sticky;
-  top: 90px;
+  position: static;
 }
 
 .product-hero__image {
@@ -1840,41 +1839,165 @@ img {
   font-weight: 600;
 }
 
-/* Hoverable rows with tooltip */
+/* Hoverable rows */
 .sf-row--hoverable {
-  position: relative;
-  cursor: help;
+  cursor: pointer;
   transition: background 0.2s;
 }
 
-.sf-row--hoverable:hover {
+.sf-row--hoverable:hover,
+.sf-row--hoverable.sf-row--active {
   background: rgba(232, 93, 117, 0.06);
 }
 
-.sf-row--hoverable::after {
-  content: attr(data-tooltip);
-  position: absolute;
-  left: calc(100% + 16px);
-  top: 50%;
-  transform: translateY(-50%) translateX(4px);
-  z-index: 10;
-  width: 280px;
-  padding: 12px 16px;
-  background: #1a1a1a;
-  color: #fff;
-  font-size: 0.8rem;
-  font-weight: 400;
-  line-height: 1.5;
-  border-radius: 10px;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.2s, transform 0.2s;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+/* Ingredient Detail Panel */
+.sf-detail-panel {
+  position: sticky;
+  top: 120px;
+  background: #ffffff;
+  border: 1px solid #e5e5e5;
+  border-radius: 12px;
+  padding: 32px;
+  min-height: 280px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  align-self: start;
 }
 
-.sf-row--hoverable:hover::after {
-  opacity: 1;
-  transform: translateY(-50%) translateX(0);
+.sf-detail-panel__default {
+  text-align: center;
+  color: #888;
+}
+
+.sf-detail-panel__icon {
+  margin-bottom: 16px;
+  opacity: 0.4;
+}
+
+.sf-detail-panel__prompt {
+  font-size: 0.85rem;
+  color: #888;
+  max-width: 200px;
+  margin: 0 auto;
+  line-height: 1.5;
+}
+
+.sf-detail-panel__content {
+  width: 100%;
+}
+
+.sf-detail-panel__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 16px;
+  padding-bottom: 16px;
+  border-bottom: 2px solid #1a1a1a;
+}
+
+.sf-detail-panel__name {
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: #1a1a1a;
+  letter-spacing: -0.02em;
+}
+
+.sf-detail-panel__dose {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.sf-detail-panel__desc {
+  font-size: 0.85rem;
+  color: #666;
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+
+.sf-detail-panel__effects h4 {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #999;
+  margin-bottom: 12px;
+}
+
+.sf-detail-panel__list {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.sf-detail-panel__list li {
+  font-size: 0.8rem;
+  color: #333;
+  padding: 10px 14px;
+  background: #f7f7f7;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  opacity: 0;
+  transform: translateX(12px);
+  animation: sfSlideIn 0.3s ease forwards;
+}
+
+.sf-detail-panel__list li::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  background: #1a1a1a;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.sf-detail-panel__list li:nth-child(1) { animation-delay: 0.05s; }
+.sf-detail-panel__list li:nth-child(2) { animation-delay: 0.1s; }
+.sf-detail-panel__list li:nth-child(3) { animation-delay: 0.15s; }
+.sf-detail-panel__list li:nth-child(4) { animation-delay: 0.2s; }
+
+@keyframes sfSlideIn {
+  to { opacity: 1; transform: translateX(0); }
+}
+
+.sf-detail-panel__goodfor {
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid #e5e5e5;
+}
+
+.sf-detail-panel__goodfor h4 {
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: #999;
+  margin-bottom: 10px;
+}
+
+.sf-detail-panel__goodfor-tags {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.sf-detail-panel__goodfor-tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  background: #f5f5f5;
+  border: 1px solid #e5e5e5;
+  color: #666;
 }
 
 .sf-section-divider {
@@ -2977,6 +3100,12 @@ img {
 .compare__th-logo {
   text-align: center;
   vertical-align: middle;
+}
+.compare__th-logo-img {
+  height: 24px;
+  width: auto;
+  max-width: 120px;
+  object-fit: contain;
 }
 
 .compare__toggle:hover {
@@ -6608,7 +6737,7 @@ img {
     align-items: start;
   }
 
-  .product-hero__info {
+  .product-gallery {
     position: sticky;
     top: 90px;
     align-self: start;
