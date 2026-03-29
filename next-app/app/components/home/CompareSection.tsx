@@ -1,3 +1,5 @@
+"use client";
+
 import { useState, useCallback, useEffect, useRef } from "react";
 
 interface Brand {
@@ -100,7 +102,6 @@ export default function CompareSection() {
     return () => observer.disconnect();
   }, []);
 
-  // Count wins
   const atlasWins = CATS.filter((cat) => {
     return activeBrandData.every((b) => {
       const rv = cat.values[b.key];
@@ -108,7 +109,6 @@ export default function CompareSection() {
     });
   }).length;
 
-  // Modal data
   const modalCat = modal ? CATS.find((c) => c.key === modal.catKey) : null;
   const modalRival = modal ? BRANDS.find((b) => b.key === modal.rivalKey) : null;
 
@@ -122,7 +122,6 @@ export default function CompareSection() {
             <p className="section-subtitle">Tap any row for a head-to-head breakdown.</p>
           </div>
 
-          {/* Brand Toggles */}
           <div className="compare__controls">
             <div className="compare__brand-toggles">
               {BRANDS.map((b) => (
@@ -137,14 +136,13 @@ export default function CompareSection() {
             </div>
           </div>
 
-          {/* Table */}
           <div className="compare__table-wrap">
             <table className="compare__table" role="table">
               <thead>
                 <tr>
                   <th></th>
                   <th className="compare__th-atlas">
-                    <img src="/atlashydration/logo.svg" alt="Atlas" height="20" />
+                    <img src="/logo.svg" alt="Atlas" height="20" />
                   </th>
                   {activeBrandData.map((b) => (
                     <th key={b.key} className="compare__th-logo">
@@ -200,7 +198,6 @@ export default function CompareSection() {
                     </tr>
                   );
                 })}
-                {/* Score row */}
                 <tr className="compare__score-row">
                   <td className="compare__label" style={{ color: "rgba(255,255,255,0.3)", fontSize: "var(--text-xs)", textTransform: "uppercase", letterSpacing: "0.1em" }}>
                     Categories Won
@@ -226,7 +223,6 @@ export default function CompareSection() {
         </div>
       </section>
 
-      {/* Breakdown Modal */}
       {modal && modalCat && modalRival && (
         <CompareModal cat={modalCat} rival={modalRival} onClose={() => setModal(null)} />
       )}
@@ -285,7 +281,7 @@ function CompareModal({ cat, rival, onClose }: { cat: Category; rival: Brand; on
         <div className="compare-modal__header">
           <div className="compare-modal__vs">
             <span className="compare-modal__brand compare-modal__brand--atlas">
-              <img src="/atlashydration/logo.svg" alt="Atlas" height="22" />
+              <img src="/logo.svg" alt="Atlas" height="22" />
             </span>
             <span className="compare-modal__vs-text">vs</span>
             <span className="compare-modal__brand compare-modal__brand--rival">
@@ -298,7 +294,7 @@ function CompareModal({ cat, rival, onClose }: { cat: Category; rival: Brand; on
           <div className="compare-modal__row">
             <div className="compare-modal__label compare-modal__label--atlas">
               <span className="compare-modal__name">
-                <img src="/atlashydration/logo.svg" alt="Atlas" height="16" />
+                <img src="/logo.svg" alt="Atlas" height="16" />
               </span>
               <span className="compare-modal__val">{fmtVal(av, cat.unit)}</span>
             </div>

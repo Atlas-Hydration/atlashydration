@@ -1,13 +1,16 @@
+"use client";
+
 import { useState, useEffect, useRef } from "react";
-import { Link, useLocation } from "react-router";
-import { useCart } from "~/context/CartContext";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useCart } from "@/app/context/CartContext";
 
 const NAV_LINKS: { label: string; href: string }[] = [];
 
 export default function Header() {
   const { cartCount, toggleCart } = useCart();
-  const location = useLocation();
-  const isHome = location.pathname === "/" || location.pathname === "/atlashydration/";
+  const pathname = usePathname();
+  const isHome = pathname === "/";
 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [headerVisible, setHeaderVisible] = useState(true);
@@ -45,7 +48,6 @@ export default function Header() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [isHome]);
 
-  // Lock body scroll when mobile menu is open
   useEffect(() => {
     document.body.style.overflow = mobileMenuOpen ? "hidden" : "";
     return () => {
@@ -75,9 +77,9 @@ export default function Header() {
       {/* Header */}
       <header className={headerClass} role="banner" style={{ top: headerTop }}>
         <nav className="header__nav" aria-label="Main navigation">
-          <Link to="/" className="header__logo" aria-label="Atlas Hydration Home">
+          <Link href="/" className="header__logo" aria-label="Atlas Hydration Home">
             <img
-              src="/atlashydration/logo.svg"
+              src="/logo.svg"
               alt="Atlas Hydration"
               className="header__logo-img"
               height={28}
@@ -86,7 +88,7 @@ export default function Header() {
 
           <div className="header__links">
             {NAV_LINKS.map((link) => (
-              <Link key={link.label} to={link.href} className="header__link">
+              <Link key={link.label} href={link.href} className="header__link">
                 {link.label}
               </Link>
             ))}
@@ -138,7 +140,7 @@ export default function Header() {
           {NAV_LINKS.map((link) => (
             <Link
               key={link.label}
-              to={link.href}
+              href={link.href}
               onClick={closeMobileMenu}
             >
               {link.label}

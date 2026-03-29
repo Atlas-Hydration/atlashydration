@@ -1,6 +1,8 @@
+"use client";
+
 import { useState, useRef } from "react";
-import { Link } from "react-router";
-import { useCart } from "~/context/CartContext";
+import Link from "next/link";
+import { useCart } from "@/app/context/CartContext";
 
 const images = [
   { src: "https://cdn.shopify.com/s/files/1/0595/8133/3578/files/1_e4b7eae7-01d9-430c-9655-7949d910deb6.jpg?v=1771507844", alt: "Atlas Strawberry Lemonade pouch and stick pack" },
@@ -83,10 +85,10 @@ export default function FeaturedProduct() {
 
             {/* Flavor Selector */}
             <div className="flavor-selector--circles">
-              <Link to="/products/strawberry-lemonade" className="flavor-circle flavor-circle--strawberry active">
+              <Link href="/products/strawberry-lemonade" className="flavor-circle flavor-circle--strawberry active">
                 <span className="flavor-circle__dot" />Strawberry Lemonade
               </Link>
-              <Link to="/products/grapefruit" className="flavor-circle flavor-circle--grapefruit">
+              <Link href="/products/grapefruit" className="flavor-circle flavor-circle--grapefruit">
                 <span className="flavor-circle__dot" />Grapefruit
               </Link>
             </div>

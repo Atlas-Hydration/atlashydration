@@ -1,54 +1,69 @@
 # Atlas Hydration
 
-Premium zero-sugar electrolyte drink mix brand website. Static HTML/CSS/JS site with Shopify Buy SDK integration for e-commerce checkout.
-
-## Live Site
-
-**URL:** https://rwb8771.github.io/atlashydration/
+Premium zero-sugar electrolyte drink mix brand website. Next.js app with Shopify Buy SDK integration for e-commerce checkout.
 
 ## Deployment
 
-- **Hosting:** GitHub Pages via GitHub Actions
-- **Workflow:** `.github/workflows/deploy.yml`
+- **Hosting:** Vercel (primary) + GitHub Pages fallback
+- **Workflow:** `.github/workflows/deploy.yml` (GitHub Pages)
 - **Triggers:** Pushes to `main` and `claude/**` branches, plus manual `workflow_dispatch`
-- **Build:** No build step — the entire repo root is uploaded as a static artifact
-- **Deploy action:** `actions/deploy-pages@v4`
+- **Build:** `next build` with static export (`output: "export"`)
+- **Output:** `next-app/out/`
 
-## Key Files
+## Project Structure
 
-| File | Purpose |
-|------|---------|
-| `index.html` | Landing page — hero, products, science, mission, testimonials |
-| `products/strawberry-lemonade.html` | Strawberry Lemonade product detail page |
-| `products/lemon-lime.html` | Lemon Lime product detail page |
-| `css/styles.css` | All site styles (light theme, responsive) |
-| `js/shopify.js` | Shopify Buy SDK integration — cart, checkout, product variants |
-| `js/main.js` | UI interactions — mobile menu, scroll animations, counters |
-| `manifest.json` | PWA manifest |
-| `sitemap.xml` | SEO sitemap |
-| `robots.txt` | Search engine crawl rules |
-| `.github/workflows/deploy.yml` | GitHub Pages deployment workflow |
+```
+next-app/                    # Next.js application root
+├── app/
+│   ├── layout.tsx           # Root layout (fonts, CartProvider, Header, Footer)
+│   ├── page.tsx             # Home page (all 15 sections + Popup)
+│   ├── globals.css          # All site styles (~8,200 lines)
+│   ├── components/
+│   │   ├── Header.tsx       # Sticky nav, announcement bar, mobile menu
+│   │   ├── Footer.tsx       # Footer with links, social, payment icons
+│   │   ├── CartDrawer.tsx   # Slide-out cart drawer
+│   │   ├── Popup.tsx        # Email signup modal (10% off)
+│   │   └── home/            # 15 home page section components
+│   ├── context/
+│   │   └── CartContext.tsx   # Cart state + Shopify Buy SDK integration
+│   ├── data/
+│   │   └── products.ts      # Product catalog (types + data)
+│   ├── products/
+│   │   ├── strawberry-lemonade/page.tsx
+│   │   └── grapefruit/page.tsx
+│   ├── privacy/page.tsx
+│   └── shipping/page.tsx
+├── public/                  # Static assets (images, logos, favicon, manifest)
+├── next.config.ts           # Next.js config (static export, unoptimized images)
+├── package.json
+└── tsconfig.json
+```
 
-## Navigation / Page Structure
+## Routes
 
-- **Landing page** (`/`) — Announcement bar, hero with split layout, vitamin strip, product grid, science section, how-it-works, mission, testimonials, CTA, footer
-- **Product pages** (`/products/*.html`) — Individual product detail pages with supplement facts, add-to-cart
-- **Cart** — Slide-out drawer cart (built in `js/shopify.js`), works with or without Shopify SDK
+| Route | Description |
+|-------|-------------|
+| `/` | Home — hero, vitamin strip, featured product, science, compare, reviews, why atlas, benefits, daily electrolytes, blog, founder, FAQ, CTA, sticky buy bar |
+| `/products/strawberry-lemonade` | Strawberry Lemonade product detail page |
+| `/products/grapefruit` | Grapefruit product detail page |
+| `/privacy` | Privacy policy |
+| `/shipping` | Shipping & returns policy |
 
 ## Architecture
 
-- **Framework:** None — vanilla HTML, CSS, JavaScript
-- **Build tools:** None — no bundler, preprocessor, or package manager
-- **E-commerce:** Shopify Storefront API via Buy SDK (CDN loaded)
+- **Framework:** Next.js 16 with App Router, TypeScript
+- **Build:** Turbopack (dev), static export for production
+- **E-commerce:** Shopify Storefront API via Buy SDK (CDN loaded at runtime)
 - **Fonts:** Google Fonts (Inter + Playfair Display)
 - **Styling:** Single CSS file with CSS custom properties, BEM naming
-- **Cart:** Shopify Buy SDK with localStorage fallback for offline/SDK-unavailable scenarios
+- **Cart:** Shopify Buy SDK with localStorage fallback
+- **State:** React Context API (CartContext)
 
 ## Shopify Integration
 
 - **Shop domain:** `7fa7b7-42.myshopify.com`
-- **Storefront token:** Configured in `js/shopify.js`
-- **Products:** Strawberry Lemonade (variant `7693950255178`), Lemon Lime (variant `7862662103114`)
+- **Storefront token:** Configured in `app/context/CartContext.tsx`
+- **Products:** Strawberry Lemonade (variant `42739482067018`), Grapefruit (variant `41850457817162`)
 
 ## Claude Code Branch Constraints
 

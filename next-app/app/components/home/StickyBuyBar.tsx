@@ -1,5 +1,7 @@
+"use client";
+
 import { useState, useEffect } from "react";
-import { useCart } from "~/context/CartContext";
+import { useCart } from "@/app/context/CartContext";
 
 const flavors = [
   {

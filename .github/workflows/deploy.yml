@@ -2,7 +2,7 @@ name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: ["main", "master", "claude/**"]
+    branches: ["main", "claude/**"]
   workflow_dispatch:
 
 permissions:
@@ -28,19 +28,19 @@ jobs:
         with:
           node-version: '20'
           cache: 'npm'
-          cache-dependency-path: remix-app/package-lock.json
+          cache-dependency-path: next-app/package-lock.json
       - name: Install dependencies
         run: npm ci
-        working-directory: remix-app
-      - name: Build Remix app
+        working-directory: next-app
+      - name: Build Next.js app
         run: npm run build
-        working-directory: remix-app
+        working-directory: next-app
       - name: Setup Pages
         uses: actions/configure-pages@v5
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: 'remix-app/build/client'
+          path: 'next-app/out'
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4

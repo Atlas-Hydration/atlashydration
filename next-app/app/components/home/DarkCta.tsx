@@ -1,4 +1,6 @@
-import { useCart } from "~/context/CartContext";
+"use client";
+
+import { useCart } from "@/app/context/CartContext";
 
 export default function DarkCta() {
   const { addToCart } = useCart();
@@ -8,7 +10,7 @@ export default function DarkCta() {
       <div className="cta-dark__video-wrap">
         <iframe
           className="cta-dark__video-yt"
-          src="https://www.youtube.com/embed/l0Dk8Ylqbxk?autoplay=1&mute=1&loop=1&playlist=l0Dk8Ylqbxk&controls=0&showinfo=0&rel=0&modestbranding=1&playsinline=1&enablejsapi=1&origin=https://rwb8771.github.io"
+          src="https://www.youtube.com/embed/l0Dk8Ylqbxk?autoplay=1&mute=1&loop=1&playlist=l0Dk8Ylqbxk&controls=0&showinfo=0&rel=0&modestbranding=1&playsinline=1&enablejsapi=1"
           allow="autoplay; encrypted-media"
           allowFullScreen
         />

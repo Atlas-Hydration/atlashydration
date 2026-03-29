@@ -340,7 +340,7 @@ export default function StrawberryLemonade() {
                   data-product="strawberry-lemonade"
                   onClick={handleAddToCart}
                 >
-                  Add to Cart
+                  Pre-Order Now
                 </button>
               </div>
 
@@ -695,7 +695,7 @@ export default function StrawberryLemonade() {
               data-product="strawberry-lemonade"
               onClick={handleAddToCart}
             >
-              Add to Cart
+              Pre-Order Now
             </button>
           </div>
         </div>
