@@ -1,6 +1,6 @@
 const cards = [
   {
-    image: "https://images.unsplash.com/photo-1534258936925-c58bed479fcb?w=700&h=900&fit=crop&crop=center",
+    image: "/images/benefits-performance.jpg",
     imageAlt: "Athlete training for performance",
     overlayLabel: "1,769mg electrolytes per serving",
     title: "Physical Performance",
@@ -13,7 +13,7 @@ const cards = [
     ),
   },
   {
-    image: "https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?w=700&h=900&fit=crop&crop=center",
+    image: "/images/benefits-cognitive.jpg",
     imageAlt: "Focus and cognitive performance",
     overlayLabel: "75% of your brain is water",
     title: "Cognitive Function",
@@ -28,7 +28,7 @@ const cards = [
     ),
   },
   {
-    image: "https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=700&h=900&fit=crop&crop=center",
+    image: "/images/benefits-recovery.jpg",
     imageAlt: "Post-workout recovery",
     overlayLabel: "1,200mg recovery amino acids",
     title: "Muscular Recovery",
