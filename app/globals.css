@@ -664,7 +664,7 @@ img {
 }
 
 .section-subtitle {
-  font-size: var(--text-md);
+  font-size: var(--text-base);
   color: var(--color-text-muted);
   max-width: 520px;
   margin: 0 auto;
@@ -847,7 +847,7 @@ img {
 }
 
 .product-card__desc {
-  font-size: var(--text-btn);
+  font-size: var(--text-base);
   color: var(--color-text-muted);
   margin-bottom: 16px;
   line-height: 1.6;
@@ -938,7 +938,7 @@ img {
 }
 
 .science__desc {
-  font-size: var(--text-md);
+  font-size: var(--text-base);
   color: var(--color-text-muted);
   line-height: 1.7;
   max-width: 420px;
@@ -1551,7 +1551,7 @@ img {
 }
 
 .product-hero__desc {
-  font-size: var(--text-md);
+  font-size: var(--text-base);
   color: var(--color-text-muted);
   line-height: 1.6;
   margin-bottom: 24px;
@@ -1913,7 +1913,7 @@ img {
 }
 
 .sf-detail-panel__desc {
-  font-size: 0.85rem;
+  font-size: var(--text-base);
   color: #666;
   line-height: 1.6;
   margin-bottom: 20px;
@@ -2065,7 +2065,7 @@ img {
   margin-bottom: 16px;
 }
 .ingredient-sheet__desc {
-  font-size: 0.9rem;
+  font-size: var(--text-base);
   line-height: 1.6;
   color: #333;
   margin-bottom: 20px;
@@ -2216,7 +2216,7 @@ img {
 }
 
 .sf-detail-panel__desc {
-  font-size: var(--text-btn);
+  font-size: var(--text-base);
   color: var(--color-text-muted);
   line-height: 1.6;
   margin-bottom: 20px;
@@ -2486,7 +2486,7 @@ img {
 
 .cart-drawer__empty p {
   margin-bottom: 20px;
-  font-size: var(--text-md);
+  font-size: var(--text-base);
 }
 
 .cart-item {
@@ -4266,7 +4266,7 @@ img {
 }
 
 .featured-product__subtitle {
-  font-size: var(--text-md);
+  font-size: var(--text-base);
   color: var(--color-text-muted);
   margin-bottom: 20px;
   line-height: 1.5;
@@ -4369,7 +4369,7 @@ img {
 }
 
 .ingredient-card__desc {
-  font-size: var(--text-sm);
+  font-size: var(--text-base);
   color: var(--color-text-muted);
   line-height: 1.4;
 }
@@ -4618,7 +4618,7 @@ img {
 }
 
 .cta-dark__text {
-  font-size: var(--text-md);
+  font-size: var(--text-base);
   color: rgba(255,255,255,0.5);
   line-height: 1.6;
   margin-bottom: 40px;
@@ -4697,7 +4697,7 @@ img {
 }
 
 .why-atlas__subtitle {
-  font-size: var(--text-md);
+  font-size: var(--text-base);
   color: rgba(0, 0, 0, 0.5);
   line-height: 1.7;
   max-width: 560px;
@@ -4781,7 +4781,7 @@ img {
 }
 
 .why-atlas__card-reveal p {
-  font-size: var(--text-sm);
+  font-size: var(--text-base);
   color: rgba(255, 255, 255, 0.55);
   line-height: 1.65;
   margin-bottom: 16px;
@@ -5703,7 +5703,7 @@ img {
 }
 
 .founder__text p {
-  font-size: var(--text-md);
+  font-size: var(--text-base);
   color: rgba(0, 0, 0, 0.6);
   line-height: 1.85;
   margin-bottom: 24px;
@@ -6032,7 +6032,7 @@ img {
   }
 
   .testimonial__text {
-    font-size: 1rem;
+    font-size: var(--text-base);
     line-height: 1.7;
   }
 
@@ -7233,7 +7233,7 @@ img {
 }
 
 .natural-flavors__content p {
-  font-size: var(--text-md);
+  font-size: var(--text-base);
   line-height: 1.7;
   color: var(--color-text-muted);
   margin-bottom: 16px;
@@ -7284,7 +7284,7 @@ img {
 }
 
 .natural-flavors__feature p {
-  font-size: var(--text-sm);
+  font-size: var(--text-base);
   line-height: 1.5;
   color: var(--color-text-muted);
   margin: 0;
@@ -8205,7 +8205,7 @@ img {
   }
 
   .product-hero__desc {
-    font-size: 1rem;
+    font-size: var(--text-base);
     line-height: 1.7;
   }
 
@@ -8414,32 +8414,32 @@ img {
 
   /* Science section readability */
   .science__desc {
-    font-size: 0.95rem;
+    font-size: var(--text-base);
     line-height: 1.7;
   }
 
   /* How it works readability */
   .how-it-works__step p {
-    font-size: 0.9rem;
+    font-size: var(--text-base);
     line-height: 1.6;
   }
 
   /* Mission text */
   .mission__text {
-    font-size: 0.95rem;
+    font-size: var(--text-base);
     line-height: 1.7;
   }
 
   /* Founder text readability */
   .founder__text p {
-    font-size: 0.95rem;
+    font-size: var(--text-base);
     line-height: 1.7;
   }
 
   /* CTA readability */
   .cta-section__text,
   .cta-dark__text {
-    font-size: 1rem;
+    font-size: var(--text-base);
     line-height: 1.6;
   }
 
@@ -8456,7 +8456,7 @@ img {
   }
 
   .testimonial__text {
-    font-size: 0.95rem;
+    font-size: var(--text-base);
   }
 
   /* Blog episode labels */
