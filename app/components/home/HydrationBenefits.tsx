@@ -1,3 +1,7 @@
+"use client";
+
+import { useEffect, useRef, useState } from "react";
+
 const cards = [
   {
     image: "/images/benefits-performance.jpg",
@@ -47,6 +51,40 @@ const cards = [
   },
 ];
 
+function BenefitCard({ card, delay }: { card: typeof cards[0]; delay: number }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) { setVisible(true); observer.disconnect(); } },
+      { threshold: 0.4 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <div
+      className={`hb__card${visible ? " hb__card--visible" : ""}`}
+      ref={ref}
+      style={{ transitionDelay: `${delay}ms` }}
+    >
+      <div className="hb__card-image">
+        <img src={card.image} alt={card.imageAlt} loading="lazy" />
+        <div className="hb__card-overlay">
+          {card.svg}
+          <span className="hb__card-overlay-label">{card.overlayLabel}</span>
+        </div>
+      </div>
+      <h3 className="hb__card-title">{card.title}</h3>
+      <p className="hb__card-text">{card.text}</p>
+    </div>
+  );
+}
+
 export default function HydrationBenefits() {
   return (
     <section className="hydration-benefits" id="benefits" aria-label="Hydration Benefits">
@@ -59,18 +97,8 @@ export default function HydrationBenefits() {
           </p>
         </div>
         <div className="hb__grid">
-          {cards.map((card) => (
-            <div className="hb__card" key={card.title}>
-              <div className="hb__card-image">
-                <img src={card.image} alt={card.imageAlt} loading="lazy" />
-                <div className="hb__card-overlay">
-                  {card.svg}
-                  <span className="hb__card-overlay-label">{card.overlayLabel}</span>
-                </div>
-              </div>
-              <h3 className="hb__card-title">{card.title}</h3>
-              <p className="hb__card-text">{card.text}</p>
-            </div>
+          {cards.map((card, i) => (
+            <BenefitCard card={card} delay={i * 200} key={card.title} />
           ))}
         </div>
       </div>
