@@ -31,7 +31,7 @@ export default function ReviewsSection() {
             data-layout="grid"
             data-reviews-type="all"
             data-show-summary="true"
-            data-reviews-count="6"
+            data-reviews-count="9"
             data-min-rating="4"
           >
             <span className="junip-review-section-wrapper" />
