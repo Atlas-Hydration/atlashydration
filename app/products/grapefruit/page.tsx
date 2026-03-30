@@ -29,8 +29,6 @@ const CheckSvg = () => (
 
 export default function Grapefruit() {
   const { addToCart } = useCart();
-  const [purchaseOption, setPurchaseOption] = useState<"subscribe" | "onetime">("subscribe");
-  const [frequency, setFrequency] = useState(2);
   const [quantity, setQuantity] = useState(1);
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   const [openAccordion, setOpenAccordion] = useState<number | null>(null);
@@ -102,48 +100,9 @@ export default function Grapefruit() {
                 </Link>
               </div>
 
-              <div className="purchase-options">
-                <label className={`purchase-option purchase-option--subscribe${purchaseOption === "subscribe" ? " active" : ""}`}>
-                  <div className="purchase-option__header">
-                    <div className="purchase-option__radio">
-                      <input type="radio" name="purchase-type" value="subscribe" checked={purchaseOption === "subscribe"} onChange={() => setPurchaseOption("subscribe")} />
-                      <span className="purchase-option__radio-custom" />
-                    </div>
-                    <span className="purchase-option__label">Subscribe &amp; Save</span>
-                    <div className="purchase-option__pricing">
-                      <span className="purchase-option__price">$23.99</span>
-                      <span className="purchase-option__per">$1.69 / Stick</span>
-                    </div>
-                  </div>
-                  <div className="purchase-option__details">
-                    <div className="purchase-option__perks">
-                      <div className="purchase-option__perk"><CheckSvg /><span className="purchase-option__save-badge">Save 20%</span></div>
-                      <div className="purchase-option__perk"><CheckSvg /><strong>Free Shipping</strong></div>
-                      <div className="purchase-option__perk"><CheckSvg /><strong>Cancel Anytime</strong></div>
-                    </div>
-                    <div className="frequency-selector">
-                      {[2, 4, 6].map((f) => (
-                        <button key={f} className={`frequency-selector__btn${frequency === f ? " active" : ""}`} onClick={() => setFrequency(f)}>{f} Weeks</button>
-                      ))}
-                    </div>
-                  </div>
-                </label>
-                <label className={`purchase-option purchase-option--onetime${purchaseOption === "onetime" ? " active" : ""}`}>
-                  <div className="purchase-option__header">
-                    <div className="purchase-option__radio">
-                      <input type="radio" name="purchase-type" value="onetime" checked={purchaseOption === "onetime"} onChange={() => setPurchaseOption("onetime")} />
-                      <span className="purchase-option__radio-custom" />
-                    </div>
-                    <span className="purchase-option__label">One-time</span>
-                    <div className="purchase-option__pricing">
-                      <span className="purchase-option__price">$29.99</span>
-                      <span className="purchase-option__per">$1.87 / Stick</span>
-                    </div>
-                  </div>
-                </label>
+              <div className="product-hero__preorder-box">
+                <p className="product-hero__preorder-price"><strong>$29.99</strong> <span>16 Stick Packs</span></p>
               </div>
-
-              <p className="product-hero__promo"><strong>Limited Time. Buy 3 Get 1 Free</strong></p>
 
               <div className="product-hero__buy">
                 <div className="qty-selector">
@@ -151,7 +110,7 @@ export default function Grapefruit() {
                   <input type="number" className="qty-selector__input" value={quantity} min={1} max={10} aria-label="Quantity" onChange={(e) => { const v = parseInt(e.target.value, 10); if (v >= 1 && v <= 10) setQuantity(v); }} />
                   <button className="qty-selector__btn" aria-label="Increase quantity" onClick={() => setQuantity((q) => Math.min(10, q + 1))}>+</button>
                 </div>
-                <button className="btn btn--primary btn--lg" onClick={handleAddToCart}>Pre-Order Now</button>
+                <button className="btn btn--primary btn--lg" onClick={handleAddToCart}>Pre-Order — $29.99</button>
               </div>
 
               <div className="product-accordions" style={{ marginTop: 16 }}>
