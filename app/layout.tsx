@@ -1,9 +1,15 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import { CartProvider } from "@/app/context/CartContext";
 import Header from "@/app/components/Header";
 import Footer from "@/app/components/Footer";
 import CartDrawer from "@/app/components/CartDrawer";
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+};
 
 export const metadata: Metadata = {
   title: "Atlas Hydration | Premium Electrolyte Drink Mix",
