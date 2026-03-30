@@ -52,7 +52,7 @@
 html {
   scroll-behavior: smooth;
   -webkit-font-smoothing: antialiased;
-  background: var(--color-primary);
+  background: #e85d75;
   overflow-x: clip;
   max-width: 100vw;
 }
