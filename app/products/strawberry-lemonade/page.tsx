@@ -249,7 +249,7 @@ export default function StrawberryLemonade() {
           <div className="cta-section__inner">
             <h2 className="cta-section__title">Ready to Try <span className="wave-text">Strawberry Lemonade?</span></h2>
             <p className="cta-section__text">16 stick packs of clean, science-backed hydration. Zero sugar. Five calories. Full performance.</p>
-            <button className="btn btn--white btn--lg" onClick={handleAddToCart}>Add to Cart — $29.99</button>
+            <button className="btn btn--white btn--lg" onClick={handleAddToCart}>Order — $29.99</button>
           </div>
         </div>
       </section>

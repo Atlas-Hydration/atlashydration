@@ -17,7 +17,7 @@ export default function CtaSection() {
           <p className="cta-section__text">
             Atlas Hydration is a proud member of 1% for the Planet. We donate 1% of every sale to organizations dedicated to providing clean, accessible water to communities around the world. Because hydration shouldn&apos;t be a privilege — it should be a right.
           </p>
-          <a href="#products" className="btn btn--white btn--lg">Shop &amp; Give Back</a>
+          <a href="/products/strawberry-lemonade" className="btn btn--white btn--lg">Shop &amp; Give Back</a>
         </div>
       </div>
     </section>

@@ -3331,7 +3331,7 @@ img {
 }
 
 .compare__th-atlas img {
-  height: 32px;
+  height: 18px;
   width: auto;
   display: inline-block;
   vertical-align: middle;
@@ -8697,7 +8697,7 @@ img {
   }
 
   .compare__th-atlas img {
-    height: 26px;
+    height: 14px;
   }
 
   .compare__th-brand {

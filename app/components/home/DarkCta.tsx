@@ -28,7 +28,7 @@ export default function DarkCta() {
             className="cta-dark__btn"
             onClick={() => addToCart("strawberry-lemonade", 1)}
           >
-            Pre-Order — $29.99
+            Order — $29.99
           </button>
         </div>
       </div>
