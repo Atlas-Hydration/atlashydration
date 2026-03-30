@@ -4150,9 +4150,9 @@ img {
 .flavor-selector--circles .flavor-circle {
   display: inline-flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   gap: 8px;
-  padding: 12px 28px;
+  padding: 12px 20px;
   border-radius: 0;
   border: 2px solid var(--color-border);
   cursor: pointer;
@@ -8387,8 +8387,8 @@ img {
   }
   .flavor-selector--circles .flavor-circle {
     flex: 1;
-    justify-content: center;
-    text-align: center;
+    justify-content: flex-start;
+    text-align: left;
     padding: 10px 8px;
     font-size: 0.65rem;
     min-width: 0;
