@@ -6055,8 +6055,9 @@ img {
   }
 
   .hero {
-    min-height: calc(100svh - 60px);
-    min-height: calc(-webkit-fill-available - 60px);
+    min-height: calc(100svh - 150px);
+    min-height: calc(-webkit-fill-available - 150px);
+    max-height: calc(100svh - 150px);
     padding: 0;
     border-radius: 0;
   }
@@ -6862,6 +6863,20 @@ img {
   margin: 0 auto;
 }
 
+/* Reviews widget wrapper */
+.reviews-widget {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.section-subtitle {
+  font-size: var(--text-base);
+  color: var(--color-text-muted);
+  max-width: 480px;
+  margin: 12px auto 0;
+  line-height: 1.6;
+}
+
 /* Hide Junip branding badge */
 .junip-branding,
 .junip-powered-by,
@@ -6901,12 +6916,6 @@ img {
   [class*="junip"] [class*="filter"],
   [class*="junip"] [class*="review-for"] {
     font-size: 12px !important;
-  }
-
-  [class*="junip"] [class*="star"],
-  [class*="junip"] svg {
-    width: 16px !important;
-    height: 16px !important;
   }
 }
 
@@ -8146,11 +8155,11 @@ img {
     min-width: 44px;
   }
 
-  /* Hero — full screen minus vitamin strip */
+  /* Hero — full screen minus announcement + header + vitamin strip */
   .hero {
-    min-height: calc(100svh - 60px);
-    min-height: calc(100vh - 60px);
-    max-height: calc(100svh - 60px);
+    min-height: calc(100svh - 150px);
+    min-height: calc(100vh - 150px);
+    max-height: calc(100svh - 150px);
     margin: 0;
     border-radius: 0;
   }
