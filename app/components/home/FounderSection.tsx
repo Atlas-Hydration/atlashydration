@@ -15,8 +15,20 @@ export default function FounderSection() {
               </p>
             </div>
             <div className="founder__signature">
-              <span className="founder__sig-name">Garrett Ray</span>
-              <span className="founder__sig-role">Founder &amp; Airline Captain, Atlas Hydration</span>
+              <div className="founder__sig-header">
+                <img
+                  className="founder__sig-avatar"
+                  src="/images/gemini-generated-image-544vz0544vz0544v-1.webp"
+                  alt="Garrett Ray"
+                  width="48"
+                  height="48"
+                  loading="lazy"
+                />
+                <div className="founder__sig-info">
+                  <span className="founder__sig-name">Garrett Ray</span>
+                  <span className="founder__sig-role">Founder &amp; Airline Captain, Atlas Hydration</span>
+                </div>
+              </div>
               <a href="https://www.instagram.com/flywithgarrett/" target="_blank" rel="noopener noreferrer" className="founder__instagram">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                   <rect x="2" y="2" width="20" height="20" rx="5" />

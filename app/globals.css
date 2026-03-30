@@ -52,7 +52,7 @@
 html {
   scroll-behavior: smooth;
   -webkit-font-smoothing: antialiased;
-  background: var(--color-primary);
+  background: #e85d75;
   overflow-x: clip;
   max-width: 100vw;
 }
@@ -5803,6 +5803,22 @@ img {
   border-top: 1px solid rgba(0, 0, 0, 0.08);
 }
 
+.founder__sig-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.founder__sig-avatar {
+  display: none;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  object-fit: cover;
+  object-position: center top;
+  flex-shrink: 0;
+}
+
 .founder__sig-name {
   display: block;
   font-family: var(--font-display);
@@ -5849,6 +5865,16 @@ img {
 
   .founder__content {
     padding: 48px 24px 64px;
+  }
+}
+
+@media (max-width: 768px) {
+  .founder__sig-avatar {
+    display: block;
+  }
+
+  .founder__image {
+    display: none;
   }
 }
 
@@ -6846,6 +6872,42 @@ img {
 .junip-store-key,
 [class*="junip"][class*="branding"] {
   display: none !important;
+}
+
+/* Junip reviews — smaller text on mobile */
+@media (max-width: 768px) {
+  [class*="junip"] {
+    --junip-font-size: 13px !important;
+  }
+
+  [class*="junip"] h3,
+  [class*="junip"] .junip-review-title {
+    font-size: 14px !important;
+  }
+
+  [class*="junip"] p,
+  [class*="junip"] .junip-review-body,
+  [class*="junip"] .junip-review-content,
+  [class*="junip"] [class*="body"],
+  [class*="junip"] [class*="content"] {
+    font-size: 13px !important;
+    line-height: 1.4 !important;
+  }
+
+  [class*="junip"] [class*="author"],
+  [class*="junip"] [class*="name"],
+  [class*="junip"] [class*="date"],
+  [class*="junip"] [class*="recommend"],
+  [class*="junip"] [class*="filter"],
+  [class*="junip"] [class*="review-for"] {
+    font-size: 12px !important;
+  }
+
+  [class*="junip"] [class*="star"],
+  [class*="junip"] svg {
+    width: 16px !important;
+    height: 16px !important;
+  }
 }
 
 /* Blog — Investigative Series styling */
