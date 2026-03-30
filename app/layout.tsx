@@ -4,6 +4,7 @@ import { CartProvider } from "@/app/context/CartContext";
 import Header from "@/app/components/Header";
 import Footer from "@/app/components/Footer";
 import CartDrawer from "@/app/components/CartDrawer";
+import ScrollToTop from "@/app/components/ScrollToTop";
 
 export const viewport: Viewport = {
   width: "device-width",
@@ -42,6 +43,7 @@ export default function RootLayout({
       </head>
       <body>
         <CartProvider>
+          <ScrollToTop />
           <Header />
           {children}
           <Footer />
