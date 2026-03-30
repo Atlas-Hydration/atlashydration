@@ -6848,6 +6848,42 @@ img {
   display: none !important;
 }
 
+/* Junip reviews — smaller text on mobile */
+@media (max-width: 768px) {
+  [class*="junip"] {
+    --junip-font-size: 13px !important;
+  }
+
+  [class*="junip"] h3,
+  [class*="junip"] .junip-review-title {
+    font-size: 14px !important;
+  }
+
+  [class*="junip"] p,
+  [class*="junip"] .junip-review-body,
+  [class*="junip"] .junip-review-content,
+  [class*="junip"] [class*="body"],
+  [class*="junip"] [class*="content"] {
+    font-size: 13px !important;
+    line-height: 1.4 !important;
+  }
+
+  [class*="junip"] [class*="author"],
+  [class*="junip"] [class*="name"],
+  [class*="junip"] [class*="date"],
+  [class*="junip"] [class*="recommend"],
+  [class*="junip"] [class*="filter"],
+  [class*="junip"] [class*="review-for"] {
+    font-size: 12px !important;
+  }
+
+  [class*="junip"] [class*="star"],
+  [class*="junip"] svg {
+    width: 16px !important;
+    height: 16px !important;
+  }
+}
+
 /* Blog — Investigative Series styling */
 .blog__card--coming-soon {
   position: relative;
