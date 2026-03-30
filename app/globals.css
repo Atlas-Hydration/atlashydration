@@ -5803,6 +5803,22 @@ img {
   border-top: 1px solid rgba(0, 0, 0, 0.08);
 }
 
+.founder__sig-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.founder__sig-avatar {
+  display: none;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  object-fit: cover;
+  object-position: center top;
+  flex-shrink: 0;
+}
+
 .founder__sig-name {
   display: block;
   font-family: var(--font-display);
@@ -5849,6 +5865,16 @@ img {
 
   .founder__content {
     padding: 48px 24px 64px;
+  }
+}
+
+@media (max-width: 768px) {
+  .founder__sig-avatar {
+    display: block;
+  }
+
+  .founder__image {
+    display: none;
   }
 }
 
