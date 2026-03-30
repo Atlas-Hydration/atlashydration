@@ -4127,6 +4127,7 @@ img {
   letter-spacing: 0.06em;
   text-transform: uppercase;
   flex: 1;
+  white-space: nowrap;
 }
 
 .flavor-circle__dot {
@@ -6074,7 +6075,7 @@ img {
   }
 
   .testimonial__text {
-    font-size: var(--text-md);
+    font-size: var(--text-base);
     line-height: 1.7;
   }
 

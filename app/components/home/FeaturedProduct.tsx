@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useCallback } from "react";
 import Link from "next/link";
 import { useCart } from "@/app/context/CartContext";
 
@@ -23,6 +23,12 @@ export default function FeaturedProduct() {
 
   const prev = () => setCurrentSlide((i) => (i === 0 ? images.length - 1 : i - 1));
   const next = () => setCurrentSlide((i) => (i === images.length - 1 ? 0 : i + 1));
+  const touchStartX = useRef(0);
+  const handleTouchStart = useCallback((e: React.TouchEvent) => { touchStartX.current = e.touches[0].clientX; }, []);
+  const handleTouchEnd = useCallback((e: React.TouchEvent) => {
+    const dx = e.changedTouches[0].clientX - touchStartX.current;
+    if (Math.abs(dx) > 40) { dx < 0 ? next() : prev(); }
+  }, []);
 
   const handleAdd = async () => {
     setAdding(true);
@@ -38,7 +44,7 @@ export default function FeaturedProduct() {
           {/* Gallery */}
           <div className="featured-product__image">
             <div className="fp-gallery">
-              <div className="fp-gallery__main">
+              <div className="fp-gallery__main" onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd}>
                 {images.map((img, i) => (
                   <img
                     key={i}
@@ -155,7 +161,7 @@ export default function FeaturedProduct() {
                 className={`btn btn--primary btn--lg${adding ? " btn--added" : ""}`}
                 onClick={handleAdd}
               >
-                {adding ? "Added!" : "Pre-Order"}
+                {adding ? "Added!" : "Add to Cart"}
               </button>
             </div>
           </div>

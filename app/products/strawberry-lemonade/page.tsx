@@ -154,7 +154,7 @@ export default function StrawberryLemonade() {
                   <input type="number" className="qty-selector__input" value={quantity} min={1} max={10} aria-label="Quantity" onChange={(e) => { const v = parseInt(e.target.value, 10); if (v >= 1 && v <= 10) setQuantity(v); }} />
                   <button className="qty-selector__btn" aria-label="Increase quantity" onClick={() => setQuantity((q) => Math.min(10, q + 1))}>+</button>
                 </div>
-                <button className="btn btn--primary btn--lg" onClick={handleAddToCart}>Pre-Order Now</button>
+                <button className="btn btn--primary btn--lg" onClick={handleAddToCart}>Add to Cart</button>
               </div>
 
               <div className="product-accordions" style={{ marginTop: 16 }}>
@@ -270,7 +270,7 @@ export default function StrawberryLemonade() {
           <div className="cta-section__inner">
             <h2 className="cta-section__title">Ready to Try <span className="wave-text">Strawberry Lemonade?</span></h2>
             <p className="cta-section__text">16 stick packs of clean, science-backed hydration. Zero sugar. Five calories. Full performance.</p>
-            <button className="btn btn--white btn--lg" onClick={handleAddToCart}>Pre-Order Now</button>
+            <button className="btn btn--white btn--lg" onClick={handleAddToCart}>Add to Cart — $29.99</button>
           </div>
         </div>
       </section>
