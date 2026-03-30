@@ -6029,8 +6029,8 @@ img {
   }
 
   .hero {
-    min-height: 100svh;
-    min-height: -webkit-fill-available;
+    min-height: calc(100svh - 60px);
+    min-height: calc(-webkit-fill-available - 60px);
     padding: 0;
     border-radius: 0;
   }
@@ -8084,16 +8084,21 @@ img {
     min-width: 44px;
   }
 
-  /* Hero — full screen, no gaps */
+  /* Hero — full screen minus vitamin strip */
   .hero {
-    min-height: 88svh;
-    min-height: calc(100vh - 100px);
+    min-height: calc(100svh - 60px);
+    min-height: calc(100vh - 60px);
+    max-height: calc(100svh - 60px);
     margin: 0;
     border-radius: 0;
   }
 
   .hero__content {
-    padding: 100px 20px 40px;
+    padding: 80px 20px 20px;
+  }
+
+  .vitamin-strip {
+    padding: 16px 0;
   }
 
   /* YouTube iframe — fill on mobile */
