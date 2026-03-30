@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { useCart } from "@/app/context/CartContext";
 import { SupplementFactsWithPanel } from "@/app/components/IngredientDetailPanel";
+import FaqSection from "@/app/components/home/FaqSection";
 
 const images = [
   { src: "https://cdn.shopify.com/s/files/1/0595/8133/3578/files/1_e4b7eae7-01d9-430c-9655-7949d910deb6.jpg?v=1771507844", alt: "Atlas Strawberry Lemonade pouch and stick pack" },
@@ -14,16 +15,6 @@ const images = [
   { src: "https://cdn.shopify.com/s/files/1/0595/8133/3578/files/4_b0347d0a-fc88-4c2b-b4a7-3946604c666e.jpg?v=1771507860", alt: "Atlas Strawberry Lemonade active lifestyle" },
 ];
 
-const faqItems = [
-  { question: "How many electrolytes are in Atlas Strawberry Lemonade per serving?", answer: 'Each stick pack contains <strong>1,300mg of total electrolytes</strong>: 600mg Sodium (from Sodium Citrate and Pink Himalayan Salt), 500mg Potassium (from Potassium Citrate), and 200mg Magnesium (from Magnesium Malate). This is more total electrolytes per serving than LMNT (1,260mg), Liquid I.V. (~500mg), or WaterBoy.' },
-  { question: "Is Atlas Strawberry Lemonade sugar-free?", answer: '<strong>100% sugar-free</strong> with zero grams of sugar per serving. Only <strong>25 calories per stick pack</strong>, naturally sweetened with stevia leaf extract and allulose — a rare sugar with near-zero glycemic impact. Unlike Liquid I.V. (11g sugar per serving), Atlas delivers superior hydration without any sugar.' },
-  { question: "How much does Atlas Hydration cost per stick?", answer: 'Each stick pack is <strong>$1.87 at full price</strong> ($29.99 for 16 sticks), or <strong>$1.50 per stick with a subscription</strong> (20% off, $23.99 per box). Subscribers also get free shipping and can cancel anytime. That\'s less than most sugary sports drinks with far superior ingredients.' },
-  { question: "What vitamins and amino acids are in each stick pack?", answer: "Every stick contains <strong>Vitamin C</strong> (90mg, 100% DV), <strong>B3</strong> (24mg, 150% DV), <strong>B5</strong> (5mg, 100% DV), <strong>B6</strong> (2mg, 118% DV), <strong>B12</strong> (8mcg, 333% DV), plus <strong>1,000mg L-Glutamine</strong> and <strong>200mg L-Alanine</strong> for recovery support." },
-  { question: "How does Atlas compare to LMNT and Liquid IV?", answer: "Atlas delivers <strong>1,300mg electrolytes</strong> (vs LMNT's 1,260mg and Liquid I.V.'s ~500mg), plus B vitamins, Vitamin C, and 1,200mg recovery amino acids that neither competitor includes. Atlas has <strong>zero sugar</strong> (Liquid I.V. has 11g), only <strong>5 calories</strong> (Liquid I.V. has 45), and costs $1.87/stick ($1.50 with subscription). It's a cleaner, more complete formula." },
-  { question: "Does Atlas Hydration use artificial flavors or sweeteners?", answer: 'No. Atlas uses <strong>zero artificial flavors, colors, or sweeteners</strong>. Natural flavors come from real fruit extracts and natural strawberry &amp; lemon flavors. Sweetness comes from stevia leaf extract and allulose. Colors from annatto seed extract. Every ingredient is listed on the label with no proprietary blends.' },
-  { question: "Why do I see floaties or clumps sometimes?", answer: "Totally normal. Atlas's mineral-forward formula uses organic natural flavor ingredients and bamboo extract, which can take slightly longer to dissolve. Just shake or stir a little more — it won't affect taste or effectiveness." },
-  { question: "How do I use Atlas Hydration Strawberry Lemonade?", answer: "Mix one stick pack with <strong>12\u201316 oz of cold water</strong> and shake or stir until dissolved. Drink first thing in the morning, during or after workouts, while traveling, or anytime you need a hydration boost. Each box contains 16 individually wrapped stick packs. Use daily for best results." },
-];
 
 const CheckSvg = () => (
   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
@@ -36,7 +27,6 @@ export default function StrawberryLemonade() {
   const [purchaseOption, setPurchaseOption] = useState<"subscribe" | "onetime">("subscribe");
   const [frequency, setFrequency] = useState(2);
   const [quantity, setQuantity] = useState(1);
-  const [openFaq, setOpenFaq] = useState<number | null>(null);
   const [openAccordion, setOpenAccordion] = useState<number | null>(null);
   const [currentImage, setCurrentImage] = useState(0);
   const galleryRef = useRef<HTMLDivElement>(null);
@@ -233,33 +223,22 @@ export default function StrawberryLemonade() {
             <h2 className="section-title">Supplement Facts</h2>
             <p className="section-subtitle">Every ingredient listed. No proprietary blends. No hidden fillers.</p>
           </div>
+          <div className="supplement-facts__tap-hint">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M15 15.5V13a2 2 0 0 1 4 0v2.5" />
+              <path d="M11 15.5V11a2 2 0 0 1 4 0v4.5" />
+              <path d="M7 15.5V13a2 2 0 0 1 4 0v2.5" />
+              <path d="M5 13a2 2 0 0 1 2-2v0" />
+              <path d="M5 15.5V15a6.5 6.5 0 0 0 13 0v-1" />
+              <path d="M5 13v-1a2 2 0 0 1 4 0v3" />
+            </svg>
+            Tap any ingredient to explore
+          </div>
           <SupplementFactsWithPanel />
         </div>
       </section>
 
-      <section className="product-faq" aria-label="Frequently asked questions about Atlas Hydration Strawberry Lemonade">
-        <div className="container">
-          <div className="section-header">
-            <h2 className="section-title">Frequently Asked Questions</h2>
-            <p className="section-subtitle">Everything you need to know about Atlas Hydration Strawberry Lemonade electrolyte mix.</p>
-          </div>
-          <div className="product-faq__list">
-            {faqItems.map((item, i) => (
-              <div className="product-faq__item" key={i}>
-                <button className="product-faq__question" onClick={() => setOpenFaq(openFaq === i ? null : i)} aria-expanded={openFaq === i}>
-                  <h3 style={{ font: "inherit", margin: 0 }}>{item.question}</h3>
-                  <span>{openFaq === i ? "\u2212" : "+"}</span>
-                </button>
-                {openFaq === i && (
-                  <div className="product-faq__answer">
-                    <p dangerouslySetInnerHTML={{ __html: item.answer }} />
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+      <FaqSection />
 
       <section className="cta-section" aria-label="Buy now">
         <div className="cta-section__video-wrap">
