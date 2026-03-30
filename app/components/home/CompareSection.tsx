@@ -19,11 +19,11 @@ interface Category {
 }
 
 const BRANDS: Brand[] = [
-  { key: "lmnt", name: "LMNT", logo: "" },
-  { key: "liv", name: "Liquid I.V.", logo: "" },
-  { key: "wb", name: "WaterBoy", logo: "" },
-  { key: "drip", name: "DripDrop", logo: "" },
-  { key: "nuun", name: "Nuun", logo: "" },
+  { key: "lmnt", name: "LMNT", logo: "/images/logos/lmnt.svg" },
+  { key: "liv", name: "Liquid I.V.", logo: "/images/logos/liquid-iv.svg" },
+  { key: "wb", name: "WaterBoy", logo: "/images/logos/waterboy.svg" },
+  { key: "drip", name: "DripDrop", logo: "/images/logos/dripdrop.svg" },
+  { key: "nuun", name: "Nuun", logo: "/images/logos/nuun.svg" },
 ];
 
 const CATS: Category[] = [
@@ -146,7 +146,11 @@ export default function CompareSection() {
                   </th>
                   {activeBrandData.map((b) => (
                     <th key={b.key} className="compare__th-logo">
-                      <span className={`compare__th-brand compare__th-brand--${b.key}`}>{b.name}</span>
+                      {b.logo ? (
+                        <img src={b.logo} alt={b.name} height="24" className="compare__th-logo-img" />
+                      ) : (
+                        <span className={`compare__th-brand compare__th-brand--${b.key}`}>{b.name}</span>
+                      )}
                     </th>
                   ))}
                 </tr>

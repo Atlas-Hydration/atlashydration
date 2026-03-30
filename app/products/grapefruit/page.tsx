@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { useCart } from "@/app/context/CartContext";
+import { SupplementFactsWithPanel } from "@/app/components/IngredientDetailPanel";
 
 const images = [
   { src: "https://cdn.shopify.com/s/files/1/0595/8133/3578/files/1_1a252c57-dc62-4c7b-a6b1-0f9677ce6b6f.jpg?v=1769181320", alt: "Atlas Grapefruit pouch and stick pack" },
@@ -229,36 +230,7 @@ export default function Grapefruit() {
             <h2 className="section-title">Supplement Facts</h2>
             <p className="section-subtitle">Every ingredient listed. No proprietary blends. No hidden fillers.</p>
           </div>
-          <div className="supplement-facts__grid">
-            <div className="supplement-facts__table" role="table" aria-label="Supplement Facts">
-              <h3>Supplement Facts</h3>
-              <p className="sf-meta">16 servings per container</p>
-              <p className="sf-meta">Serving Size <strong>1 Stick (8g)</strong></p>
-              <div className="sf-divider" />
-              <p className="sf-meta" style={{ fontSize: "var(--text-xs)" }}>Amount per serving</p>
-              <div className="sf-row sf-row--calories"><span>Calories</span><span>5</span></div>
-              <div className="sf-row sf-row--header"><span>% Daily Value*</span></div>
-              <div className="sf-row"><span><strong>Total Carbohydrate</strong> 1g</span><span>&lt;1%*</span></div>
-              <div className="sf-row"><span><strong>Total Sugar</strong> 0g</span><span>0%</span></div>
-              <div className="sf-row"><span><strong>Protein</strong> 0g</span><span>0%</span></div>
-              <div className="sf-section-divider" />
-              <div className="sf-row sf-row--hoverable" data-tooltip="Essential for fluid balance, nerve function, and muscle contractions. Sourced from Sodium Citrate and Pink Himalayan Salt for better absorption."><span><strong>Sodium</strong> (as Sodium Citrate and Pink Himalayan Salt) 600mg</span><span>26%</span></div>
-              <div className="sf-row sf-row--hoverable" data-tooltip="Supports muscle relaxation, nerve function, and sleep quality. Magnesium Malate is highly bioavailable and gentle on the stomach."><span><strong>Magnesium</strong> (as Magnesium Malate) 200mg</span><span>48%</span></div>
-              <div className="sf-row sf-row--hoverable" data-tooltip="Regulates fluid balance, supports heart rhythm, and prevents muscle cramps. Potassium Citrate is easily absorbed."><span><strong>Potassium</strong> (as Potassium Citrate) 500mg</span><span>11%</span></div>
-              <div className="sf-section-divider" />
-              <div className="sf-row sf-row--hoverable" data-tooltip="Converts food into energy, supports brain function, and helps maintain healthy skin. 150% of your daily value."><span><strong>Vitamin B3</strong> (as Niacin) 24mg</span><span>150%</span></div>
-              <div className="sf-row sf-row--hoverable" data-tooltip="Helps produce energy from food, supports adrenal function, and aids in hormone production."><span><strong>Vitamin B5</strong> (as Pantothenic acid) 5mg</span><span>100%</span></div>
-              <div className="sf-row sf-row--hoverable" data-tooltip="Critical for brain development, immune function, and converting protein into energy. Active P5P form for superior absorption."><span><strong>Vitamin B6</strong> (as Pyridoxal-5-phosphate) 2mg</span><span>118%</span></div>
-              <div className="sf-row sf-row--hoverable" data-tooltip="Supports red blood cell formation, neurological function, and DNA synthesis. Methylcobalamin is the most bioactive form."><span><strong>Vitamin B12</strong> (as Methylcobalamin) 8mcg</span><span>333%</span></div>
-              <div className="sf-row sf-row--hoverable" data-tooltip="Powerful antioxidant that supports immune defense, collagen production, and iron absorption. 100% of your daily value."><span><strong>Vitamin C</strong> (Ascorbic Acid) 90mg</span><span>100%</span></div>
-              <div className="sf-section-divider" />
-              <div className="sf-row sf-row--hoverable" data-tooltip="The most abundant amino acid in the body. Supports gut health, immune function, and muscle recovery after exercise."><span><strong>L-Glutamine</strong> 1000mg</span><span>+</span></div>
-              <div className="sf-row sf-row--hoverable" data-tooltip="Supports muscle endurance, reduces exercise fatigue, and aids in glucose regulation during intense activity."><span><strong>L-Alanine</strong> 200mg</span><span>+</span></div>
-              <div className="sf-divider" />
-              <p className="sf-other"><strong>Other Ingredients:</strong> Citric Acid, Bamboo Extract, Grapefruit Oil, Annatto Seed Extract (color)</p>
-              <p className="sf-other">*Percent Daily Values Are Based on a 2000 Calorie Diet</p>
-            </div>
-          </div>
+          <SupplementFactsWithPanel otherIngredients="Citric Acid, Bamboo Extract, Grapefruit Oil, Annatto Seed Extract (color)" />
         </div>
       </section>
 
