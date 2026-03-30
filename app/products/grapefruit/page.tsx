@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { useCart } from "@/app/context/CartContext";
 import { SupplementFactsWithPanel } from "@/app/components/IngredientDetailPanel";
+import FaqSection from "@/app/components/home/FaqSection";
 
 const images = [
   { src: "https://cdn.shopify.com/s/files/1/0595/8133/3578/files/1_1a252c57-dc62-4c7b-a6b1-0f9677ce6b6f.jpg?v=1769181320", alt: "Atlas Grapefruit pouch and stick pack" },
@@ -12,14 +13,6 @@ const images = [
   { src: "https://cdn.shopify.com/s/files/1/0595/8133/3578/files/4_04a1c3d2-929b-4150-bf92-64f0f83445b1.jpg?v=1769181321", alt: "Atlas Grapefruit active lifestyle" },
 ];
 
-const faqItems = [
-  { question: "How many electrolytes are in Atlas Grapefruit per serving?", answer: "Each stick pack contains <strong>1,300mg of total electrolytes</strong>: 600mg Sodium (from Sodium Citrate and Pink Himalayan Salt), 500mg Potassium (from Potassium Citrate), and 200mg Magnesium (from Magnesium Malate). This is more total electrolytes per serving than LMNT, Liquid I.V., or WaterBoy." },
-  { question: "Is Atlas Grapefruit sugar-free?", answer: 'Yes — <strong>zero grams of sugar</strong> and only <strong>5 calories per serving</strong>. Naturally sweetened with stevia leaf extract and allulose, a rare sugar with near-zero glycemic impact. No artificial sweeteners are used.' },
-  { question: "What makes Atlas Grapefruit flavor natural?", answer: "Atlas Grapefruit uses <strong>real cold-pressed grapefruit oil</strong> for authentic citrus flavor — not artificial grapefruit flavoring. Colors come from annatto seed extract (a plant-based pigment used for centuries), and sweetness from stevia leaf and allulose. Zero synthetic dyes, zero artificial flavors, zero compromise." },
-  { question: "How does Atlas Grapefruit compare to other electrolyte drinks?", answer: "Atlas delivers <strong>1,300mg electrolytes</strong> per serving with zero sugar and 5 calories, plus B vitamins, Vitamin C, and 1,200mg recovery amino acids. Most competitors either have less electrolytes (Liquid I.V. ~500mg), include sugar (Liquid I.V. 11g), or lack vitamins and amino acids (LMNT). Atlas provides the most complete hydration formula on the market." },
-  { question: "What vitamins and amino acids are in Atlas Grapefruit?", answer: "Each serving contains <strong>Vitamin C</strong> (90mg, 100% DV), <strong>Vitamin B3</strong> (24mg, 150% DV), <strong>Vitamin B5</strong> (5mg, 100% DV), <strong>Vitamin B6</strong> (2mg, 118% DV), <strong>Vitamin B12</strong> (8mcg, 333% DV), plus <strong>1,000mg L-Glutamine</strong> and <strong>200mg L-Alanine</strong> for recovery support." },
-  { question: "How do I use Atlas Hydration Grapefruit?", answer: "Mix one stick pack with <strong>12\u201316 oz of cold water</strong> and shake or stir until dissolved. Drink first thing in the morning, during or after workouts, while traveling, or anytime you need a hydration boost. Each box contains 16 individually wrapped stick packs." },
-];
 
 const CheckSvg = () => (
   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
@@ -30,7 +23,6 @@ const CheckSvg = () => (
 export default function Grapefruit() {
   const { addToCart } = useCart();
   const [quantity, setQuantity] = useState(1);
-  const [openFaq, setOpenFaq] = useState<number | null>(null);
   const [openAccordion, setOpenAccordion] = useState<number | null>(null);
   const [currentImage, setCurrentImage] = useState(0);
   const galleryRef = useRef<HTMLDivElement>(null);
@@ -189,33 +181,22 @@ export default function Grapefruit() {
             <h2 className="section-title">Supplement Facts</h2>
             <p className="section-subtitle">Every ingredient listed. No proprietary blends. No hidden fillers.</p>
           </div>
+          <div className="supplement-facts__tap-hint">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M15 15.5V13a2 2 0 0 1 4 0v2.5" />
+              <path d="M11 15.5V11a2 2 0 0 1 4 0v4.5" />
+              <path d="M7 15.5V13a2 2 0 0 1 4 0v2.5" />
+              <path d="M5 13a2 2 0 0 1 2-2v0" />
+              <path d="M5 15.5V15a6.5 6.5 0 0 0 13 0v-1" />
+              <path d="M5 13v-1a2 2 0 0 1 4 0v3" />
+            </svg>
+            Tap any ingredient to explore
+          </div>
           <SupplementFactsWithPanel otherIngredients="Citric Acid, Bamboo Extract, Grapefruit Oil, Annatto Seed Extract (color)" />
         </div>
       </section>
 
-      <section className="product-faq" aria-label="Frequently asked questions about Atlas Hydration Grapefruit">
-        <div className="container">
-          <div className="section-header">
-            <h2 className="section-title">Frequently Asked Questions</h2>
-            <p className="section-subtitle">Everything you need to know about Atlas Hydration Grapefruit electrolyte mix.</p>
-          </div>
-          <div className="product-faq__list">
-            {faqItems.map((item, i) => (
-              <div className="product-faq__item" key={i}>
-                <button className="product-faq__question" onClick={() => setOpenFaq(openFaq === i ? null : i)} aria-expanded={openFaq === i}>
-                  <h3 style={{ font: "inherit", margin: 0 }}>{item.question}</h3>
-                  <span>{openFaq === i ? "\u2212" : "+"}</span>
-                </button>
-                {openFaq === i && (
-                  <div className="product-faq__answer">
-                    <p dangerouslySetInnerHTML={{ __html: item.answer }} />
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+      <FaqSection />
 
       <section className="cta-section" aria-label="Buy now">
         <div className="cta-section__video-wrap">

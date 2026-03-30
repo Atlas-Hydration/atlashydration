@@ -1273,7 +1273,7 @@ img {
 .cta-section {
   position: relative;
   padding: 160px 0;
-  background: #0a0a0a;
+  background: linear-gradient(135deg, #0a1628 0%, #1a0a14 50%, #0a0a0a 100%);
   overflow: hidden;
   min-height: 80vh;
   display: flex;
@@ -1800,6 +1800,25 @@ img {
 .supplement-facts {
   padding: 80px 0;
   background: #ffffff;
+}
+
+.supplement-facts__tap-hint {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 20px;
+  padding: 8px 16px;
+  background: #f0f0f0;
+  border-radius: 100px;
+  font-size: var(--text-sm);
+  color: rgba(0, 0, 0, 0.5);
+  font-weight: 500;
+  animation: tapPulse 2.5s ease-in-out infinite;
+}
+
+@keyframes tapPulse {
+  0%, 100% { opacity: 0.7; }
+  50% { opacity: 1; }
 }
 
 .supplement-facts__grid {
@@ -3293,9 +3312,22 @@ img {
   border-bottom: 1px solid rgba(255,255,255,0.08);
 }
 
+/* Sticky first column (label) header */
+.compare__table thead th:first-child {
+  position: sticky;
+  left: 0;
+  z-index: 3;
+  background: #0d0d0f;
+}
+
+/* Sticky Atlas column header */
 .compare__th-atlas {
   color: #ffffff;
   font-size: 1rem;
+  position: sticky;
+  left: 100px;
+  z-index: 3;
+  background: #0d0d0f;
 }
 
 .compare__th-atlas img {
@@ -3351,6 +3383,10 @@ img {
   font-weight: 600;
   color: rgba(255,255,255,0.7);
   font-size: var(--text-btn);
+  position: sticky;
+  left: 0;
+  z-index: 2;
+  background: inherit;
 }
 
 .compare__label--score {
@@ -3370,16 +3406,20 @@ img {
 .compare__value--atlas {
   color: #ffffff;
   font-weight: 800;
-}
-
-/* Atlas column highlight */
-.compare__value--atlas {
-  position: relative;
+  position: sticky;
+  left: 100px;
+  z-index: 2;
+  background: inherit;
 }
 
 .compare__table tbody tr {
   transition: background 0.2s ease;
   cursor: pointer;
+  background: #0a0a0c;
+}
+
+.compare__table tbody tr:nth-child(even) {
+  background: #0d0d0f;
 }
 
 .compare__table tbody tr:hover {
@@ -8639,6 +8679,17 @@ img {
   .compare__label {
     font-size: 0.72rem;
     white-space: nowrap;
+    min-width: 70px;
+  }
+
+  .compare__label,
+  .compare__table thead th:first-child {
+    left: 0;
+  }
+
+  .compare__th-atlas,
+  .compare__value--atlas {
+    left: 70px;
   }
 
   .compare__value {
