@@ -1,4 +1,6 @@
-import React from "react";
+"use client";
+
+import React, { useEffect, useRef, useState } from "react";
 
 const cards = [
   {
@@ -22,25 +24,20 @@ const cards = [
     statUnit: "recovery nutrients",
     reveal: (
       <>
-        <p>1,200mg amino acids, 90mg Vitamin C, and a full B-vitamin complex. No competitor includes all four recovery pillars in one stick.</p>
-        <div className="why-atlas__card-pills">
-          {["L-Glutamine", "L-Alanine", "Vitamin C", "B3", "B5", "B6", "B12"].map((p) => (
-            <span className="why-atlas__pill" key={p}>{p}</span>
-          ))}
-        </div>
+        <p>B3, B5, B6, B12, Vitamin C, plus 1,200mg amino acids (L-Glutamine &amp; L-Alanine). No other electrolyte brand includes this full recovery stack.</p>
       </>
     ),
   },
   {
     number: "03",
-    title: "Zero Sugar. Clean Label.",
+    title: "Zero Sugar. Zero Compromise.",
     statNumber: "0",
     statUnit: "grams sugar",
     reveal: (
       <>
-        <p>Sweetened with allulose and stevia. Non-GMO, third-party tested, made in the USA. Nothing to hide.</p>
+        <p>Naturally sweetened with stevia and allulose. Only 25 calories per stick. No artificial flavors, no synthetic dyes, no junk.</p>
         <div className="why-atlas__card-pills">
-          {["Zero Sugar", "Zero Artificial Flavors", "Zero Artificial Colors", "Non-GMO"].map((p) => (
+          {["Stevia Leaf", "Allulose", "No Artificial Colors", "No Artificial Flavors"].map((p) => (
             <span className="why-atlas__pill why-atlas__pill--green" key={p}>{p}</span>
           ))}
         </div>
@@ -54,9 +51,9 @@ const cards = [
     statUnit: "stick. anytime.",
     reveal: (
       <>
-        <p>Flying across time zones, training for a marathon, recovering from a late night — Atlas meets you wherever life takes you.</p>
+        <p>Individually wrapped stick packs that go anywhere. Gym bag, carry-on, desk drawer. Mix with cold water in seconds — no blender, no mess.</p>
         <div className="why-atlas__card-pills">
-          {["Travel", "Training", "Recovery", "Daily Wellness"].map((p) => (
+          {["Travel-Ready", "Gym Bag", "Office", "On-the-Go"].map((p) => (
             <span className="why-atlas__pill" key={p}>{p}</span>
           ))}
         </div>
@@ -64,6 +61,46 @@ const cards = [
     ),
   },
 ];
+
+function WhyAtlasCard({ card }: { card: typeof cards[0] }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setVisible(true);
+          observer.unobserve(el);
+        }
+      },
+      { threshold: 0.5 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <div
+      ref={ref}
+      className={`why-atlas__card why-atlas__card--feature${visible ? " why-atlas__card--visible" : ""}`}
+    >
+      <div className="why-atlas__card-front">
+        <div className="why-atlas__card-number">{card.number}</div>
+        <h3 className="why-atlas__card-title">{card.title}</h3>
+        <div className="why-atlas__card-stat">
+          <span className="why-atlas__card-stat-number">{card.statNumber}</span>
+          <span className="why-atlas__card-stat-unit">{card.statUnit}</span>
+        </div>
+      </div>
+      <div className="why-atlas__card-reveal">
+        {card.reveal}
+      </div>
+    </div>
+  );
+}
 
 export default function WhyAtlasSection() {
   return (
@@ -80,19 +117,7 @@ export default function WhyAtlasSection() {
 
         <div className="why-atlas__grid">
           {cards.map((card) => (
-            <div className="why-atlas__card why-atlas__card--feature" key={card.number}>
-              <div className="why-atlas__card-front">
-                <div className="why-atlas__card-number">{card.number}</div>
-                <h3 className="why-atlas__card-title">{card.title}</h3>
-                <div className="why-atlas__card-stat">
-                  <span className="why-atlas__card-stat-number">{card.statNumber}</span>
-                  <span className="why-atlas__card-stat-unit">{card.statUnit}</span>
-                </div>
-              </div>
-              <div className="why-atlas__card-reveal">
-                {card.reveal}
-              </div>
-            </div>
+            <WhyAtlasCard key={card.number} card={card} />
           ))}
         </div>
 
@@ -113,7 +138,7 @@ export default function WhyAtlasSection() {
               <span className="why-atlas__proof-label">made &amp; sourced</span>
             </div>
           </div>
-          <a href="#products" className="btn btn--white btn--lg">Try Atlas Today</a>
+          <a href="/products/strawberry-lemonade" className="btn btn--white btn--lg">Shop Now</a>
         </div>
       </div>
     </section>
