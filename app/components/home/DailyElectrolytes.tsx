@@ -138,7 +138,7 @@ function StatCards() {
           </div>
           <div className="ed__stat-value">
             <AnimatedNumber count={s.count} suffix={s.suffix} format={s.format} />
-            <div className="ed__stat-label" dangerouslySetInnerHTML={{ __html: s.label.replace("\n", "<br/>") }} />
+            <div className="ed__stat-label">{s.label.split("\n").map((line, j) => <React.Fragment key={j}>{j > 0 && <br />}{line}</React.Fragment>)}</div>
           </div>
         </div>
       ))}

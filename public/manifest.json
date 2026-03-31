@@ -4,7 +4,18 @@
   "description": "Premium zero-sugar electrolyte drink mixes. Hydrate. Recover. Thrive.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#0a1628",
-  "theme_color": "#0a1628",
-  "icons": []
+  "background_color": "#1d1d1f",
+  "theme_color": "#1d1d1f",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "/favicon.ico",
+      "sizes": "48x48",
+      "type": "image/x-icon"
+    }
+  ]
 }

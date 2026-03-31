@@ -83,6 +83,7 @@ export default function CartDrawer() {
                     <div className="cart-item__qty">
                       <button
                         className="cart-item__qty-btn"
+                        aria-label={`Decrease ${item.title} quantity`}
                         onClick={() =>
                           updateQuantity(index, item.quantity - 1)
                         }
@@ -92,6 +93,7 @@ export default function CartDrawer() {
                       <span>{item.quantity}</span>
                       <button
                         className="cart-item__qty-btn"
+                        aria-label={`Increase ${item.title} quantity`}
                         onClick={() =>
                           updateQuantity(index, item.quantity + 1)
                         }

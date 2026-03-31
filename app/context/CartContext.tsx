@@ -123,7 +123,11 @@ function loadLocalCartFromStorage(): CartItem[] {
 
 function saveLocalCart(items: CartItem[]) {
   if (typeof window === "undefined") return;
-  localStorage.setItem(STORAGE_CART_KEY, JSON.stringify(items));
+  try {
+    localStorage.setItem(STORAGE_CART_KEY, JSON.stringify(items));
+  } catch {
+    // quota exceeded or private browsing
+  }
 }
 
 // ---------------------------------------------------------------------------
@@ -199,7 +203,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const syncFromCheckout = useCallback((co: ShopifyCheckout) => {
     checkoutRef.current = co;
     setCheckoutUrl(co.webUrl);
-    localStorage.setItem(STORAGE_CHECKOUT_KEY, co.id);
+    try { localStorage.setItem(STORAGE_CHECKOUT_KEY, co.id); } catch { /* ignore */ }
     setItems(checkoutToItems(co));
   }, []);
 
