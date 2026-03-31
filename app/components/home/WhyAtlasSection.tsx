@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useState } from "react";
 
 const cards = [
   {
@@ -63,29 +63,12 @@ const cards = [
 ];
 
 function WhyAtlasCard({ card }: { card: typeof cards[0] }) {
-  const ref = useRef<HTMLDivElement>(null);
-  const [visible, setVisible] = useState(false);
-
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setVisible(true);
-          observer.unobserve(el);
-        }
-      },
-      { threshold: 0.5 }
-    );
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, []);
+  const [expanded, setExpanded] = useState(false);
 
   return (
     <div
-      ref={ref}
-      className={`why-atlas__card why-atlas__card--feature${visible ? " why-atlas__card--visible" : ""}`}
+      className={`why-atlas__card why-atlas__card--feature${expanded ? " why-atlas__card--expanded" : ""}`}
+      onClick={() => setExpanded((prev) => !prev)}
     >
       <div className="why-atlas__card-front">
         <div className="why-atlas__card-number">{card.number}</div>
