@@ -1,6 +1,8 @@
-"use client";
-
 import Link from "next/link";
+
+function FooterYear() {
+  return <>{new Date().getFullYear()}</>;
+}
 
 export default function Footer() {
   return (
@@ -79,7 +81,7 @@ export default function Footer() {
         <div className="footer__divider"></div>
 
         <div className="footer__bottom">
-          <p>&copy; {new Date().getFullYear()} Atlas Hydration. all rights reserved.</p>
+          <p>&copy; <FooterYear /> Atlas Hydration. all rights reserved.</p>
           <div className="footer__payments">
             <span className="footer__payment-icon">Visa</span>
             <span className="footer__payment-icon">MC</span>

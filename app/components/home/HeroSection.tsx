@@ -1,5 +1,3 @@
-"use client";
-
 import Link from "next/link";
 
 const benefits = [
@@ -61,6 +59,9 @@ export default function HeroSection() {
           src="https://www.youtube.com/embed/l0Dk8Ylqbxk?autoplay=1&mute=1&loop=1&playlist=l0Dk8Ylqbxk&controls=0&showinfo=0&rel=0&modestbranding=1&playsinline=1&enablejsapi=1"
           allow="autoplay; encrypted-media"
           allowFullScreen
+          title="Atlas Hydration hero video background"
+          referrerPolicy="strict-origin-when-cross-origin"
+          loading="lazy"
         />
         <div className="hero__video-overlay" />
       </div>

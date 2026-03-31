@@ -65,10 +65,9 @@ export default function FaqSection() {
                     <path d="M10 4v12M4 10h12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
                   </svg>
                 </button>
-                <div
-                  className="product-faq__answer"
-                  dangerouslySetInnerHTML={{ __html: `<p>${item.answer}</p>` }}
-                />
+                <div className="product-faq__answer">
+                  <p dangerouslySetInnerHTML={{ __html: item.answer }} />
+                </div>
               </div>
             ))}
           </div>
