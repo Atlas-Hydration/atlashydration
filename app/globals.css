@@ -4859,14 +4859,14 @@ img {
 }
 
 .why-atlas__card:hover,
-.why-atlas__card--visible {
+.why-atlas__card--expanded {
   border-color: rgba(255, 255, 255, 0.15);
   transform: translateY(-4px);
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
 }
 
 .why-atlas__card:hover::after,
-.why-atlas__card--visible::after {
+.why-atlas__card--expanded::after {
   opacity: 1;
 }
 
@@ -4876,14 +4876,14 @@ img {
 }
 
 .why-atlas__card:hover .why-atlas__card-front,
-.why-atlas__card--visible .why-atlas__card-front {
+.why-atlas__card--expanded .why-atlas__card-front {
   opacity: 0;
   transform: translateY(-8px);
   pointer-events: none;
   position: absolute;
 }
 
-/* Reveal content (shown on hover) */
+/* Reveal content (shown on hover or tap) */
 .why-atlas__card-reveal {
   opacity: 0;
   transform: translateY(12px);
@@ -4893,7 +4893,7 @@ img {
 }
 
 .why-atlas__card:hover .why-atlas__card-reveal,
-.why-atlas__card--visible .why-atlas__card-reveal {
+.why-atlas__card--expanded .why-atlas__card-reveal {
   opacity: 1;
   transform: translateY(0);
   position: relative;
@@ -4929,7 +4929,7 @@ img {
 }
 
 .why-atlas__card:hover .why-atlas__card-bar-fill,
-.why-atlas__card--visible .why-atlas__card-bar-fill {
+.why-atlas__card--expanded .why-atlas__card-bar-fill {
   width: var(--bar-width);
 }
 
@@ -4969,7 +4969,7 @@ img {
 }
 
 .why-atlas__card:hover .why-atlas__pill,
-.why-atlas__card--visible .why-atlas__pill {
+.why-atlas__card--expanded .why-atlas__pill {
   border-color: rgba(255, 255, 255, 0.25);
   color: rgba(255, 255, 255, 0.8);
 }
@@ -4980,7 +4980,7 @@ img {
 }
 
 .why-atlas__card:hover .why-atlas__pill--green,
-.why-atlas__card--visible .why-atlas__pill--green {
+.why-atlas__card--expanded .why-atlas__pill--green {
   border-color: rgba(34, 197, 94, 0.5);
   color: rgba(34, 197, 94, 0.9);
 }
@@ -5096,13 +5096,28 @@ img {
   }
 
   .why-atlas__card-reveal {
-    display: none;
+    inset: 24px 20px;
   }
 
   .why-atlas__card:hover .why-atlas__card-front {
     opacity: 1;
     transform: none;
     position: relative;
+    pointer-events: auto;
+  }
+
+  .why-atlas__card--expanded .why-atlas__card-front {
+    opacity: 0;
+    transform: translateY(-8px);
+    pointer-events: none;
+    position: absolute;
+  }
+
+  .why-atlas__card--expanded .why-atlas__card-reveal {
+    opacity: 1;
+    transform: translateY(0);
+    position: relative;
+    inset: auto;
   }
 
   .why-atlas__bottom {
