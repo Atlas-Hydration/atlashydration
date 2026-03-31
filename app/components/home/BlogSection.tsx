@@ -43,10 +43,10 @@ export default function BlogSection() {
     <section className="blog" id="blog" aria-label="Hydration Science">
       <div className="container">
         <div className="section-header">
-          <p className="section-eyebrow">The Investigation</p>
-          <h2 className="section-title">The Hydration Files</h2>
+          <p className="section-eyebrow">The Science</p>
+          <h2 className="section-title">Hydration Explained</h2>
           <p className="section-subtitle">
-            An investigative series uncovering the science Big Sports Drinks don&apos;t want you to know.
+            The science behind proper hydration — what your body needs, and why most drinks fall short.
           </p>
         </div>
         <div className="blog__grid blog__grid--4">
