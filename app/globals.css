@@ -5099,11 +5099,36 @@ img {
     inset: 24px 20px;
   }
 
+  /* Disable all hover effects on mobile — only tap (--expanded) should work */
+  .why-atlas__card:hover {
+    border-color: rgba(255, 255, 255, 0.08);
+    transform: none;
+    box-shadow: none;
+  }
+
+  .why-atlas__card:hover::after {
+    opacity: 0;
+  }
+
   .why-atlas__card:hover .why-atlas__card-front {
     opacity: 1;
     transform: none;
     position: relative;
     pointer-events: auto;
+  }
+
+  .why-atlas__card:hover .why-atlas__card-reveal {
+    opacity: 0;
+    transform: translateY(12px);
+    position: absolute;
+    inset: 24px 20px;
+  }
+
+  /* Tap to expand */
+  .why-atlas__card--expanded {
+    border-color: rgba(255, 255, 255, 0.15);
+    transform: translateY(-4px);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
   }
 
   .why-atlas__card--expanded .why-atlas__card-front {
@@ -6066,7 +6091,8 @@ img {
   .product-hero__info {
     position: static;
     max-width: 100%;
-    margin: 0 auto;
+    width: 100%;
+    margin: 0;
   }
 
   .supplement-facts__grid {
@@ -6388,7 +6414,7 @@ img {
   }
 
   .founder {
-    min-height: 60vh;
+    min-height: auto;
   }
 
   .cta-section {
@@ -6743,103 +6769,50 @@ img {
 }
 
 .ingredient-popup__card {
-  display: flex;
-  align-items: flex-start;
-  gap: 16px;
-  padding: 18px 20px;
-  background: var(--color-bg-light);
-  border-radius: 16px;
-  border: 1px solid var(--color-border);
-  transform: translateY(0);
-  opacity: 1;
-  transition: background 0.2s ease, border-color 0.2s ease;
-  cursor: pointer;
-  text-decoration: none;
-  color: inherit;
-}
-
-.ingredient-popup__card:hover {
-  background: rgba(44, 95, 138, 0.06);
-  border-color: rgba(44, 95, 138, 0.25);
-}
-
-.ingredient-popup__card-link {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  font-size: var(--text-xs);
-  color: var(--color-primary);
-  margin-top: 6px;
-  opacity: 0.7;
-  transition: opacity 0.2s ease;
-}
-
-.ingredient-popup__card:hover .ingredient-popup__card-link {
-  opacity: 1;
-}
-
-.ingredient-popup-overlay.active .ingredient-popup__card {
-  transform: translateY(0);
-  opacity: 1;
-}
-
-.ingredient-popup-overlay.active .ingredient-popup__card:nth-child(1) { transition-delay: 0.08s; }
-.ingredient-popup-overlay.active .ingredient-popup__card:nth-child(2) { transition-delay: 0.14s; }
-.ingredient-popup-overlay.active .ingredient-popup__card:nth-child(3) { transition-delay: 0.20s; }
-.ingredient-popup-overlay.active .ingredient-popup__card:nth-child(4) { transition-delay: 0.26s; }
-.ingredient-popup-overlay.active .ingredient-popup__card:nth-child(5) { transition-delay: 0.32s; }
-.ingredient-popup-overlay.active .ingredient-popup__card:nth-child(6) { transition-delay: 0.38s; }
-
-.ingredient-popup__card-icon {
-  width: 40px;
-  height: 40px;
-  border-radius: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  background: rgba(44, 95, 138, 0.1);
-  color: var(--color-primary);
-}
-
-.ingredient-popup__card-content {
-  flex: 1;
+  padding: 16px;
+  background: #fff;
+  border-radius: 12px;
+  border: 1px solid rgba(0, 0, 0, 0.06);
 }
 
 .ingredient-popup__card-top {
   display: flex;
-  align-items: baseline;
-  gap: 10px;
-  margin-bottom: 4px;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
 }
 
 .ingredient-popup__card-name {
-  font-size: var(--text-base);
+  font-size: var(--text-sm);
   font-weight: 700;
   color: var(--color-text);
-}
-
-.ingredient-popup__card-form {
-  font-size: var(--text-xs);
-  color: var(--color-text-dim);
-  font-weight: 400;
 }
 
 .ingredient-popup__card-dose {
   font-size: var(--text-sm);
   font-weight: 600;
   color: var(--color-primary);
-  background: rgba(44, 95, 138, 0.08);
+  background: rgba(0, 0, 0, 0.04);
   padding: 2px 10px;
   border-radius: 6px;
-  margin-left: auto;
   white-space: nowrap;
 }
 
 .ingredient-popup__card-desc {
-  font-size: var(--text-sm);
+  font-size: var(--text-xs);
   color: var(--color-text-muted);
   line-height: 1.5;
+  margin: 0;
+}
+
+.ingredient-popup__card-dv {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: rgba(0, 0, 0, 0.35);
+  margin-top: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
 }
 
 @media (max-width: 600px) {

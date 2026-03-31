@@ -54,7 +54,7 @@ export default function FaqSection() {
           </div>
           <div className="product-faq__list">
             {faqItems.map((item, i) => (
-              <div className={`product-faq__item${openIndex === i ? " active" : ""}`} key={i}>
+              <div className={`product-faq__item${openIndex === i ? " open" : ""}`} key={i}>
                 <button
                   className="product-faq__question"
                   onClick={() => setOpenIndex(openIndex === i ? null : i)}
@@ -67,7 +67,6 @@ export default function FaqSection() {
                 </button>
                 <div
                   className="product-faq__answer"
-                  style={{ display: openIndex === i ? "block" : "none" }}
                   dangerouslySetInnerHTML={{ __html: `<p>${item.answer}</p>` }}
                 />
               </div>

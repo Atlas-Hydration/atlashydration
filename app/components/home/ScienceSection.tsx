@@ -12,15 +12,34 @@ interface IngredientItem {
 interface IngredientGroup {
   title: string;
   dose: string;
-  icon: string;
+  icon: React.ReactNode;
   items: IngredientItem[];
 }
+
+/* SVG icons for each category */
+const ElectrolyteIcon = () => (
+  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
+  </svg>
+);
+
+const VitaminIcon = () => (
+  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+  </svg>
+);
+
+const AminoIcon = () => (
+  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M18 20V6a2 2 0 00-2-2H8a2 2 0 00-2 2v14" /><path d="M2 20h20" /><path d="M14 12H10" />
+  </svg>
+);
 
 const groups: IngredientGroup[] = [
   {
     title: "Electrolytes",
     dose: "1,769mg",
-    icon: "\u26A1",
+    icon: <ElectrolyteIcon />,
     items: [
       { name: "Sodium", amount: "600mg", dv: "26%", note: "From Sodium Citrate & Pink Himalayan Salt" },
       { name: "Potassium", amount: "500mg", dv: "11%", note: "From Potassium Citrate" },
@@ -31,11 +50,11 @@ const groups: IngredientGroup[] = [
   {
     title: "Vitamins",
     dose: "116mg",
-    icon: "\uD83D\uDEE1",
+    icon: <VitaminIcon />,
     items: [
       { name: "Vitamin C", amount: "90mg", dv: "100%", note: "Immune support & antioxidant" },
-      { name: "Vitamin B3", amount: "24mg", dv: "150%", note: "Niacin \u2014 energy metabolism" },
-      { name: "Vitamin B5", amount: "5mg", dv: "100%", note: "Pantothenic Acid \u2014 adrenal support" },
+      { name: "Vitamin B3", amount: "24mg", dv: "150%", note: "Niacin — energy metabolism" },
+      { name: "Vitamin B5", amount: "5mg", dv: "100%", note: "Pantothenic Acid — adrenal support" },
       { name: "Vitamin B6", amount: "2mg", dv: "118%", note: "Neurotransmitter production" },
       { name: "Vitamin B12", amount: "8mcg", dv: "333%", note: "Red blood cell formation" },
     ],
@@ -43,7 +62,7 @@ const groups: IngredientGroup[] = [
   {
     title: "Amino Acids",
     dose: "1,200mg",
-    icon: "\uD83D\uDCAA",
+    icon: <AminoIcon />,
     items: [
       { name: "L-Glutamine", amount: "1,000mg", note: "Gut health & immune function" },
       { name: "L-Alanine", amount: "200mg", note: "Muscle recovery & endurance" },
@@ -63,17 +82,21 @@ function IngredientPopup({ group, onClose }: { group: IngredientGroup; onClose: 
               <div className="ingredient-popup__dose">{group.dose} per serving</div>
             </div>
           </div>
-          <button className="ingredient-popup__close" onClick={onClose} aria-label="Close">&times;</button>
+          <button className="ingredient-popup__close" onClick={onClose} aria-label="Close">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+              <path d="M18 6L6 18M6 6l12 12" />
+            </svg>
+          </button>
         </div>
         <div className="ingredient-popup__grid">
           {group.items.map((item) => (
             <div className="ingredient-popup__card" key={item.name}>
-              <div className="ingredient-popup__card-header">
+              <div className="ingredient-popup__card-top">
                 <span className="ingredient-popup__card-name">{item.name}</span>
-                <span className="ingredient-popup__card-amount">{item.amount}</span>
+                <span className="ingredient-popup__card-dose">{item.amount}</span>
               </div>
-              {item.dv && <div className="ingredient-popup__card-dv">{item.dv} Daily Value</div>}
-              <p className="ingredient-popup__card-note">{item.note}</p>
+              <p className="ingredient-popup__card-desc">{item.note}</p>
+              {item.dv && <span className="ingredient-popup__card-dv">{item.dv} Daily Value</span>}
             </div>
           ))}
         </div>

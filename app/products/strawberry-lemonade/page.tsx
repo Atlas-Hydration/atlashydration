@@ -223,17 +223,6 @@ export default function StrawberryLemonade() {
             <h2 className="section-title">Supplement Facts</h2>
             <p className="section-subtitle">Every ingredient listed. No proprietary blends. No hidden fillers.</p>
           </div>
-          <div className="supplement-facts__tap-hint">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M15 15.5V13a2 2 0 0 1 4 0v2.5" />
-              <path d="M11 15.5V11a2 2 0 0 1 4 0v4.5" />
-              <path d="M7 15.5V13a2 2 0 0 1 4 0v2.5" />
-              <path d="M5 13a2 2 0 0 1 2-2v0" />
-              <path d="M5 15.5V15a6.5 6.5 0 0 0 13 0v-1" />
-              <path d="M5 13v-1a2 2 0 0 1 4 0v3" />
-            </svg>
-            Tap any ingredient to explore
-          </div>
           <SupplementFactsWithPanel />
         </div>
       </section>
