@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#1a1a1a"/>
+      <stop offset="100%" stop-color="#0a0a0a"/>
+    </linearGradient>
+  </defs>
+  <rect width="32" height="32" rx="8" fill="url(#g)"/>
+  <!-- Water drop shape -->
+  <path d="M16 4C14.5 8 10.5 12.5 10.5 17a5.5 5.5 0 0011 0c0-4.5-4-9-5.5-13z" fill="none" stroke="#ffffff" stroke-width="1.8" stroke-linejoin="round"/>
+  <!-- A letterform inside drop -->
+  <path d="M13.2 22L16 12l2.8 10M14 19.5h4" fill="none" stroke="#ffffff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
