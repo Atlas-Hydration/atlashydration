@@ -445,93 +445,113 @@ export function CartProvider({ children }: { children: ReactNode }) {
   // -----------------------------------------------------------------------
   // checkout
   // -----------------------------------------------------------------------
+  // -----------------------------------------------------------------------
+  // Helper: resolve a cart item to its product variant GID
+  // -----------------------------------------------------------------------
+  function resolveVariantGid(item: CartItem): string | null {
+    const product = PRODUCTS[item.slug];
+    if (product) return product.variantId;
+
+    // After Shopify SDK sync, slug is empty — match by variantId or title
+    for (const slug of Object.keys(PRODUCTS)) {
+      const p = PRODUCTS[slug];
+      if (item.variantId === p.variantId) return p.variantId;
+      if (item.title.toLowerCase().includes(p.name.toLowerCase())) return p.variantId;
+    }
+
+    // Try to decode base64 variant ID from Shopify SDK
+    if (item.variantId) {
+      try {
+        const decoded = atob(item.variantId);
+        if (decoded.startsWith("gid://")) return decoded;
+      } catch { /* not base64 */ }
+      if (item.variantId.startsWith("gid://")) return item.variantId;
+    }
+    return null;
+  }
+
   const checkout = useCallback(() => {
     const hasSubscriptions = items.some((i) => i.subscriptionFrequency);
 
-    // If any item has a subscription, build a /cart/ URL with selling plan IDs
-    // so Appstle can create the subscription at checkout.
-    // Also use this path as fallback when Shopify SDK checkout isn't available.
-    if (items.length > 0) {
-      const co = checkoutRef.current;
+    if (items.length === 0) return;
 
-      // Use Shopify SDK checkout only if no subscriptions
-      if (!hasSubscriptions && co && co.webUrl) {
-        window.location.href = co.webUrl;
+    const co = checkoutRef.current;
+
+    // Use Shopify SDK checkout for non-subscription orders
+    if (!hasSubscriptions && co && co.webUrl) {
+      window.location.href = co.webUrl;
+      return;
+    }
+
+    // For subscriptions: use Storefront API cartCreate which natively supports selling plans.
+    // For non-subscription fallback: use /cart/ permalink.
+    if (hasSubscriptions) {
+      const lines = items
+        .map((item) => {
+          const gid = resolveVariantGid(item);
+          if (!gid) return null;
+          const line: { merchandiseId: string; quantity: number; sellingPlanId?: string } = {
+            merchandiseId: gid,
+            quantity: item.quantity,
+          };
+          if (item.subscriptionFrequency && SELLING_PLANS[item.subscriptionFrequency]) {
+            line.sellingPlanId = `gid://shopify/SellingPlan/${SELLING_PLANS[item.subscriptionFrequency]}`;
+          }
+          return line;
+        })
+        .filter(Boolean);
+
+      if (lines.length === 0) {
+        window.location.href = `https://${SHOPIFY_DOMAIN}`;
         return;
       }
 
-      // Build /cart/ URL with optional selling plan IDs
+      // Storefront API cartCreate mutation
+      const mutation = `mutation cartCreate($input: CartInput!) {
+        cartCreate(input: $input) {
+          cart { checkoutUrl }
+          userErrors { field message }
+        }
+      }`;
+
+      fetch(`https://${SHOPIFY_DOMAIN}/api/2025-01/graphql.json`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-Shopify-Storefront-Access-Token": STOREFRONT_TOKEN,
+        },
+        body: JSON.stringify({
+          query: mutation,
+          variables: { input: { lines } },
+        }),
+      })
+        .then((r) => r.json())
+        .then((data) => {
+          const checkoutUrlFromCart = data?.data?.cartCreate?.cart?.checkoutUrl;
+          if (checkoutUrlFromCart) {
+            window.location.href = checkoutUrlFromCart;
+          } else {
+            // Fallback: go to store
+            console.error("cartCreate failed:", data?.data?.cartCreate?.userErrors);
+            window.location.href = `https://${SHOPIFY_DOMAIN}`;
+          }
+        })
+        .catch(() => {
+          window.location.href = `https://${SHOPIFY_DOMAIN}`;
+        });
+    } else {
+      // No subscriptions — /cart/ permalink
       const parts = items
         .map((item) => {
-          // Try slug lookup first, then match by variantId or title
-          let numericId: string | null = null;
-
-          const product = PRODUCTS[item.slug];
-          if (product) {
-            numericId = product.variantId.replace("gid://shopify/ProductVariant/", "");
-          } else {
-            // After Shopify SDK sync, slug is empty. Match by variantId or title.
-            for (const slug of Object.keys(PRODUCTS)) {
-              const p = PRODUCTS[slug];
-              if (item.variantId && (item.variantId === p.variantId || item.variantId.includes(p.variantId.split("/").pop()!))) {
-                numericId = p.variantId.replace("gid://shopify/ProductVariant/", "");
-                break;
-              }
-              if (item.title.toLowerCase().includes(p.name.toLowerCase())) {
-                numericId = p.variantId.replace("gid://shopify/ProductVariant/", "");
-                break;
-              }
-            }
-            // Last resort: try to decode base64 variantId
-            if (!numericId && item.variantId) {
-              try {
-                const decoded = atob(item.variantId);
-                numericId = decoded.replace("gid://shopify/ProductVariant/", "");
-              } catch {
-                numericId = item.variantId.replace("gid://shopify/ProductVariant/", "");
-              }
-            }
-          }
-
-          if (!numericId) return null;
-          return { numericId, quantity: item.quantity, sellingPlan: item.subscriptionFrequency ? SELLING_PLANS[item.subscriptionFrequency] : null };
+          const gid = resolveVariantGid(item);
+          if (!gid) return null;
+          const numericId = gid.replace("gid://shopify/ProductVariant/", "");
+          return `${numericId}:${item.quantity}`;
         })
-        .filter(Boolean) as Array<{ numericId: string; quantity: number; sellingPlan: string | null }>;
+        .filter(Boolean);
 
       if (parts.length > 0) {
-        if (hasSubscriptions) {
-          // Selling plans require a form POST to /cart/add — the /cart/ permalink ignores them.
-          const form = document.createElement("form");
-          form.method = "POST";
-          form.action = `https://${SHOPIFY_DOMAIN}/cart/add`;
-
-          parts.forEach((p, i) => {
-            const addField = (name: string, value: string) => {
-              const input = document.createElement("input");
-              input.type = "hidden";
-              input.name = name;
-              input.value = value;
-              form.appendChild(input);
-            };
-            addField(`items[${i}][id]`, p.numericId);
-            addField(`items[${i}][quantity]`, String(p.quantity));
-            if (p.sellingPlan) {
-              addField(`items[${i}][selling_plan]`, p.sellingPlan);
-            }
-          });
-
-          const returnInput = document.createElement("input");
-          returnInput.type = "hidden";
-          returnInput.name = "return_to";
-          returnInput.value = "/checkout";
-          form.appendChild(returnInput);
-
-          document.body.appendChild(form);
-          form.submit();
-        } else {
-          const cartPath = parts.map((p) => `${p.numericId}:${p.quantity}`).join(",");
-          window.location.href = `https://${SHOPIFY_DOMAIN}/cart/${cartPath}`;
-        }
+        window.location.href = `https://${SHOPIFY_DOMAIN}/cart/${parts.join(",")}`;
       } else {
         window.location.href = `https://${SHOPIFY_DOMAIN}`;
       }
