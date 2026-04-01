@@ -133,11 +133,11 @@ export default function ProductPage({ config }: { config: ProductPageConfig }) {
                     </div>
                     <span className="purchase-option__label">Subscribe &amp; Save</span>
                     <span className="purchase-option__discount-badge">20% OFF</span>
-                    <div className="purchase-option__pricing">
-                      <span className="purchase-option__price">$23.99</span>
-                      <span className="purchase-option__per">$1.50 / Stick</span>
-                      <span className="purchase-option__price-original">$29.99</span>
-                    </div>
+                  </div>
+                  <div className="purchase-option__price-row">
+                    <span className="purchase-option__price">$23.99</span>
+                    <span className="purchase-option__per">$1.50 / Stick</span>
+                    <span className="purchase-option__price-original">$29.99</span>
                   </div>
                   <div className="purchase-option__savings-bar">
                     You save $6.00 every order + free shipping
@@ -162,10 +162,10 @@ export default function ProductPage({ config }: { config: ProductPageConfig }) {
                       <span className="purchase-option__radio-custom" />
                     </div>
                     <span className="purchase-option__label">One-time Purchase</span>
-                    <div className="purchase-option__pricing">
-                      <span className="purchase-option__price">$29.99</span>
-                      <span className="purchase-option__per">$1.87 / Stick</span>
-                    </div>
+                  </div>
+                  <div className="purchase-option__price-row">
+                    <span className="purchase-option__price">$29.99</span>
+                    <span className="purchase-option__per">$1.87 / Stick</span>
                   </div>
                 </label>
               </div>
