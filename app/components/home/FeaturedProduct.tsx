@@ -77,6 +77,7 @@ export default function FeaturedProduct() {
     setDragOffset(0);
   }, [selectedFlavor]);
 
+
   const handleAdd = async () => {
     setAdding(true);
     const subFreq = purchaseType === "subscribe" ? frequency : undefined;
