@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import { CartProvider } from "@/app/context/CartContext";
+import { PopupProvider } from "@/app/components/Popup";
 import Header from "@/app/components/Header";
 import Footer from "@/app/components/Footer";
 import CartDrawer from "@/app/components/CartDrawer";
@@ -47,11 +48,13 @@ export default function RootLayout({
       </head>
       <body>
         <CartProvider>
-          <ScrollToTop />
-          <Header />
-          {children}
-          <Footer />
-          <CartDrawer />
+          <PopupProvider>
+            <ScrollToTop />
+            <Header />
+            {children}
+            <Footer />
+            <CartDrawer />
+          </PopupProvider>
         </CartProvider>
       </body>
     </html>
