@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Atlas Packaging Lab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800&display=swap" rel="stylesheet">
+<style>
+/* ─── RESET ─── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'DM Sans', sans-serif; background: #0A0A0A; color: #E0E0E0; overflow-x: hidden; -webkit-font-smoothing: antialiased; }
+button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
+input { font-family: inherit; }
+
+/* ─── TOP BAR ─── */
+.topbar {
+  height: 52px; display: flex; align-items: center; justify-content: space-between;
+  padding: 0 20px; border-bottom: 1px solid #2A2A2A; background: #0E0E0E;
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+}
+.topbar__left { display: flex; align-items: center; gap: 14px; }
+.topbar__logo { display: flex; align-items: center; gap: 8px; }
+.topbar__logo svg { height: 22px; width: auto; }
+.topbar__logo-text { font-size: 15px; font-weight: 700; color: #fff; letter-spacing: -0.01em; }
+.topbar__label { font-family: 'DM Mono', monospace; font-size: 12px; color: #888; }
+.topbar__label span { color: #E8432D; font-weight: 500; }
+.topbar__right { display: flex; align-items: center; gap: 12px; }
+.topbar__seed { font-family: 'DM Mono', monospace; font-size: 11px; color: #555; }
+.topbar__btn { font-size: 11px; font-weight: 600; padding: 6px 14px; border-radius: 6px; letter-spacing: 0.03em; transition: all 0.15s; }
+.topbar__btn--outline { border: 1px solid #3A3A3A; color: #999; }
+.topbar__btn--outline:hover { border-color: #666; color: #ccc; }
+.topbar__btn--red { background: #E8432D; color: #fff; }
+.topbar__btn--red:hover { background: #d03a26; }
+
+/* ─── TABS ─── */
+.tabs {
+  display: flex; gap: 0; padding: 0 20px; padding-left: 240px;
+  border-bottom: 1px solid #2A2A2A; background: #0E0E0E;
+  position: fixed; top: 52px; left: 0; right: 0; z-index: 99;
+}
+.tab {
+  font-size: 13px; font-weight: 500; color: #666; padding: 12px 20px;
+  border-bottom: 1.5px solid transparent; transition: all 0.15s;
+}
+.tab:hover { color: #aaa; }
+.tab.active { color: #fff; border-bottom-color: #E8432D; }
+
+/* ─── SIDEBAR ─── */
+.sidebar {
+  position: fixed; top: 52px; left: 0; bottom: 0; width: 220px;
+  background: #141414; border-right: 1px solid #2A2A2A;
+  padding: 20px 0; overflow-y: auto; z-index: 98;
+}
+.sidebar__section { padding: 0 16px; margin-bottom: 20px; }
+.sidebar__section-label {
+  font-family: 'DM Mono', monospace; font-size: 10px; font-weight: 500;
+  text-transform: uppercase; letter-spacing: 0.1em; color: #3A3A3A;
+  margin-bottom: 10px;
+}
+.sidebar__item {
+  display: flex; align-items: center; gap: 10px; width: 100%;
+  padding: 8px 12px; border-radius: 6px; font-size: 13px; color: #888;
+  transition: all 0.15s; text-align: left; border: 1px solid transparent;
+}
+.sidebar__item:hover { background: #1C1C1C; color: #ccc; }
+.sidebar__item.active { background: #1C1C1C; color: #fff; border-color: #E8432D; }
+.sidebar__dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.sidebar__item-info { display: flex; flex-direction: column; }
+.sidebar__item-name { font-weight: 500; }
+.sidebar__item-sub { font-family: 'DM Mono', monospace; font-size: 9px; color: #555; margin-top: 1px; }
+
+/* Sidebar radio items */
+.sidebar__radio {
+  display: flex; align-items: center; gap: 8px; width: 100%;
+  padding: 6px 12px; border-radius: 6px; font-size: 12px; color: #888;
+  transition: all 0.15s; text-align: left;
+}
+.sidebar__radio:hover { color: #ccc; }
+.sidebar__radio.active { color: #fff; }
+.sidebar__radio-circle {
+  width: 14px; height: 14px; border-radius: 50%; border: 1.5px solid #555;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  transition: all 0.15s;
+}
+.sidebar__radio.active .sidebar__radio-circle { border-color: #E8432D; }
+.sidebar__radio.active .sidebar__radio-circle::after {
+  content: ''; width: 6px; height: 6px; border-radius: 50%; background: #E8432D;
+}
+
+/* Sidebar pill buttons */
+.sidebar__pills { display: flex; gap: 6px; }
+.sidebar__pill {
+  flex: 1; padding: 6px 0; border-radius: 6px; border: 1px solid #2A2A2A;
+  font-family: 'DM Mono', monospace; font-size: 11px; font-weight: 500;
+  color: #666; text-align: center; transition: all 0.15s;
+}
+.sidebar__pill:hover { border-color: #555; color: #aaa; }
+.sidebar__pill.active { border-color: #E8432D; color: #fff; }
+
+/* ─── MAIN CANVAS ─── */
+.canvas {
+  margin-left: 220px; margin-top: 92px; min-height: calc(100vh - 92px);
+  padding: 32px; display: flex; flex-direction: column;
+}
+.canvas__label {
+  font-family: 'DM Mono', monospace; font-size: 10px; font-weight: 500;
+  text-transform: uppercase; letter-spacing: 0.1em; color: #3A3A3A;
+  margin-bottom: 24px;
+}
+.canvas__grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 24px; flex: 1;
+}
+
+/* ─── CARD ─── */
+.card {
+  background: #141414; border-radius: 12px; border: 1px solid #2A2A2A;
+  padding: 24px; display: flex; flex-direction: column; align-items: center;
+  transition: border-color 0.2s;
+}
+.card:hover { border-color: #3A3A3A; }
+.card__viewport {
+  width: 100%; height: 300px; perspective: 900px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: grab; user-select: none; position: relative;
+}
+.card__viewport:active { cursor: grabbing; }
+.card__hint {
+  position: absolute; bottom: 8px; left: 50%; transform: translateX(-50%);
+  font-family: 'DM Mono', monospace; font-size: 9px; color: #3A3A3A;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  transition: opacity 0.3s; pointer-events: none;
+}
+.card__meta { width: 100%; margin-top: 16px; }
+.card__meta-name { font-size: 14px; font-weight: 600; color: #fff; }
+.card__meta-info { font-family: 'DM Mono', monospace; font-size: 11px; color: #555; margin-top: 2px; }
+.card__tags { display: flex; gap: 6px; margin-top: 10px; flex-wrap: wrap; }
+.card__tag {
+  font-family: 'DM Mono', monospace; font-size: 9px; font-weight: 500;
+  color: #555; padding: 3px 8px; border-radius: 4px; border: 1px solid #2A2A2A;
+  letter-spacing: 0.04em;
+}
+
+/* ─── EXPORT MODAL ─── */
+.modal-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.7);
+  z-index: 200; display: none; align-items: center; justify-content: center;
+}
+.modal-overlay.open { display: flex; }
+.modal {
+  background: #141414; border-radius: 14px; border: 1px solid #2A2A2A;
+  width: 380px; padding: 28px;
+}
+.modal__title { font-size: 16px; font-weight: 600; color: #fff; margin-bottom: 4px; }
+.modal__sub { font-size: 12px; color: #555; margin-bottom: 20px; }
+.modal__option {
+  background: #1C1C1C; border-radius: 8px; padding: 14px 16px;
+  margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between;
+  border: 1px solid transparent; cursor: pointer; transition: all 0.15s;
+}
+.modal__option:hover { border-color: #3A3A3A; transform: translateY(-1px); }
+.modal__option-info { display: flex; flex-direction: column; }
+.modal__option-title { font-size: 13px; font-weight: 600; color: #ddd; }
+.modal__option-desc { font-size: 10px; color: #555; margin-top: 2px; }
+.modal__option-badge {
+  font-family: 'DM Mono', monospace; font-size: 9px; font-weight: 600;
+  padding: 3px 8px; border-radius: 4px; background: #1A1A1A; color: #888; border: 1px solid #2A2A2A;
+}
+.modal__actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 20px; }
+.modal__btn { font-size: 12px; font-weight: 600; padding: 8px 18px; border-radius: 8px; transition: all 0.15s; }
+.modal__btn--ghost { color: #666; }
+.modal__btn--ghost:hover { color: #aaa; }
+.modal__btn--red { background: #E8432D; color: #fff; }
+.modal__btn--red:hover { background: #d03a26; }
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="topbar">
+  <div class="topbar__left">
+    <div class="topbar__logo">
+      <svg viewBox="0 0 745 171" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M208.3 10.2a2.04 2.04 0 100-4.08 2.04 2.04 0 000 4.08z" fill="#fff"/>
+        <path d="M205.6 13.6a2.04 2.04 0 100-4.08 2.04 2.04 0 000 4.08z" fill="#fff"/>
+        <path d="M202.8 17.8a2.04 2.04 0 100-4.08 2.04 2.04 0 000 4.08z" fill="#fff"/>
+        <path d="M179.1 39.5a2.04 2.04 0 100-4.08 2.04 2.04 0 000 4.08z" fill="#fff"/>
+        <path d="M162.9 48a2.04 2.04 0 100-4.08 2.04 2.04 0 000 4.08z" fill="#fff"/>
+        <path d="M97.4 69.5a2.04 2.04 0 100-4.08 2.04 2.04 0 000 4.08z" fill="#fff"/>
+        <path d="M107.3 80.6a2.04 2.04 0 100-4.08 2.04 2.04 0 000 4.08z" fill="#fff"/>
+        <path d="M106.5 85a2.04 2.04 0 100-4.08 2.04 2.04 0 000 4.08z" fill="#fff"/>
+        <path d="M133.9 106.8a2.04 2.04 0 100-4.08 2.04 2.04 0 000 4.08z" fill="#fff"/>
+        <path d="M113.1 113.6a2.04 2.04 0 100-4.08 2.04 2.04 0 000 4.08z" fill="#fff"/>
+        <path d="M109.4 117a2.04 2.04 0 100-4.08 2.04 2.04 0 000 4.08z" fill="#fff"/>
+        <path d="M94.7 132.8a2.04 2.04 0 100-4.08 2.04 2.04 0 000 4.08z" fill="#fff"/>
+        <path d="M112.3 154.7a2.04 2.04 0 100-4.08 2.04 2.04 0 000 4.08z" fill="#fff"/>
+        <path d="M115.2 157.9a2.04 2.04 0 100-4.08 2.04 2.04 0 000 4.08z" fill="#fff"/>
+        <path d="M86 169.4a2.04 2.04 0 100-4.08 2.04 2.04 0 000 4.08z" fill="#fff"/>
+        <path d="M72.6 169.4a2.04 2.04 0 100-4.08 2.04 2.04 0 000 4.08z" fill="#fff"/>
+        <path d="M81.4 169.4a1.66 1.66 0 100-3.33 1.66 1.66 0 000 3.33z" fill="#fff"/>
+        <path d="M77.3 169.4a1.66 1.66 0 100-3.33 1.66 1.66 0 000 3.33z" fill="#fff"/>
+        <path d="M250.9 168L320.8 9.9h17.2l70.2 158.2h-21.6l-20.5-46.1h-73.7l-20.1 46.1h-21.4zm78.2-130.1l-28.5 65.3h57.2l-28.7-65.3z" fill="#fff"/>
+        <path d="M458.5 169.2c-10.2 0-18.5-2.9-24.7-8.7-6.3-5.8-9.4-14.2-9.4-25.4V74.3h-23.6V56.7h23.6V25.8h19.1v30.9h32.1v17.6h-32.1v58.4c0 7 1.5 11.9 4.4 14.7 3 2.8 7.7 4.3 14.1 4.3 5.6 0 10.2-.7 13.6-2.2v17.1c-5.3 1.8-11.1 2.7-17.1 2.7z" fill="#fff"/>
+        <path d="M494.7 168V1h19.2v167h-19.2z" fill="#fff"/>
+        <path d="M584.3 170.2c-15.5 0-28.4-5.6-38.8-17-10.5-11.3-15.7-24.9-15.7-40.9 0-16 5.2-29.7 15.7-41 10.5-11.3 23.4-16.9 38.8-16.9 8.2 0 15.8 1.8 22.8 5.5 7.1 3.7 12.5 8.3 16.4 13.9V56.7h19.1v111.4h-19.1v-17.2c-3.9 5.6-9.3 10.3-16.4 13.9-7.1 3.7-14.6 5.5-22.8 5.5zm2.9-17.6c11 0 20.1-3.8 27.2-11.6 7.1-7.8 10.7-17.3 10.7-28.7 0-11.4-3.6-21-10.7-28.7-7.1-7.8-16.2-11.6-27.2-11.6s-20.3 3.9-27.4 11.6c-7.1 7.7-10.7 17.3-10.7 28.7 0 11.4 3.6 21.1 10.7 28.7 7.1 7.7 16.3 11.6 27.4 11.6z" fill="#fff"/>
+        <path d="M703.2 170.3c-12.5 0-23-3-31.3-9.1-8.4-6.1-13.1-14.5-13.9-25.4h19.6c1.2 6.3 4.2 10.9 9 13.9 4.8 3 10.4 4.4 16.8 4.4 6.4 0 11.6-1.3 15.5-3.8 4-2.5 5.9-6.2 5.9-11 0-4.4-1.4-8.1-4.3-10.9-2.9-2.8-7.6-5.1-14.1-6.9L690.3 117.2c-19.1-5.1-28.7-16-28.7-32.8 0-9.1 3.6-16.3 10.8-21.8 7.2-5.5 16.5-8.2 27.8-8.2 11.3 0 20.9 3 28.2 9 7.4 6 11.4 13.6 12.4 22.8h-19.2c-1.5-4.9-4.1-8.7-7.9-11.6-3.8-2.9-8.3-4.3-13.5-4.3-5.5 0-10 1.3-13.7 3.8-3.7 2.5-5.5 5.8-5.5 10 0 4.2 1.3 7.3 4 9.8 2.7 2.5 7 4.6 12.9 6.3l17.8 4.7c19 4.7 28.5 15.7 28.5 33 0 10.7-3.8 18.7-11.4 24.2-7.6 5.4-17.5 8.1-29.6 8.1z" fill="#fff"/>
+      </svg>
+      <span class="topbar__logo-text">Atlas</span>
+    </div>
+    <span class="topbar__label">Packaging <span>Lab</span></span>
+  </div>
+  <div class="topbar__right">
+    <span class="topbar__seed" id="seedDisplay">Seed: 1775049432151</span>
+    <button class="topbar__btn topbar__btn--outline" id="btnRegenerate">Regenerate (R)</button>
+    <button class="topbar__btn topbar__btn--red" id="btnExport">Export SVG</button>
+  </div>
+</div>
+
+<!-- TABS -->
+<div class="tabs">
+  <button class="tab active" data-tab="sticks">Stick Packs</button>
+  <button class="tab" data-tab="boxes">Boxes</button>
+  <button class="tab" data-tab="pouches">Pouches</button>
+</div>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sidebar__section">
+    <div class="sidebar__section-label">Flavors</div>
+    <button class="sidebar__item active" data-flavor="strawberry-lemonade">
+      <span class="sidebar__dot" style="background:#C8514A"></span>
+      <span class="sidebar__item-info">
+        <span class="sidebar__item-name">Strawberry Lemonade</span>
+        <span class="sidebar__item-sub">Current SKU</span>
+      </span>
+    </button>
+    <button class="sidebar__item" data-flavor="grapefruit">
+      <span class="sidebar__dot" style="background:#D4784A"></span>
+      <span class="sidebar__item-info">
+        <span class="sidebar__item-name">Grapefruit</span>
+        <span class="sidebar__item-sub">Current SKU</span>
+      </span>
+    </button>
+  </div>
+
+  <div class="sidebar__section">
+    <div class="sidebar__section-label">Theme</div>
+    <button class="sidebar__radio active" data-theme="light">
+      <span class="sidebar__radio-circle"></span> Light
+    </button>
+    <button class="sidebar__radio" data-theme="dark">
+      <span class="sidebar__radio-circle"></span> Dark
+    </button>
+  </div>
+
+  <div class="sidebar__section">
+    <div class="sidebar__section-label">Count</div>
+    <div class="sidebar__pills">
+      <button class="sidebar__pill active" data-count="10">10</button>
+      <button class="sidebar__pill" data-count="14">14</button>
+      <button class="sidebar__pill" data-count="30">30</button>
+    </div>
+  </div>
+</aside>
+
+<!-- MAIN CANVAS -->
+<main class="canvas">
+  <div class="canvas__label" id="canvasLabel">Stick Packs — Drag to Rotate — 2 Flavors</div>
+  <div class="canvas__grid" id="canvasGrid">
+    <!-- Cards injected by JS -->
+  </div>
+</main>
+
+<!-- EXPORT MODAL -->
+<div class="modal-overlay" id="exportModal">
+  <div class="modal">
+    <div class="modal__title">Export Packaging Assets</div>
+    <div class="modal__sub">Download production-ready files</div>
+    <div class="modal__option" data-export="front">
+      <div class="modal__option-info">
+        <span class="modal__option-title">Front Face Flat</span>
+        <span class="modal__option-desc">Send to manufacturer as dieline reference</span>
+      </div>
+      <span class="modal__option-badge">SVG</span>
+    </div>
+    <div class="modal__option" data-export="dieline">
+      <div class="modal__option-info">
+        <span class="modal__option-title">Full Dieline</span>
+        <span class="modal__option-desc">Includes bleed, crop marks, and safe zones</span>
+      </div>
+      <span class="modal__option-badge">SVG</span>
+    </div>
+    <div class="modal__option" data-export="mockup">
+      <div class="modal__option-info">
+        <span class="modal__option-title">3D Mockup PNG</span>
+        <span class="modal__option-desc">For presentations and social content</span>
+      </div>
+      <span class="modal__option-badge">PNG</span>
+    </div>
+    <div class="modal__actions">
+      <button class="modal__btn modal__btn--ghost" id="btnModalCancel">Cancel</button>
+      <button class="modal__btn modal__btn--red" id="btnModalExport">Export</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ─── STATE ───
+const state = {
+  tab: 'sticks',
+  flavor: 'strawberry-lemonade',
+  theme: 'light',
+  count: 10,
+  seed: 1775049432151,
+};
+
+const FLAVORS = {
+  'strawberry-lemonade': { name: 'Strawberry Lemonade', accent: '#C8514A', accentDark: '#A3403B' },
+  'grapefruit': { name: 'Grapefruit', accent: '#D4784A', accentDark: '#B0613A' },
+};
+
+// ─── TAB SWITCHING ───
+document.querySelectorAll('.tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    state.tab = tab.dataset.tab;
+    render();
+  });
+});
+
+// ─── SIDEBAR CONTROLS ───
+document.querySelectorAll('.sidebar__item[data-flavor]').forEach(item => {
+  item.addEventListener('click', () => {
+    document.querySelectorAll('.sidebar__item[data-flavor]').forEach(i => i.classList.remove('active'));
+    item.classList.add('active');
+    state.flavor = item.dataset.flavor;
+    render();
+  });
+});
+document.querySelectorAll('.sidebar__radio[data-theme]').forEach(radio => {
+  radio.addEventListener('click', () => {
+    document.querySelectorAll('.sidebar__radio[data-theme]').forEach(r => r.classList.remove('active'));
+    radio.classList.add('active');
+    state.theme = radio.dataset.theme;
+    render();
+  });
+});
+document.querySelectorAll('.sidebar__pill[data-count]').forEach(pill => {
+  pill.addEventListener('click', () => {
+    document.querySelectorAll('.sidebar__pill').forEach(p => p.classList.remove('active'));
+    pill.classList.add('active');
+    state.count = parseInt(pill.dataset.count);
+    render();
+  });
+});
+
+// ─── REGENERATE ───
+function regenerate() {
+  state.seed = Math.floor(Math.random() * 9999999999);
+  document.getElementById('seedDisplay').textContent = 'Seed: ' + state.seed;
+  render();
+}
+document.getElementById('btnRegenerate').addEventListener('click', regenerate);
+document.addEventListener('keydown', e => { if (e.key === 'r' || e.key === 'R') { if (e.target.tagName !== 'INPUT') regenerate(); } });
+
+// ─── EXPORT MODAL ───
+document.getElementById('btnExport').addEventListener('click', () => document.getElementById('exportModal').classList.add('open'));
+document.getElementById('btnModalCancel').addEventListener('click', () => document.getElementById('exportModal').classList.remove('open'));
+document.getElementById('exportModal').addEventListener('click', e => { if (e.target === e.currentTarget) e.currentTarget.classList.remove('open'); });
+
+// ─── RENDER ───
+function render() {
+  const grid = document.getElementById('canvasGrid');
+  const label = document.getElementById('canvasLabel');
+  const tabLabels = { sticks: 'Stick Packs', boxes: 'Boxes', pouches: 'Pouches' };
+  label.textContent = `${tabLabels[state.tab]} — Drag to Rotate — 2 Flavors`;
+  grid.innerHTML = '';
+  // Placeholder — cards added in subsequent steps
+}
+
+render();
+</script>
+</body>
+</html>
