@@ -1629,6 +1629,10 @@ img {
   background: var(--color-bg-light);
 }
 
+.purchase-option--subscribe {
+  margin-top: 14px;
+}
+
 .purchase-option--subscribe.active {
   border: 2px solid var(--color-primary);
   background: var(--color-bg-light);
@@ -1636,7 +1640,7 @@ img {
 
 .purchase-option__best-value {
   position: absolute;
-  top: -11px;
+  top: -12px;
   left: 20px;
   background: var(--color-primary);
   color: #fff;
@@ -8663,15 +8667,10 @@ img {
   /* Purchase option — mobile premium layout */
   .purchase-option {
     padding: 16px 14px;
-    margin-top: 14px;
-  }
-
-  .purchase-option:first-child {
-    margin-top: 0;
   }
 
   .purchase-option__best-value {
-    top: -10px;
+    top: -12px;
     left: 14px;
     font-size: 0.6rem;
     padding: 3px 10px;
