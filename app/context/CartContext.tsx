@@ -22,6 +22,7 @@ interface CartItem {
   quantity: number;
   image: string | null;
   subscriptionFrequency?: number; // weeks, if subscription
+  variantId?: string; // Shopify variant GID, used for subscription metadata matching
 }
 
 interface CartContextValue {
@@ -51,6 +52,7 @@ interface ShopifyCheckout {
     title: string;
     quantity: number;
     variant: {
+      id: string;
       title: string;
       price: { amount: string } | string;
       image?: { src: string };
@@ -172,6 +174,7 @@ function checkoutToItems(co: ShopifyCheckout): CartItem[] {
       price: variantPrice,
       quantity: li.quantity,
       image,
+      variantId: li.variant.id,
     };
   });
 }
@@ -215,16 +218,17 @@ export function CartProvider({ children }: { children: ReactNode }) {
     setCheckoutUrl(co.webUrl);
     try { localStorage.setItem(STORAGE_CHECKOUT_KEY, co.id); } catch { /* ignore */ }
     const cartItems = checkoutToItems(co);
-    // Merge subscription metadata back into items
+    // Merge subscription metadata back into items using variant ID matching
     const meta = subscriptionMetaRef.current;
     for (const item of cartItems) {
-      // Match by looking up variant IDs from our product data
-      for (const slug of Object.keys(PRODUCTS)) {
-        const product = PRODUCTS[slug];
-        if (meta[product.variantId] && item.title.toLowerCase().includes(product.name.toLowerCase())) {
-          item.subscriptionFrequency = meta[product.variantId];
-          item.price = product.subscribePrice;
-          break;
+      if (item.variantId && meta[item.variantId]) {
+        item.subscriptionFrequency = meta[item.variantId];
+        // Find the product to get subscribe price
+        for (const slug of Object.keys(PRODUCTS)) {
+          if (PRODUCTS[slug].variantId === item.variantId) {
+            item.price = PRODUCTS[slug].subscribePrice;
+            break;
+          }
         }
       }
     }
