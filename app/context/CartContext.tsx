@@ -473,18 +473,16 @@ export function CartProvider({ children }: { children: ReactNode }) {
             // After Shopify SDK sync, slug is empty. Match by variantId or title.
             for (const slug of Object.keys(PRODUCTS)) {
               const p = PRODUCTS[slug];
-              // Check if variantId matches (handles both GID and base64 formats)
               if (item.variantId && (item.variantId === p.variantId || item.variantId.includes(p.variantId.split("/").pop()!))) {
                 numericId = p.variantId.replace("gid://shopify/ProductVariant/", "");
                 break;
               }
-              // Fallback: match by title
               if (item.title.toLowerCase().includes(p.name.toLowerCase())) {
                 numericId = p.variantId.replace("gid://shopify/ProductVariant/", "");
                 break;
               }
             }
-            // Last resort: try to decode base64 variantId or extract numeric
+            // Last resort: try to decode base64 variantId
             if (!numericId && item.variantId) {
               try {
                 const decoded = atob(item.variantId);
