@@ -218,7 +218,7 @@ img {
   gap: 8px;
 }
 .header__logo-img {
-  height: 20px;
+  height: 26px;
   width: auto;
 }
 
@@ -1283,6 +1283,10 @@ img {
   align-items: center;
 }
 
+.cta-section--ocean {
+  background: url('https://images.unsplash.com/photo-1518837695005-2083093ee35b?w=1920&q=80') center/cover no-repeat;
+}
+
 .cta-section__bg-img {
   position: absolute;
   inset: 0;
@@ -1627,7 +1631,7 @@ img {
 
 .purchase-option--subscribe.active {
   border: 2px solid var(--color-primary);
-  background: rgba(30, 30, 30, 0.5);
+  background: var(--color-bg-light);
 }
 
 .purchase-option__best-value {
@@ -4699,6 +4703,17 @@ img {
   justify-content: center;
   position: relative;
   overflow: hidden;
+}
+
+.cta-dark--science {
+  background: url('https://images.unsplash.com/photo-1559757175-7cb057fba93c?w=1920&q=80') center/cover no-repeat;
+}
+
+.cta-dark__overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  z-index: 1;
 }
 
 .cta-dark__video-wrap {

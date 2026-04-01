@@ -18,7 +18,7 @@ export default function Footer() {
               height={36}
             />
             <p className="footer__tagline">
-              premium ingredients. third-party tested.
+              Premium Ingredients. Third-Party Tested.
             </p>
             <div className="footer__social">
               <a
@@ -57,23 +57,23 @@ export default function Footer() {
           {/* Support Links */}
           <div className="footer__links">
             <nav aria-label="Support links">
-              <a href="mailto:support@atlas-hydration.com">support</a>
-              <Link href="/products/strawberry-lemonade">shop</Link>
-              <Link href="/#founder">about us</Link>
+              <a href="mailto:support@atlas-hydration.com">Support</a>
+              <Link href="/products/strawberry-lemonade">Shop</Link>
+              <Link href="/#founder">About Us</Link>
               <Link href="/products/strawberry-lemonade#supplement-facts">
-                supplement facts
+                Supplement Facts
               </Link>
-              <Link href="/#science">science</Link>
+              <Link href="/#science">Science</Link>
             </nav>
           </div>
 
           {/* Policy Links */}
           <div className="footer__links">
             <nav aria-label="Policy links">
-              <Link href="/shipping">shipping policy</Link>
-              <Link href="/shipping">refund policy</Link>
-              <Link href="/privacy">privacy policy</Link>
-              <a href="mailto:support@atlas-hydration.com">contact us</a>
+              <Link href="/shipping">Shipping Policy</Link>
+              <Link href="/shipping">Refund Policy</Link>
+              <Link href="/privacy">Privacy Policy</Link>
+              <a href="mailto:support@atlas-hydration.com">Contact Us</a>
             </nav>
           </div>
         </div>
@@ -81,7 +81,7 @@ export default function Footer() {
         <div className="footer__divider"></div>
 
         <div className="footer__bottom">
-          <p>&copy; <FooterYear /> Atlas Hydration. all rights reserved.</p>
+          <p>&copy; <FooterYear /> Atlas Hydration. All Rights Reserved.</p>
           <div className="footer__payments">
             <span className="footer__payment-icon">Visa</span>
             <span className="footer__payment-icon">MC</span>

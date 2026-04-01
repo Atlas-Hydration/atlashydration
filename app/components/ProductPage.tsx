@@ -135,6 +135,7 @@ export default function ProductPage({ config }: { config: ProductPageConfig }) {
                     <span className="purchase-option__discount-badge">20% OFF</span>
                     <div className="purchase-option__pricing">
                       <span className="purchase-option__price">$23.99</span>
+                      <span className="purchase-option__per">$1.50 / Stick</span>
                       <span className="purchase-option__price-original">$29.99</span>
                     </div>
                   </div>
