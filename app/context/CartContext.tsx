@@ -494,16 +494,16 @@ export function CartProvider({ children }: { children: ReactNode }) {
           }
 
           if (!numericId) return null;
-          // Format: variantId:quantity:sellingPlanId (selling plan is optional)
-          if (item.subscriptionFrequency && SELLING_PLANS[item.subscriptionFrequency]) {
-            return `${numericId}:${item.quantity}:${SELLING_PLANS[item.subscriptionFrequency]}`;
-          }
-          return `${numericId}:${item.quantity}`;
+          return { numericId, quantity: item.quantity, sellingPlan: item.subscriptionFrequency ? SELLING_PLANS[item.subscriptionFrequency] : null };
         })
-        .filter(Boolean);
+        .filter(Boolean) as Array<{ numericId: string; quantity: number; sellingPlan: string | null }>;
 
       if (parts.length > 0) {
-        window.location.href = `https://${SHOPIFY_DOMAIN}/cart/${parts.join(",")}`;
+        const cartPath = parts.map((p) => `${p.numericId}:${p.quantity}`).join(",");
+        // Collect unique selling plan IDs for query param
+        const sellingPlanIds = [...new Set(parts.map((p) => p.sellingPlan).filter(Boolean))];
+        const query = sellingPlanIds.length > 0 ? `?selling_plan=${sellingPlanIds[0]}` : "";
+        window.location.href = `https://${SHOPIFY_DOMAIN}/cart/${cartPath}${query}`;
       } else {
         window.location.href = `https://${SHOPIFY_DOMAIN}`;
       }
