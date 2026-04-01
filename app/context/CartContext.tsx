@@ -97,7 +97,6 @@ declare global {
 // ---------------------------------------------------------------------------
 
 const SHOPIFY_DOMAIN = "7fa7b7-42.myshopify.com";
-const SHOPIFY_CHECKOUT_DOMAIN = "atlas-hydration.com";
 const STOREFRONT_TOKEN = "390caf7f28b55c8958daeab3fcd55f76";
 const SDK_URL =
   "https://sdks.shopifycdn.com/buy-button/latest/buy-button-storefront.min.js";
@@ -444,98 +443,118 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const toggleCart = useCallback(() => setIsCartOpen((prev) => !prev), []);
 
   // -----------------------------------------------------------------------
-  // checkout
+  // checkout – uses Storefront API cartCreate so selling plans work from any domain
   // -----------------------------------------------------------------------
-  const checkout = useCallback(() => {
+  const checkout = useCallback(async () => {
+    if (items.length === 0) return;
+
     const hasSubscriptions = items.some((i) => i.subscriptionFrequency);
 
-    // If any item has a subscription, build a /cart/ URL with selling plan IDs
-    // so Appstle can create the subscription at checkout.
-    // Also use this path as fallback when Shopify SDK checkout isn't available.
-    if (items.length > 0) {
+    // For non-subscription carts, use the existing Shopify Buy SDK checkout URL
+    if (!hasSubscriptions) {
       const co = checkoutRef.current;
-
-      // Use Shopify SDK checkout only if no subscriptions
-      if (!hasSubscriptions && co && co.webUrl) {
+      if (co && co.webUrl) {
         window.location.href = co.webUrl;
         return;
       }
+    }
 
-      // Build /cart/ URL with optional selling plan IDs
-      const parts = items
-        .map((item) => {
-          // Try slug lookup first, then match by variantId or title
-          let numericId: string | null = null;
+    // Build line items with selling plan references
+    const lines = items
+      .map((item) => {
+        let variantGid: string | null = null;
 
-          const product = PRODUCTS[item.slug];
-          if (product) {
-            numericId = product.variantId.replace("gid://shopify/ProductVariant/", "");
-          } else {
-            // After Shopify SDK sync, slug is empty. Match by variantId or title.
-            for (const slug of Object.keys(PRODUCTS)) {
-              const p = PRODUCTS[slug];
-              if (item.variantId && (item.variantId === p.variantId || item.variantId.includes(p.variantId.split("/").pop()!))) {
-                numericId = p.variantId.replace("gid://shopify/ProductVariant/", "");
-                break;
-              }
-              if (item.title.toLowerCase().includes(p.name.toLowerCase())) {
-                numericId = p.variantId.replace("gid://shopify/ProductVariant/", "");
-                break;
-              }
+        // Try slug lookup first
+        const product = PRODUCTS[item.slug];
+        if (product) {
+          variantGid = product.variantId;
+        } else {
+          // After Shopify SDK sync, slug is empty. Match by variantId or title.
+          for (const slug of Object.keys(PRODUCTS)) {
+            const p = PRODUCTS[slug];
+            if (item.variantId && (item.variantId === p.variantId || item.variantId.includes(p.variantId.split("/").pop()!))) {
+              variantGid = p.variantId;
+              break;
             }
-            // Last resort: try to decode base64 variantId
-            if (!numericId && item.variantId) {
-              try {
-                const decoded = atob(item.variantId);
-                numericId = decoded.replace("gid://shopify/ProductVariant/", "");
-              } catch {
-                numericId = item.variantId.replace("gid://shopify/ProductVariant/", "");
-              }
+            if (item.title.toLowerCase().includes(p.name.toLowerCase())) {
+              variantGid = p.variantId;
+              break;
             }
           }
-
-          if (!numericId) return null;
-          return { numericId, quantity: item.quantity, sellingPlan: item.subscriptionFrequency ? SELLING_PLANS[item.subscriptionFrequency] : null };
-        })
-        .filter(Boolean) as Array<{ numericId: string; quantity: number; sellingPlan: string | null }>;
-
-      if (parts.length > 0) {
-        if (hasSubscriptions) {
-          // Selling plans require a form POST to /cart/add — the /cart/ permalink ignores them.
-          const form = document.createElement("form");
-          form.method = "POST";
-          form.action = `https://${SHOPIFY_CHECKOUT_DOMAIN}/cart/add`;
-
-          parts.forEach((p, i) => {
-            const addField = (name: string, value: string) => {
-              const input = document.createElement("input");
-              input.type = "hidden";
-              input.name = name;
-              input.value = value;
-              form.appendChild(input);
-            };
-            addField(`items[${i}][id]`, p.numericId);
-            addField(`items[${i}][quantity]`, String(p.quantity));
-            if (p.sellingPlan) {
-              addField(`items[${i}][selling_plan]`, p.sellingPlan);
+          // Last resort: use variantId directly or decode base64
+          if (!variantGid && item.variantId) {
+            try {
+              const decoded = atob(item.variantId);
+              variantGid = decoded.startsWith("gid://") ? decoded : `gid://shopify/ProductVariant/${decoded}`;
+            } catch {
+              variantGid = item.variantId.startsWith("gid://") ? item.variantId : `gid://shopify/ProductVariant/${item.variantId}`;
             }
-          });
-
-          const returnInput = document.createElement("input");
-          returnInput.type = "hidden";
-          returnInput.name = "return_to";
-          returnInput.value = "/checkout";
-          form.appendChild(returnInput);
-
-          document.body.appendChild(form);
-          form.submit();
-        } else {
-          const cartPath = parts.map((p) => `${p.numericId}:${p.quantity}`).join(",");
-          window.location.href = `https://${SHOPIFY_CHECKOUT_DOMAIN}/cart/${cartPath}`;
+          }
         }
-      } else {
-        window.location.href = `https://${SHOPIFY_CHECKOUT_DOMAIN}`;
+
+        if (!variantGid) return null;
+
+        const line: { merchandiseId: string; quantity: number; sellingPlanId?: string } = {
+          merchandiseId: variantGid,
+          quantity: item.quantity,
+        };
+
+        if (item.subscriptionFrequency && SELLING_PLANS[item.subscriptionFrequency]) {
+          line.sellingPlanId = `gid://shopify/SellingPlan/${SELLING_PLANS[item.subscriptionFrequency]}`;
+        }
+
+        return line;
+      })
+      .filter(Boolean);
+
+    if (lines.length === 0) return;
+
+    // Use Storefront API cartCreate mutation
+    const mutation = `
+      mutation cartCreate($input: CartInput!) {
+        cartCreate(input: $input) {
+          cart {
+            checkoutUrl
+          }
+          userErrors {
+            field
+            message
+          }
+        }
       }
+    `;
+
+    try {
+      const res = await fetch(`https://${SHOPIFY_DOMAIN}/api/2024-01/graphql.json`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-Shopify-Storefront-Access-Token": STOREFRONT_TOKEN,
+        },
+        body: JSON.stringify({
+          query: mutation,
+          variables: { input: { lines } },
+        }),
+      });
+
+      const json = await res.json();
+      const checkoutUrl = json?.data?.cartCreate?.cart?.checkoutUrl;
+
+      if (checkoutUrl) {
+        window.location.href = checkoutUrl;
+      } else {
+        // Fallback: redirect to store
+        console.error("cartCreate failed:", json?.data?.cartCreate?.userErrors);
+        window.location.href = `https://${SHOPIFY_DOMAIN}`;
+      }
+    } catch (err) {
+      console.error("Checkout error:", err);
+      // Fallback: non-subscription /cart/ permalink
+      const parts = lines.map((l) => {
+        const id = (l as { merchandiseId: string }).merchandiseId.replace("gid://shopify/ProductVariant/", "");
+        return `${id}:${(l as { quantity: number }).quantity}`;
+      });
+      window.location.href = `https://${SHOPIFY_DOMAIN}/cart/${parts.join(",")}`;
     }
   }, [items]);
 
