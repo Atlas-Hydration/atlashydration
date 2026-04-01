@@ -2,45 +2,23 @@
 
 import { useState } from 'react';
 
-const SITE_BASE = 'https://atlas-hydration.github.io/atlashydration';
+const SITE_BASE = 'https://atlas-hydration.com';
 const SITE_PAGES = [
   { path: '/', title: 'Homepage' },
-  { path: '/products/strawberry-lemonade.html', title: 'Strawberry Lemonade' },
-  { path: '/products/grapefruit.html', title: 'Grapefruit' },
-  { path: '/blog/', title: 'Blog Hub' },
-  { path: '/blog/dehydration-basics.html', title: 'Blog: Dehydration Basics' },
-  { path: '/blog/sodium-science.html', title: 'Blog: Sodium Science' },
-  { path: '/blog/potassium-heart.html', title: 'Blog: Potassium & Heart' },
-  { path: '/blog/magnesium-deficiency.html', title: 'Blog: Magnesium Deficiency' },
-  { path: '/blog/glutamine-recovery.html', title: 'Blog: Glutamine Recovery' },
-  { path: '/blog/taurine-endurance.html', title: 'Blog: Taurine Endurance' },
-  { path: '/blog/b-vitamins-energy.html', title: 'Blog: B Vitamins Energy' },
-  { path: '/blog/vitamin-c-immunity.html', title: 'Blog: Vitamin C Immunity' },
-  { path: '/blog/allulose-performance.html', title: 'Blog: Allulose Performance' },
-  { path: '/blog/hydration-timing.html', title: 'Blog: Hydration Timing' },
-  { path: '/blog/hydration-travel.html', title: 'Blog: Hydration Travel' },
-  { path: '/blog/complete-formula.html', title: 'Blog: Complete Formula' },
-  { path: '/privacy.html', title: 'Privacy Policy' },
-  { path: '/shipping.html', title: 'Shipping Info' },
+  { path: '/products/strawberry-lemonade', title: 'Strawberry Lemonade' },
+  { path: '/products/grapefruit', title: 'Grapefruit' },
+  { path: '/privacy', title: 'Privacy Policy' },
+  { path: '/shipping', title: 'Shipping Info' },
+  { path: '/contact', title: 'Contact' },
 ];
 
 const SITEMAP_URLS = [
   { loc: SITE_BASE + '/', priority: '1.0', changefreq: 'weekly' },
-  { loc: SITE_BASE + '/products/strawberry-lemonade.html', priority: '0.9', changefreq: 'weekly' },
-  { loc: SITE_BASE + '/products/grapefruit.html', priority: '0.9', changefreq: 'weekly' },
-  { loc: SITE_BASE + '/blog/', priority: '0.8', changefreq: 'weekly' },
-  { loc: SITE_BASE + '/blog/dehydration-basics.html', priority: '0.7', changefreq: 'monthly' },
-  { loc: SITE_BASE + '/blog/sodium-science.html', priority: '0.7', changefreq: 'monthly' },
-  { loc: SITE_BASE + '/blog/potassium-heart.html', priority: '0.7', changefreq: 'monthly' },
-  { loc: SITE_BASE + '/blog/magnesium-deficiency.html', priority: '0.7', changefreq: 'monthly' },
-  { loc: SITE_BASE + '/blog/glutamine-recovery.html', priority: '0.7', changefreq: 'monthly' },
-  { loc: SITE_BASE + '/blog/taurine-endurance.html', priority: '0.7', changefreq: 'monthly' },
-  { loc: SITE_BASE + '/blog/b-vitamins-energy.html', priority: '0.7', changefreq: 'monthly' },
-  { loc: SITE_BASE + '/blog/vitamin-c-immunity.html', priority: '0.7', changefreq: 'monthly' },
-  { loc: SITE_BASE + '/blog/allulose-performance.html', priority: '0.7', changefreq: 'monthly' },
-  { loc: SITE_BASE + '/blog/hydration-timing.html', priority: '0.7', changefreq: 'monthly' },
-  { loc: SITE_BASE + '/blog/hydration-travel.html', priority: '0.7', changefreq: 'monthly' },
-  { loc: SITE_BASE + '/blog/complete-formula.html', priority: '0.7', changefreq: 'monthly' },
+  { loc: SITE_BASE + '/products/strawberry-lemonade', priority: '0.9', changefreq: 'weekly' },
+  { loc: SITE_BASE + '/products/grapefruit', priority: '0.9', changefreq: 'weekly' },
+  { loc: SITE_BASE + '/privacy', priority: '0.3', changefreq: 'monthly' },
+  { loc: SITE_BASE + '/shipping', priority: '0.3', changefreq: 'monthly' },
+  { loc: SITE_BASE + '/contact', priority: '0.5', changefreq: 'monthly' },
 ];
 
 interface SeoCheck {
@@ -236,7 +214,7 @@ function analyzeSeo(results: PageResult[]): SeoReport {
   // Check 12: HTTPS
   total++;
   passed++;
-  checks.push({ status: 'pass', title: 'HTTPS Enabled', desc: 'Site is served over HTTPS via GitHub Pages.' });
+  checks.push({ status: 'pass', title: 'HTTPS Enabled', desc: 'Site is served over HTTPS via Vercel.' });
 
   // Strategic actions
   actions.push({ priority: 'low', text: 'Add Twitter Card images to all pages for better social media previews.' });
@@ -278,7 +256,7 @@ export default function SeoTab() {
   function buildPromptText(r: SeoReport) {
     const highActions = r.actions.filter((a) => a.priority === 'high');
     const medActions = r.actions.filter((a) => a.priority === 'medium');
-    let promptText = `Fix the following SEO issues on the Atlas Hydration website (https://atlas-hydration.github.io/atlashydration/):\n\nCurrent SEO Score: ${r.score}/100\n\n`;
+    let promptText = `Fix the following SEO issues on the Atlas Hydration website (https://atlas-hydration.com/):\n\nHosting: Vercel | Framework: Next.js 16 (App Router, static export) | Node.js\n\nCurrent SEO Score: ${r.score}/100\n\n`;
     if (highActions.length) {
       promptText += 'HIGH PRIORITY:\n';
       highActions.forEach((a) => { promptText += `- ${a.text}\n`; });

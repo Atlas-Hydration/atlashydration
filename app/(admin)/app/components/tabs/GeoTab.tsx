@@ -2,26 +2,14 @@
 
 import { useState } from 'react';
 
-const SITE_BASE = 'https://atlas-hydration.github.io/atlashydration';
+const SITE_BASE = 'https://atlas-hydration.com';
 const SITE_PAGES = [
   { path: '/', title: 'Homepage' },
-  { path: '/products/strawberry-lemonade.html', title: 'Strawberry Lemonade' },
-  { path: '/products/grapefruit.html', title: 'Grapefruit' },
-  { path: '/blog/', title: 'Blog Hub' },
-  { path: '/blog/dehydration-basics.html', title: 'Blog: Dehydration Basics' },
-  { path: '/blog/sodium-science.html', title: 'Blog: Sodium Science' },
-  { path: '/blog/potassium-heart.html', title: 'Blog: Potassium & Heart' },
-  { path: '/blog/magnesium-deficiency.html', title: 'Blog: Magnesium Deficiency' },
-  { path: '/blog/glutamine-recovery.html', title: 'Blog: Glutamine Recovery' },
-  { path: '/blog/taurine-endurance.html', title: 'Blog: Taurine Endurance' },
-  { path: '/blog/b-vitamins-energy.html', title: 'Blog: B Vitamins Energy' },
-  { path: '/blog/vitamin-c-immunity.html', title: 'Blog: Vitamin C Immunity' },
-  { path: '/blog/allulose-performance.html', title: 'Blog: Allulose Performance' },
-  { path: '/blog/hydration-timing.html', title: 'Blog: Hydration Timing' },
-  { path: '/blog/hydration-travel.html', title: 'Blog: Hydration Travel' },
-  { path: '/blog/complete-formula.html', title: 'Blog: Complete Formula' },
-  { path: '/privacy.html', title: 'Privacy Policy' },
-  { path: '/shipping.html', title: 'Shipping Info' },
+  { path: '/products/strawberry-lemonade', title: 'Strawberry Lemonade' },
+  { path: '/products/grapefruit', title: 'Grapefruit' },
+  { path: '/privacy', title: 'Privacy Policy' },
+  { path: '/shipping', title: 'Shipping Info' },
+  { path: '/contact', title: 'Contact' },
 ];
 
 interface GeoCheck {
@@ -318,7 +306,7 @@ export default function GeoTab() {
   function buildPromptText(r: GeoReport) {
     const highActions = r.actions.filter((a) => a.priority === 'high');
     const medActions = r.actions.filter((a) => a.priority === 'medium');
-    let promptText = `Fix the following GEO (Generative Engine Optimization) issues on the Atlas Hydration website (https://atlas-hydration.github.io/atlashydration/):\n\nCurrent GEO Score: ${r.score}/100\n\nGEO ensures AI assistants (ChatGPT, Claude, Perplexity, Google AI Overviews) can discover, understand, and accurately cite our content.\n\n`;
+    let promptText = `Fix the following GEO (Generative Engine Optimization) issues on the Atlas Hydration website (https://atlas-hydration.com/):\n\nHosting: Vercel | Framework: Next.js 16 (App Router, static export) | Node.js\n\nCurrent GEO Score: ${r.score}/100\n\nGEO ensures AI assistants (ChatGPT, Claude, Perplexity, Google AI Overviews) can discover, understand, and accurately cite our content.\n\n`;
     if (highActions.length) {
       promptText += 'HIGH PRIORITY:\n';
       highActions.forEach((a) => { promptText += `- ${a.text}\n`; });
