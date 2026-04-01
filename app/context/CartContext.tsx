@@ -499,11 +499,39 @@ export function CartProvider({ children }: { children: ReactNode }) {
         .filter(Boolean) as Array<{ numericId: string; quantity: number; sellingPlan: string | null }>;
 
       if (parts.length > 0) {
-        const cartPath = parts.map((p) => `${p.numericId}:${p.quantity}`).join(",");
-        // Collect unique selling plan IDs for query param
-        const sellingPlanIds = [...new Set(parts.map((p) => p.sellingPlan).filter(Boolean))];
-        const query = sellingPlanIds.length > 0 ? `?selling_plan=${sellingPlanIds[0]}` : "";
-        window.location.href = `https://${SHOPIFY_DOMAIN}/cart/${cartPath}${query}`;
+        if (hasSubscriptions) {
+          // Selling plans require a form POST to /cart/add — the /cart/ permalink ignores them.
+          const form = document.createElement("form");
+          form.method = "POST";
+          form.action = `https://${SHOPIFY_DOMAIN}/cart/add`;
+
+          parts.forEach((p, i) => {
+            const addField = (name: string, value: string) => {
+              const input = document.createElement("input");
+              input.type = "hidden";
+              input.name = name;
+              input.value = value;
+              form.appendChild(input);
+            };
+            addField(`items[${i}][id]`, p.numericId);
+            addField(`items[${i}][quantity]`, String(p.quantity));
+            if (p.sellingPlan) {
+              addField(`items[${i}][selling_plan]`, p.sellingPlan);
+            }
+          });
+
+          const returnInput = document.createElement("input");
+          returnInput.type = "hidden";
+          returnInput.name = "return_to";
+          returnInput.value = "/checkout";
+          form.appendChild(returnInput);
+
+          document.body.appendChild(form);
+          form.submit();
+        } else {
+          const cartPath = parts.map((p) => `${p.numericId}:${p.quantity}`).join(",");
+          window.location.href = `https://${SHOPIFY_DOMAIN}/cart/${cartPath}`;
+        }
       } else {
         window.location.href = `https://${SHOPIFY_DOMAIN}`;
       }
