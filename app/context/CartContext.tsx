@@ -101,6 +101,13 @@ const SDK_URL =
 const STORAGE_CART_KEY = "atlas_cart";
 const STORAGE_CHECKOUT_KEY = "atlas_checkout_id";
 
+// Appstle selling plan IDs (mapped by delivery frequency in weeks)
+const SELLING_PLANS: Record<number, string> = {
+  2: "4014735434",
+  4: "4014768202",
+  6: "4014800970",
+};
+
 // ---------------------------------------------------------------------------
 // Context
 // ---------------------------------------------------------------------------
@@ -197,6 +204,8 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   const clientRef = useRef<ShopifyClient | null>(null);
   const checkoutRef = useRef<ShopifyCheckout | null>(null);
+  // Track subscription selections per variant so we can restore after Shopify sync
+  const subscriptionMetaRef = useRef<Record<string, number>>({}); // variantId -> frequency
 
   // -----------------------------------------------------------------------
   // Sync items from Shopify checkout object
@@ -205,7 +214,21 @@ export function CartProvider({ children }: { children: ReactNode }) {
     checkoutRef.current = co;
     setCheckoutUrl(co.webUrl);
     try { localStorage.setItem(STORAGE_CHECKOUT_KEY, co.id); } catch { /* ignore */ }
-    setItems(checkoutToItems(co));
+    const cartItems = checkoutToItems(co);
+    // Merge subscription metadata back into items
+    const meta = subscriptionMetaRef.current;
+    for (const item of cartItems) {
+      // Match by looking up variant IDs from our product data
+      for (const slug of Object.keys(PRODUCTS)) {
+        const product = PRODUCTS[slug];
+        if (meta[product.variantId] && item.title.toLowerCase().includes(product.name.toLowerCase())) {
+          item.subscriptionFrequency = meta[product.variantId];
+          item.price = product.subscribePrice;
+          break;
+        }
+      }
+    }
+    setItems(cartItems);
   }, []);
 
   // -----------------------------------------------------------------------
@@ -294,6 +317,13 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
       const client = clientRef.current;
       const co = checkoutRef.current;
+
+      // Store subscription metadata so it survives Shopify sync
+      if (subscriptionFrequency) {
+        subscriptionMetaRef.current[product.variantId] = subscriptionFrequency;
+      } else {
+        delete subscriptionMetaRef.current[product.variantId];
+      }
 
       if (client && co) {
         const lineItems = [{ variantId: product.variantId, quantity: qty }];
@@ -412,14 +442,21 @@ export function CartProvider({ children }: { children: ReactNode }) {
   // checkout
   // -----------------------------------------------------------------------
   const checkout = useCallback(() => {
-    const co = checkoutRef.current;
+    const hasSubscriptions = items.some((i) => i.subscriptionFrequency);
 
-    if (co && co.webUrl) {
-      window.location.href = co.webUrl;
-      return;
-    }
-
+    // If any item has a subscription, build a /cart/ URL with selling plan IDs
+    // so Appstle can create the subscription at checkout.
+    // Also use this path as fallback when Shopify SDK checkout isn't available.
     if (items.length > 0) {
+      const co = checkoutRef.current;
+
+      // Use Shopify SDK checkout only if no subscriptions
+      if (!hasSubscriptions && co && co.webUrl) {
+        window.location.href = co.webUrl;
+        return;
+      }
+
+      // Build /cart/ URL with optional selling plan IDs
       const parts = items
         .map((item) => {
           const product = PRODUCTS[item.slug];
@@ -428,6 +465,10 @@ export function CartProvider({ children }: { children: ReactNode }) {
             "gid://shopify/ProductVariant/",
             ""
           );
+          // Format: variantId:quantity:sellingPlanId (selling plan is optional)
+          if (item.subscriptionFrequency && SELLING_PLANS[item.subscriptionFrequency]) {
+            return `${numericId}:${item.quantity}:${SELLING_PLANS[item.subscriptionFrequency]}`;
+          }
           return `${numericId}:${item.quantity}`;
         })
         .filter(Boolean);
