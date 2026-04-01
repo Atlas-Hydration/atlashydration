@@ -2440,7 +2440,7 @@ img {
 .cart-drawer {
   position: fixed;
   inset: 0;
-  z-index: 1000;
+  z-index: 1100;
   pointer-events: none;
 }
 
@@ -2584,6 +2584,13 @@ img {
 .cart-item__price {
   font-size: var(--text-btn);
   color: var(--color-text-muted);
+}
+
+.cart-item__subscription {
+  font-size: 0.7rem;
+  color: var(--color-strawberry);
+  font-weight: 600;
+  margin-top: 2px;
 }
 
 .cart-item__actions {
@@ -3292,8 +3299,7 @@ img {
 .compare__table {
   width: 100%;
   border-collapse: collapse;
-  min-width: 500px;
-  table-layout: fixed;
+  min-width: 600px;
 }
 
 .compare__table th,
@@ -3386,7 +3392,8 @@ img {
   position: sticky;
   left: 0;
   z-index: 2;
-  background: inherit;
+  background: #0d0d0f;
+  min-width: 100px;
 }
 
 .compare__label--score {
@@ -3409,17 +3416,23 @@ img {
   position: sticky;
   left: 100px;
   z-index: 2;
-  background: inherit;
+  background: #0d0d0f;
+  min-width: 120px;
 }
 
 .compare__table tbody tr {
   transition: background 0.2s ease;
   cursor: pointer;
-  background: #0a0a0c;
+  background: #0d0d0f;
 }
 
 .compare__table tbody tr:nth-child(even) {
   background: #0d0d0f;
+}
+
+.compare__table tbody tr .compare__label,
+.compare__table tbody tr .compare__value--atlas {
+  background: inherit;
 }
 
 .compare__table tbody tr:hover {
@@ -7555,10 +7568,8 @@ img {
   left: 0;
   right: 0;
   z-index: 999;
-  background: rgba(var(--sticky-flavor-rgb), 0.92);
-  backdrop-filter: saturate(180%) blur(24px);
-  -webkit-backdrop-filter: saturate(180%) blur(24px);
-  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  background: #1d1d1f;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
   overflow: hidden;
   transform: translateY(100%);
   transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);

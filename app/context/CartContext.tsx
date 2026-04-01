@@ -21,6 +21,7 @@ interface CartItem {
   price: number;
   quantity: number;
   image: string | null;
+  subscriptionFrequency?: number; // weeks, if subscription
 }
 
 interface CartContextValue {
@@ -28,7 +29,7 @@ interface CartContextValue {
   cartCount: number;
   isCartOpen: boolean;
   checkoutUrl: string | null;
-  addToCart: (productSlug: string, qty?: number) => void;
+  addToCart: (productSlug: string, qty?: number, subscriptionFrequency?: number) => void;
   removeFromCart: (index: number) => void;
   updateQuantity: (index: number, qty: number) => void;
   openCart: () => void;
@@ -287,7 +288,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
   // addToCart
   // -----------------------------------------------------------------------
   const addToCart = useCallback(
-    (productSlug: string, qty = 1) => {
+    (productSlug: string, qty = 1, subscriptionFrequency?: number) => {
       const product = PRODUCTS[productSlug];
       if (!product) return;
 
@@ -303,18 +304,18 @@ export function CartProvider({ children }: { children: ReactNode }) {
             setIsCartOpen(true);
           })
           .catch(() => {
-            addToLocalCart(productSlug, qty);
+            addToLocalCart(productSlug, qty, subscriptionFrequency);
           });
       } else {
-        addToLocalCart(productSlug, qty);
+        addToLocalCart(productSlug, qty, subscriptionFrequency);
       }
     },
     [syncFromCheckout]
   );
 
-  function addToLocalCart(slug: string, qty: number) {
+  function addToLocalCart(slug: string, qty: number, subscriptionFrequency?: number) {
     setItems((prev) => {
-      const existing = prev.findIndex((i) => i.slug === slug);
+      const existing = prev.findIndex((i) => i.slug === slug && i.subscriptionFrequency === subscriptionFrequency);
       let next: CartItem[];
 
       if (existing >= 0) {
@@ -325,14 +326,16 @@ export function CartProvider({ children }: { children: ReactNode }) {
         );
       } else {
         const product = PRODUCTS[slug];
+        const price = subscriptionFrequency ? 23.99 : product.price;
         next = [
           ...prev,
           {
             slug,
             title: `${product.name} — 16 Pack`,
-            price: product.price,
+            price,
             quantity: qty,
             image: product.images[0] ?? null,
+            subscriptionFrequency,
           },
         ];
       }
