@@ -73,7 +73,7 @@ export default function Footer() {
               <Link href="/shipping">Shipping Policy</Link>
               <Link href="/shipping">Refund Policy</Link>
               <Link href="/privacy">Privacy Policy</Link>
-              <a href="mailto:support@atlas-hydration.com">Contact Us</a>
+              <Link href="/contact">Contact Us</Link>
             </nav>
           </div>
         </div>

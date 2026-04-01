@@ -6275,15 +6275,38 @@ img {
     line-height: 1.7;
   }
 
+  .footer {
+    padding: 60px 0 40px;
+  }
+
   .footer__grid {
     grid-template-columns: 1fr;
     gap: 32px;
+    padding: 0 20px;
+  }
+
+  .footer__brand {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .footer__links nav {
+    text-align: center;
   }
 
   .footer__bottom {
     flex-direction: column;
-    gap: 8px;
+    gap: 12px;
     text-align: center;
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+
+  .footer__payments {
+    justify-content: center;
+    flex-wrap: wrap;
   }
 
   .product-hero__buy {
@@ -8657,12 +8680,32 @@ img {
   }
 
   .purchase-option__per {
-    display: none;
+    font-size: 0.7rem;
   }
 
   .purchase-option__header {
     flex-wrap: wrap;
     gap: 8px;
+  }
+
+  .purchase-option__best-value {
+    top: -11px;
+    left: 16px;
+    font-size: 0.6rem;
+  }
+
+  .purchase-option__discount-badge {
+    font-size: 0.6rem;
+    padding: 2px 6px;
+  }
+
+  .purchase-option__price-original {
+    font-size: 0.75rem;
+  }
+
+  .purchase-option__savings-bar {
+    font-size: 0.72rem;
+    padding: 6px 10px;
   }
 
   .frequency-selector {
@@ -8911,6 +8954,53 @@ img {
   color: #000;
 }
 
+/* ========================================
+   Contact Page
+   ======================================== */
+.contact-page {
+  min-height: 70vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 120px 0 160px;
+  background: #ffffff;
+}
+
+.contact-page__inner {
+  max-width: 700px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.contact-page__title {
+  font-family: var(--font-sans);
+  font-size: clamp(1.5rem, 3.5vw, 2.2rem);
+  font-weight: 600;
+  color: #1a1a1a;
+  letter-spacing: -0.02em;
+  line-height: 1.3;
+  margin-bottom: 24px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.contact-page__text {
+  font-size: 1.05rem;
+  color: #555;
+  line-height: 1.7;
+}
+
+.contact-page__email {
+  color: #1a1a1a;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  transition: color 0.2s;
+}
+
+.contact-page__email:hover {
+  color: #000;
+}
 
 /* ========================================
    Atlas Admin Dashboard Styles
