@@ -1668,9 +1668,9 @@ img {
 }
 
 .purchase-option__savings-bar {
-  margin-top: 12px;
+  margin-top: 10px;
   padding: 8px 12px;
-  background: rgba(22, 163, 74, 0.1);
+  background: rgba(22, 163, 74, 0.08);
   border-left: 3px solid #16a34a;
   font-size: 0.78rem;
   font-weight: 600;
@@ -1681,7 +1681,15 @@ img {
 .purchase-option__header {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
+}
+
+.purchase-option__price-row {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin-top: 8px;
+  padding-left: 30px;
 }
 
 .purchase-option__radio {
@@ -1714,18 +1722,10 @@ img {
   font-size: var(--text-btn);
   font-weight: 600;
   color: var(--color-text);
-  flex: 1;
-}
-
-.purchase-option__pricing {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-left: auto;
 }
 
 .purchase-option__price {
-  font-size: 1rem;
+  font-size: 1.15rem;
   font-weight: 700;
   color: var(--color-text);
   letter-spacing: -0.02em;
@@ -6388,10 +6388,6 @@ img {
     padding: 14px 16px;
   }
 
-  .purchase-option__pricing {
-    flex-wrap: wrap;
-  }
-
   /* Product gallery — keep single main image layout on tablet */
   .product-gallery__thumb {
     width: 64px;
@@ -8535,16 +8531,6 @@ img {
     max-width: 100%;
   }
 
-  .purchase-option__header {
-    flex-wrap: wrap;
-    gap: 4px;
-  }
-
-  .purchase-option__pricing {
-    text-align: right;
-    min-width: 0;
-  }
-
   .frequency-selector {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -8674,24 +8660,44 @@ img {
     min-width: 0;
   }
 
-  /* Purchase option pricing — don't overflow */
-  .purchase-option__pricing {
-    flex-shrink: 0;
+  /* Purchase option — mobile premium layout */
+  .purchase-option {
+    padding: 16px 14px;
+    margin-top: 14px;
+  }
+
+  .purchase-option:first-child {
+    margin-top: 0;
+  }
+
+  .purchase-option__best-value {
+    top: -10px;
+    left: 14px;
+    font-size: 0.6rem;
+    padding: 3px 10px;
+  }
+
+  .purchase-option__header {
+    gap: 8px;
+  }
+
+  .purchase-option__price-row {
+    padding-left: 28px;
+    gap: 8px;
+    margin-top: 6px;
+  }
+
+  .purchase-option__price {
+    font-size: 1.1rem;
   }
 
   .purchase-option__per {
     font-size: 0.7rem;
+    padding: 2px 6px;
   }
 
-  .purchase-option__header {
-    flex-wrap: wrap;
-    gap: 8px;
-  }
-
-  .purchase-option__best-value {
-    top: -11px;
-    left: 16px;
-    font-size: 0.6rem;
+  .purchase-option__price-original {
+    font-size: 0.78rem;
   }
 
   .purchase-option__discount-badge {
@@ -8699,13 +8705,14 @@ img {
     padding: 2px 6px;
   }
 
-  .purchase-option__price-original {
-    font-size: 0.75rem;
-  }
-
   .purchase-option__savings-bar {
     font-size: 0.72rem;
-    padding: 6px 10px;
+    padding: 7px 10px;
+    margin-top: 8px;
+  }
+
+  .purchase-option__perk {
+    font-size: 0.82rem;
   }
 
   .frequency-selector {
