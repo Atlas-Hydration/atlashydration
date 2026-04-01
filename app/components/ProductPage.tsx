@@ -27,6 +27,7 @@ interface ProductPageConfig {
   ctaText: string;
   activeFlavorClass: "strawberry" | "grapefruit";
   supplementFactsProps?: { otherIngredients?: string };
+  preorder?: boolean;
 }
 
 const CheckSvg = () => (
@@ -89,7 +90,13 @@ export default function ProductPage({ config }: { config: ProductPageConfig }) {
   const [quantity, setQuantity] = useState(1);
   const [openAccordion, setOpenAccordion] = useState<number | null>(null);
 
-  const handleAddToCart = useCallback(() => addToCart(config.slug, quantity), [addToCart, config.slug, quantity]);
+  const handleAddToCart = useCallback(() => {
+    const isSubscription = purchaseOption === "subscribe";
+    addToCart(config.slug, quantity, isSubscription ? frequency : undefined);
+  }, [addToCart, config.slug, quantity, purchaseOption, frequency]);
+
+  const buyButtonText = config.preorder ? "Pre-Order" : "Add to Cart";
+  const ctaButtonText = config.preorder ? "Pre-Order — $29.99" : "Order — $29.99";
 
   return (
     <main>
@@ -165,7 +172,7 @@ export default function ProductPage({ config }: { config: ProductPageConfig }) {
                   <input type="number" className="qty-selector__input" value={quantity} min={1} max={10} aria-label="Quantity" onChange={(e) => { const v = parseInt(e.target.value, 10); if (v >= 1 && v <= 10) setQuantity(v); }} />
                   <button className="qty-selector__btn" aria-label="Increase quantity" onClick={() => setQuantity((q) => Math.min(10, q + 1))}>+</button>
                 </div>
-                <button className="btn btn--primary btn--lg" onClick={handleAddToCart}>Add to Cart</button>
+                <button className="btn btn--primary btn--lg" onClick={handleAddToCart}>{buyButtonText}</button>
               </div>
 
               <div className="product-accordions" style={{ marginTop: 16 }}>
@@ -225,7 +232,7 @@ export default function ProductPage({ config }: { config: ProductPageConfig }) {
           <div className="cta-section__inner">
             <h2 className="cta-section__title">{config.ctaTitle}</h2>
             <p className="cta-section__text">{config.ctaText}</p>
-            <button className="btn btn--white btn--lg" onClick={handleAddToCart}>Order — $29.99</button>
+            <button className="btn btn--white btn--lg" onClick={handleAddToCart}>{ctaButtonText}</button>
           </div>
         </div>
       </section>

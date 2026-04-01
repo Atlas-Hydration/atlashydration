@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useRef, useCallback } from "react";
-import Link from "next/link";
 import { useCart } from "@/app/context/CartContext";
 
 const images = [
@@ -60,9 +59,13 @@ export default function FeaturedProduct() {
     }
   }, [isDragging, dragOffset, next, prev]);
 
+  const [selectedFlavor, setSelectedFlavor] = useState<"strawberry-lemonade" | "grapefruit">("strawberry-lemonade");
+  const isPreorder = selectedFlavor === "grapefruit";
+
   const handleAdd = async () => {
     setAdding(true);
-    await addToCart("strawberry-lemonade", 1);
+    const subFreq = purchaseType === "subscribe" ? frequency : undefined;
+    await addToCart(selectedFlavor, 1, subFreq);
     if (timerRef.current) clearTimeout(timerRef.current);
     timerRef.current = setTimeout(() => setAdding(false), 1200);
   };
@@ -151,12 +154,12 @@ export default function FeaturedProduct() {
 
             {/* Flavor Selector */}
             <div className="flavor-selector--circles">
-              <Link href="/products/strawberry-lemonade" className="flavor-circle flavor-circle--strawberry active">
+              <button type="button" className={`flavor-circle flavor-circle--strawberry${selectedFlavor === "strawberry-lemonade" ? " active" : ""}`} onClick={() => setSelectedFlavor("strawberry-lemonade")}>
                 <span className="flavor-circle__dot" />Strawberry Lemonade
-              </Link>
-              <Link href="/products/grapefruit" className="flavor-circle flavor-circle--grapefruit">
+              </button>
+              <button type="button" className={`flavor-circle flavor-circle--grapefruit${selectedFlavor === "grapefruit" ? " active" : ""}`} onClick={() => setSelectedFlavor("grapefruit")}>
                 <span className="flavor-circle__dot" />Grapefruit
-              </Link>
+              </button>
             </div>
 
             {/* Purchase Options */}
@@ -221,7 +224,7 @@ export default function FeaturedProduct() {
                 className={`btn btn--primary btn--lg${adding ? " btn--added" : ""}`}
                 onClick={handleAdd}
               >
-                {adding ? "Added!" : "Add to Cart"}
+                {adding ? "Added!" : isPreorder ? "Pre-Order" : "Add to Cart"}
               </button>
             </div>
           </div>

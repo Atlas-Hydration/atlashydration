@@ -1,33 +1,47 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  useCallback,
+  type ReactNode,
+} from "react";
 
 const DISMISSED_KEY = "atlas_popup_dismissed";
 
-const STATS = [
-  { value: "500", unit: "mg", label: "Potassium" },
-  { value: "200", unit: "mg", label: "Magnesium" },
-  { value: "600", unit: "mg", label: "Sodium" },
-  { value: "100%", unit: "+", label: "B-Vitamins" },
-  { value: "0", unit: "g", label: "Sugar" },
-];
+// ---------------------------------------------------------------------------
+// Context so Header can trigger the popup
+// ---------------------------------------------------------------------------
 
-export default function Popup() {
+interface PopupContextValue {
+  openPopup: () => void;
+}
+
+const PopupContext = createContext<PopupContextValue>({ openPopup: () => {} });
+export const usePopupTrigger = () => useContext(PopupContext);
+
+// ---------------------------------------------------------------------------
+// Provider — wraps children + renders the popup
+// ---------------------------------------------------------------------------
+
+export function PopupProvider({ children }: { children: ReactNode }) {
   const [visible, setVisible] = useState(false);
   const [email, setEmail] = useState("");
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState(false);
 
+  // Auto-open after 3 seconds (once per session)
   useEffect(() => {
     if (typeof window === "undefined") return;
     if (sessionStorage.getItem(DISMISSED_KEY)) return;
 
-    const timer = setTimeout(() => {
-      setVisible(true);
-    }, 3000);
-
+    const timer = setTimeout(() => setVisible(true), 3000);
     return () => clearTimeout(timer);
   }, []);
+
+  const openPopup = useCallback(() => setVisible(true), []);
 
   const dismiss = useCallback(() => {
     setVisible(false);
@@ -39,8 +53,7 @@ export default function Popup() {
   const handleSubmit = useCallback(
     (e: React.FormEvent) => {
       e.preventDefault();
-      const isValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
-      if (!isValid) {
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
         setError(true);
         return;
       }
@@ -50,60 +63,47 @@ export default function Popup() {
     [email]
   );
 
-  if (!visible) return null;
-
   return (
-    <div className="popup-overlay" onClick={dismiss}>
-      <button
-        className="popup__close"
-        onClick={dismiss}
-        aria-label="Close"
-      >
-        <svg
-          width="20"
-          height="20"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-        >
-          <path d="M18 6L6 18M6 6l12 12" />
-        </svg>
-      </button>
+    <PopupContext.Provider value={{ openPopup }}>
+      {children}
 
-      <div className="popup" onClick={(e) => e.stopPropagation()}>
-        <div className="popup__inner">
-          <div className="popup__layout">
-            <div className="popup__left">
-              <div className="popup__logo">
-                <img
-                  src="/logo.svg"
-                  alt="Atlas Hydration"
-                  height="24"
-                />
-              </div>
-              <div className="popup__title-block">
-                <div className="popup__heading">Daily</div>
-                <div className="popup__heading">Hydration</div>
-                <div className="popup__sub">Electrolytes with Vitamins</div>
-              </div>
-              <div className="popup__percent">10% Off</div>
+      {visible && (
+        <div className="popup-overlay" onClick={dismiss}>
+          <div className="popup" onClick={(e) => e.stopPropagation()}>
+            <button className="popup__close" onClick={dismiss} aria-label="Close popup">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M18 6L6 18M6 6l12 12" />
+              </svg>
+            </button>
+
+            <div className="popup__inner">
+              <img src="/atlas-eagle.svg" alt="" className="popup__eagle" onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }} />
+
+              <h2 className="popup__title">
+                <span className="popup__title-bold">UNLOCK 10%</span>
+                <span className="popup__title-light">OFF YOUR ORDER</span>
+              </h2>
 
               {submitted ? (
                 <div className="popup__success">
                   <p className="popup__code">
-                    Code: <strong>ATLAS10</strong>
+                    Your code: <strong>ATLAS10</strong>
                   </p>
-                  <p className="popup__fine">
+                  <p className="popup__success-note">
                     Apply at checkout for 10% off your first order.
                   </p>
+                  <button className="popup__btn popup__btn--cta" onClick={dismiss}>
+                    Start Shopping
+                  </button>
                 </div>
               ) : (
                 <form className="popup__form" onSubmit={handleSubmit}>
+                  <label htmlFor="popup-email" className="sr-only">Email address</label>
                   <input
+                    id="popup-email"
                     type="email"
                     className={`popup__input${error ? " popup__input--error" : ""}`}
-                    placeholder="Enter your email"
+                    placeholder="Email"
                     autoComplete="email"
                     value={email}
                     onChange={(e) => {
@@ -111,35 +111,19 @@ export default function Popup() {
                       if (error) setError(false);
                     }}
                   />
-                  <button type="submit" className="popup__btn">
-                    Get My Code
+                  <button type="submit" className="popup__btn popup__btn--cta">
+                    Claim 10% OFF
                   </button>
                 </form>
               )}
 
-              <p className="popup__fine">
-                Zero spam. Unsubscribe anytime.
-              </p>
-            </div>
-
-            <div className="popup__right">
-              {STATS.map((stat) => (
-                <div className="popup__stat" key={stat.label}>
-                  <span className="popup__stat-val">
-                    {stat.value}
-                    <small>{stat.unit}</small>
-                  </span>
-                  <span className="popup__stat-label">{stat.label}</span>
-                </div>
-              ))}
+              <button className="popup__dismiss" onClick={dismiss}>
+                No Thanks
+              </button>
             </div>
           </div>
-
-          <button className="popup__dismiss" onClick={dismiss}>
-            No thanks
-          </button>
         </div>
-      </div>
-    </div>
+      )}
+    </PopupContext.Provider>
   );
 }

@@ -78,6 +78,11 @@ export default function CartDrawer() {
                     <p className="cart-item__price">
                       ${item.price.toFixed(2)}
                     </p>
+                    {item.subscriptionFrequency && (
+                      <p className="cart-item__subscription">
+                        Subscription · Every {item.subscriptionFrequency} weeks
+                      </p>
+                    )}
                   </div>
                   <div className="cart-item__actions">
                     <div className="cart-item__qty">

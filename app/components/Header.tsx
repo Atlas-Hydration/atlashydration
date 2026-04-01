@@ -4,11 +4,13 @@ import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useCart } from "@/app/context/CartContext";
+import { usePopupTrigger } from "@/app/components/Popup";
 
 const NAV_LINKS: { label: string; href: string }[] = [];
 
 export default function Header() {
   const { cartCount, toggleCart } = useCart();
+  const { openPopup } = usePopupTrigger();
   const pathname = usePathname();
   const isHome = pathname === "/";
 
@@ -69,9 +71,9 @@ export default function Header() {
     <>
       {/* Announcement Bar */}
       <div className="announcement-bar" role="banner" ref={announcementRef}>
-        <div className="announcement-bar__inner">
+        <button className="announcement-bar__inner announcement-bar__btn" onClick={openPopup} type="button">
           <span>UNLOCK 10% OFF</span>
-        </div>
+        </button>
       </div>
 
       {/* Header */}

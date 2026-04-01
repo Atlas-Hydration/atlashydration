@@ -14,7 +14,7 @@ import FaqSection from "@/app/components/home/FaqSection";
 import CtaSection from "@/app/components/home/CtaSection";
 import DarkCta from "@/app/components/home/DarkCta";
 import StickyBuyBar from "@/app/components/home/StickyBuyBar";
-import Popup from "@/app/components/Popup";
+
 
 export const metadata: Metadata = {
   title: "Atlas Hydration | Zero-Sugar Electrolyte Mixes",
@@ -49,7 +49,6 @@ export default function Home() {
       <CtaSection />
       <DarkCta />
       <StickyBuyBar />
-      <Popup />
     </>
   );
 }

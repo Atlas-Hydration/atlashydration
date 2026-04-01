@@ -67,6 +67,7 @@ export default function Grapefruit() {
         ctaTitle: "Ready to Try Grapefruit?",
         ctaText: "16 stick packs of crisp, refreshing hydration. Zero sugar. Five calories. Full performance.",
         supplementFactsProps: { otherIngredients: "Citric Acid, Bamboo Extract, Grapefruit Oil, Annatto Seed Extract (color)" },
+        preorder: true,
       }}
     />
   );
