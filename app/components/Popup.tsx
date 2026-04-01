@@ -23,6 +23,13 @@ const PopupContext = createContext<PopupContextValue>({ openPopup: () => {} });
 export const usePopupTrigger = () => useContext(PopupContext);
 
 // ---------------------------------------------------------------------------
+// Shopify config (same as CartContext)
+// ---------------------------------------------------------------------------
+
+const SHOPIFY_DOMAIN = "7fa7b7-42.myshopify.com";
+const STOREFRONT_TOKEN = "390caf7f28b55c8958daeab3fcd55f76";
+
+// ---------------------------------------------------------------------------
 // Provider — wraps children + renders the popup
 // ---------------------------------------------------------------------------
 
@@ -51,13 +58,43 @@ export function PopupProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const handleSubmit = useCallback(
-    (e: React.FormEvent) => {
+    async (e: React.FormEvent) => {
       e.preventDefault();
-      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
+      const trimmed = email.trim();
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed)) {
         setError(true);
         return;
       }
       setError(false);
+
+      // Submit to Shopify via Storefront API customerCreate
+      // This triggers the "Sign Up 10% Discount" marketing automation
+      try {
+        await fetch(`https://${SHOPIFY_DOMAIN}/api/2024-01/graphql.json`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-Shopify-Storefront-Access-Token": STOREFRONT_TOKEN,
+          },
+          body: JSON.stringify({
+            query: `mutation customerCreate($input: CustomerCreateInput!) {
+              customerCreate(input: $input) {
+                customer { id }
+                customerUserErrors { code message }
+              }
+            }`,
+            variables: {
+              input: {
+                email: trimmed,
+                acceptsMarketing: true,
+              },
+            },
+          }),
+        });
+      } catch {
+        // Still show the code even if the API call fails
+      }
+
       setSubmitted(true);
     },
     [email]
