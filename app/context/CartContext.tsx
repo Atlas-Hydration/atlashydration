@@ -463,9 +463,11 @@ export function CartProvider({ children }: { children: ReactNode }) {
       // Build /cart/ URL with optional selling plan IDs
       const parts = items
         .map((item) => {
+          // Try slug lookup first, then fall back to variantId from Shopify sync
           const product = PRODUCTS[item.slug];
-          if (!product) return null;
-          const numericId = product.variantId.replace(
+          const rawVariantId = product?.variantId || item.variantId;
+          if (!rawVariantId) return null;
+          const numericId = rawVariantId.replace(
             "gid://shopify/ProductVariant/",
             ""
           );
