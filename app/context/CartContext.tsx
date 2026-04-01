@@ -501,7 +501,6 @@ export function CartProvider({ children }: { children: ReactNode }) {
       if (parts.length > 0) {
         if (hasSubscriptions) {
           // Selling plans require a form POST to /cart/add — the /cart/ permalink ignores them.
-          // Build a hidden form and submit it to add items with selling plans, then redirect to checkout.
           const form = document.createElement("form");
           form.method = "POST";
           form.action = `https://${SHOPIFY_DOMAIN}/cart/add`;
@@ -521,7 +520,6 @@ export function CartProvider({ children }: { children: ReactNode }) {
             }
           });
 
-          // After adding items, redirect straight to checkout
           const returnInput = document.createElement("input");
           returnInput.type = "hidden";
           returnInput.name = "return_to";
@@ -531,7 +529,6 @@ export function CartProvider({ children }: { children: ReactNode }) {
           document.body.appendChild(form);
           form.submit();
         } else {
-          // No subscriptions — simple /cart/ permalink works fine
           const cartPath = parts.map((p) => `${p.numericId}:${p.quantity}`).join(",");
           window.location.href = `https://${SHOPIFY_DOMAIN}/cart/${cartPath}`;
         }
