@@ -6965,15 +6965,31 @@ img {
   line-height: 1.6;
 }
 
+/* Reviews section */
+.reviews-section {
+  padding: 80px 0;
+  background: #f8f8f8;
+}
+
+.reviews-section .section-title {
+  text-align: center;
+  margin-bottom: 48px;
+}
+
 /* Hide Junip branding badge */
 .junip-branding,
 .junip-powered-by,
 [class*="junip"] a[href*="juniphq"],
+[class*="junip"] a[href*="junip"],
 .junip-review-section-wrapper > div > a,
 .junip-store-review-branding,
 .junip-product-review-branding,
 .junip-store-key,
-[class*="junip"][class*="branding"] {
+[class*="junip"][class*="branding"],
+[class*="junip"] [class*="reviewed-on"],
+[class*="junip"] [class*="powered"],
+[class*="junip"] footer,
+[class*="junip"] [class*="footer"] {
   display: none !important;
 }
 
