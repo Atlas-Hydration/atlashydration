@@ -227,6 +227,13 @@ export default function ProductPage({ config }: { config: ProductPageConfig }) {
         </div>
       </section>
 
+      {/* Junip Reviews */}
+      <section className="junip-review-section reviews-section">
+        <div className="container">
+          <span className="junip-product-review" data-product-id={config.junipProductId} />
+        </div>
+      </section>
+
       <FaqSection />
 
       <section className="cta-section" aria-label="Buy now">
@@ -240,13 +247,6 @@ export default function ProductPage({ config }: { config: ProductPageConfig }) {
             <p className="cta-section__text">{config.ctaText}</p>
             <button className="btn btn--white btn--lg" onClick={handleAddToCart}>{ctaButtonText}</button>
           </div>
-        </div>
-      </section>
-
-      {/* Junip Reviews */}
-      <section className="junip-review-section">
-        <div className="container">
-          <span className="junip-product-review" data-product-id={config.junipProductId} />
         </div>
       </section>
     </main>
