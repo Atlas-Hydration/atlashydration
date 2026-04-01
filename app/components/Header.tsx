@@ -84,7 +84,7 @@ export default function Header() {
               src="/logo.svg"
               alt="Atlas Hydration"
               className="header__logo-img"
-              height={28}
+              height={34}
             />
           </Link>
 
