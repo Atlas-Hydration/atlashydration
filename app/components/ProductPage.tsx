@@ -242,6 +242,13 @@ export default function ProductPage({ config }: { config: ProductPageConfig }) {
           </div>
         </div>
       </section>
+
+      {/* Junip Reviews */}
+      <section className="junip-review-section">
+        <div className="container">
+          <span className="junip-product-review" data-product-id={config.junipProductId} />
+        </div>
+      </section>
     </main>
   );
 }

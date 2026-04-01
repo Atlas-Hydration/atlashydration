@@ -13,7 +13,7 @@ const securityHeaders = [
     key: "Content-Security-Policy",
     value: [
       "default-src 'self'",
-      "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://sdks.shopifycdn.com https://cdn.shopify.com",
+      "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://sdks.shopifycdn.com https://cdn.shopify.com https://widgets.juniphq.com",
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
       "font-src 'self' https://fonts.gstatic.com",
       "img-src 'self' data: https://cdn.shopify.com https://images.unsplash.com https://*.shopifycdn.com",
