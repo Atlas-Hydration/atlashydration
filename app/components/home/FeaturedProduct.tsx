@@ -184,20 +184,25 @@ export default function FeaturedProduct() {
                 className={`purchase-option purchase-option--subscribe${purchaseType === "subscribe" ? " active" : ""}`}
                 onClick={() => setPurchaseType("subscribe")}
               >
+                <span className="purchase-option__best-value">Best Value</span>
                 <div className="purchase-option__header">
                   <div className="purchase-option__radio">
                     <input type="radio" name="fp-purchase-type" value="subscribe" checked={purchaseType === "subscribe"} readOnly />
                     <span className="purchase-option__radio-custom" />
                   </div>
                   <span className="purchase-option__label">Subscribe &amp; Save</span>
+                  <span className="purchase-option__discount-badge">20% OFF</span>
                   <div className="purchase-option__pricing">
                     <span className="purchase-option__price">$23.99</span>
-                    <span className="purchase-option__per">$1.50 / Stick</span>
+                    <span className="purchase-option__price-original">$29.99</span>
                   </div>
+                </div>
+                <div className="purchase-option__savings-bar">
+                  You save $6.00 every order + free shipping
                 </div>
                 <div className="purchase-option__details">
                   <div className="purchase-option__perks">
-                    {["Save 20%", "Free Shipping", "Cancel Anytime"].map((perk, i) => (
+                    {["Save 20% every order", "Free shipping on every delivery", "Edit, skip, or cancel anytime"].map((perk, i) => (
                       <div className="purchase-option__perk" key={i}>
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M20 6L9 17l-5-5" /></svg>
                         <strong>{perk}</strong>
@@ -226,7 +231,7 @@ export default function FeaturedProduct() {
                     <input type="radio" name="fp-purchase-type" value="onetime" checked={purchaseType === "onetime"} readOnly />
                     <span className="purchase-option__radio-custom" />
                   </div>
-                  <span className="purchase-option__label">One-time</span>
+                  <span className="purchase-option__label">One-time Purchase</span>
                   <div className="purchase-option__pricing">
                     <span className="purchase-option__price">$29.99</span>
                     <span className="purchase-option__per">$1.87 / Stick</span>

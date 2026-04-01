@@ -125,22 +125,27 @@ export default function ProductPage({ config }: { config: ProductPageConfig }) {
 
               <div className="purchase-options">
                 <label className={`purchase-option purchase-option--subscribe${purchaseOption === "subscribe" ? " active" : ""}`}>
+                  <span className="purchase-option__best-value">Best Value</span>
                   <div className="purchase-option__header">
                     <div className="purchase-option__radio">
                       <input type="radio" name="purchase-type" value="subscribe" checked={purchaseOption === "subscribe"} onChange={() => setPurchaseOption("subscribe")} />
                       <span className="purchase-option__radio-custom" />
                     </div>
                     <span className="purchase-option__label">Subscribe &amp; Save</span>
+                    <span className="purchase-option__discount-badge">20% OFF</span>
                     <div className="purchase-option__pricing">
                       <span className="purchase-option__price">$23.99</span>
-                      <span className="purchase-option__per">$1.50 / Stick</span>
+                      <span className="purchase-option__price-original">$29.99</span>
                     </div>
+                  </div>
+                  <div className="purchase-option__savings-bar">
+                    You save $6.00 every order + free shipping
                   </div>
                   <div className="purchase-option__details">
                     <div className="purchase-option__perks">
-                      <div className="purchase-option__perk"><CheckSvg /><span className="purchase-option__save-badge">Save 20%</span></div>
-                      <div className="purchase-option__perk"><CheckSvg /><strong>Free Shipping</strong></div>
-                      <div className="purchase-option__perk"><CheckSvg /><strong>Cancel Anytime</strong></div>
+                      <div className="purchase-option__perk"><CheckSvg /><strong>Save 20% every order</strong></div>
+                      <div className="purchase-option__perk"><CheckSvg /><strong>Free shipping on every delivery</strong></div>
+                      <div className="purchase-option__perk"><CheckSvg /><strong>Edit, skip, or cancel anytime</strong></div>
                     </div>
                     <div className="frequency-selector">
                       {[2, 4, 6].map((f) => (
@@ -155,7 +160,7 @@ export default function ProductPage({ config }: { config: ProductPageConfig }) {
                       <input type="radio" name="purchase-type" value="onetime" checked={purchaseOption === "onetime"} onChange={() => setPurchaseOption("onetime")} />
                       <span className="purchase-option__radio-custom" />
                     </div>
-                    <span className="purchase-option__label">One-time</span>
+                    <span className="purchase-option__label">One-time Purchase</span>
                     <div className="purchase-option__pricing">
                       <span className="purchase-option__price">$29.99</span>
                       <span className="purchase-option__per">$1.87 / Stick</span>
