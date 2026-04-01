@@ -101,6 +101,13 @@ const SDK_URL =
 const STORAGE_CART_KEY = "atlas_cart";
 const STORAGE_CHECKOUT_KEY = "atlas_checkout_id";
 
+// Appstle selling plan IDs (mapped by delivery frequency in weeks)
+const SELLING_PLANS: Record<number, string> = {
+  2: "4014735434",
+  4: "4014768202",
+  6: "4014800970",
+};
+
 // ---------------------------------------------------------------------------
 // Context
 // ---------------------------------------------------------------------------
@@ -435,14 +442,21 @@ export function CartProvider({ children }: { children: ReactNode }) {
   // checkout
   // -----------------------------------------------------------------------
   const checkout = useCallback(() => {
-    const co = checkoutRef.current;
+    const hasSubscriptions = items.some((i) => i.subscriptionFrequency);
 
-    if (co && co.webUrl) {
-      window.location.href = co.webUrl;
-      return;
-    }
-
+    // If any item has a subscription, build a /cart/ URL with selling plan IDs
+    // so Appstle can create the subscription at checkout.
+    // Also use this path as fallback when Shopify SDK checkout isn't available.
     if (items.length > 0) {
+      const co = checkoutRef.current;
+
+      // Use Shopify SDK checkout only if no subscriptions
+      if (!hasSubscriptions && co && co.webUrl) {
+        window.location.href = co.webUrl;
+        return;
+      }
+
+      // Build /cart/ URL with optional selling plan IDs
       const parts = items
         .map((item) => {
           const product = PRODUCTS[item.slug];
@@ -451,6 +465,10 @@ export function CartProvider({ children }: { children: ReactNode }) {
             "gid://shopify/ProductVariant/",
             ""
           );
+          // Format: variantId:quantity:sellingPlanId (selling plan is optional)
+          if (item.subscriptionFrequency && SELLING_PLANS[item.subscriptionFrequency]) {
+            return `${numericId}:${item.quantity}:${SELLING_PLANS[item.subscriptionFrequency]}`;
+          }
           return `${numericId}:${item.quantity}`;
         })
         .filter(Boolean);
