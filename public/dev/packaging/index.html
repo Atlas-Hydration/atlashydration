@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Atlas Packaging Lab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800&display=swap" rel="stylesheet">
+<style>
+/* ─── RESET ─── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'DM Sans', sans-serif; background: #0A0A0A; color: #E0E0E0; overflow-x: hidden; -webkit-font-smoothing: antialiased; }
+button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
+input { font-family: inherit; }
+
+/* ─── TOP BAR ─── */
+.topbar {
+  height: 52px; display: flex; align-items: center; justify-content: space-between;
+  padding: 0 20px; border-bottom: 1px solid #2A2A2A; background: #0E0E0E;
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+}
+.topbar__left { display: flex; align-items: center; gap: 14px; }
+.topbar__logo { display: flex; align-items: center; gap: 8px; }
+.topbar__logo svg { height: 22px; width: auto; }
+.topbar__logo-text { font-size: 15px; font-weight: 700; color: #fff; letter-spacing: -0.01em; }
+.topbar__label { font-family: 'DM Mono', monospace; font-size: 12px; color: #888; }
+.topbar__label span { color: #E8432D; font-weight: 500; }
+.topbar__right { display: flex; align-items: center; gap: 12px; }
+.topbar__seed { font-family: 'DM Mono', monospace; font-size: 11px; color: #555; }
+.topbar__btn { font-size: 11px; font-weight: 600; padding: 6px 14px; border-radius: 6px; letter-spacing: 0.03em; transition: all 0.15s; }
+.topbar__btn--outline { border: 1px solid #3A3A3A; color: #999; }
+.topbar__btn--outline:hover { border-color: #666; color: #ccc; }
+.topbar__btn--red { background: #E8432D; color: #fff; }
+.topbar__btn--red:hover { background: #d03a26; }
+
+/* ─── TABS ─── */
+.tabs {
+  display: flex; gap: 0; padding: 0 20px; padding-left: 240px;
+  border-bottom: 1px solid #2A2A2A; background: #0E0E0E;
+  position: fixed; top: 52px; left: 0; right: 0; z-index: 99;
+}
+.tab {
+  font-size: 13px; font-weight: 500; color: #666; padding: 12px 20px;
+  border-bottom: 1.5px solid transparent; transition: all 0.15s;
+}
+.tab:hover { color: #aaa; }
+.tab.active { color: #fff; border-bottom-color: #E8432D; }
+
+/* ─── SIDEBAR ─── */
+.sidebar {
+  position: fixed; top: 52px; left: 0; bottom: 0; width: 220px;
+  background: #141414; border-right: 1px solid #2A2A2A;
+  padding: 20px 0; overflow-y: auto; z-index: 98;
+}
+.sidebar__section { padding: 0 16px; margin-bottom: 20px; }
+.sidebar__section-label {
+  font-family: 'DM Mono', monospace; font-size: 10px; font-weight: 500;
+  text-transform: uppercase; letter-spacing: 0.1em; color: #3A3A3A;
+  margin-bottom: 10px;
+}
+.sidebar__item {
+  display: flex; align-items: center; gap: 10px; width: 100%;
+  padding: 8px 12px; border-radius: 6px; font-size: 13px; color: #888;
+  transition: all 0.15s; text-align: left; border: 1px solid transparent;
+}
+.sidebar__item:hover { background: #1C1C1C; color: #ccc; }
+.sidebar__item.active { background: #1C1C1C; color: #fff; border-color: #E8432D; }
+.sidebar__dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.sidebar__item-info { display: flex; flex-direction: column; }
+.sidebar__item-name { font-weight: 500; }
+.sidebar__item-sub { font-family: 'DM Mono', monospace; font-size: 9px; color: #555; margin-top: 1px; }
+
+/* Sidebar radio items */
+.sidebar__radio {
+  display: flex; align-items: center; gap: 8px; width: 100%;
+  padding: 6px 12px; border-radius: 6px; font-size: 12px; color: #888;
+  transition: all 0.15s; text-align: left;
+}
+.sidebar__radio:hover { color: #ccc; }
+.sidebar__radio.active { color: #fff; }
+.sidebar__radio-circle {
+  width: 14px; height: 14px; border-radius: 50%; border: 1.5px solid #555;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  transition: all 0.15s;
+}
+.sidebar__radio.active .sidebar__radio-circle { border-color: #E8432D; }
+.sidebar__radio.active .sidebar__radio-circle::after {
+  content: ''; width: 6px; height: 6px; border-radius: 50%; background: #E8432D;
+}
+
+/* Sidebar pill buttons */
+.sidebar__pills { display: flex; gap: 6px; }
+.sidebar__pill {
+  flex: 1; padding: 6px 0; border-radius: 6px; border: 1px solid #2A2A2A;
+  font-family: 'DM Mono', monospace; font-size: 11px; font-weight: 500;
+  color: #666; text-align: center; transition: all 0.15s;
+}
+.sidebar__pill:hover { border-color: #555; color: #aaa; }
+.sidebar__pill.active { border-color: #E8432D; color: #fff; }
+
+/* ─── MAIN CANVAS ─── */
+.canvas {
+  margin-left: 220px; margin-top: 92px; min-height: calc(100vh - 92px);
+  padding: 32px; display: flex; flex-direction: column;
+}
+.canvas__label {
+  font-family: 'DM Mono', monospace; font-size: 10px; font-weight: 500;
+  text-transform: uppercase; letter-spacing: 0.1em; color: #3A3A3A;
+  margin-bottom: 24px;
+}
+.canvas__grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 24px; flex: 1;
+}
+
+/* ─── CARD ─── */
+.card {
+  background: #141414; border-radius: 12px; border: 1px solid #2A2A2A;
+  padding: 24px; display: flex; flex-direction: column; align-items: center;
+  transition: border-color 0.2s; opacity: 0; transform: scale(0.93);
+  animation: cardIn 0.3s ease-out forwards;
+}
+.card:nth-child(1) { animation-delay: 0ms; }
+.card:nth-child(2) { animation-delay: 80ms; }
+.card:nth-child(3) { animation-delay: 160ms; }
+@keyframes cardIn { to { opacity: 1; transform: scale(1); } }
+.card:hover { border-color: #3A3A3A; }
+.card__viewport {
+  width: 100%; height: 300px; perspective: 900px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: grab; user-select: none; position: relative;
+}
+.card__viewport:active { cursor: grabbing; }
+.card__hint {
+  position: absolute; bottom: 8px; left: 50%; transform: translateX(-50%);
+  font-family: 'DM Mono', monospace; font-size: 9px; color: #3A3A3A;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  transition: opacity 0.3s; pointer-events: none;
+}
+.card__meta { width: 100%; margin-top: 16px; }
+.card__meta-name { font-size: 14px; font-weight: 600; color: #fff; }
+.card__meta-info { font-family: 'DM Mono', monospace; font-size: 11px; color: #555; margin-top: 2px; }
+.card__tags { display: flex; gap: 6px; margin-top: 10px; flex-wrap: wrap; }
+.card__tag {
+  font-family: 'DM Mono', monospace; font-size: 9px; font-weight: 500;
+  color: #555; padding: 3px 8px; border-radius: 4px; border: 1px solid #2A2A2A;
+  letter-spacing: 0.04em;
+}
+
+/* ─── 3D PACKAGING ─── */
+.pack3d { transform-style: preserve-3d; position: relative; }
+.pack3d__face { position: absolute; backface-visibility: hidden; overflow: hidden; }
+
+/* Stick pack */
+.stick { width: 100px; height: 240px; }
+.stick__front { width: 100px; height: 240px; transform: translateZ(6px); display: flex; flex-direction: column; padding: 12px 10px; border-radius: 3px; }
+.stick__back { width: 100px; height: 240px; transform: rotateY(180deg) translateZ(6px); display: flex; flex-direction: column; padding: 10px 8px; border-radius: 3px; font-size: 7px; }
+.stick__side-r { width: 12px; height: 240px; transform: rotateY(90deg) translateZ(44px); border-radius: 0 2px 2px 0; }
+.stick__side-l { width: 12px; height: 240px; transform: rotateY(-90deg) translateZ(44px); border-radius: 2px 0 0 2px; }
+.stick__logo { height: 18px; width: auto; margin-bottom: 8px; display: flex; align-items: center; gap: 4px; }
+.stick__logo svg { height: 14px; width: auto; }
+.stick__logo span { font-size: 8px; font-weight: 700; letter-spacing: -0.01em; }
+.stick__name { font-size: 16px; font-weight: 700; letter-spacing: -0.02em; line-height: 1.1; flex: 1; display: flex; align-items: center; }
+.stick__claims { font-size: 6.5px; font-weight: 300; letter-spacing: 0.08em; color: #888; margin-top: 4px; }
+.stick__flavor { font-size: 7px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.12em; padding: 3px 6px; border: 1px solid; border-radius: 2px; margin-top: 6px; align-self: flex-start; }
+.stick__stripe { position: absolute; bottom: 0; left: 0; right: 0; height: 30%; display: flex; align-items: center; justify-content: center; border-radius: 0 0 3px 3px; }
+.stick__stripe-text { font-size: 8px; font-weight: 700; color: #fff; letter-spacing: 0.06em; }
+
+/* Nutrition back */
+.nf { border: 0.5px solid; padding: 4px; margin-top: auto; font-family: 'DM Mono', monospace; }
+.nf__title { font-size: 7px; font-weight: 700; border-bottom: 0.5px solid; padding-bottom: 2px; margin-bottom: 2px; }
+.nf__row { display: flex; justify-content: space-between; font-size: 6px; padding: 1px 0; }
+.nf__barcode { margin-top: auto; height: 20px; display: flex; align-items: flex-end; gap: 1px; }
+.nf__barcode span { display: block; background: currentColor; width: 1px; }
+.nf__url { font-size: 5px; text-align: center; margin-top: 4px; opacity: 0.5; }
+
+/* Box */
+.box { width: 180px; height: 220px; }
+.box__front { width: 180px; height: 220px; transform: translateZ(70px); display: flex; flex-direction: column; padding: 16px; border-radius: 4px; }
+.box__back { width: 180px; height: 220px; transform: rotateY(180deg) translateZ(70px); display: flex; flex-direction: column; padding: 16px; border-radius: 4px; }
+.box__right { width: 140px; height: 220px; transform: rotateY(90deg) translateZ(70px); display: flex; flex-direction: column; justify-content: center; padding: 20px 16px; gap: 16px; }
+.box__left { width: 140px; height: 220px; transform: rotateY(-90deg) translateZ(70px); }
+.box__top { width: 180px; height: 140px; transform: rotateX(90deg) translateZ(110px); }
+.box__accent-bar { position: absolute; left: 0; top: 0; bottom: 0; width: 4px; }
+.box__logo { display: flex; align-items: center; gap: 5px; margin-bottom: 12px; }
+.box__logo svg { height: 16px; width: auto; }
+.box__logo span { font-size: 10px; font-weight: 700; }
+.box__title { font-size: 26px; font-weight: 700; letter-spacing: -0.02em; line-height: 1.05; flex: 1; }
+.box__claims { font-size: 8px; font-weight: 300; letter-spacing: 0.08em; margin-top: 8px; }
+.box__flavor { font-size: 9px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.12em; margin-top: auto; }
+.box__count { font-family: 'DM Mono', monospace; font-size: 9px; position: absolute; bottom: 16px; right: 16px; opacity: 0.5; }
+.box__stat { text-align: center; }
+.box__stat-val { font-size: 18px; font-weight: 700; }
+.box__stat-label { font-family: 'DM Mono', monospace; font-size: 7px; text-transform: uppercase; letter-spacing: 0.1em; opacity: 0.5; margin-top: 2px; }
+.box__stat-divider { height: 1px; opacity: 0.15; }
+
+/* Variety mini sticks */
+.variety-sticks { position: absolute; top: -30px; left: 50%; transform: translateX(-50%); display: flex; gap: 4px; z-index: 5; }
+.variety-stick { width: 20px; height: 70px; border-radius: 2px; opacity: 0.85; }
+.variety-stick:nth-child(1) { transform: rotate(-8deg); }
+.variety-stick:nth-child(2) { transform: rotate(0deg) translateY(-4px); }
+.variety-stick:nth-child(3) { transform: rotate(8deg); }
+
+/* Pouch */
+.pouch { width: 140px; height: 200px; }
+.pouch__body {
+  width: 140px; height: 180px; transform: translateZ(6px);
+  clip-path: polygon(8% 12%, 92% 12%, 100% 20%, 100% 90%, 94% 100%, 6% 100%, 0% 90%, 0% 20%);
+  display: flex; flex-direction: column; padding: 30px 14px 16px; position: relative;
+}
+.pouch__seal {
+  width: 100px; height: 18px; transform: translateZ(7px);
+  position: absolute; top: 0; left: 20px;
+  clip-path: polygon(5% 0, 95% 0, 100% 100%, 0% 100%);
+}
+.pouch__notch {
+  width: 8px; height: 8px; border-radius: 50%; background: #0A0A0A;
+  position: absolute; top: 18px; right: 6px; transform: translateZ(8px); z-index: 2;
+}
+.pouch__back {
+  width: 140px; height: 180px; transform: rotateY(180deg) translateZ(6px);
+  clip-path: polygon(8% 12%, 92% 12%, 100% 20%, 100% 90%, 94% 100%, 6% 100%, 0% 90%, 0% 20%);
+  display: flex; flex-direction: column; padding: 30px 12px 12px; font-size: 7px;
+}
+.pouch__gusset {
+  position: absolute; bottom: 0; left: 0; right: 0; height: 15%;
+  background: linear-gradient(to bottom, transparent, rgba(0,0,0,0.12));
+  pointer-events: none;
+}
+.pouch__logo { display: flex; align-items: center; justify-content: center; gap: 4px; margin-bottom: 8px; }
+.pouch__logo svg { height: 14px; width: auto; }
+.pouch__logo span { font-size: 9px; font-weight: 700; }
+.pouch__name { font-size: 18px; font-weight: 700; letter-spacing: -0.02em; text-align: center; flex: 1; display: flex; align-items: center; justify-content: center; }
+.pouch__flavor { text-align: center; font-size: 8px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.12em; padding: 3px 8px; border: 1px solid; border-radius: 2px; margin: 6px auto 0; }
+.pouch__stats { display: flex; justify-content: space-around; margin-top: auto; }
+.pouch__stat { text-align: center; }
+.pouch__stat-val { font-size: 10px; font-weight: 700; }
+.pouch__stat-label { font-family: 'DM Mono', monospace; font-size: 5px; text-transform: uppercase; letter-spacing: 0.08em; opacity: 0.5; }
+
+/* Noise grain overlay */
+.grain {
+  position: absolute; inset: 0; pointer-events: none; opacity: 0.035; z-index: 10;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 100px 100px; border-radius: inherit;
+}
+
+/* Drop shadow on 3D scenes */
+.card__viewport .pack3d { filter: drop-shadow(0 24px 48px rgba(0,0,0,0.55)); }
+
+/* ─── EXPORT MODAL ─── */
+.modal-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.7);
+  z-index: 200; display: none; align-items: center; justify-content: center;
+}
+.modal-overlay.open { display: flex; }
+.modal {
+  background: #141414; border-radius: 14px; border: 1px solid #2A2A2A;
+  width: 380px; padding: 28px;
+}
+.modal__title { font-size: 16px; font-weight: 600; color: #fff; margin-bottom: 4px; }
+.modal__sub { font-size: 12px; color: #555; margin-bottom: 20px; }
+.modal__option {
+  background: #1C1C1C; border-radius: 8px; padding: 14px 16px;
+  margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between;
+  border: 1px solid transparent; cursor: pointer; transition: all 0.15s;
+}
+.modal__option:hover { border-color: #3A3A3A; transform: translateY(-1px); }
+.modal__option-info { display: flex; flex-direction: column; }
+.modal__option-title { font-size: 13px; font-weight: 600; color: #ddd; }
+.modal__option-desc { font-size: 10px; color: #555; margin-top: 2px; }
+.modal__option-badge {
+  font-family: 'DM Mono', monospace; font-size: 9px; font-weight: 600;
+  padding: 3px 8px; border-radius: 4px; background: #1A1A1A; color: #888; border: 1px solid #2A2A2A;
+}
+.modal__actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 20px; }
+.modal__btn { font-size: 12px; font-weight: 600; padding: 8px 18px; border-radius: 8px; transition: all 0.15s; }
+.modal__btn--ghost { color: #666; }
+.modal__btn--ghost:hover { color: #aaa; }
+.modal__btn--red { background: #E8432D; color: #fff; }
+.modal__btn--red:hover { background: #d03a26; }
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="topbar">
+  <div class="topbar__left">
+    <div class="topbar__logo">
+      <svg viewBox="0 0 745 171" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M208.3 10.2a2.04 2.04 0 100-4.08 2.04 2.04 0 000 4.08z" fill="#fff"/>
+        <path d="M205.6 13.6a2.04 2.04 0 100-4.08 2.04 2.04 0 000 4.08z" fill="#fff"/>
+        <path d="M202.8 17.8a2.04 2.04 0 100-4.08 2.04 2.04 0 000 4.08z" fill="#fff"/>
+        <path d="M179.1 39.5a2.04 2.04 0 100-4.08 2.04 2.04 0 000 4.08z" fill="#fff"/>
+        <path d="M162.9 48a2.04 2.04 0 100-4.08 2.04 2.04 0 000 4.08z" fill="#fff"/>
+        <path d="M97.4 69.5a2.04 2.04 0 100-4.08 2.04 2.04 0 000 4.08z" fill="#fff"/>
+        <path d="M107.3 80.6a2.04 2.04 0 100-4.08 2.04 2.04 0 000 4.08z" fill="#fff"/>
+        <path d="M106.5 85a2.04 2.04 0 100-4.08 2.04 2.04 0 000 4.08z" fill="#fff"/>
+        <path d="M133.9 106.8a2.04 2.04 0 100-4.08 2.04 2.04 0 000 4.08z" fill="#fff"/>
+        <path d="M113.1 113.6a2.04 2.04 0 100-4.08 2.04 2.04 0 000 4.08z" fill="#fff"/>
+        <path d="M109.4 117a2.04 2.04 0 100-4.08 2.04 2.04 0 000 4.08z" fill="#fff"/>
+        <path d="M94.7 132.8a2.04 2.04 0 100-4.08 2.04 2.04 0 000 4.08z" fill="#fff"/>
+        <path d="M112.3 154.7a2.04 2.04 0 100-4.08 2.04 2.04 0 000 4.08z" fill="#fff"/>
+        <path d="M115.2 157.9a2.04 2.04 0 100-4.08 2.04 2.04 0 000 4.08z" fill="#fff"/>
+        <path d="M86 169.4a2.04 2.04 0 100-4.08 2.04 2.04 0 000 4.08z" fill="#fff"/>
+        <path d="M72.6 169.4a2.04 2.04 0 100-4.08 2.04 2.04 0 000 4.08z" fill="#fff"/>
+        <path d="M81.4 169.4a1.66 1.66 0 100-3.33 1.66 1.66 0 000 3.33z" fill="#fff"/>
+        <path d="M77.3 169.4a1.66 1.66 0 100-3.33 1.66 1.66 0 000 3.33z" fill="#fff"/>
+        <path d="M250.9 168L320.8 9.9h17.2l70.2 158.2h-21.6l-20.5-46.1h-73.7l-20.1 46.1h-21.4zm78.2-130.1l-28.5 65.3h57.2l-28.7-65.3z" fill="#fff"/>
+        <path d="M458.5 169.2c-10.2 0-18.5-2.9-24.7-8.7-6.3-5.8-9.4-14.2-9.4-25.4V74.3h-23.6V56.7h23.6V25.8h19.1v30.9h32.1v17.6h-32.1v58.4c0 7 1.5 11.9 4.4 14.7 3 2.8 7.7 4.3 14.1 4.3 5.6 0 10.2-.7 13.6-2.2v17.1c-5.3 1.8-11.1 2.7-17.1 2.7z" fill="#fff"/>
+        <path d="M494.7 168V1h19.2v167h-19.2z" fill="#fff"/>
+        <path d="M584.3 170.2c-15.5 0-28.4-5.6-38.8-17-10.5-11.3-15.7-24.9-15.7-40.9 0-16 5.2-29.7 15.7-41 10.5-11.3 23.4-16.9 38.8-16.9 8.2 0 15.8 1.8 22.8 5.5 7.1 3.7 12.5 8.3 16.4 13.9V56.7h19.1v111.4h-19.1v-17.2c-3.9 5.6-9.3 10.3-16.4 13.9-7.1 3.7-14.6 5.5-22.8 5.5zm2.9-17.6c11 0 20.1-3.8 27.2-11.6 7.1-7.8 10.7-17.3 10.7-28.7 0-11.4-3.6-21-10.7-28.7-7.1-7.8-16.2-11.6-27.2-11.6s-20.3 3.9-27.4 11.6c-7.1 7.7-10.7 17.3-10.7 28.7 0 11.4 3.6 21.1 10.7 28.7 7.1 7.7 16.3 11.6 27.4 11.6z" fill="#fff"/>
+        <path d="M703.2 170.3c-12.5 0-23-3-31.3-9.1-8.4-6.1-13.1-14.5-13.9-25.4h19.6c1.2 6.3 4.2 10.9 9 13.9 4.8 3 10.4 4.4 16.8 4.4 6.4 0 11.6-1.3 15.5-3.8 4-2.5 5.9-6.2 5.9-11 0-4.4-1.4-8.1-4.3-10.9-2.9-2.8-7.6-5.1-14.1-6.9L690.3 117.2c-19.1-5.1-28.7-16-28.7-32.8 0-9.1 3.6-16.3 10.8-21.8 7.2-5.5 16.5-8.2 27.8-8.2 11.3 0 20.9 3 28.2 9 7.4 6 11.4 13.6 12.4 22.8h-19.2c-1.5-4.9-4.1-8.7-7.9-11.6-3.8-2.9-8.3-4.3-13.5-4.3-5.5 0-10 1.3-13.7 3.8-3.7 2.5-5.5 5.8-5.5 10 0 4.2 1.3 7.3 4 9.8 2.7 2.5 7 4.6 12.9 6.3l17.8 4.7c19 4.7 28.5 15.7 28.5 33 0 10.7-3.8 18.7-11.4 24.2-7.6 5.4-17.5 8.1-29.6 8.1z" fill="#fff"/>
+      </svg>
+      <span class="topbar__logo-text">Atlas</span>
+    </div>
+    <span class="topbar__label">Packaging <span>Lab</span></span>
+  </div>
+  <div class="topbar__right">
+    <span class="topbar__seed" id="seedDisplay">Seed: 1775049432151</span>
+    <button class="topbar__btn topbar__btn--outline" id="btnRegenerate">Regenerate (R)</button>
+    <button class="topbar__btn topbar__btn--red" id="btnExport">Export SVG</button>
+  </div>
+</div>
+
+<!-- TABS -->
+<div class="tabs">
+  <button class="tab active" data-tab="sticks">Stick Packs</button>
+  <button class="tab" data-tab="boxes">Boxes</button>
+  <button class="tab" data-tab="pouches">Pouches</button>
+</div>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sidebar__section">
+    <div class="sidebar__section-label">Flavors</div>
+    <button class="sidebar__item active" data-flavor="strawberry-lemonade">
+      <span class="sidebar__dot" style="background:#C8514A"></span>
+      <span class="sidebar__item-info">
+        <span class="sidebar__item-name">Strawberry Lemonade</span>
+        <span class="sidebar__item-sub">Current SKU</span>
+      </span>
+    </button>
+    <button class="sidebar__item" data-flavor="grapefruit">
+      <span class="sidebar__dot" style="background:#D4784A"></span>
+      <span class="sidebar__item-info">
+        <span class="sidebar__item-name">Grapefruit</span>
+        <span class="sidebar__item-sub">Current SKU</span>
+      </span>
+    </button>
+  </div>
+
+  <div class="sidebar__section">
+    <div class="sidebar__section-label">Theme</div>
+    <button class="sidebar__radio active" data-theme="light">
+      <span class="sidebar__radio-circle"></span> Light
+    </button>
+    <button class="sidebar__radio" data-theme="dark">
+      <span class="sidebar__radio-circle"></span> Dark
+    </button>
+  </div>
+
+  <div class="sidebar__section">
+    <div class="sidebar__section-label">Count</div>
+    <div class="sidebar__pills">
+      <button class="sidebar__pill active" data-count="10">10</button>
+      <button class="sidebar__pill" data-count="14">14</button>
+      <button class="sidebar__pill" data-count="30">30</button>
+    </div>
+  </div>
+</aside>
+
+<!-- MAIN CANVAS -->
+<main class="canvas">
+  <div class="canvas__label" id="canvasLabel">Stick Packs — Drag to Rotate — 2 Flavors</div>
+  <div class="canvas__grid" id="canvasGrid">
+    <!-- Cards injected by JS -->
+  </div>
+</main>
+
+<!-- EXPORT MODAL -->
+<div class="modal-overlay" id="exportModal">
+  <div class="modal">
+    <div class="modal__title">Export Packaging Assets</div>
+    <div class="modal__sub">Download production-ready files</div>
+    <div class="modal__option" data-export="front">
+      <div class="modal__option-info">
+        <span class="modal__option-title">Front Face Flat</span>
+        <span class="modal__option-desc">Send to manufacturer as dieline reference</span>
+      </div>
+      <span class="modal__option-badge">SVG</span>
+    </div>
+    <div class="modal__option" data-export="dieline">
+      <div class="modal__option-info">
+        <span class="modal__option-title">Full Dieline</span>
+        <span class="modal__option-desc">Includes bleed, crop marks, and safe zones</span>
+      </div>
+      <span class="modal__option-badge">SVG</span>
+    </div>
+    <div class="modal__option" data-export="mockup">
+      <div class="modal__option-info">
+        <span class="modal__option-title">3D Mockup PNG</span>
+        <span class="modal__option-desc">For presentations and social content</span>
+      </div>
+      <span class="modal__option-badge">PNG</span>
+    </div>
+    <div class="modal__actions">
+      <button class="modal__btn modal__btn--ghost" id="btnModalCancel">Cancel</button>
+      <button class="modal__btn modal__btn--red" id="btnModalExport">Export</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ─── STATE ───
+const state = {
+  tab: 'sticks',
+  flavor: 'strawberry-lemonade',
+  theme: 'light',
+  count: 10,
+  seed: 1775049432151,
+};
+
+const FLAVORS = {
+  'strawberry-lemonade': { name: 'Strawberry Lemonade', accent: '#C8514A', accentDark: '#A3403B' },
+  'grapefruit': { name: 'Grapefruit', accent: '#D4784A', accentDark: '#B0613A' },
+};
+
+// ─── TAB SWITCHING ───
+document.querySelectorAll('.tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    state.tab = tab.dataset.tab;
+    render();
+  });
+});
+
+// ─── SIDEBAR CONTROLS ───
+document.querySelectorAll('.sidebar__item[data-flavor]').forEach(item => {
+  item.addEventListener('click', () => {
+    document.querySelectorAll('.sidebar__item[data-flavor]').forEach(i => i.classList.remove('active'));
+    item.classList.add('active');
+    state.flavor = item.dataset.flavor;
+    render();
+  });
+});
+document.querySelectorAll('.sidebar__radio[data-theme]').forEach(radio => {
+  radio.addEventListener('click', () => {
+    document.querySelectorAll('.sidebar__radio[data-theme]').forEach(r => r.classList.remove('active'));
+    radio.classList.add('active');
+    state.theme = radio.dataset.theme;
+    render();
+  });
+});
+document.querySelectorAll('.sidebar__pill[data-count]').forEach(pill => {
+  pill.addEventListener('click', () => {
+    document.querySelectorAll('.sidebar__pill').forEach(p => p.classList.remove('active'));
+    pill.classList.add('active');
+    state.count = parseInt(pill.dataset.count);
+    render();
+  });
+});
+
+// ─── REGENERATE ───
+function regenerate() {
+  state.seed = Math.floor(Math.random() * 9999999999);
+  document.getElementById('seedDisplay').textContent = 'Seed: ' + state.seed;
+  render();
+}
+document.getElementById('btnRegenerate').addEventListener('click', regenerate);
+document.addEventListener('keydown', e => { if (e.key === 'r' || e.key === 'R') { if (e.target.tagName !== 'INPUT') regenerate(); } });
+
+// ─── EXPORT MODAL ───
+document.getElementById('btnExport').addEventListener('click', () => document.getElementById('exportModal').classList.add('open'));
+document.getElementById('btnModalCancel').addEventListener('click', () => document.getElementById('exportModal').classList.remove('open'));
+document.getElementById('exportModal').addEventListener('click', e => { if (e.target === e.currentTarget) e.currentTarget.classList.remove('open'); });
+
+// ─── SEEDED RANDOM ───
+function seededRandom(s) { s = (s * 9301 + 49297) % 233280; return s / 233280; }
+function seedVar(index, min, max) { return min + seededRandom(state.seed + index * 7919) * (max - min); }
+
+// ─── ATLAS LOGO SVG (inline for packaging faces) ───
+function logoSVG(color, h) {
+  return `<svg height="${h}" viewBox="0 0 745 171" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M208.3 10.2a2 2 0 100-4 2 2 0 000 4z" fill="${color}"/>
+    <path d="M205.6 13.6a2 2 0 100-4 2 2 0 000 4z" fill="${color}"/>
+    <path d="M202.8 17.8a2 2 0 100-4 2 2 0 000 4z" fill="${color}"/>
+    <path d="M179.1 39.5a2 2 0 100-4 2 2 0 000 4z" fill="${color}"/>
+    <path d="M162.9 48a2 2 0 100-4 2 2 0 000 4z" fill="${color}"/>
+    <path d="M97.4 69.5a2 2 0 100-4 2 2 0 000 4z" fill="${color}"/>
+    <path d="M107.3 80.6a2 2 0 100-4 2 2 0 000 4z" fill="${color}"/>
+    <path d="M106.5 85a2 2 0 100-4 2 2 0 000 4z" fill="${color}"/>
+    <path d="M133.9 106.8a2 2 0 100-4 2 2 0 000 4z" fill="${color}"/>
+    <path d="M113.1 113.6a2 2 0 100-4 2 2 0 000 4z" fill="${color}"/>
+    <path d="M109.4 117a2 2 0 100-4 2 2 0 000 4z" fill="${color}"/>
+    <path d="M94.7 132.8a2 2 0 100-4 2 2 0 000 4z" fill="${color}"/>
+    <path d="M112.3 154.7a2 2 0 100-4 2 2 0 000 4z" fill="${color}"/>
+    <path d="M115.2 157.9a2 2 0 100-4 2 2 0 000 4z" fill="${color}"/>
+    <path d="M86 169.4a2 2 0 100-4 2 2 0 000 4z" fill="${color}"/>
+    <path d="M72.6 169.4a2 2 0 100-4 2 2 0 000 4z" fill="${color}"/>
+    <path d="M250.9 168L320.8 9.9h17.2l70.2 158.2h-21.6l-20.5-46.1h-73.7l-20.1 46.1h-21.4zm78.2-130.1l-28.5 65.3h57.2l-28.7-65.3z" fill="${color}"/>
+    <path d="M458.5 169.2c-10.2 0-18.5-2.9-24.7-8.7-6.3-5.8-9.4-14.2-9.4-25.4V74.3h-23.6V56.7h23.6V25.8h19.1v30.9h32.1v17.6h-32.1v58.4c0 7 1.5 11.9 4.4 14.7 3 2.8 7.7 4.3 14.1 4.3 5.6 0 10.2-.7 13.6-2.2v17.1c-5.3 1.8-11.1 2.7-17.1 2.7z" fill="${color}"/>
+    <path d="M494.7 168V1h19.2v167h-19.2z" fill="${color}"/>
+    <path d="M584.3 170.2c-15.5 0-28.4-5.6-38.8-17-10.5-11.3-15.7-24.9-15.7-40.9 0-16 5.2-29.7 15.7-41 10.5-11.3 23.4-16.9 38.8-16.9 8.2 0 15.8 1.8 22.8 5.5 7.1 3.7 12.5 8.3 16.4 13.9V56.7h19.1v111.4h-19.1v-17.2c-3.9 5.6-9.3 10.3-16.4 13.9-7.1 3.7-14.6 5.5-22.8 5.5zm2.9-17.6c11 0 20.1-3.8 27.2-11.6 7.1-7.8 10.7-17.3 10.7-28.7 0-11.4-3.6-21-10.7-28.7-7.1-7.8-16.2-11.6-27.2-11.6s-20.3 3.9-27.4 11.6c-7.1 7.7-10.7 17.3-10.7 28.7 0 11.4 3.6 21.1 10.7 28.7 7.1 7.7 16.3 11.6 27.4 11.6z" fill="${color}"/>
+    <path d="M703.2 170.3c-12.5 0-23-3-31.3-9.1-8.4-6.1-13.1-14.5-13.9-25.4h19.6c1.2 6.3 4.2 10.9 9 13.9 4.8 3 10.4 4.4 16.8 4.4 6.4 0 11.6-1.3 15.5-3.8 4-2.5 5.9-6.2 5.9-11 0-4.4-1.4-8.1-4.3-10.9-2.9-2.8-7.6-5.1-14.1-6.9L690.3 117.2c-19.1-5.1-28.7-16-28.7-32.8 0-9.1 3.6-16.3 10.8-21.8 7.2-5.5 16.5-8.2 27.8-8.2 11.3 0 20.9 3 28.2 9 7.4 6 11.4 13.6 12.4 22.8h-19.2c-1.5-4.9-4.1-8.7-7.9-11.6-3.8-2.9-8.3-4.3-13.5-4.3-5.5 0-10 1.3-13.7 3.8-3.7 2.5-5.5 5.8-5.5 10 0 4.2 1.3 7.3 4 9.8 2.7 2.5 7 4.6 12.9 6.3l17.8 4.7c19 4.7 28.5 15.7 28.5 33 0 10.7-3.8 18.7-11.4 24.2-7.6 5.4-17.5 8.1-29.6 8.1z" fill="${color}"/>
+  </svg>`;
+}
+
+function logoLockup(color, h) {
+  return `<div style="display:flex;align-items:center;gap:4px">${logoSVG(color, h)}</div>`;
+}
+
+// ─── BARCODE SVG ───
+function barcodeSVG(color, w, h) {
+  let bars = '';
+  for (let i = 0; i < w; i += 2) {
+    const bh = 0.6 + seededRandom(state.seed + i) * 0.4;
+    bars += `<rect x="${i}" y="${h*(1-bh)}" width="1" height="${h*bh}" fill="${color}"/>`;
+  }
+  return `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}">${bars}</svg>`;
+}
+
+// ─── THEME COLORS ───
+function themeColors() {
+  const light = state.theme === 'light';
+  return {
+    bg: light ? '#F7F5F2' : '#1C1E22',
+    bgSide: light ? '#EBE8E4' : '#16181C',
+    bgSideDark: light ? '#E0DCD8' : '#121416',
+    bgTop: light ? '#F0EDE9' : '#1A1C20',
+    text: light ? '#1A1A1A' : '#F0EDE8',
+    textMuted: light ? '#888' : '#666',
+    logoColor: light ? '#1A1A1A' : '#F0EDE8',
+    nfBorder: light ? '#1A1A1A' : '#555',
+  };
+}
+
+// ─── DRAG ROTATION SETUP ───
+function setupDrag(viewport, pack3d, initRotY) {
+  let rotY = initRotY, rotX = -8, isDragging = false, startX = 0, velocity = 0, animFrame = null;
+  let hintEl = viewport.querySelector('.card__hint');
+
+  function applyTransform() { pack3d.style.transform = `rotateX(${rotX}deg) rotateY(${rotY}deg)`; }
+  applyTransform();
+
+  function onStart(x) { isDragging = true; startX = x; velocity = 0; if (animFrame) cancelAnimationFrame(animFrame); if (hintEl) { hintEl.style.opacity = '0'; } }
+  function onMove(x) { if (!isDragging) return; const dx = x - startX; velocity = dx * 0.5; rotY += dx * 0.5; startX = x; applyTransform(); }
+  function onEnd() { isDragging = false; inertia(); }
+  function inertia() { if (Math.abs(velocity) < 0.1) return; velocity *= 0.92; rotY += velocity; applyTransform(); animFrame = requestAnimationFrame(inertia); }
+
+  viewport.addEventListener('mousedown', e => { e.preventDefault(); onStart(e.clientX); });
+  window.addEventListener('mousemove', e => onMove(e.clientX));
+  window.addEventListener('mouseup', onEnd);
+  viewport.addEventListener('touchstart', e => { onStart(e.touches[0].clientX); }, { passive: true });
+  viewport.addEventListener('touchmove', e => { onMove(e.touches[0].clientX); }, { passive: true });
+  viewport.addEventListener('touchend', onEnd);
+}
+
+// ─── BUILD STICK PACK CARD ───
+function buildStickCard(flavorKey, index) {
+  const f = FLAVORS[flavorKey], c = themeColors();
+  const card = document.createElement('div');
+  card.className = 'card';
+  card.style.animationDelay = (index * 80) + 'ms';
+  const initRot = seedVar(index, -8, 8);
+  const scale = seedVar(index + 100, 0.98, 1.02);
+
+  card.innerHTML = `
+    <div class="card__viewport">
+      <div class="pack3d stick" style="transform:rotateX(-8deg) rotateY(${initRot}deg); transform-style:preserve-3d; scale:${scale}">
+        <div class="pack3d__face stick__front" style="background:${c.bg};color:${c.text}">
+          <div class="grain"></div>
+          ${logoLockup(c.logoColor, 14)}
+          <div class="stick__name">Daily<br>Hydration</div>
+          <div class="stick__claims" style="color:${c.textMuted}">ELECTROLYTES · AMINOS · ZERO SUGAR</div>
+          <div class="stick__flavor" style="color:${f.accent};border-color:${f.accent}">${f.name.toUpperCase()}</div>
+          <div class="stick__stripe" style="background:${f.accent}">
+            <span class="stick__stripe-text">0g SUGAR</span>
+          </div>
+        </div>
+        <div class="pack3d__face stick__back" style="background:${c.bg};color:${c.text}">
+          <div class="grain"></div>
+          ${logoLockup(c.logoColor, 10)}
+          <div class="nf" style="border-color:${c.nfBorder}">
+            <div class="nf__title">Nutrition Facts</div>
+            <div class="nf__row"><span>Calories</span><span>15</span></div>
+            <div class="nf__row"><span>Sodium</span><span>600mg</span></div>
+            <div class="nf__row"><span>Potassium</span><span>500mg</span></div>
+            <div class="nf__row"><span>Magnesium</span><span>200mg</span></div>
+          </div>
+          ${barcodeSVG(c.text, 50, 18)}
+          <div class="nf__url" style="color:${c.textMuted}">atlashydration.com</div>
+        </div>
+        <div class="pack3d__face stick__side-r" style="background:${f.accent}"></div>
+        <div class="pack3d__face stick__side-l" style="background:${f.accentDark}"></div>
+      </div>
+      <div class="card__hint">Drag to rotate</div>
+    </div>
+    <div class="card__meta">
+      <div class="card__meta-name">${f.name}</div>
+      <div class="card__meta-info">${state.count} sticks · ${state.theme === 'light' ? 'Light' : 'Dark'} theme</div>
+      <div class="card__tags">
+        <span class="card__tag">3D-PACK</span>
+        <span class="card__tag">RETAIL</span>
+        <span class="card__tag">INTERACTIVE</span>
+      </div>
+    </div>`;
+
+  const viewport = card.querySelector('.card__viewport');
+  const pack = card.querySelector('.pack3d');
+  setTimeout(() => setupDrag(viewport, pack, initRot), 10);
+  return card;
+}
+
+// ─── BUILD BOX CARD ───
+function buildBoxCard(flavorKey, index, isVariety) {
+  const f = isVariety ? { name: 'Variety Pack', accent: '#2A2A2A', accentDark: '#222' } : FLAVORS[flavorKey];
+  const c = themeColors();
+  const initRot = seedVar(index + 50, -12, 12);
+  const scale = seedVar(index + 150, 0.98, 1.02);
+  const card = document.createElement('div');
+  card.className = 'card';
+  card.style.animationDelay = (index * 80) + 'ms';
+
+  const varietySticks = isVariety ? `
+    <div class="variety-sticks">
+      <div class="variety-stick" style="background:#C8514A"></div>
+      <div class="variety-stick" style="background:#D4784A"></div>
+      <div class="variety-stick" style="background:#2E4A6B"></div>
+    </div>` : '';
+
+  const frontTitle = isVariety ? 'Variety<br>Pack' : 'Daily<br>Hydration';
+  const frontFlavor = isVariety ? 'ASSORTED FLAVORS' : f.name.toUpperCase();
+  const accentBar = `<div class="box__accent-bar" style="background:${f.accent}"></div>`;
+
+  card.innerHTML = `
+    <div class="card__viewport">
+      <div class="pack3d box" style="transform:rotateX(-8deg) rotateY(${initRot}deg); transform-style:preserve-3d; scale:${scale}">
+        ${varietySticks}
+        <div class="pack3d__face box__front" style="background:${c.bg};color:${c.text}">
+          <div class="grain"></div>
+          ${accentBar}
+          <div class="box__logo">${logoLockup(c.logoColor, 16)}</div>
+          <div class="box__title">${frontTitle}</div>
+          <div class="box__claims" style="color:${c.textMuted}">Electrolytes · Aminos · Zero Sugar</div>
+          <div class="box__flavor" style="color:${isVariety ? c.textMuted : f.accent}">${frontFlavor}</div>
+          <div class="box__count" style="color:${c.textMuted}">${state.count} STICKS</div>
+        </div>
+        <div class="pack3d__face box__right" style="background:${c.bgSide};color:${c.text}">
+          <div class="grain"></div>
+          <div class="box__stat"><div class="box__stat-val">500mg</div><div class="box__stat-label" style="color:${c.textMuted}">Potassium</div></div>
+          <div class="box__stat-divider" style="background:${c.text}"></div>
+          <div class="box__stat"><div class="box__stat-val">200mg</div><div class="box__stat-label" style="color:${c.textMuted}">Magnesium</div></div>
+          <div class="box__stat-divider" style="background:${c.text}"></div>
+          <div class="box__stat"><div class="box__stat-val">600mg</div><div class="box__stat-label" style="color:${c.textMuted}">Sodium</div></div>
+        </div>
+        <div class="pack3d__face box__left" style="background:${c.bgSideDark}"><div class="grain"></div></div>
+        <div class="pack3d__face box__top" style="background:${c.bgTop}"><div class="grain"></div></div>
+        <div class="pack3d__face box__back" style="background:${c.bg};color:${c.text}">
+          <div class="grain"></div>
+          ${logoLockup(c.logoColor, 14)}
+          <div style="font-size:8px;line-height:1.5;margin-top:12px;color:${c.textMuted}">
+            Premium zero-sugar electrolyte mix. Science-backed hydration with clean ingredients. Made in USA.
+          </div>
+          <div style="margin-top:auto">${barcodeSVG(c.text, 60, 22)}</div>
+        </div>
+      </div>
+      <div class="card__hint">Drag to rotate</div>
+    </div>
+    <div class="card__meta">
+      <div class="card__meta-name">${isVariety ? 'Variety Pack' : f.name}</div>
+      <div class="card__meta-info">${state.count} sticks · ${state.theme === 'light' ? 'Light' : 'Dark'} theme</div>
+      <div class="card__tags">
+        <span class="card__tag">3D-BOX</span>
+        <span class="card__tag">RETAIL</span>
+        <span class="card__tag">INTERACTIVE</span>
+      </div>
+    </div>`;
+
+  const viewport = card.querySelector('.card__viewport');
+  const pack = card.querySelector('.pack3d');
+  setTimeout(() => setupDrag(viewport, pack, initRot), 10);
+  return card;
+}
+
+// ─── BUILD POUCH CARD ───
+function buildPouchCard(flavorKey, index) {
+  const f = FLAVORS[flavorKey], c = themeColors();
+  const initRot = seedVar(index + 200, -8, 8);
+  const scale = seedVar(index + 300, 0.98, 1.02);
+  const card = document.createElement('div');
+  card.className = 'card';
+  card.style.animationDelay = (index * 80) + 'ms';
+
+  card.innerHTML = `
+    <div class="card__viewport">
+      <div class="pack3d pouch" style="transform:rotateX(-5deg) rotateY(${initRot}deg); transform-style:preserve-3d; scale:${scale}">
+        <div class="pouch__seal pack3d__face" style="background:${c.bgSideDark}; top:6px;"></div>
+        <div class="pouch__notch"></div>
+        <div class="pack3d__face pouch__body" style="background:${c.bg};color:${c.text}">
+          <div class="grain"></div>
+          <div class="pouch__gusset"></div>
+          <div class="pouch__logo">${logoLockup(c.logoColor, 14)}</div>
+          <div class="pouch__name">Daily<br>Hydration</div>
+          <div class="pouch__flavor" style="color:${f.accent};border-color:${f.accent}">${f.name.toUpperCase()}</div>
+          <div class="pouch__stats" style="color:${c.text}">
+            <div class="pouch__stat"><div class="pouch__stat-val">500mg</div><div class="pouch__stat-label" style="color:${c.textMuted}">K+</div></div>
+            <div class="pouch__stat"><div class="pouch__stat-val">200mg</div><div class="pouch__stat-label" style="color:${c.textMuted}">Mg</div></div>
+            <div class="pouch__stat"><div class="pouch__stat-val">600mg</div><div class="pouch__stat-label" style="color:${c.textMuted}">Na</div></div>
+          </div>
+        </div>
+        <div class="pack3d__face pouch__back" style="background:${c.bg};color:${c.text}">
+          <div class="grain"></div>
+          ${logoLockup(c.logoColor, 10)}
+          <div class="nf" style="border-color:${c.nfBorder};margin-top:8px">
+            <div class="nf__title">Nutrition Facts</div>
+            <div class="nf__row"><span>Calories</span><span>15</span></div>
+            <div class="nf__row"><span>Sodium</span><span>600mg</span></div>
+            <div class="nf__row"><span>Potassium</span><span>500mg</span></div>
+            <div class="nf__row"><span>Magnesium</span><span>200mg</span></div>
+          </div>
+          <div style="font-size:5.5px;color:${c.textMuted};margin-top:6px;line-height:1.4">
+            Ingredients: Citric Acid, Sodium Citrate, Potassium Citrate, Natural Flavors, Magnesium Citrate, Stevia Leaf Extract, L-Taurine, L-Glutamine.
+          </div>
+          <div style="margin-top:auto">${barcodeSVG(c.text, 50, 16)}</div>
+        </div>
+      </div>
+      <div class="card__hint">Drag to rotate</div>
+    </div>
+    <div class="card__meta">
+      <div class="card__meta-name">${f.name}</div>
+      <div class="card__meta-info">${state.count} sticks · ${state.theme === 'light' ? 'Light' : 'Dark'} theme</div>
+      <div class="card__tags">
+        <span class="card__tag">3D-POUCH</span>
+        <span class="card__tag">RETAIL</span>
+        <span class="card__tag">INTERACTIVE</span>
+      </div>
+    </div>`;
+
+  const viewport = card.querySelector('.card__viewport');
+  const pack = card.querySelector('.pack3d');
+  setTimeout(() => setupDrag(viewport, pack, initRot), 10);
+  return card;
+}
+
+// ─── EXPORT ───
+document.getElementById('btnModalExport').addEventListener('click', () => {
+  const frontFace = document.querySelector('.pack3d__face');
+  if (!frontFace) return;
+  const svgNS = 'http://www.w3.org/2000/svg';
+  const svg = document.createElementNS(svgNS, 'svg');
+  svg.setAttribute('width', '400'); svg.setAttribute('height', '600');
+  svg.setAttribute('xmlns', svgNS);
+  const fo = document.createElementNS(svgNS, 'foreignObject');
+  fo.setAttribute('width', '400'); fo.setAttribute('height', '600');
+  const clone = frontFace.cloneNode(true);
+  clone.style.transform = 'none'; clone.style.position = 'relative';
+  clone.style.width = '400px'; clone.style.height = '600px';
+  fo.appendChild(clone);
+  svg.appendChild(fo);
+  const serializer = new XMLSerializer();
+  const svgStr = serializer.serializeToString(svg);
+  const blob = new Blob([svgStr], { type: 'image/svg+xml' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = `atlas-${state.flavor}-packaging.svg`;
+  a.click(); URL.revokeObjectURL(url);
+  document.getElementById('exportModal').classList.remove('open');
+});
+
+// ─── RENDER ───
+function render() {
+  const grid = document.getElementById('canvasGrid');
+  const label = document.getElementById('canvasLabel');
+  const tabLabels = { sticks: 'Stick Packs', boxes: 'Boxes', pouches: 'Pouches' };
+  label.textContent = `${tabLabels[state.tab]} — Drag to Rotate — 2 Flavors`;
+  grid.innerHTML = '';
+
+  const flavors = ['strawberry-lemonade', 'grapefruit'];
+
+  if (state.tab === 'sticks') {
+    flavors.forEach((fk, i) => grid.appendChild(buildStickCard(fk, i)));
+  } else if (state.tab === 'boxes') {
+    flavors.forEach((fk, i) => grid.appendChild(buildBoxCard(fk, i, false)));
+    grid.appendChild(buildBoxCard('strawberry-lemonade', 2, true));
+  } else if (state.tab === 'pouches') {
+    flavors.forEach((fk, i) => grid.appendChild(buildPouchCard(fk, i)));
+  }
+}
+
+render();
+</script>
+</body>
+</html>
