@@ -197,6 +197,8 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   const clientRef = useRef<ShopifyClient | null>(null);
   const checkoutRef = useRef<ShopifyCheckout | null>(null);
+  // Track subscription selections per variant so we can restore after Shopify sync
+  const subscriptionMetaRef = useRef<Record<string, number>>({}); // variantId -> frequency
 
   // -----------------------------------------------------------------------
   // Sync items from Shopify checkout object
@@ -205,7 +207,21 @@ export function CartProvider({ children }: { children: ReactNode }) {
     checkoutRef.current = co;
     setCheckoutUrl(co.webUrl);
     try { localStorage.setItem(STORAGE_CHECKOUT_KEY, co.id); } catch { /* ignore */ }
-    setItems(checkoutToItems(co));
+    const cartItems = checkoutToItems(co);
+    // Merge subscription metadata back into items
+    const meta = subscriptionMetaRef.current;
+    for (const item of cartItems) {
+      // Match by looking up variant IDs from our product data
+      for (const slug of Object.keys(PRODUCTS)) {
+        const product = PRODUCTS[slug];
+        if (meta[product.variantId] && item.title.toLowerCase().includes(product.name.toLowerCase())) {
+          item.subscriptionFrequency = meta[product.variantId];
+          item.price = product.subscribePrice;
+          break;
+        }
+      }
+    }
+    setItems(cartItems);
   }, []);
 
   // -----------------------------------------------------------------------
@@ -294,6 +310,13 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
       const client = clientRef.current;
       const co = checkoutRef.current;
+
+      // Store subscription metadata so it survives Shopify sync
+      if (subscriptionFrequency) {
+        subscriptionMetaRef.current[product.variantId] = subscriptionFrequency;
+      } else {
+        delete subscriptionMetaRef.current[product.variantId];
+      }
 
       if (client && co) {
         const lineItems = [{ variantId: product.variantId, quantity: qty }];
