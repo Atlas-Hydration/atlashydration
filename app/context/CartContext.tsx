@@ -97,6 +97,7 @@ declare global {
 // ---------------------------------------------------------------------------
 
 const SHOPIFY_DOMAIN = "7fa7b7-42.myshopify.com";
+const SHOPIFY_CHECKOUT_DOMAIN = "atlas-hydration.com";
 const STOREFRONT_TOKEN = "390caf7f28b55c8958daeab3fcd55f76";
 const SDK_URL =
   "https://sdks.shopifycdn.com/buy-button/latest/buy-button-storefront.min.js";
@@ -503,7 +504,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
           // Selling plans require a form POST to /cart/add — the /cart/ permalink ignores them.
           const form = document.createElement("form");
           form.method = "POST";
-          form.action = `https://${SHOPIFY_DOMAIN}/cart/add`;
+          form.action = `https://${SHOPIFY_CHECKOUT_DOMAIN}/cart/add`;
 
           parts.forEach((p, i) => {
             const addField = (name: string, value: string) => {
@@ -530,10 +531,10 @@ export function CartProvider({ children }: { children: ReactNode }) {
           form.submit();
         } else {
           const cartPath = parts.map((p) => `${p.numericId}:${p.quantity}`).join(",");
-          window.location.href = `https://${SHOPIFY_DOMAIN}/cart/${cartPath}`;
+          window.location.href = `https://${SHOPIFY_CHECKOUT_DOMAIN}/cart/${cartPath}`;
         }
       } else {
-        window.location.href = `https://${SHOPIFY_DOMAIN}`;
+        window.location.href = `https://${SHOPIFY_CHECKOUT_DOMAIN}`;
       }
     }
   }, [items]);
