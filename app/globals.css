@@ -1607,6 +1607,7 @@ img {
 }
 
 .purchase-option {
+  position: relative;
   border: 2px solid var(--color-border);
   border-radius: 0;
   padding: 18px 20px;
@@ -1622,6 +1623,55 @@ img {
 .purchase-option.active {
   border: 2px solid var(--color-primary);
   background: var(--color-bg-light);
+}
+
+.purchase-option--subscribe.active {
+  border: 2px solid var(--color-primary);
+  background: rgba(30, 30, 30, 0.5);
+}
+
+.purchase-option__best-value {
+  position: absolute;
+  top: -11px;
+  left: 20px;
+  background: var(--color-primary);
+  color: #fff;
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 2px 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  line-height: 1.5;
+}
+
+.purchase-option__discount-badge {
+  background: #16a34a;
+  color: #fff;
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 4px;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.purchase-option__price-original {
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+  text-decoration: line-through;
+  font-weight: 400;
+}
+
+.purchase-option__savings-bar {
+  margin-top: 12px;
+  padding: 8px 12px;
+  background: rgba(22, 163, 74, 0.1);
+  border-left: 3px solid #16a34a;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #16a34a;
+  letter-spacing: 0.01em;
 }
 
 .purchase-option__header {
@@ -3816,7 +3866,7 @@ img {
 .popup-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.85);
+  background: rgba(0, 0, 0, 0.92);
   z-index: 2000;
   display: flex;
   align-items: center;
@@ -3911,10 +3961,10 @@ img {
   width: 100%;
   padding: 16px 20px;
   border-radius: 50px;
-  border: 1.5px solid rgba(255, 255, 255, 0.2);
+  border: 1.5px solid rgba(255, 255, 255, 0.25);
   font-size: 0.95rem;
   font-family: var(--font-sans);
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.12);
   color: #fff;
   outline: none;
   transition: border-color 0.2s;
