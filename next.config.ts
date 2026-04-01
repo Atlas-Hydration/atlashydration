@@ -14,11 +14,11 @@ const securityHeaders = [
     value: [
       "default-src 'self'",
       "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://sdks.shopifycdn.com https://cdn.shopify.com https://widgets.juniphq.com",
-      "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+      "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://*.juniphq.com",
       "font-src 'self' https://fonts.gstatic.com",
-      "img-src 'self' data: https://cdn.shopify.com https://images.unsplash.com https://*.shopifycdn.com",
+      "img-src 'self' data: https://cdn.shopify.com https://images.unsplash.com https://*.shopifycdn.com https://*.juniphq.com https://*.gravatar.com",
       "frame-src https://www.youtube.com",
-      "connect-src 'self' https://*.myshopify.com https://*.shopify.com",
+      "connect-src 'self' https://*.myshopify.com https://*.shopify.com https://*.juniphq.com",
     ].join("; "),
   },
 ];

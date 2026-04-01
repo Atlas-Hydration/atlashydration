@@ -2,8 +2,14 @@ export default function ReviewsSection() {
   return (
     <section id="reviews" className="reviews-section">
       <div className="container">
-        <h2 className="section-title">What Our Customers Say</h2>
-        <span className="junip-store-review" />
+        <div
+          className="junip-review-carousel"
+          data-title=""
+          data-reviews-type="product_reviews"
+          data-product-id=""
+          data-review-tag=""
+          data-show-summary="true"
+        />
       </div>
     </section>
   );
