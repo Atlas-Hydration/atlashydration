@@ -3,6 +3,14 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Contact Us | Atlas Hydration",
   description: "Get in touch with Atlas Hydration. We're here to help with orders, subscriptions, and any questions.",
+  alternates: { canonical: "https://atlas-hydration.com/contact" },
+  openGraph: {
+    type: "website",
+    url: "https://atlas-hydration.com/contact",
+    title: "Contact Us | Atlas Hydration",
+    description: "Get in touch with Atlas Hydration. We're here to help with orders, subscriptions, and any questions.",
+    siteName: "Atlas Hydration",
+  },
 };
 
 export default function ContactPage() {

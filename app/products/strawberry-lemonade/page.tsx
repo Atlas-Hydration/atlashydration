@@ -4,10 +4,38 @@ import ProductPage from "@/app/components/ProductPage";
 export const metadata: Metadata = {
   title: "Strawberry Lemonade Electrolytes | Atlas Hydration",
   description: "Zero-sugar electrolyte drink mix with 1,769mg electrolytes, B vitamins, Vitamin C, and recovery amino acids. 16 stick packs per box.",
+  alternates: { canonical: "https://atlas-hydration.com/products/strawberry-lemonade" },
   openGraph: {
+    type: "website",
+    url: "https://atlas-hydration.com/products/strawberry-lemonade",
     title: "Strawberry Lemonade Electrolytes | Atlas Hydration",
     description: "Zero-sugar electrolyte drink mix with 1,769mg electrolytes, B vitamins, Vitamin C, and recovery amino acids.",
+    siteName: "Atlas Hydration",
     images: ["https://cdn.shopify.com/s/files/1/0595/8133/3578/files/1_e4b7eae7-01d9-430c-9655-7949d910deb6.jpg?v=1771507844"],
+  },
+};
+
+const productJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Product",
+  name: "Atlas Hydration Strawberry Lemonade Electrolytes",
+  description: "Premium zero-sugar electrolyte drink mix with 1,769mg electrolytes, B vitamins, Vitamin C, and recovery amino acids. 16 stick packs per box.",
+  image: "https://cdn.shopify.com/s/files/1/0595/8133/3578/files/1_e4b7eae7-01d9-430c-9655-7949d910deb6.jpg?v=1771507844",
+  brand: { "@type": "Brand", name: "Atlas Hydration" },
+  offers: {
+    "@type": "Offer",
+    price: "29.99",
+    priceCurrency: "USD",
+    availability: "https://schema.org/InStock",
+    url: "https://atlas-hydration.com/products/strawberry-lemonade",
+  },
+  aggregateRating: { "@type": "AggregateRating", ratingValue: "4.9", reviewCount: "20" },
+  nutrition: {
+    "@type": "NutritionInformation",
+    sodiumContent: "500mg",
+    potassiumContent: "400mg",
+    sugarContent: "0g",
+    servingSize: "1 stick pack (7g)",
   },
 };
 
@@ -58,6 +86,8 @@ const accordionItems = [
 
 export default function StrawberryLemonade() {
   return (
+    <>
+    <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(productJsonLd) }} />
     <ProductPage
       config={{
         slug: "strawberry-lemonade",
@@ -70,5 +100,6 @@ export default function StrawberryLemonade() {
         ctaText: "16 stick packs of clean, science-backed hydration. Zero sugar. Five calories. Full performance.",
       }}
     />
+    </>
   );
 }

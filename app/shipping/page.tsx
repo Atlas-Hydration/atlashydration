@@ -5,6 +5,14 @@ export const metadata: Metadata = {
   title: "Shipping & Returns | Atlas Hydration",
   description:
     "Atlas Hydration shipping and returns policy. Free shipping on orders over $40. Learn about processing times, shipping rates, and our return policy.",
+  alternates: { canonical: "https://atlas-hydration.com/shipping" },
+  openGraph: {
+    type: "website",
+    url: "https://atlas-hydration.com/shipping",
+    title: "Shipping & Returns | Atlas Hydration",
+    description: "Atlas Hydration shipping and returns policy. Free shipping on orders over $40.",
+    siteName: "Atlas Hydration",
+  },
 };
 
 export default function Shipping() {

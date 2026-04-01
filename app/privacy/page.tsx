@@ -5,6 +5,14 @@ export const metadata: Metadata = {
   title: "Privacy Policy | Atlas Hydration",
   description:
     "Atlas Hydration privacy policy. Learn how we collect, use, and safeguard your personal information.",
+  alternates: { canonical: "https://atlas-hydration.com/privacy" },
+  openGraph: {
+    type: "website",
+    url: "https://atlas-hydration.com/privacy",
+    title: "Privacy Policy | Atlas Hydration",
+    description: "Atlas Hydration privacy policy. Learn how we collect, use, and safeguard your personal information.",
+    siteName: "Atlas Hydration",
+  },
 };
 
 export default function Privacy() {

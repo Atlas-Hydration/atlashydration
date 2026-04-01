@@ -4,10 +4,38 @@ import ProductPage from "@/app/components/ProductPage";
 export const metadata: Metadata = {
   title: "Grapefruit Electrolytes | Atlas Hydration",
   description: "Zero-sugar grapefruit electrolyte drink mix with 1,769mg electrolytes, B vitamins, Vitamin C, and recovery amino acids. 16 stick packs per box.",
+  alternates: { canonical: "https://atlas-hydration.com/products/grapefruit" },
   openGraph: {
+    type: "website",
+    url: "https://atlas-hydration.com/products/grapefruit",
     title: "Grapefruit Electrolytes | Atlas Hydration",
     description: "Zero-sugar grapefruit electrolyte drink mix with 1,769mg electrolytes, B vitamins, Vitamin C, and recovery amino acids.",
+    siteName: "Atlas Hydration",
     images: ["https://cdn.shopify.com/s/files/1/0595/8133/3578/files/1_1a252c57-dc62-4c7b-a6b1-0f9677ce6b6f.jpg?v=1769181320"],
+  },
+};
+
+const productJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Product",
+  name: "Atlas Hydration Grapefruit Electrolytes",
+  description: "Premium zero-sugar grapefruit electrolyte drink mix with 1,769mg electrolytes, B vitamins, Vitamin C, and recovery amino acids. 16 stick packs per box.",
+  image: "https://cdn.shopify.com/s/files/1/0595/8133/3578/files/1_1a252c57-dc62-4c7b-a6b1-0f9677ce6b6f.jpg?v=1769181320",
+  brand: { "@type": "Brand", name: "Atlas Hydration" },
+  offers: {
+    "@type": "Offer",
+    price: "29.99",
+    priceCurrency: "USD",
+    availability: "https://schema.org/InStock",
+    url: "https://atlas-hydration.com/products/grapefruit",
+  },
+  aggregateRating: { "@type": "AggregateRating", ratingValue: "4.9", reviewCount: "20" },
+  nutrition: {
+    "@type": "NutritionInformation",
+    sodiumContent: "500mg",
+    potassiumContent: "400mg",
+    sugarContent: "0g",
+    servingSize: "1 stick pack (7g)",
   },
 };
 
@@ -56,6 +84,8 @@ const accordionItems = [
 
 export default function Grapefruit() {
   return (
+    <>
+    <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(productJsonLd) }} />
     <ProductPage
       config={{
         slug: "grapefruit",
@@ -70,5 +100,6 @@ export default function Grapefruit() {
         preorder: true,
       }}
     />
+    </>
   );
 }

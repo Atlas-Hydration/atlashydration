@@ -9,7 +9,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   return (
     <>
       <style dangerouslySetInnerHTML={{ __html: `
-        .site-header, .announcement-bar, footer, .cart-drawer, .sticky-buy-bar, .popup-overlay { display: none !important; }
+        .header, .announcement-bar, footer, .cart-drawer, .sticky-buy-bar, .popup-overlay { display: none !important; }
       `}} />
       {children}
     </>
