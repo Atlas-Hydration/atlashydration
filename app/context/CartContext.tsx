@@ -463,14 +463,37 @@ export function CartProvider({ children }: { children: ReactNode }) {
       // Build /cart/ URL with optional selling plan IDs
       const parts = items
         .map((item) => {
-          // Try slug lookup first, then fall back to variantId from Shopify sync
+          // Try slug lookup first, then match by variantId or title
+          let numericId: string | null = null;
+
           const product = PRODUCTS[item.slug];
-          const rawVariantId = product?.variantId || item.variantId;
-          if (!rawVariantId) return null;
-          const numericId = rawVariantId.replace(
-            "gid://shopify/ProductVariant/",
-            ""
-          );
+          if (product) {
+            numericId = product.variantId.replace("gid://shopify/ProductVariant/", "");
+          } else {
+            // After Shopify SDK sync, slug is empty. Match by variantId or title.
+            for (const slug of Object.keys(PRODUCTS)) {
+              const p = PRODUCTS[slug];
+              if (item.variantId && (item.variantId === p.variantId || item.variantId.includes(p.variantId.split("/").pop()!))) {
+                numericId = p.variantId.replace("gid://shopify/ProductVariant/", "");
+                break;
+              }
+              if (item.title.toLowerCase().includes(p.name.toLowerCase())) {
+                numericId = p.variantId.replace("gid://shopify/ProductVariant/", "");
+                break;
+              }
+            }
+            // Last resort: try to decode base64 variantId
+            if (!numericId && item.variantId) {
+              try {
+                const decoded = atob(item.variantId);
+                numericId = decoded.replace("gid://shopify/ProductVariant/", "");
+              } catch {
+                numericId = item.variantId.replace("gid://shopify/ProductVariant/", "");
+              }
+            }
+          }
+
+          if (!numericId) return null;
           // Format: variantId:quantity:sellingPlanId (selling plan is optional)
           if (item.subscriptionFrequency && SELLING_PLANS[item.subscriptionFrequency]) {
             return `${numericId}:${item.quantity}:${SELLING_PLANS[item.subscriptionFrequency]}`;
