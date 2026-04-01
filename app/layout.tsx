@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import Script from "next/script";
 import "./globals.css";
 import { CartProvider } from "@/app/context/CartContext";
 import { PopupProvider } from "@/app/components/Popup";
@@ -57,7 +58,7 @@ export default function RootLayout({
           </PopupProvider>
         </CartProvider>
         <span className="junip-store-key" data-store-key="anLwjMqeGdCvG9w79wSpfM16" />
-        <script type="text/javascript" async src="https://widgets.juniphq.com/v1/junip_shopify.js" />
+        <Script src="https://widgets.juniphq.com/v1/junip_shopify.js" strategy="afterInteractive" />
       </body>
     </html>
   );
