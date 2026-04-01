@@ -454,7 +454,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     if (!hasSubscriptions) {
       const co = checkoutRef.current;
       if (co && co.webUrl) {
-        window.location.href = co.webUrl;
+        window.location.href = co.webUrl.replace("https://atlas-hydration.com", `https://${SHOPIFY_DOMAIN}`);
         return;
       }
     }
@@ -541,7 +541,8 @@ export function CartProvider({ children }: { children: ReactNode }) {
       const checkoutUrl = json?.data?.cartCreate?.cart?.checkoutUrl;
 
       if (checkoutUrl) {
-        window.location.href = checkoutUrl;
+        // Rewrite custom domain to myshopify.com so checkout goes to Shopify, not Vercel
+        window.location.href = checkoutUrl.replace("https://atlas-hydration.com", `https://${SHOPIFY_DOMAIN}`);
       } else {
         // Fallback: redirect to store
         console.error("cartCreate failed:", json?.data?.cartCreate?.userErrors);
