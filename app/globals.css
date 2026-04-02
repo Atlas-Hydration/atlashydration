@@ -8547,7 +8547,7 @@ img {
   }
 
   .purchase-option {
-    overflow: hidden;
+    overflow: visible;
     max-width: 100%;
   }
 
