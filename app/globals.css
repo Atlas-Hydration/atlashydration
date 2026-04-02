@@ -1630,7 +1630,7 @@ img {
 }
 
 .purchase-option--subscribe {
-  margin-top: 14px;
+  margin-top: 0;
 }
 
 .purchase-option--subscribe.active {
@@ -1640,9 +1640,6 @@ img {
 
 .purchase-option__best-value {
   display: inline-block;
-  margin-top: -12px;
-  margin-bottom: 8px;
-  margin-left: 0;
   background: var(--color-primary);
   color: #fff;
   font-size: 0.65rem;
@@ -1651,6 +1648,8 @@ img {
   letter-spacing: 0.08em;
   text-transform: uppercase;
   line-height: 1.5;
+  margin-bottom: -2px;
+  margin-top: 8px;
 }
 
 .purchase-option__discount-badge {
