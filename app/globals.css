@@ -6314,11 +6314,13 @@ img {
   }
 
   .product-hero__buy {
-    flex-direction: column;
+    flex-direction: row;
+    align-items: center;
   }
 
   .product-hero__buy .btn {
-    width: 100%;
+    flex: 1;
+    min-width: 0;
   }
 
   .product-hero__details {
