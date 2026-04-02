@@ -8548,6 +8548,7 @@ img {
     width: 100%;
     max-width: 100%;
     box-sizing: border-box;
+    overflow: visible;
   }
 
   .purchase-option {
@@ -8644,7 +8645,8 @@ img {
 
   /* Product info — prevent overflow */
   .product-hero__info {
-    overflow-x: clip;
+    overflow-x: hidden;
+    overflow-y: visible;
     max-width: 100%;
     box-sizing: border-box;
   }
