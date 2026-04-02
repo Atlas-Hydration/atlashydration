@@ -124,8 +124,8 @@ export default function ProductPage({ config }: { config: ProductPageConfig }) {
               </div>
 
               <div className="purchase-options">
+                <div className="purchase-option__best-value">Best Value</div>
                 <label className={`purchase-option purchase-option--subscribe${purchaseOption === "subscribe" ? " active" : ""}`}>
-                  <span className="purchase-option__best-value">Best Value</span>
                   <div className="purchase-option__header">
                     <div className="purchase-option__radio">
                       <input type="radio" name="purchase-type" value="subscribe" checked={purchaseOption === "subscribe"} onChange={() => setPurchaseOption("subscribe")} />

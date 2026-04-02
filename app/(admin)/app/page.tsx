@@ -215,15 +215,7 @@ export default function AdminPage() {
   }
 
   if (!isAuthenticated) {
-    return (
-      <>
-        <div className="animated-bg">
-          <div className="animated-bg__gradient" />
-          <div className="animated-bg__noise" />
-        </div>
-        <LoginScreen onLogin={handleLogin} />
-      </>
-    );
+    return <LoginScreen onLogin={handleLogin} />;
   }
 
   // Show stats only on data tabs

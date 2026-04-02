@@ -39,6 +39,61 @@ const productJsonLd = {
   },
 };
 
+const faqJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: [
+    {
+      "@type": "Question",
+      name: "What electrolytes does Atlas contain?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "Each stick pack contains 1,769mg of total electrolytes: 600mg Sodium (from Sodium Citrate and Pink Himalayan Salt), 500mg Potassium (from Potassium Citrate), and 200mg Magnesium (from Magnesium Malate). More per serving than LMNT, Liquid I.V., or WaterBoy.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "Is Atlas sugar-free?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "100% sugar-free with zero grams of sugar per serving. Only 25 calories per stick pack, naturally sweetened with stevia leaf extract and allulose — a rare sugar with near-zero glycemic impact.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "How does Atlas compare to LMNT?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "1,769mg electrolytes vs LMNT's 1,260mg. Atlas also includes B vitamins (B3, B5, B6, B12), 90mg Vitamin C, and 1,200mg recovery amino acids — none of which LMNT offers. More affordable too: $1.87/stick ($1.50 with subscription) vs $2.00/packet.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "How does Atlas compare to Liquid IV?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "1,769mg electrolytes, zero sugar, 25 calories vs Liquid I.V.'s ~500mg electrolytes with 11g sugar and 425 calories. Atlas also includes B vitamins, Vitamin C, and recovery amino acids.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "What vitamins and amino acids are included?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "Vitamin C (90mg, 100% DV), B3 (24mg, 150% DV), B5 (5mg, 100% DV), B6 (2mg, 118% DV), B12 (8mcg, 333% DV). For recovery: 1,000mg L-Glutamine and 200mg L-Alanine.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "How many electrolytes per serving?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "1,769mg per serving from three key minerals: 600mg Sodium, 500mg Potassium, and 200mg Magnesium.",
+      },
+    },
+  ],
+};
+
 const images = [
   { src: "https://cdn.shopify.com/s/files/1/0595/8133/3578/files/1_e4b7eae7-01d9-430c-9655-7949d910deb6.jpg?v=1771507844", alt: "Atlas Strawberry Lemonade pouch and stick pack" },
   { src: "https://cdn.shopify.com/s/files/1/0595/8133/3578/files/2_e035ddf8-ce06-45b8-a18b-9c44b182ef6c.jpg?v=1771507845", alt: "Atlas Strawberry Lemonade lifestyle" },
@@ -88,6 +143,7 @@ export default function StrawberryLemonade() {
   return (
     <>
     <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(productJsonLd) }} />
+    <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }} />
     <ProductPage
       config={{
         slug: "strawberry-lemonade",

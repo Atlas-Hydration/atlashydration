@@ -15,8 +15,19 @@ export const metadata: Metadata = {
   },
 };
 
+const webPageJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  name: "Shipping & Returns",
+  description: "Atlas Hydration shipping and returns policy. Free shipping on orders over $40.",
+  url: "https://atlas-hydration.com/shipping",
+  publisher: { "@type": "Organization", name: "Atlas Hydration", url: "https://atlas-hydration.com" },
+};
+
 export default function Shipping() {
   return (
+    <>
+    <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(webPageJsonLd) }} />
     <section className="policy-page">
       <div className="container">
         <nav
@@ -111,5 +122,6 @@ export default function Shipping() {
         </div>
       </div>
     </section>
+    </>
   );
 }

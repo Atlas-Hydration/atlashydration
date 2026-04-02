@@ -180,11 +180,11 @@ export default function FeaturedProduct() {
 
             {/* Purchase Options */}
             <div className="purchase-options">
+              <div className="purchase-option__best-value">Best Value</div>
               <label
                 className={`purchase-option purchase-option--subscribe${purchaseType === "subscribe" ? " active" : ""}`}
                 onClick={() => setPurchaseType("subscribe")}
               >
-                <span className="purchase-option__best-value">Best Value</span>
                 <div className="purchase-option__header">
                   <div className="purchase-option__radio">
                     <input type="radio" name="fp-purchase-type" value="subscribe" checked={purchaseType === "subscribe"} readOnly />

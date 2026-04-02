@@ -13,8 +13,19 @@ export const metadata: Metadata = {
   },
 };
 
+const contactJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "ContactPage",
+  name: "Contact Us",
+  description: "Get in touch with Atlas Hydration. We're here to help with orders, subscriptions, and any questions.",
+  url: "https://atlas-hydration.com/contact",
+  publisher: { "@type": "Organization", name: "Atlas Hydration", url: "https://atlas-hydration.com", email: "support@atlas-hydration.com" },
+};
+
 export default function ContactPage() {
   return (
+    <>
+    <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(contactJsonLd) }} />
     <main className="contact-page">
       <div className="container">
         <div className="contact-page__inner">
@@ -31,5 +42,6 @@ export default function ContactPage() {
         </div>
       </div>
     </main>
+    </>
   );
 }

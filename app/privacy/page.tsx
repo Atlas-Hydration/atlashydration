@@ -15,8 +15,19 @@ export const metadata: Metadata = {
   },
 };
 
+const webPageJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  name: "Privacy Policy",
+  description: "Atlas Hydration privacy policy. Learn how we collect, use, and safeguard your personal information.",
+  url: "https://atlas-hydration.com/privacy",
+  publisher: { "@type": "Organization", name: "Atlas Hydration", url: "https://atlas-hydration.com" },
+};
+
 export default function Privacy() {
   return (
+    <>
+    <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(webPageJsonLd) }} />
     <section className="policy-page">
       <div className="container">
         <nav
@@ -76,5 +87,6 @@ export default function Privacy() {
         </div>
       </div>
     </section>
+    </>
   );
 }
