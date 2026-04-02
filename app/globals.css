@@ -8504,7 +8504,8 @@ img {
     grid-template-columns: 1fr;
     gap: 32px;
     max-width: 100%;
-    overflow: hidden;
+    overflow-x: hidden;
+    overflow-y: visible;
   }
 
   .product-hero__info {
@@ -8512,7 +8513,8 @@ img {
     max-width: 100%;
     padding: 0 16px;
     box-sizing: border-box;
-    overflow: hidden;
+    overflow-x: hidden;
+    overflow-y: visible;
     word-wrap: break-word;
     overflow-wrap: break-word;
   }
