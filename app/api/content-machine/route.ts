@@ -60,8 +60,39 @@ export async function POST(request: Request) {
     if (!res.ok) {
       const errText = await res.text();
       console.error("Anthropic API error:", res.status, errText);
+
+      // Retry with fallback model if the primary model is not available
+      if (res.status === 400 || res.status === 404) {
+        console.log("Retrying with fallback model claude-3-5-sonnet-20241022");
+        const fallbackRes = await fetch("https://api.anthropic.com/v1/messages", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "x-api-key": apiKey,
+            "anthropic-version": "2023-06-01",
+          },
+          body: JSON.stringify({
+            model: "claude-3-5-sonnet-20241022",
+            max_tokens: 4096,
+            system: SYSTEM_PROMPT,
+            messages: [{ role: "user", content: buildUserPrompt(topics, count) }],
+          }),
+        });
+        if (fallbackRes.ok) {
+          const fallbackData = await fallbackRes.json();
+          const fallbackText = fallbackData.content?.[0]?.text || "";
+          const fallbackMatch = fallbackText.match(/\[[\s\S]*\]/);
+          if (fallbackMatch) {
+            const decks = JSON.parse(fallbackMatch[0]);
+            return NextResponse.json({ decks });
+          }
+        }
+        const fallbackErr = await fallbackRes.text().catch(() => "");
+        console.error("Fallback model also failed:", fallbackRes.status, fallbackErr);
+      }
+
       return NextResponse.json(
-        { error: `Anthropic API error: ${res.status}` },
+        { error: `Anthropic API error: ${res.status} — ${errText.slice(0, 200)}` },
         { status: 502 }
       );
     }
