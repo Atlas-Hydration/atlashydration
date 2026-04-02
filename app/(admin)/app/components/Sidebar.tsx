@@ -110,6 +110,15 @@ const navItems = {
         </svg>
       ),
     },
+    {
+      tab: 'content-machine',
+      label: 'Content Machine',
+      icon: (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
+        </svg>
+      ),
+    },
   ],
 };
 
@@ -127,7 +136,6 @@ export default function Sidebar({
       <div className="sidebar__brand">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src="/logo.svg" alt="Atlas Hydration" className="sidebar__brand-logo" />
-        <span style={{ fontSize: '1.1rem' }}>🏳️‍⚧️</span>
       </div>
 
       <nav className="sidebar__nav">

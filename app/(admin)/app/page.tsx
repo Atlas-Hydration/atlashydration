@@ -13,6 +13,7 @@ import SeoTab from './components/tabs/SeoTab';
 import GeoTab from './components/tabs/GeoTab';
 import ShopInfoTab from './components/tabs/ShopInfoTab';
 import RoadmapTab from './components/tabs/RoadmapTab';
+import ContentMachineTab from './components/tabs/ContentMachineTab';
 
 import {
   fetchProducts,
@@ -37,7 +38,8 @@ type Tab =
   | 'seo'
   | 'geo'
   | 'shop'
-  | 'roadmap';
+  | 'roadmap'
+  | 'content-machine';
 
 const PAGE_TITLES: Record<Tab, string> = {
   products: 'Products',
@@ -49,6 +51,7 @@ const PAGE_TITLES: Record<Tab, string> = {
   geo: 'GEO',
   shop: 'Shop Info',
   roadmap: 'Roadmap',
+  'content-machine': 'Content Machine',
 };
 
 interface DashboardData {
@@ -284,6 +287,7 @@ export default function AdminPage() {
                 {activeTab === 'seo' && <SeoTab />}
                 {activeTab === 'geo' && <GeoTab />}
                 {activeTab === 'roadmap' && <RoadmapTab />}
+                {activeTab === 'content-machine' && <ContentMachineTab />}
 
               </>
             )}
