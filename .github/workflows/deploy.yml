@@ -33,6 +33,8 @@ jobs:
         run: npm ci
       - name: Build Next.js app
         run: npm run build
+        env:
+          STATIC_EXPORT: 'true'
       - name: Setup Pages
         uses: actions/configure-pages@v5
       - name: Upload artifact

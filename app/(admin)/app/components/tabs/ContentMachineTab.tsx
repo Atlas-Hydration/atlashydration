@@ -23,24 +23,6 @@ const TOPIC_CATEGORIES = [
   'gut health', 'circadian rhythm', 'travel health', 'electrolyte science',
 ];
 
-// ─── SYSTEM PROMPT ───
-const SYSTEM_PROMPT = `You are a premium health content strategist for Atlas Hydration, a zero-sugar electrolyte brand founded by a commercial airline pilot. Generate TikTok slideshow content that is educational, credible, and subtly tied to hydration and electrolytes. Tone: clean, confident, Apple-like — no emojis, no hype language, no exclamation marks. Think: what a knowledgeable friend would tell you, not an ad.`;
-
-function buildUserPrompt(categories: string[]): string {
-  const picked = categories.sort(() => Math.random() - 0.5).slice(0, 5);
-  return `Generate 5 TikTok slideshow decks. Each deck has 8 slides.
-
-For each deck return:
-- topic: a hook-driven title (4-10 words)
-- slides: array of 8 objects with slide_number (1-8), headline (4-7 words max, punchy), body (1-2 sentences max, factual, no fluff), type ("hook" for slide 1, "content" for slides 2-7, "cta" for slide 8)
-
-Slide 8 (CTA) always: headline = "Stay Hydrated. Stay Sharp.", body = "Atlas Hydration — Zero Sugar Electrolytes. atlashydration.com"
-
-Topic categories to draw from: ${picked.join(', ')}
-
-Return ONLY a valid JSON array of 5 deck objects. No markdown, no explanation.`;
-}
-
 // ─── SLIDE RENDERER ───
 const FULL_W = 1080;
 const FULL_H = 1920;
@@ -223,44 +205,18 @@ export default function ContentMachineTab() {
 
   const accent = '#C8514A';
 
-  function getApiKey(): string | null {
-    let key = localStorage.getItem('atlas_cm_apikey');
-    if (key) return key;
-    key = window.prompt('Enter your Anthropic API key to enable content generation:');
-    if (key && key.trim()) {
-      localStorage.setItem('atlas_cm_apikey', key.trim());
-      return key.trim();
-    }
-    return null;
-  }
-
   const generate = useCallback(async () => {
-    const key = getApiKey();
-    if (!key) return;
     setGenerating(true);
     setError('');
     try {
-      const res = await fetch('https://api.anthropic.com/v1/messages', {
+      const res = await fetch('/api/content-machine', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-api-key': key,
-          'anthropic-version': '2023-06-01',
-          'anthropic-dangerous-direct-browser-access': 'true',
-        },
-        body: JSON.stringify({
-          model: 'claude-sonnet-4-20250514',
-          max_tokens: 4096,
-          system: SYSTEM_PROMPT,
-          messages: [{ role: 'user', content: buildUserPrompt(focusTopics) }],
-        }),
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ topics: focusTopics, count: 5 }),
       });
-      if (!res.ok) throw new Error(`API error: ${res.status}`);
       const data = await res.json();
-      const text = data.content?.[0]?.text || '';
-      const jsonMatch = text.match(/\[[\s\S]*\]/);
-      if (!jsonMatch) throw new Error('No valid JSON in response');
-      const parsed: Deck[] = JSON.parse(jsonMatch[0]).map((d: Deck) => ({ ...d, posted: false }));
+      if (!res.ok) throw new Error(data.error || `Server error: ${res.status}`);
+      const parsed: Deck[] = data.decks.map((d: Deck) => ({ ...d, posted: false }));
       setDecks(parsed);
       const ts = new Date().toLocaleString();
       setLastGenerated(ts);
