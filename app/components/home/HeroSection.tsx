@@ -55,7 +55,7 @@ const DESKTOP_ID = "a82a07f888cfed6727a183cab0322ee4";
 const MOBILE_ID = "c74e4337de25b62fd46e2e1a4331d528";
 
 const streamParams = (id: string) =>
-  `${CF_BASE}/${id}/iframe?${new URLSearchParams({ autoplay: "true", muted: "true", loop: "true", controls: "false", preload: "auto", startTime: "0" })}`;
+  `${CF_BASE}/${id}/iframe?${new URLSearchParams({ autoplay: "true", muted: "true", loop: "true", controls: "false", preload: "auto", startTime: "0", letterboxColor: "transparent" })}`;
 
 export default function HeroSection() {
   return (
