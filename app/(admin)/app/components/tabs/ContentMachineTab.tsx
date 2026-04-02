@@ -207,16 +207,12 @@ export default function ContentMachineTab() {
   const [exportProgress, setExportProgress] = useState('');
   const [lastGenerated, setLastGenerated] = useState('');
   const [focusTopics, setFocusTopics] = useState<string[]>(TOPIC_CATEGORIES.slice(0, 5));
-  const [apiKey, setApiKey] = useState('');
-  const [showApiInput, setShowApiInput] = useState(false);
   const cancelRef = useRef(false);
 
   const today = new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
 
-  // Load API key and history from localStorage
+  // Load history from localStorage
   useEffect(() => {
-    const saved = localStorage.getItem('atlas_cm_apikey');
-    if (saved) setApiKey(saved);
     const history = localStorage.getItem('atlas_cm_decks');
     if (history) {
       try { setDecks(JSON.parse(history)); } catch { /* ignore */ }
@@ -227,8 +223,20 @@ export default function ContentMachineTab() {
 
   const accent = '#C8514A';
 
+  function getApiKey(): string | null {
+    let key = localStorage.getItem('atlas_cm_apikey');
+    if (key) return key;
+    key = window.prompt('Enter your Anthropic API key to enable content generation:');
+    if (key && key.trim()) {
+      localStorage.setItem('atlas_cm_apikey', key.trim());
+      return key.trim();
+    }
+    return null;
+  }
+
   const generate = useCallback(async () => {
-    if (!apiKey) { setShowApiInput(true); return; }
+    const key = getApiKey();
+    if (!key) return;
     setGenerating(true);
     setError('');
     try {
@@ -236,7 +244,7 @@ export default function ContentMachineTab() {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'x-api-key': apiKey,
+          'x-api-key': key,
           'anthropic-version': '2023-06-01',
           'anthropic-dangerous-direct-browser-access': 'true',
         },
@@ -258,13 +266,12 @@ export default function ContentMachineTab() {
       setLastGenerated(ts);
       localStorage.setItem('atlas_cm_decks', JSON.stringify(parsed));
       localStorage.setItem('atlas_cm_last', ts);
-      localStorage.setItem('atlas_cm_apikey', apiKey);
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Generation failed');
     } finally {
       setGenerating(false);
     }
-  }, [apiKey, focusTopics]);
+  }, [focusTopics]);
 
   const handleExportAll = useCallback(async () => {
     cancelRef.current = false;
@@ -331,23 +338,6 @@ export default function ContentMachineTab() {
           <div className="stat-card__sub">{today}</div>
         </div>
       </div>
-
-      {/* API Key Input */}
-      {showApiInput && !apiKey && (
-        <div style={{ ...cardStyle, marginBottom: 16, display: 'flex', gap: 8, alignItems: 'center' }}>
-          <input
-            type="password"
-            placeholder="Anthropic API Key (sk-ant-...)"
-            value={apiKey}
-            onChange={e => setApiKey(e.target.value)}
-            style={{
-              flex: 1, padding: '10px 14px', borderRadius: 8, border: '1px solid var(--border)',
-              background: 'var(--surface2)', color: 'var(--text)', fontFamily: 'inherit', fontSize: '0.85rem',
-            }}
-          />
-          <button style={btnStyle} onClick={() => { localStorage.setItem('atlas_cm_apikey', apiKey); setShowApiInput(false); }}>Save</button>
-        </div>
-      )}
 
       {/* Topic chips */}
       <div style={{ ...cardStyle, marginBottom: 16 }}>
