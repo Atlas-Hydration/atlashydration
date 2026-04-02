@@ -1639,9 +1639,10 @@ img {
 }
 
 .purchase-option__best-value {
-  position: absolute;
-  top: -12px;
-  left: 20px;
+  display: inline-block;
+  margin-top: -12px;
+  margin-bottom: 8px;
+  margin-left: 0;
   background: var(--color-primary);
   color: #fff;
   font-size: 0.65rem;
@@ -8688,8 +8689,6 @@ img {
   }
 
   .purchase-option__best-value {
-    top: -12px;
-    left: 14px;
     font-size: 0.6rem;
     padding: 3px 10px;
   }
