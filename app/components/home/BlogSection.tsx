@@ -1,6 +1,6 @@
 const posts = [
   {
-    href: "/blog/sodium-science",
+    href: "/#science",
     image: "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=600&h=400&fit=crop&crop=center",
     imageAlt: "Athlete training with intensity",
     episode: "Episode 1",
@@ -9,7 +9,7 @@ const posts = [
     excerpt: "At 600mg per serving, Atlas replaces what sweat takes — preventing fatigue, cramps, and cognitive decline.",
   },
   {
-    href: "/blog/glutamine-recovery",
+    href: "/#science",
     image: "https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?w=600&h=400&fit=crop&crop=center",
     imageAlt: "Athlete recovering post-workout",
     episode: "Episode 2",
@@ -18,7 +18,7 @@ const posts = [
     excerpt: "Critical for gut integrity and immune function — especially after intense training when stores are depleted.",
   },
   {
-    href: "/blog/allulose-performance",
+    href: "/#science",
     image: "https://images.unsplash.com/photo-1552674605-db6ffd4facb5?w=600&h=400&fit=crop&crop=center",
     imageAlt: "Runner pushing through training",
     episode: "Episode 3",
@@ -82,7 +82,7 @@ export default function BlogSection() {
           })}
         </div>
         <div className="blog__cta">
-          <a href="/blog" className="blog__view-all">
+          <a href="/#science" className="blog__view-all">
             View All Episodes{" "}
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <path d="M5 12h14M12 5l7 7-7 7" />
