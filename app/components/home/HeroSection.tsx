@@ -57,7 +57,7 @@ export default function HeroSection() {
         {/* Desktop — horizontal video */}
         <iframe
           className="hero__video-cf hero__video-cf--desktop"
-          src="https://customer-1sijhr9xl3yqixxu.cloudflarestream.com/a82a07f888cfed6727a183cab0322ee4/iframe?autoplay=true&muted=true&loop=true&controls=false&poster=none"
+          src={`https://customer-1sijhr9xl3yqixxu.cloudflarestream.com/a82a07f888cfed6727a183cab0322ee4/iframe?${new URLSearchParams({ autoplay: "true", muted: "true", loop: "true", controls: "false" })}`}
           allow="autoplay; encrypted-media"
           allowFullScreen
           title="Atlas Hydration hero video background"
@@ -66,7 +66,7 @@ export default function HeroSection() {
         {/* Mobile — vertical video */}
         <iframe
           className="hero__video-cf hero__video-cf--mobile"
-          src="https://customer-1sijhr9xl3yqixxu.cloudflarestream.com/c74e4337de25b62fd46e2e1a4331d528/iframe?autoplay=true&muted=true&loop=true&controls=false&poster=none"
+          src={`https://customer-1sijhr9xl3yqixxu.cloudflarestream.com/c74e4337de25b62fd46e2e1a4331d528/iframe?${new URLSearchParams({ autoplay: "true", muted: "true", loop: "true", controls: "false" })}`}
           allow="autoplay; encrypted-media"
           allowFullScreen
           title="Atlas Hydration hero video background mobile"
