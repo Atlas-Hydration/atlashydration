@@ -54,13 +54,22 @@ export default function HeroSection() {
   return (
     <section className="hero" aria-label="Hero">
       <div className="hero__video-wrap">
+        {/* Desktop — horizontal video */}
         <iframe
-          className="hero__video-yt"
-          src="https://www.youtube.com/embed/l0Dk8Ylqbxk?autoplay=1&mute=1&loop=1&playlist=l0Dk8Ylqbxk&controls=0&showinfo=0&rel=0&modestbranding=1&playsinline=1&enablejsapi=1"
+          className="hero__video-cf hero__video-cf--desktop"
+          src="https://customer-1sijhr9xl3yqixxu.cloudflarestream.com/a82a07f888cfed6727a183cab0322ee4/iframe?autoplay=true&muted=true&loop=true&controls=false&poster=none"
           allow="autoplay; encrypted-media"
           allowFullScreen
           title="Atlas Hydration hero video background"
-          referrerPolicy="strict-origin-when-cross-origin"
+          loading="lazy"
+        />
+        {/* Mobile — vertical video */}
+        <iframe
+          className="hero__video-cf hero__video-cf--mobile"
+          src="https://customer-1sijhr9xl3yqixxu.cloudflarestream.com/c74e4337de25b62fd46e2e1a4331d528/iframe?autoplay=true&muted=true&loop=true&controls=false&poster=none"
+          allow="autoplay; encrypted-media"
+          allowFullScreen
+          title="Atlas Hydration hero video background mobile"
           loading="lazy"
         />
         <div className="hero__video-overlay" />
