@@ -41,7 +41,22 @@ Output as a markdown table with these exact columns:
 
 Sort by combined Urgency + WTP score, highest first. Output ONLY the table with a header row, no intro text, no outro.`,
   },
-  { num: '03', name: 'Offer Creation', desc: 'Generate high-converting offer structures with pricing and positioning.', enabled: false },
+  { num: '03', name: 'Offer Creation', desc: 'Generate high-converting offer structures with pricing and positioning.', enabled: true,
+    system: 'You are a direct response copywriter and offer strategist. Write tight, zero-filler copy that could go directly onto a real landing page.',
+    prompt: `Create a high-converting offer for: Atlas Hydration zero-sugar electrolyte stick packs targeting health-conscious adults, frequent travelers, athletes, and people who want clean hydration without artificial ingredients or sugar.
+Current product: 30-count box at $29.99, 1,769mg electrolytes per stick, B vitamins, Vitamin C, recovery amino acids, two flavors (Strawberry Lemonade and Grapefruit).
+
+Structure the output exactly like a landing page with these labeled sections:
+1. Headline: one bold benefit-driven statement
+2. ICP: who this is for (age, role, situation, pain level)
+3. Value proposition: the core transformation in one sentence
+4. Offer components: what's included (deliverables, bonuses, format)
+5. Pricing tiers: name, price, and what changes at each tier (low/mid/premium)
+6. Guarantee: specific risk-reversal language the customer sees
+7. Competitive edge: 3 reasons this beats the obvious alternatives
+
+Keep each section tight. No filler. Write it as if going directly onto a real landing page.`,
+  },
   { num: '04', name: 'Distribution Plan', desc: 'Map optimal channels, partnerships, and go-to-market sequencing.', enabled: false },
   { num: '05', name: 'Viral Content Engine', desc: 'Identify shareable content angles tied to your product and audience.', enabled: false },
   { num: '06', name: 'Competitor Weakness Map', desc: 'Surface gaps and vulnerabilities in competitor positioning and execution.', enabled: false },
