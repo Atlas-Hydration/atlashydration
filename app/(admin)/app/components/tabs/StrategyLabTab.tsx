@@ -7,6 +7,7 @@ interface ToolDef {
   name: string;
   desc: string;
   enabled: boolean;
+  featured?: boolean;
   system?: string;
   prompt?: string;
 }
@@ -110,7 +111,31 @@ Then, based on patterns across all 5, provide:
 
 Output competitor table first, then gap analysis and recommendations as prose with bold section headers.`,
   },
-  { num: '07', name: 'Scale System', desc: 'Design repeatable growth loops and automation opportunities.', enabled: false },
+  { num: '07', name: 'Scale System', desc: 'Design repeatable growth loops and automation opportunities.', enabled: true, featured: true,
+    system: 'You are a business scaling advisor who has helped CPG brands go from $0 to $1M+. Be specific, phase-by-phase, and metrics-driven. Output as a structured roadmap with phase headers, not a generic list.',
+    prompt: `Give me a plan to scale Atlas Hydration to $1M annual revenue within 18 months.
+
+Business description: Atlas Hydration sells zero-sugar electrolyte stick packs direct-to-consumer via Shopify at $29.99 for a 30-count box. Founded by a Boeing 787 commercial airline pilot (@flywithgarrett) with a large social media following. Currently pre-revenue/early revenue stage. Two flavors: Strawberry Lemonade and Grapefruit. Team size: 1-2 people. Biggest bottleneck: converting social media audience into customers and building repeatable acquisition beyond the founder's personal brand.
+
+Structure the output as a phased execution roadmap with these four phases:
+
+Phase 1 — Stabilize (Month 1-3): what to systematize and document before scaling
+Phase 2 — Automate (Month 4-6): top 3 processes to automate, with specific tool recommendations
+Phase 3 — Delegate (Month 7-12): what to hire for first, in order, with rough cost per role
+Phase 4 — Scale (Month 13-18): the growth lever (channel, product, or partnership) that unlocks the $1M revenue tier
+
+Also include for each phase:
+- Top 3 bottlenecks that will appear at each phase transition
+- One leading metric to track per phase (not vanity metrics)
+
+For each phase use this exact format:
+**Phase N — Name (Month X-Y)**
+Key actions as bullet points.
+**Bottlenecks:** bullet list of 3 bottlenecks.
+**Leading Metric:** the one metric to track.
+
+Output as a structured roadmap with phase headers.`,
+  },
 ];
 
 function formatReport(text: string) {
@@ -224,7 +249,7 @@ function formatMixed(text: string) {
 
 function renderResult(toolNum: string, text: string) {
   if (toolNum === '02') return formatTable(text);
-  if (toolNum === '04' || toolNum === '05' || toolNum === '06') return formatMixed(text);
+  if (['04', '05', '06', '07'].includes(toolNum)) return formatMixed(text);
   return formatReport(text);
 }
 
@@ -293,6 +318,11 @@ export default function StrategyLabTab() {
             <div key={tool.num} style={{
               ...card,
               ...(isExpanded ? { gridColumn: '1 / -1' } : {}),
+              ...(tool.featured && !isExpanded ? {
+                gridColumn: '1 / -1',
+                border: '1px solid rgba(200,81,74,0.3)',
+                background: 'linear-gradient(135deg, var(--surface) 0%, rgba(200,81,74,0.06) 100%)',
+              } : {}),
             }}>
               {/* Header */}
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
