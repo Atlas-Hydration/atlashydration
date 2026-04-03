@@ -57,7 +57,19 @@ Structure the output exactly like a landing page with these labeled sections:
 
 Keep each section tight. No filler. Write it as if going directly onto a real landing page.`,
   },
-  { num: '04', name: 'Distribution Plan', desc: 'Map optimal channels, partnerships, and go-to-market sequencing.', enabled: false },
+  { num: '04', name: 'Distribution Plan', desc: 'Map optimal channels, partnerships, and go-to-market sequencing.', enabled: true,
+    system: 'You are a senior growth strategist. Be specific and realistic. Skip tactics that require a large team or $50k+ budget.',
+    prompt: `Act as a senior growth strategist. Build a realistic 30-day distribution plan for Atlas Hydration: a zero-sugar electrolyte brand selling 30-count stick packs at $29.99, targeting health-conscious adults, athletes, pilots, and frequent travelers. Current team: 1-2 founders. Budget: under $5,000/month. Selling direct-to-consumer via Shopify.
+
+Deliverables:
+1. Top 5 acquisition channels: ranked by cost-efficiency for this specific audience
+2. Content format per channel: one specific format that works on each (short-form video, cold email sequence, SEO article, etc.)
+3. Weekly execution calendar: what happens in weeks 1, 2, 3, and 4 (not day-by-day)
+4. Organic vs paid split: recommended % allocation and rationale
+5. Leverage plays: 2-3 tactics that multiply reach without proportionally more effort (partnerships, repurposing, virality hooks)
+
+Output as a numbered system with clear section headers. For the weekly calendar, use a markdown table with columns: Week | Focus | Key Actions | Expected Output.`,
+  },
   { num: '05', name: 'Viral Content Engine', desc: 'Identify shareable content angles tied to your product and audience.', enabled: false },
   { num: '06', name: 'Competitor Weakness Map', desc: 'Surface gaps and vulnerabilities in competitor positioning and execution.', enabled: false },
   { num: '07', name: 'Scale System', desc: 'Design repeatable growth loops and automation opportunities.', enabled: false },
@@ -148,8 +160,33 @@ function formatTable(text: string) {
   );
 }
 
+function formatMixed(text: string) {
+  const blocks: { type: 'text' | 'table'; content: string }[] = [];
+  const lines = text.split('\n');
+  let tableLines: string[] = [];
+  let textLines: string[] = [];
+
+  const flushText = () => { if (textLines.length) { blocks.push({ type: 'text', content: textLines.join('\n') }); textLines = []; } };
+  const flushTable = () => { if (tableLines.length) { blocks.push({ type: 'table', content: tableLines.join('\n') }); tableLines = []; } };
+
+  for (const line of lines) {
+    if (line.trim().startsWith('|')) {
+      flushText();
+      tableLines.push(line);
+    } else {
+      flushTable();
+      textLines.push(line);
+    }
+  }
+  flushText();
+  flushTable();
+
+  return blocks.map((b, i) => <div key={i}>{b.type === 'table' ? formatTable(b.content) : formatReport(b.content)}</div>);
+}
+
 function renderResult(toolNum: string, text: string) {
   if (toolNum === '02') return formatTable(text);
+  if (toolNum === '04') return formatMixed(text);
   return formatReport(text);
 }
 
