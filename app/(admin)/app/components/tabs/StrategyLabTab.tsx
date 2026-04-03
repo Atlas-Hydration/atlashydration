@@ -90,7 +90,26 @@ showing how many posts, which formats, and what rotation keeps the audience enga
 
 Write hooks in the voice of the Atlas Hydration audience — pilots, athletes, travelers — not generic marketing copy.`,
   },
-  { num: '06', name: 'Competitor Weakness Map', desc: 'Surface gaps and vulnerabilities in competitor positioning and execution.', enabled: false },
+  { num: '06', name: 'Competitor Weakness Map', desc: 'Surface gaps and vulnerabilities in competitor positioning and execution.', enabled: true,
+    system: 'You are a competitive intelligence analyst. Be specific about product gaps and audience blind spots. No generic observations.',
+    prompt: `Analyze the top 5 competitors to Atlas Hydration in the zero-sugar electrolyte space: Liquid IV, LMNT, Nuun, DripDrop, and Pedialyte Sport.
+
+For each competitor provide a structured row covering:
+- Name + one-line description of their core offer
+- What they do best (their defensible strength)
+- Where they are weak (product gaps, poor reviews, underserved use cases)
+- Which audience they ignore or underserve
+
+Output the competitor breakdown as a markdown table with columns:
+| Competitor | Core Offer | Strength | Weakness | Ignored Audience |
+
+Then, based on patterns across all 5, provide:
+- Gap analysis: the 2-3 clearest white spaces no competitor is owning
+- Positioning recommendation: one sharp positioning statement that would differentiate Atlas Hydration
+- Go-to-market angle: which ignored audience + which channel combination represents the fastest path to traction for Atlas
+
+Output competitor table first, then gap analysis and recommendations as prose with bold section headers.`,
+  },
   { num: '07', name: 'Scale System', desc: 'Design repeatable growth loops and automation opportunities.', enabled: false },
 ];
 
@@ -205,7 +224,7 @@ function formatMixed(text: string) {
 
 function renderResult(toolNum: string, text: string) {
   if (toolNum === '02') return formatTable(text);
-  if (toolNum === '04' || toolNum === '05') return formatMixed(text);
+  if (toolNum === '04' || toolNum === '05' || toolNum === '06') return formatMixed(text);
   return formatReport(text);
 }
 
