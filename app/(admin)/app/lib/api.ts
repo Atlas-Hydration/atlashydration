@@ -10,7 +10,7 @@ export const USE_WORKER = WORKER_URL.indexOf('YOUR_SUBDOMAIN') === -1;
 export const SHOPIFY = {
   domain: '7fa7b7-42.myshopify.com',
   storefrontToken: '390caf7f28b55c8958daeab3fcd55f76',
-  storefrontEndpoint: 'https://7fa7b7-42.myshopify.com/api/2025-01/graphql.json',
+  storefrontEndpoint: 'https://7fa7b7-42.myshopify.com/api/2024-01/graphql.json',
 };
 
 // =============================================
