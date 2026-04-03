@@ -70,7 +70,26 @@ Deliverables:
 
 Output as a numbered system with clear section headers. For the weekly calendar, use a markdown table with columns: Week | Focus | Key Actions | Expected Output.`,
   },
-  { num: '05', name: 'Viral Content Engine', desc: 'Identify shareable content angles tied to your product and audience.', enabled: false },
+  { num: '05', name: 'Viral Content Engine', desc: 'Identify shareable content angles tied to your product and audience.', enabled: true,
+    system: 'You are a viral content strategist who specializes in health and wellness brands. Write in the voice of the niche, not generic marketing language. Output with bold section headers.',
+    prompt: `Create a viral content strategy for: Atlas Hydration, a zero-sugar electrolyte brand founded by a Boeing 787 commercial airline pilot. Audience: health-conscious adults 25-45, athletes, travelers, biohackers, and people interested in clean performance nutrition.
+
+Deliver four components:
+
+1. Hook bank: 10 high-converting hooks (not 20, prioritize quality). For each, label which emotional trigger it uses: fear of missing out, social status, curiosity, or controversy.
+
+2. Content format matrix: a markdown table with these columns:
+| Format | Platform | Ideal Length | Why It Spreads | Example Title |
+Include 6-8 formats across at least 3 platforms.
+
+3. Shareability audit: for each format, answer 'What makes someone forward or repost this?' in one sentence.
+
+4. Repeatable content system: a simple weekly template as a markdown table:
+| Day | Format | Topic Focus | Platform |
+showing how many posts, which formats, and what rotation keeps the audience engaged without burnout.
+
+Write hooks in the voice of the Atlas Hydration audience — pilots, athletes, travelers — not generic marketing copy.`,
+  },
   { num: '06', name: 'Competitor Weakness Map', desc: 'Surface gaps and vulnerabilities in competitor positioning and execution.', enabled: false },
   { num: '07', name: 'Scale System', desc: 'Design repeatable growth loops and automation opportunities.', enabled: false },
 ];
@@ -186,7 +205,7 @@ function formatMixed(text: string) {
 
 function renderResult(toolNum: string, text: string) {
   if (toolNum === '02') return formatTable(text);
-  if (toolNum === '04') return formatMixed(text);
+  if (toolNum === '04' || toolNum === '05') return formatMixed(text);
   return formatReport(text);
 }
 
