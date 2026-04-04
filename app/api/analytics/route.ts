@@ -87,7 +87,7 @@ export async function GET(request: Request) {
   // Handle realtime request
   if (period === 'realtime') {
     try {
-      const [activeUsers, realtimePages, realtimeCountries, realtimeCities] = await Promise.all([
+      const [activeUsers, realtimePages, realtimeCountries, realtimeCities, realtimeDevices] = await Promise.all([
         fetchGA4Realtime({
           metrics: [{ name: 'activeUsers' }],
         }),
@@ -105,6 +105,12 @@ export async function GET(request: Request) {
         }),
         fetchGA4Realtime({
           dimensions: [{ name: 'city' }],
+          metrics: [{ name: 'activeUsers' }],
+          orderBys: [{ metric: { metricName: 'activeUsers' }, desc: true }],
+          limit: 10,
+        }),
+        fetchGA4Realtime({
+          dimensions: [{ name: 'deviceCategory' }],
           metrics: [{ name: 'activeUsers' }],
           orderBys: [{ metric: { metricName: 'activeUsers' }, desc: true }],
           limit: 10,
@@ -128,12 +134,18 @@ export async function GET(request: Request) {
         activeUsers: Number(r.metricValues?.[0]?.value || 0),
       }));
 
+      const devices = (realtimeDevices.rows || []).map((r: { dimensionValues?: { value: string }[]; metricValues?: { value: string }[] }) => ({
+        device: r.dimensionValues?.[0]?.value || '',
+        activeUsers: Number(r.metricValues?.[0]?.value || 0),
+      }));
+
       return NextResponse.json({
         realtime: true,
         activeUsers: totalActive,
         pages,
         countries,
         cities,
+        devices,
       });
     } catch (err) {
       const message = err instanceof Error ? err.message : String(err);

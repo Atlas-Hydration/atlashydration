@@ -25,6 +25,7 @@ interface RealtimeData {
   pages: { page: string; activeUsers: number }[];
   countries: { country: string; activeUsers: number }[];
   cities: { city: string; activeUsers: number }[];
+  devices: { device: string; activeUsers: number }[];
 }
 
 /* ── Stat card component ── */
@@ -257,6 +258,42 @@ function LiveView({ data, loading }: { data: RealtimeData | null; loading: boole
           ) : (
             <div style={{ fontSize: '0.8rem', color: 'var(--text-dim)' }}>
               {loading ? 'Loading...' : 'No active cities'}
+            </div>
+          )}
+        </div>
+
+        <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 'var(--radius)', padding: 24 }}>
+          <h3 style={{ fontSize: '0.9rem', fontWeight: 700, marginBottom: 12 }}>
+            Active Devices
+          </h3>
+          {data?.devices?.length ? (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+              {data.devices.map((d) => (
+                <div key={d.device} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.8rem' }}>
+                  <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                    {d.device === 'mobile' && (
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="5" y="2" width="14" height="20" rx="2" ry="2" /><line x1="12" y1="18" x2="12.01" y2="18" /></svg>
+                    )}
+                    {d.device === 'desktop' && (
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2" /><line x1="8" y1="21" x2="16" y2="21" /><line x1="12" y1="17" x2="12" y2="21" /></svg>
+                    )}
+                    {d.device === 'tablet' && (
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="4" y="2" width="16" height="20" rx="2" ry="2" /><line x1="12" y1="18" x2="12.01" y2="18" /></svg>
+                    )}
+                    {d.device.charAt(0).toUpperCase() + d.device.slice(1)}
+                  </span>
+                  <span style={{
+                    fontWeight: 700, color: '#a855f7',
+                    background: 'rgba(168,85,247,0.1)', padding: '2px 10px', borderRadius: 12, fontSize: '0.75rem',
+                  }}>
+                    {d.activeUsers}
+                  </span>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div style={{ fontSize: '0.8rem', color: 'var(--text-dim)' }}>
+              {loading ? 'Loading...' : 'No active devices'}
             </div>
           )}
         </div>
