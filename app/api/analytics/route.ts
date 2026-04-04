@@ -135,7 +135,7 @@ export async function GET(request: Request) {
         }),
         // Operating systems
         fetchGA4Realtime({
-          dimensions: [{ name: 'operatingSystem' }],
+          dimensions: [{ name: 'platform' }],
           metrics: [{ name: 'activeUsers' }],
           orderBys: [{ metric: { metricName: 'activeUsers' }, desc: true }],
           limit: 10,
@@ -192,7 +192,7 @@ export async function GET(request: Request) {
         activeUsers: Number(r.metricValues?.[0]?.value || 0),
       }));
 
-      const operatingSystems = (realtimeOS.rows || []).map((r: RTRow) => ({
+      const platforms = (realtimeOS.rows || []).map((r: RTRow) => ({
         os: r.dimensionValues?.[0]?.value || '',
         activeUsers: Number(r.metricValues?.[0]?.value || 0),
       }));
@@ -220,7 +220,7 @@ export async function GET(request: Request) {
         devices,
         sources,
         browsers,
-        operatingSystems,
+        platforms,
         events,
         revenue,
       });
