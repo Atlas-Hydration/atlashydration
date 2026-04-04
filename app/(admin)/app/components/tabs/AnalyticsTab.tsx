@@ -1,7 +1,10 @@
 'use client';
 
 import { useState, useEffect, useCallback, useRef } from 'react';
-import WorldMap from '../WorldMap';
+import dynamic from 'next/dynamic';
+import DateRangeSlider from '../DateRangeSlider';
+
+const LiveMap = dynamic(() => import('../LiveMap'), { ssr: false });
 
 /* ── Types ── */
 interface AnalyticsData {
@@ -29,7 +32,7 @@ interface RealtimeData {
   sources: { source: string; activeUsers: number }[];
   browsers: { browser: string; activeUsers: number }[];
   operatingSystems: { os: string; activeUsers: number }[];
-  events: { event: string; city: string; country: string; count: number }[];
+  events: { event: string; city: string; country: string; count: number; minutesAgo?: number }[];
   revenue: { total: number; orders: number; avgOrderValue: number };
 }
 
@@ -172,18 +175,260 @@ function Sparkline({ data, width = 200, height = 40 }: { data: number[]; width?:
   );
 }
 
-/* ── Event descriptions ── */
-const EVENT_LABELS: Record<string, { label: string; icon: string; color: string }> = {
-  'page_view': { label: 'viewed a page', icon: '👁', color: 'var(--accent)' },
-  'add_to_cart': { label: 'added to cart', icon: '🛒', color: '#f59e0b' },
-  'begin_checkout': { label: 'started checkout', icon: '💳', color: '#8b5cf6' },
-  'purchase': { label: 'completed a purchase', icon: '✅', color: 'var(--green)' },
-  'sign_up': { label: 'signed up', icon: '📧', color: '#ec4899' },
-  'session_start': { label: 'started a session', icon: '🚀', color: 'var(--accent)' },
-  'first_visit': { label: 'visited for the first time', icon: '✨', color: '#22c55e' },
-  'scroll': { label: 'scrolled the page', icon: '📜', color: 'var(--text-dim)' },
-  'click': { label: 'clicked a link', icon: '👆', color: 'var(--accent)' },
+/* ── Mercury-style line chart with dotted grid, axis labels, circle markers ── */
+function MercuryChart({
+  data,
+  width = 720,
+  height = 260,
+  xLabels,
+  yFormatter = (v) => v.toLocaleString(),
+  color = 'var(--accent)',
+  fillColor = 'rgba(59,130,246,0.12)',
+}: {
+  data: number[];
+  width?: number;
+  height?: number;
+  xLabels?: string[];
+  yFormatter?: (v: number) => string;
+  color?: string;
+  fillColor?: string;
+}) {
+  if (data.length < 2) {
+    return (
+      <div style={{ height, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-dim)', fontSize: '0.75rem' }}>
+        Collecting data…
+      </div>
+    );
+  }
+
+  const padL = 52;
+  const padR = 16;
+  const padT = 12;
+  const padB = 28;
+  const chartW = width - padL - padR;
+  const chartH = height - padT - padB;
+
+  const rawMax = Math.max(...data);
+  const rawMin = Math.min(...data);
+  const span = Math.max(1, rawMax - rawMin);
+  // Pad the range so line doesn't hug edges; include 0 if values are small
+  const yMax = rawMax + span * 0.2;
+  const yMin = Math.max(0, rawMin - span * 0.2);
+  const yRange = yMax - yMin || 1;
+
+  const yTickCount = 5;
+  const yTicks = Array.from({ length: yTickCount + 1 }, (_, i) => yMin + (i / yTickCount) * yRange);
+
+  const pointFor = (v: number, i: number) => {
+    const x = padL + (i / (data.length - 1)) * chartW;
+    const y = padT + chartH - ((v - yMin) / yRange) * chartH;
+    return { x, y };
+  };
+
+  const pts = data.map(pointFor);
+  const polyline = pts.map((p) => `${p.x},${p.y}`).join(' ');
+  const area = `${pts[0].x},${padT + chartH} ${polyline} ${pts[pts.length - 1].x},${padT + chartH}`;
+
+  // X axis labels: use provided labels or generate evenly spaced placeholders
+  const xLabelCount = Math.min(xLabels?.length ?? 0, 9) || Math.min(9, data.length);
+  const xLabelIndices = Array.from({ length: xLabelCount }, (_, i) =>
+    Math.round((i / (xLabelCount - 1 || 1)) * (data.length - 1))
+  );
+
+  // Dotted grid (horizontal dots aligned to y ticks)
+  const dotRows = yTicks.length;
+  const dotsPerRow = 80;
+
+  return (
+    <svg width="100%" viewBox={`0 0 ${width} ${height}`} style={{ display: 'block', overflow: 'visible' }}>
+      {/* Dotted grid background */}
+      {yTicks.map((_, r) => {
+        const y = padT + (r / (dotRows - 1)) * chartH;
+        return Array.from({ length: dotsPerRow }).map((__, c) => {
+          const x = padL + (c / (dotsPerRow - 1)) * chartW;
+          return <circle key={`g-${r}-${c}`} cx={x} cy={y} r={0.6} fill="rgba(255,255,255,0.12)" />;
+        });
+      })}
+
+      {/* Y axis labels */}
+      {yTicks.map((v, i) => {
+        const y = padT + chartH - (i / (yTicks.length - 1)) * chartH;
+        return (
+          <text
+            key={`yt-${i}`}
+            x={padL - 10}
+            y={y + 4}
+            textAnchor="end"
+            fontSize="10"
+            fill="rgba(255,255,255,0.4)"
+          >
+            {yFormatter(Math.round(v))}
+          </text>
+        );
+      })}
+
+      {/* Zero/baseline */}
+      <line
+        x1={padL}
+        y1={padT + chartH}
+        x2={padL + chartW}
+        y2={padT + chartH}
+        stroke="rgba(255,255,255,0.08)"
+        strokeWidth={1}
+      />
+
+      {/* Area fill */}
+      <polyline points={area} fill={fillColor} stroke="none" />
+
+      {/* Line */}
+      <polyline
+        points={polyline}
+        fill="none"
+        stroke={color}
+        strokeWidth={2}
+        strokeLinejoin="round"
+        strokeLinecap="round"
+      />
+
+      {/* Data point markers */}
+      {pts.map((p, i) => (
+        <g key={`pt-${i}`}>
+          <circle cx={p.x} cy={p.y} r={4} fill="var(--surface)" stroke={color} strokeWidth={2} />
+        </g>
+      ))}
+
+      {/* Highlight current (last) point */}
+      {pts.length > 0 && (
+        <>
+          <rect
+            x={pts[pts.length - 1].x - 10}
+            y={padT}
+            width={20}
+            height={chartH}
+            fill={color}
+            opacity={0.08}
+          />
+          <circle
+            cx={pts[pts.length - 1].x}
+            cy={pts[pts.length - 1].y}
+            r={5}
+            fill={color}
+            stroke="#fff"
+            strokeWidth={2}
+          />
+        </>
+      )}
+
+      {/* X axis labels */}
+      {xLabelIndices.map((idx, i) => {
+        const x = padL + (idx / (data.length - 1)) * chartW;
+        const label = xLabels?.[idx] ?? '';
+        if (!label) return null;
+        return (
+          <text
+            key={`xt-${i}`}
+            x={x}
+            y={height - 8}
+            textAnchor="middle"
+            fontSize="10"
+            fill="rgba(255,255,255,0.5)"
+          >
+            {label}
+          </text>
+        );
+      })}
+    </svg>
+  );
+}
+
+/* ── Event icons (SVG) ── */
+type EventIconProps = { color: string; size?: number };
+const EventIcon = {
+  eye: ({ color, size = 16 }: EventIconProps) => (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+      <circle cx="12" cy="12" r="3" />
+    </svg>
+  ),
+  cart: ({ color, size = 16 }: EventIconProps) => (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="9" cy="21" r="1" />
+      <circle cx="20" cy="21" r="1" />
+      <path d="M1 1h4l2.7 13.4a2 2 0 0 0 2 1.6h9.7a2 2 0 0 0 2-1.6L23 6H6" />
+    </svg>
+  ),
+  card: ({ color, size = 16 }: EventIconProps) => (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="1" y="4" width="22" height="16" rx="2" ry="2" />
+      <line x1="1" y1="10" x2="23" y2="10" />
+    </svg>
+  ),
+  check: ({ color, size = 16 }: EventIconProps) => (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+      <polyline points="22 4 12 14.01 9 11.01" />
+    </svg>
+  ),
+  mail: ({ color, size = 16 }: EventIconProps) => (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+      <polyline points="22,6 12,13 2,6" />
+    </svg>
+  ),
+  rocket: ({ color, size = 16 }: EventIconProps) => (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z" />
+      <path d="M12 15l-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z" />
+      <path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0" />
+      <path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5" />
+    </svg>
+  ),
+  sparkle: ({ color, size = 16 }: EventIconProps) => (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+    </svg>
+  ),
+  scroll: ({ color, size = 16 }: EventIconProps) => (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <polyline points="7 13 12 18 17 13" />
+      <polyline points="7 6 12 11 17 6" />
+    </svg>
+  ),
+  pointer: ({ color, size = 16 }: EventIconProps) => (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M9 11.24V7.5a2.5 2.5 0 0 1 5 0v3.74" />
+      <path d="M14 10.5V9a2.5 2.5 0 0 1 5 0v6a7 7 0 0 1-7 7h-1a7 7 0 0 1-7-7v-1a2.5 2.5 0 0 1 5 0" />
+    </svg>
+  ),
+  activity: ({ color, size = 16 }: EventIconProps) => (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+    </svg>
+  ),
 };
+
+/* ── Event descriptions ── */
+const EVENT_LABELS: Record<string, { label: string; Icon: (p: EventIconProps) => React.JSX.Element; color: string }> = {
+  'page_view': { label: 'viewed a page', Icon: EventIcon.eye, color: 'var(--accent)' },
+  'add_to_cart': { label: 'added to cart', Icon: EventIcon.cart, color: '#f59e0b' },
+  'begin_checkout': { label: 'started checkout', Icon: EventIcon.card, color: '#8b5cf6' },
+  'purchase': { label: 'completed a purchase', Icon: EventIcon.check, color: 'var(--green)' },
+  'sign_up': { label: 'signed up', Icon: EventIcon.mail, color: '#ec4899' },
+  'session_start': { label: 'started a session', Icon: EventIcon.rocket, color: 'var(--accent)' },
+  'first_visit': { label: 'visited for the first time', Icon: EventIcon.sparkle, color: '#22c55e' },
+  'scroll': { label: 'scrolled the page', Icon: EventIcon.scroll, color: 'var(--text-dim)' },
+  'click': { label: 'clicked a link', Icon: EventIcon.pointer, color: 'var(--accent)' },
+};
+
+/* ── Relative time formatting ── */
+function formatMinutesAgo(minutes: number): string {
+  if (!minutes || minutes <= 0) return 'just now';
+  if (minutes === 1) return '1 minute ago';
+  if (minutes < 60) return `${minutes} minutes ago`;
+  const hours = Math.floor(minutes / 60);
+  if (hours === 1) return '1 hour ago';
+  return `${hours} hours ago`;
+}
 
 /* ── Source icons/colors ── */
 const SOURCE_STYLES: Record<string, { color: string }> = {
@@ -281,11 +526,24 @@ function LiveView({ data, loading, sparklineData }: { data: RealtimeData | null;
         <div style={{ fontSize: '0.75rem', color: 'var(--text-dim)', marginTop: 8, marginBottom: 12 }}>
           visitors on your site
         </div>
-        {/* Sparkline */}
+        {/* Mercury-style live chart */}
         {sparklineData.length >= 2 && (
-          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 8 }}>
-            <span style={{ fontSize: '0.65rem', color: 'var(--text-dim)' }}>Last 30 min</span>
-            <Sparkline data={sparklineData} width={280} height={40} />
+          <div style={{ marginTop: 12, padding: '0 24px' }}>
+            <div style={{ fontSize: '0.65rem', color: 'var(--text-dim)', marginBottom: 4, textAlign: 'left' }}>Active users — last 30 min</div>
+            <MercuryChart
+              data={sparklineData}
+              height={180}
+              color="var(--green)"
+              fillColor="rgba(34,197,94,0.12)"
+              xLabels={sparklineData.map((_, i) => {
+                const total = sparklineData.length;
+                const minsAgo = Math.round(((total - 1 - i) / 2)); // 30s intervals
+                if (i === 0) return `-${minsAgo}m`;
+                if (i === total - 1) return 'now';
+                if (i === Math.floor(total / 2)) return `-${minsAgo}m`;
+                return '';
+              })}
+            />
           </div>
         )}
       </div>
@@ -441,7 +699,10 @@ function LiveView({ data, loading, sparklineData }: { data: RealtimeData | null;
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 20, marginTop: 20 }}>
         {/* Traffic Sources */}
         <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 'var(--radius)', padding: 24 }}>
-          <h3 style={{ fontSize: '0.9rem', fontWeight: 700, marginBottom: 12 }}>Traffic Sources</h3>
+          <h3 style={{ fontSize: '0.9rem', fontWeight: 700, marginBottom: 12, display: 'flex', alignItems: 'center', gap: 8 }}>
+            Traffic Sources
+            <span style={{ fontSize: '0.65rem', fontWeight: 600, color: 'var(--text-dim)', background: 'rgba(255,255,255,0.05)', padding: '2px 8px', borderRadius: 10, textTransform: 'uppercase', letterSpacing: '0.04em' }}>Today</span>
+          </h3>
           {data?.sources?.length ? (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
               {data.sources.map((s) => {
@@ -465,22 +726,6 @@ function LiveView({ data, loading, sparklineData }: { data: RealtimeData | null;
           ) : (
             <div style={{ fontSize: '0.8rem', color: 'var(--text-dim)' }}>
               {loading ? 'Loading...' : 'No active sources'}
-            </div>
-          )}
-        </div>
-
-        {/* Browser breakdown */}
-        <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 'var(--radius)', padding: 24 }}>
-          <h3 style={{ fontSize: '0.9rem', fontWeight: 700, marginBottom: 16 }}>Browsers</h3>
-          {data?.browsers?.length ? (
-            <DonutChart items={data.browsers.map((b, i) => ({
-              label: b.browser,
-              value: b.activeUsers,
-              color: ['#4285f4', '#ef4444', '#f59e0b', '#22c55e', '#8b5cf6', '#ec4899'][i % 6],
-            }))} />
-          ) : (
-            <div style={{ fontSize: '0.8rem', color: 'var(--text-dim)' }}>
-              {loading ? 'Loading...' : 'No browser data'}
             </div>
           )}
         </div>
@@ -514,22 +759,30 @@ function LiveView({ data, loading, sparklineData }: { data: RealtimeData | null;
             {data.events
               .filter((e) => !['scroll', 'user_engagement'].includes(e.event))
               .map((e, i) => {
-                const info = EVENT_LABELS[e.event] || { label: e.event, icon: '📊', color: 'var(--text-dim)' };
+                const info = EVENT_LABELS[e.event] || { label: e.event, Icon: EventIcon.activity, color: 'var(--text-dim)' };
                 const location = [e.city, e.country].filter(Boolean).join(', ');
+                const when = formatMinutesAgo(e.minutesAgo ?? 0);
                 return (
-                  <div key={`${e.event}-${e.city}-${i}`} style={{
+                  <div key={`${e.event}-${e.city}-${e.minutesAgo}-${i}`} style={{
                     display: 'flex', alignItems: 'center', gap: 12,
                     padding: '10px 14px',
                     background: 'var(--surface2)', borderRadius: 8,
                     fontSize: '0.8rem',
                     borderLeft: `3px solid ${info.color}`,
                   }}>
-                    <span style={{ fontSize: '1.1rem', flexShrink: 0 }}>{info.icon}</span>
-                    <div style={{ flex: 1 }}>
+                    <span style={{
+                      display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+                      width: 28, height: 28, borderRadius: 8,
+                      background: 'var(--surface)', flexShrink: 0,
+                    }}>
+                      <info.Icon color={info.color} size={15} />
+                    </span>
+                    <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 2 }}>
                       <span style={{ color: 'var(--text)' }}>
                         Someone{location ? ` in ${location}` : ''}{' '}
                         <span style={{ color: info.color, fontWeight: 600 }}>{info.label}</span>
                       </span>
+                      <span style={{ fontSize: '0.7rem', color: 'var(--text-dim)' }}>{when}</span>
                     </div>
                     <span style={{
                       fontSize: '0.7rem', color: 'var(--text-dim)',
@@ -700,18 +953,24 @@ const FALLBACK: Record<string, AnalyticsData> = {
 };
 
 /* ── Period labels ── */
-type Period = 'live' | 'today' | '7d' | '30d' | '90d';
-const PERIOD_LABELS: Record<Period, string> = {
-  live: 'Live',
-  today: 'Today',
-  '7d': 'Last 7 days',
-  '30d': 'Last 30 days',
-  '90d': 'Last 90 days',
-};
+type Period = 'live' | 'today' | 'custom';
+const DEFAULT_RANGE_DAYS = 7;
+
+function rangeKey(start: Date, end: Date): string {
+  const fmt = (d: Date) => d.toISOString().slice(0, 10);
+  return `${fmt(start)}_${fmt(end)}`;
+}
 
 /* ── Main Analytics Tab ── */
 export default function AnalyticsTab() {
   const [period, setPeriod] = useState<Period>('live');
+  const [customRange, setCustomRange] = useState<{ start: Date; end: Date }>(() => {
+    const end = new Date();
+    end.setHours(0, 0, 0, 0);
+    const start = new Date(end);
+    start.setDate(start.getDate() - DEFAULT_RANGE_DAYS);
+    return { start, end };
+  });
   const [liveData, setLiveData] = useState<Record<string, AnalyticsData>>({});
   const [realtimeData, setRealtimeData] = useState<RealtimeData | null>(null);
   const [isLive, setIsLive] = useState(false);
@@ -722,18 +981,25 @@ export default function AnalyticsTab() {
   const realtimeInterval = useRef<ReturnType<typeof setInterval> | null>(null);
   const [sparklineHistory, setSparklineHistory] = useState<number[]>([]);
 
-  const fetchAnalytics = useCallback(async (p: string) => {
+  const fetchAnalytics = useCallback(async (p: Period, range?: { start: Date; end: Date }) => {
     if (p === 'live') return; // Handled separately
     setLoading(true);
     setError('');
     try {
-      const res = await fetch(`/api/analytics?period=${p}`);
+      let url = `/api/analytics?period=${p}&t=${Date.now()}`;
+      let cacheKey: string = p;
+      if (p === 'custom' && range) {
+        const fmt = (d: Date) => d.toISOString().slice(0, 10);
+        url += `&startDate=${fmt(range.start)}&endDate=${fmt(range.end)}`;
+        cacheKey = rangeKey(range.start, range.end);
+      }
+      const res = await fetch(url, { cache: 'no-store' });
       const json = await res.json();
       if (json.error) {
         setError(json.error);
         return;
       }
-      setLiveData((prev) => ({ ...prev, [p]: json }));
+      setLiveData((prev) => ({ ...prev, [cacheKey]: json }));
       setIsLive(true);
       setLastUpdated(new Date().toLocaleTimeString());
     } catch (err) {
@@ -746,7 +1012,7 @@ export default function AnalyticsTab() {
   const fetchRealtime = useCallback(async () => {
     setRealtimeLoading(true);
     try {
-      const res = await fetch('/api/analytics?period=realtime');
+      const res = await fetch(`/api/analytics?period=realtime&t=${Date.now()}`, { cache: 'no-store' });
       const json = await res.json();
       if (json.error) {
         setError(json.error);
@@ -775,48 +1041,74 @@ export default function AnalyticsTab() {
       };
     } else {
       if (realtimeInterval.current) clearInterval(realtimeInterval.current);
-      fetchAnalytics(period);
+      fetchAnalytics(period, period === 'custom' ? customRange : undefined);
     }
-  }, [period, fetchAnalytics, fetchRealtime]);
+  }, [period, customRange, fetchAnalytics, fetchRealtime]);
 
+  const cacheKey = period === 'custom' ? rangeKey(customRange.start, customRange.end) : period;
   const d = period !== 'live'
-    ? ((isLive && liveData[period]) ? liveData[period] : FALLBACK[period] || FALLBACK['7d'])
+    ? ((isLive && liveData[cacheKey]) ? liveData[cacheKey] : FALLBACK['today'] || FALLBACK['7d'])
     : null;
 
   return (
     <div>
-      {/* Period selector */}
-      <div style={{ display: 'flex', gap: 8, marginBottom: 24, flexWrap: 'wrap', alignItems: 'center' }}>
-        {(Object.keys(PERIOD_LABELS) as Period[]).map((p) => (
-          <button
-            key={p}
-            style={{
-              padding: '8px 20px', fontSize: '0.8rem',
-              border: p === 'live' && period === 'live'
-                ? '1px solid rgba(34,197,94,0.5)'
-                : '1px solid var(--border)',
-              borderRadius: 8,
-              background: period === p
-                ? p === 'live' ? 'rgba(34,197,94,0.15)' : 'var(--accent)'
-                : 'var(--surface)',
-              color: period === p
-                ? p === 'live' ? 'var(--green)' : '#fff'
-                : 'var(--text)',
-              cursor: 'pointer', fontWeight: 600,
-              display: 'flex', alignItems: 'center', gap: 6,
+      {/* Period selector: Live + Today buttons + custom range slider */}
+      <div style={{ display: 'flex', gap: 10, marginBottom: 32, flexWrap: 'wrap', alignItems: 'center' }}>
+        <button
+          style={{
+            padding: '8px 20px', fontSize: '0.8rem',
+            border: period === 'live' ? '1px solid rgba(34,197,94,0.5)' : '1px solid var(--border)',
+            borderRadius: 8,
+            background: period === 'live' ? 'rgba(34,197,94,0.15)' : 'var(--surface)',
+            color: period === 'live' ? 'var(--green)' : 'var(--text)',
+            cursor: 'pointer', fontWeight: 600,
+            display: 'flex', alignItems: 'center', gap: 6,
+          }}
+          onClick={() => setPeriod('live')}
+        >
+          <div style={{
+            width: 6, height: 6, borderRadius: '50%',
+            background: period === 'live' ? 'var(--green)' : 'var(--text-dim)',
+            animation: period === 'live' ? 'pulse 2s infinite' : 'none',
+          }} />
+          Live
+        </button>
+        <button
+          style={{
+            padding: '8px 20px', fontSize: '0.8rem',
+            border: '1px solid var(--border)',
+            borderRadius: 8,
+            background: period === 'today' ? 'var(--accent)' : 'var(--surface)',
+            color: period === 'today' ? '#fff' : 'var(--text)',
+            cursor: 'pointer', fontWeight: 600,
+          }}
+          onClick={() => setPeriod('today')}
+        >
+          Today
+        </button>
+
+        {/* Date range slider */}
+        <div
+          onClick={() => {
+            if (period !== 'custom') setPeriod('custom');
+          }}
+          style={{
+            flex: 1,
+            minWidth: 360,
+            opacity: period === 'custom' ? 1 : 0.65,
+            cursor: period === 'custom' ? 'default' : 'pointer',
+            transition: 'opacity 0.2s',
+          }}
+        >
+          <DateRangeSlider
+            start={customRange.start}
+            end={customRange.end}
+            onChange={(start, end) => {
+              setCustomRange({ start, end });
+              if (period !== 'custom') setPeriod('custom');
             }}
-            onClick={() => setPeriod(p)}
-          >
-            {p === 'live' && (
-              <div style={{
-                width: 6, height: 6, borderRadius: '50%',
-                background: period === 'live' ? 'var(--green)' : 'var(--text-dim)',
-                animation: period === 'live' ? 'pulse 2s infinite' : 'none',
-              }} />
-            )}
-            {PERIOD_LABELS[p]}
-          </button>
-        ))}
+          />
+        </div>
 
         {/* Live/Cached indicator */}
         <div style={{ marginLeft: 8, display: 'flex', alignItems: 'center', gap: 6, fontSize: '0.75rem', color: 'var(--text-dim)' }}>
@@ -851,11 +1143,14 @@ export default function AnalyticsTab() {
       {period === 'live' && (
         <>
           <LiveView data={realtimeData} loading={realtimeLoading} sparklineData={sparklineHistory} />
-          {realtimeData?.countries?.length ? (
-            <div style={{ marginBottom: 20 }}>
-              <WorldMap countries={realtimeData.countries} />
-            </div>
-          ) : null}
+          <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 'var(--radius)', padding: 24, marginTop: 20 }}>
+            <h3 style={{ fontSize: '0.9rem', fontWeight: 700, marginBottom: 4 }}>Visitor Map</h3>
+            <p style={{ fontSize: '0.75rem', color: 'var(--text-dim)', marginBottom: 16 }}>Live visitor locations</p>
+            <LiveMap
+              countries={realtimeData?.countries || []}
+              cities={realtimeData?.cities || []}
+            />
+          </div>
         </>
       )}
 
@@ -907,8 +1202,10 @@ export default function AnalyticsTab() {
 
       {/* World map for non-live periods */}
       {period !== 'live' && d && d.countries.length > 0 && (
-        <div style={{ marginTop: 24 }}>
-          <WorldMap countries={d.countries.map((c) => ({ country: c.name, activeUsers: c.users }))} />
+        <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 'var(--radius)', padding: 24, marginTop: 24 }}>
+          <h3 style={{ fontSize: '0.9rem', fontWeight: 700, marginBottom: 4 }}>Visitor Map</h3>
+          <p style={{ fontSize: '0.75rem', color: 'var(--text-dim)', marginBottom: 16 }}>Visitor locations for selected period</p>
+          <LiveMap countries={d.countries.map((c) => ({ country: c.name, activeUsers: c.users }))} />
         </div>
       )}
 
