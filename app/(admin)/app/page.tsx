@@ -45,6 +45,11 @@ type Tab =
   | 'analytics'
   | 'strategy-lab';
 
+const ALL_TABS: Tab[] = [
+  'products', 'variants', 'collections', 'orders', 'customers',
+  'seo', 'geo', 'shop', 'roadmap', 'analytics', 'content-machine', 'strategy-lab',
+];
+
 const PAGE_TITLES: Record<Tab, string> = {
   products: 'Products',
   variants: 'Variants',
@@ -105,7 +110,7 @@ export default function AdminPage() {
     orders: null,
   });
 
-  // Init auth + theme from storage
+  // Init auth + theme + tab from URL hash
   useEffect(() => {
     const auth = sessionStorage.getItem('atlas_app_auth') === '1';
     setIsAuthenticated(auth);
@@ -113,6 +118,22 @@ export default function AdminPage() {
     const savedTheme = (localStorage.getItem('atlas_theme') as 'dark' | 'light') || 'dark';
     setTheme(savedTheme);
     document.documentElement.setAttribute('data-theme', savedTheme);
+
+    // Read tab from URL hash
+    const hash = window.location.hash.replace('#', '');
+    if (hash && ALL_TABS.includes(hash as Tab)) {
+      setActiveTab(hash as Tab);
+    }
+
+    // Listen for hash changes (back/forward navigation)
+    const onHashChange = () => {
+      const h = window.location.hash.replace('#', '');
+      if (h && ALL_TABS.includes(h as Tab)) {
+        setActiveTab(h as Tab);
+      }
+    };
+    window.addEventListener('hashchange', onHashChange);
+    return () => window.removeEventListener('hashchange', onHashChange);
   }, []);
 
   const fetchAllData = useCallback(async () => {
@@ -170,6 +191,7 @@ export default function AdminPage() {
   function handleTabChange(tab: string) {
     setActiveTab(tab as Tab);
     setSidebarOpen(false);
+    window.history.pushState(null, '', `#${tab}`);
   }
 
   // Stats calculation
