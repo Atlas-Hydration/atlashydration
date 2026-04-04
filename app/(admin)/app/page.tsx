@@ -119,18 +119,13 @@ export default function AdminPage() {
     setErrorMessage('');
 
     try {
-      const fetches: Promise<unknown>[] = [fetchProducts(), fetchCollections(), fetchShopInfo()];
-      if (USE_WORKER) {
-        fetches.push(fetchCustomers());
-        fetches.push(fetchOrders());
-      }
-
-      const results = await Promise.all(fetches);
-      const products = results[0] as ProductNode[];
-      const collections = results[1] as CollectionNode[];
-      const shop = results[2] as ShopInfo;
-      const customers = USE_WORKER ? (results[3] as CustomerNode[]) : null;
-      const orders = USE_WORKER ? (results[4] as OrderNode[]) : null;
+      const [products, collections, shop, customers, orders] = await Promise.all([
+        fetchProducts().catch(() => [] as ProductNode[]),
+        fetchCollections().catch(() => [] as CollectionNode[]),
+        fetchShopInfo().catch(() => null),
+        fetchCustomers().catch(() => null),
+        fetchOrders().catch(() => null),
+      ]);
 
       setData({ products, collections, shop, customers, orders });
       setApiStatus('connected');
