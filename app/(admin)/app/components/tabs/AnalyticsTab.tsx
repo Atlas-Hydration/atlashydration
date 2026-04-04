@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback, useRef } from 'react';
+import WorldMap from '../WorldMap';
 
 /* ── Types ── */
 interface AnalyticsData {
@@ -409,6 +410,7 @@ export default function AnalyticsTab() {
   const [loading, setLoading] = useState(false);
   const [realtimeLoading, setRealtimeLoading] = useState(false);
   const [error, setError] = useState('');
+  const [lastUpdated, setLastUpdated] = useState('');
   const realtimeInterval = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const fetchAnalytics = useCallback(async (p: string) => {
@@ -424,6 +426,7 @@ export default function AnalyticsTab() {
       }
       setLiveData((prev) => ({ ...prev, [p]: json }));
       setIsLive(true);
+      setLastUpdated(new Date().toLocaleTimeString());
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to fetch analytics');
     } finally {
@@ -442,6 +445,7 @@ export default function AnalyticsTab() {
       }
       setRealtimeData(json);
       setIsLive(true);
+      setLastUpdated(new Date().toLocaleTimeString());
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to fetch realtime');
     } finally {
@@ -511,6 +515,7 @@ export default function AnalyticsTab() {
             animation: (loading || realtimeLoading) ? 'pulse 1s infinite' : 'none',
           }} />
           {(loading || realtimeLoading) ? 'Fetching...' : isLive ? 'Live from GA4' : 'Cached data'}
+          {lastUpdated && <span style={{ marginLeft: 6, opacity: 0.7 }}>({lastUpdated})</span>}
         </div>
 
         <a
@@ -533,7 +538,14 @@ export default function AnalyticsTab() {
 
       {/* Live View */}
       {period === 'live' && (
-        <LiveView data={realtimeData} loading={realtimeLoading} />
+        <>
+          <LiveView data={realtimeData} loading={realtimeLoading} />
+          {realtimeData?.countries?.length ? (
+            <div style={{ marginBottom: 20 }}>
+              <WorldMap countries={realtimeData.countries} />
+            </div>
+          ) : null}
+        </>
       )}
 
       {/* Key metrics (non-live periods) */}
@@ -580,6 +592,13 @@ export default function AnalyticsTab() {
           <CountryTable countries={d.countries} />
         </div>
       </div>
+      )}
+
+      {/* World map for non-live periods */}
+      {period !== 'live' && d && d.countries.length > 0 && (
+        <div style={{ marginTop: 24 }}>
+          <WorldMap countries={d.countries.map((c) => ({ country: c.name, activeUsers: c.users }))} />
+        </div>
       )}
 
       {/* Setup instructions */}

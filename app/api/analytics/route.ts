@@ -285,12 +285,13 @@ export async function GET(request: Request) {
     const beginCheckout = funnelMap['begin_checkout'] || 0;
     const purchaseCount = funnelMap['purchase'] || purchases;
 
+    const funnelPct = (v: number) => sessionCount > 0 ? `${((v / sessionCount) * 100).toFixed(1)}%` : '0%';
     const parsedFunnel = [
       { label: 'Sessions', value: sessionCount, rate: '100%' },
-      { label: 'Page Views', value: pageViews, rate: `${((pageViews / sessionCount) * 100).toFixed(1)}%` },
-      { label: 'Add to Cart', value: addToCart, rate: `${((addToCart / sessionCount) * 100).toFixed(1)}%` },
-      { label: 'Checkout', value: beginCheckout, rate: `${((beginCheckout / sessionCount) * 100).toFixed(1)}%` },
-      { label: 'Purchase', value: purchaseCount, rate: `${((purchaseCount / sessionCount) * 100).toFixed(1)}%` },
+      { label: 'Page Views', value: pageViews, rate: funnelPct(pageViews) },
+      { label: 'Add to Cart', value: addToCart, rate: funnelPct(addToCart) },
+      { label: 'Checkout', value: beginCheckout, rate: funnelPct(beginCheckout) },
+      { label: 'Purchase', value: purchaseCount, rate: funnelPct(purchaseCount) },
     ];
 
     return NextResponse.json({
