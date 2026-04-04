@@ -8,6 +8,9 @@ const PRIVATE_KEY = (process.env.GA4_PRIVATE_KEY || '').replace(/\\n/g, '\n');
 const GA4_API = `https://analyticsdata.googleapis.com/v1beta/properties/${PROPERTY_ID}:runReport`;
 const GA4_REALTIME_API = `https://analyticsdata.googleapis.com/v1beta/properties/${PROPERTY_ID}:runRealtimeReport`;
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 function getAuth() {
   return new GoogleAuth({
     credentials: {
@@ -35,6 +38,7 @@ async function fetchGA4Report(body: Record<string, unknown>) {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify(body),
+    cache: 'no-store',
   });
 
   if (!res.ok) {
@@ -55,6 +59,7 @@ async function fetchGA4Realtime(body: Record<string, unknown>) {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify(body),
+    cache: 'no-store',
   });
 
   if (!res.ok) {
@@ -83,6 +88,8 @@ export async function GET(request: Request) {
 
   const { searchParams } = new URL(request.url);
   const period = searchParams.get('period') || '7d';
+  const customStart = searchParams.get('startDate');
+  const customEnd = searchParams.get('endDate');
 
   // Handle realtime request
   if (period === 'realtime') {
@@ -153,12 +160,17 @@ export async function GET(request: Request) {
           orderBys: [{ metric: { metricName: 'activeUsers' }, desc: true }],
           limit: 10,
         }),
-        // Recent events
+        // Recent events (include minutesAgo for relative time)
         safeRealtime({
-          dimensions: [{ name: 'eventName' }, { name: 'city' }, { name: 'country' }],
+          dimensions: [
+            { name: 'eventName' },
+            { name: 'city' },
+            { name: 'country' },
+            { name: 'minutesAgo' },
+          ],
           metrics: [{ name: 'eventCount' }],
-          orderBys: [{ metric: { metricName: 'eventCount' }, desc: true }],
-          limit: 15,
+          orderBys: [{ dimension: { dimensionName: 'minutesAgo' } }],
+          limit: 30,
         }),
         // Today's revenue
         safeReport({
@@ -214,6 +226,7 @@ export async function GET(request: Request) {
         event: r.dimensionValues?.[0]?.value || '',
         city: r.dimensionValues?.[1]?.value || '',
         country: r.dimensionValues?.[2]?.value || '',
+        minutesAgo: Number(r.dimensionValues?.[3]?.value || 0),
         count: Number(r.metricValues?.[0]?.value || 0),
       }));
 
@@ -236,7 +249,7 @@ export async function GET(request: Request) {
         platforms,
         events,
         revenue,
-      });
+      }, { headers: { 'Cache-Control': 'no-store, max-age=0' } });
     } catch (err) {
       const message = err instanceof Error ? err.message : String(err);
       console.error('GA4 Realtime API error:', message);
@@ -244,15 +257,30 @@ export async function GET(request: Request) {
     }
   }
 
-  // Handle today: startDate = endDate = today, compare with yesterday
+  // Compute date range — prefer explicit startDate/endDate if provided
+  const isCustom = period === 'custom' && customStart && customEnd;
   const isToday = period === 'today';
   const days = isToday ? 0 : period === '90d' ? 90 : period === '30d' ? 30 : 7;
-  const dateRange = isToday
-    ? { startDate: 'today', endDate: 'today' }
-    : { startDate: `${days}daysAgo`, endDate: 'today' };
-  const prevDateRange = isToday
-    ? { startDate: 'yesterday', endDate: 'yesterday' }
-    : { startDate: `${days * 2}daysAgo`, endDate: `${days + 1}daysAgo` };
+
+  let dateRange: { startDate: string; endDate: string };
+  let prevDateRange: { startDate: string; endDate: string };
+
+  if (isCustom) {
+    const start = new Date(customStart!);
+    const end = new Date(customEnd!);
+    const diffDays = Math.max(1, Math.round((end.getTime() - start.getTime()) / 86400000));
+    const prevEnd = new Date(start.getTime() - 86400000);
+    const prevStart = new Date(prevEnd.getTime() - diffDays * 86400000);
+    const fmt = (d: Date) => d.toISOString().slice(0, 10);
+    dateRange = { startDate: fmt(start), endDate: fmt(end) };
+    prevDateRange = { startDate: fmt(prevStart), endDate: fmt(prevEnd) };
+  } else if (isToday) {
+    dateRange = { startDate: 'today', endDate: 'today' };
+    prevDateRange = { startDate: 'yesterday', endDate: 'yesterday' };
+  } else {
+    dateRange = { startDate: `${days}daysAgo`, endDate: 'today' };
+    prevDateRange = { startDate: `${days * 2}daysAgo`, endDate: `${days + 1}daysAgo` };
+  }
 
   try {
     // Run all queries in parallel
