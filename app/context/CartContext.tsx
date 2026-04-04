@@ -319,6 +319,16 @@ export function CartProvider({ children }: { children: ReactNode }) {
       const product = PRODUCTS[productSlug];
       if (!product) return;
 
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      if (typeof window !== 'undefined' && typeof (window as any).gtag === 'function') {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (window as any).gtag('event', 'add_to_cart', {
+          currency: 'USD',
+          value: (subscriptionFrequency ? 23.99 : 29.99) * qty,
+          items: [{ item_id: productSlug, item_name: product.name, quantity: qty, price: subscriptionFrequency ? 23.99 : 29.99 }],
+        });
+      }
+
       const client = clientRef.current;
       const co = checkoutRef.current;
 
@@ -447,6 +457,17 @@ export function CartProvider({ children }: { children: ReactNode }) {
   // -----------------------------------------------------------------------
   const checkout = useCallback(async () => {
     if (items.length === 0) return;
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    if (typeof window !== 'undefined' && typeof (window as any).gtag === 'function') {
+      const total = items.reduce((s, i) => s + (i.subscriptionFrequency ? 23.99 : 29.99) * i.quantity, 0);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (window as any).gtag('event', 'begin_checkout', {
+        currency: 'USD',
+        value: total,
+        items: items.map((i) => ({ item_id: i.slug, item_name: i.title, quantity: i.quantity, price: i.subscriptionFrequency ? 23.99 : 29.99 })),
+      });
+    }
 
     const hasSubscriptions = items.some((i) => i.subscriptionFrequency);
 

@@ -15,6 +15,7 @@ import ShopInfoTab from './components/tabs/ShopInfoTab';
 import RoadmapTab from './components/tabs/RoadmapTab';
 import ContentMachineTab from './components/tabs/ContentMachineTab';
 import StrategyLabTab from './components/tabs/StrategyLabTab';
+import AnalyticsTab from './components/tabs/AnalyticsTab';
 
 import {
   fetchProducts,
@@ -41,6 +42,7 @@ type Tab =
   | 'shop'
   | 'roadmap'
   | 'content-machine'
+  | 'analytics'
   | 'strategy-lab';
 
 const PAGE_TITLES: Record<Tab, string> = {
@@ -53,6 +55,7 @@ const PAGE_TITLES: Record<Tab, string> = {
   geo: 'GEO',
   shop: 'Shop Info',
   roadmap: 'Roadmap',
+  analytics: 'Analytics',
   'content-machine': 'Content Machine',
   'strategy-lab': 'Strategy Lab',
 };
@@ -285,6 +288,7 @@ export default function AdminPage() {
                 {activeTab === 'seo' && <SeoTab />}
                 {activeTab === 'geo' && <GeoTab />}
                 {activeTab === 'roadmap' && <RoadmapTab />}
+                {activeTab === 'analytics' && <AnalyticsTab />}
                 {activeTab === 'content-machine' && <ContentMachineTab />}
                 {activeTab === 'strategy-lab' && <StrategyLabTab />}
 

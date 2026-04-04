@@ -96,6 +96,12 @@ export function PopupProvider({ children }: { children: ReactNode }) {
       }
 
       setSubmitted(true);
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      if (typeof window !== 'undefined' && typeof (window as any).gtag === 'function') {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (window as any).gtag('event', 'sign_up', { method: 'email_popup' });
+      }
     },
     [email]
   );
