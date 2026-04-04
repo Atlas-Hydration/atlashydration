@@ -24,6 +24,7 @@ interface RealtimeData {
   activeUsers: number;
   pages: { page: string; activeUsers: number }[];
   countries: { country: string; activeUsers: number }[];
+  cities: { city: string; activeUsers: number }[];
 }
 
 /* ── Stat card component ── */
@@ -181,8 +182,8 @@ function LiveView({ data, loading }: { data: RealtimeData | null; loading: boole
         </div>
       </div>
 
-      {/* Two columns: active pages + active countries */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 20 }}>
+      {/* Three columns: active pages + active countries + active cities */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 20 }}>
         <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 'var(--radius)', padding: 24 }}>
           <h3 style={{ fontSize: '0.9rem', fontWeight: 700, marginBottom: 12 }}>
             Active Pages
@@ -231,6 +232,31 @@ function LiveView({ data, loading }: { data: RealtimeData | null; loading: boole
           ) : (
             <div style={{ fontSize: '0.8rem', color: 'var(--text-dim)' }}>
               {loading ? 'Loading...' : 'No active countries'}
+            </div>
+          )}
+        </div>
+
+        <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 'var(--radius)', padding: 24 }}>
+          <h3 style={{ fontSize: '0.9rem', fontWeight: 700, marginBottom: 12 }}>
+            Active Cities
+          </h3>
+          {data?.cities?.length ? (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+              {data.cities.map((c) => (
+                <div key={c.city} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.8rem' }}>
+                  <span>{c.city}</span>
+                  <span style={{
+                    fontWeight: 700, color: '#f59e0b',
+                    background: 'rgba(245,158,11,0.1)', padding: '2px 10px', borderRadius: 12, fontSize: '0.75rem',
+                  }}>
+                    {c.activeUsers}
+                  </span>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div style={{ fontSize: '0.8rem', color: 'var(--text-dim)' }}>
+              {loading ? 'Loading...' : 'No active cities'}
             </div>
           )}
         </div>
