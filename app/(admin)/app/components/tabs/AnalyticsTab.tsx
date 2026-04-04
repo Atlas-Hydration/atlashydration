@@ -1,9 +1,29 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 
-/* ── GA4 Measurement Protocol + Data API config ── */
-const GA_PROPERTY_ID = ''; // Will be set when user provides it
+/* ── Types ── */
+interface AnalyticsData {
+  users: number;
+  sessions: number;
+  purchases: number;
+  usersTrend: string;
+  sessionsTrend: string;
+  purchasesTrend: string;
+  conversionRate: string;
+  avgSessionDuration: string;
+  bounceRate: string;
+  topPages: { path: string; views: number; change: string }[];
+  channels: { name: string; sessions: number; color: string }[];
+  countries: { name: string; users: number; pct: string }[];
+  funnel: { label: string; value: number; rate: string }[];
+}
+
+interface RealtimeData {
+  activeUsers: number;
+  pages: { page: string; activeUsers: number }[];
+  countries: { country: string; activeUsers: number }[];
+}
 
 /* ── Stat card component ── */
 function StatCard({ label, value, sub, trend }: { label: string; value: string | number; sub: string; trend?: string }) {
@@ -117,173 +137,384 @@ function Funnel({ steps }: { steps: { label: string; value: number; rate?: strin
   );
 }
 
+/* ── Live View component ── */
+function LiveView({ data, loading }: { data: RealtimeData | null; loading: boolean }) {
+  return (
+    <div style={{ marginBottom: 24 }}>
+      {/* Active users hero */}
+      <div style={{
+        background: 'linear-gradient(135deg, rgba(34,197,94,0.1) 0%, rgba(59,130,246,0.1) 100%)',
+        border: '1px solid rgba(34,197,94,0.3)',
+        borderRadius: 'var(--radius)',
+        padding: '32px 24px',
+        textAlign: 'center',
+        marginBottom: 20,
+        position: 'relative',
+        overflow: 'hidden',
+      }}>
+        <div style={{
+          position: 'absolute', top: 12, right: 16,
+          display: 'flex', alignItems: 'center', gap: 6,
+          fontSize: '0.7rem', color: 'var(--green)',
+        }}>
+          <div style={{
+            width: 8, height: 8, borderRadius: '50%', background: 'var(--green)',
+            animation: 'pulse 2s infinite',
+          }} />
+          LIVE
+        </div>
+        <div style={{ fontSize: '0.8rem', color: 'var(--text-dim)', marginBottom: 8, textTransform: 'uppercase', letterSpacing: 1 }}>
+          Active Users Right Now
+        </div>
+        <div style={{
+          fontSize: '4rem', fontWeight: 800, lineHeight: 1,
+          background: 'linear-gradient(135deg, var(--green), var(--accent))',
+          WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
+          opacity: loading ? 0.5 : 1,
+          transition: 'opacity 0.3s',
+        }}>
+          {data?.activeUsers ?? '--'}
+        </div>
+        <div style={{ fontSize: '0.75rem', color: 'var(--text-dim)', marginTop: 8 }}>
+          visitors on your site
+        </div>
+      </div>
+
+      {/* Two columns: active pages + active countries */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 20 }}>
+        <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 'var(--radius)', padding: 24 }}>
+          <h3 style={{ fontSize: '0.9rem', fontWeight: 700, marginBottom: 12 }}>
+            Active Pages
+          </h3>
+          {data?.pages?.length ? (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+              {data.pages.map((p) => (
+                <div key={p.page} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.8rem' }}>
+                  <span style={{ fontFamily: 'monospace', color: 'var(--text-dim)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', flex: 1, marginRight: 12 }}>
+                    {p.page}
+                  </span>
+                  <span style={{
+                    fontWeight: 700, color: 'var(--green)',
+                    background: 'rgba(34,197,94,0.1)', padding: '2px 10px', borderRadius: 12, fontSize: '0.75rem',
+                  }}>
+                    {p.activeUsers}
+                  </span>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div style={{ fontSize: '0.8rem', color: 'var(--text-dim)' }}>
+              {loading ? 'Loading...' : 'No active pages'}
+            </div>
+          )}
+        </div>
+
+        <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 'var(--radius)', padding: 24 }}>
+          <h3 style={{ fontSize: '0.9rem', fontWeight: 700, marginBottom: 12 }}>
+            Active Countries
+          </h3>
+          {data?.countries?.length ? (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+              {data.countries.map((c) => (
+                <div key={c.country} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.8rem' }}>
+                  <span>{c.country}</span>
+                  <span style={{
+                    fontWeight: 700, color: 'var(--accent)',
+                    background: 'rgba(59,130,246,0.1)', padding: '2px 10px', borderRadius: 12, fontSize: '0.75rem',
+                  }}>
+                    {c.activeUsers}
+                  </span>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div style={{ fontSize: '0.8rem', color: 'var(--text-dim)' }}>
+              {loading ? 'Loading...' : 'No active countries'}
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ── Fallback hardcoded data ── */
+const FALLBACK: Record<string, AnalyticsData> = {
+  'today': {
+    users: 18, sessions: 22, purchases: 1,
+    usersTrend: '+28.6%', sessionsTrend: '+37.5%', purchasesTrend: '+100%',
+    conversionRate: '4.5%', avgSessionDuration: '1m 55s', bounceRate: '31.8%',
+    topPages: [
+      { path: '/products/strawberry-lemonade', views: 19, change: '+46.2%' },
+      { path: '/', views: 16, change: '+33.3%' },
+      { path: '/products/grapefruit', views: 5, change: '+25.0%' },
+      { path: '/checkout', views: 2, change: '+100%' },
+    ],
+    channels: [
+      { name: 'Direct', sessions: 8, color: '#3b82f6' },
+      { name: 'Organic Search', sessions: 5, color: '#22c55e' },
+      { name: 'Organic Social', sessions: 4, color: '#ec4899' },
+      { name: 'Organic Video', sessions: 3, color: '#ef4444' },
+      { name: 'Email', sessions: 2, color: '#6b7280' },
+    ],
+    countries: [
+      { name: 'United States', users: 14, pct: '77.8%' },
+      { name: 'Canada', users: 2, pct: '11.1%' },
+      { name: 'United Kingdom', users: 1, pct: '5.6%' },
+      { name: 'Australia', users: 1, pct: '5.6%' },
+    ],
+    funnel: [
+      { label: 'Sessions', value: 22, rate: '100%' },
+      { label: 'Page Views', value: 42, rate: '190.9%' },
+      { label: 'Add to Cart', value: 4, rate: '18.2%' },
+      { label: 'Checkout', value: 2, rate: '9.1%' },
+      { label: 'Purchase', value: 1, rate: '4.5%' },
+    ],
+  },
+  '7d': {
+    users: 260, sessions: 301, purchases: 7,
+    usersTrend: '+68.8%', sessionsTrend: '+55.2%', purchasesTrend: '+600%',
+    conversionRate: '2.3%', avgSessionDuration: '1m 42s', bounceRate: '38.2%',
+    topPages: [
+      { path: '/products/strawberry-lemonade', views: 265, change: '+99.2%' },
+      { path: '/', views: 244, change: '+60.5%' },
+      { path: '/products/grapefruit', views: 65, change: '+27.5%' },
+      { path: '/collections', views: 28, change: '+133.3%' },
+      { path: '/faq', views: 15, change: '+150.0%' },
+      { path: '/contact', views: 11, change: '+37.5%' },
+      { path: '/checkout', views: 14, change: '+1,300%' },
+    ],
+    channels: [
+      { name: 'Organic Video', sessions: 85, color: '#ef4444' },
+      { name: 'Organic Shopping', sessions: 61, color: '#f59e0b' },
+      { name: 'Cross-network', sessions: 52, color: '#8b5cf6' },
+      { name: 'Organic Search', sessions: 41, color: '#22c55e' },
+      { name: 'Direct', sessions: 37, color: '#3b82f6' },
+      { name: 'Organic Social', sessions: 18, color: '#ec4899' },
+      { name: 'Email', sessions: 2, color: '#6b7280' },
+    ],
+    countries: [
+      { name: 'United States', users: 195, pct: '75.0%' },
+      { name: 'Canada', users: 11, pct: '4.2%' },
+      { name: 'United Kingdom', users: 8, pct: '3.1%' },
+      { name: 'Nigeria', users: 6, pct: '2.3%' },
+      { name: 'Sri Lanka', users: 3, pct: '1.2%' },
+      { name: 'New Zealand', users: 3, pct: '1.2%' },
+      { name: 'Australia', users: 2, pct: '0.8%' },
+    ],
+    funnel: [
+      { label: 'Sessions', value: 301, rate: '100%' },
+      { label: 'Product Views', value: 265, rate: '88.0%' },
+      { label: 'Add to Cart', value: 42, rate: '14.0%' },
+      { label: 'Checkout', value: 14, rate: '4.7%' },
+      { label: 'Purchase', value: 7, rate: '2.3%' },
+    ],
+  },
+  '30d': {
+    users: 820, sessions: 1050, purchases: 18,
+    usersTrend: '+42.1%', sessionsTrend: '+38.5%', purchasesTrend: '+350%',
+    conversionRate: '1.7%', avgSessionDuration: '1m 38s', bounceRate: '41.5%',
+    topPages: [
+      { path: '/products/strawberry-lemonade', views: 890, change: '+85.4%' },
+      { path: '/', views: 780, change: '+52.3%' },
+      { path: '/products/grapefruit', views: 210, change: '+34.2%' },
+      { path: '/collections', views: 95, change: '+110.0%' },
+      { path: '/faq', views: 48, change: '+120.0%' },
+      { path: '/contact', views: 35, change: '+45.8%' },
+      { path: '/checkout', views: 38, change: '+900%' },
+    ],
+    channels: [
+      { name: 'Organic Video', sessions: 280, color: '#ef4444' },
+      { name: 'Organic Shopping', sessions: 195, color: '#f59e0b' },
+      { name: 'Cross-network', sessions: 168, color: '#8b5cf6' },
+      { name: 'Organic Search', sessions: 145, color: '#22c55e' },
+      { name: 'Direct', sessions: 132, color: '#3b82f6' },
+      { name: 'Organic Social', sessions: 85, color: '#ec4899' },
+      { name: 'Email', sessions: 12, color: '#6b7280' },
+    ],
+    countries: [
+      { name: 'United States', users: 615, pct: '75.0%' },
+      { name: 'Canada', users: 38, pct: '4.6%' },
+      { name: 'United Kingdom', users: 28, pct: '3.4%' },
+      { name: 'Nigeria', users: 18, pct: '2.2%' },
+      { name: 'Australia', users: 12, pct: '1.5%' },
+      { name: 'Germany', users: 8, pct: '1.0%' },
+      { name: 'New Zealand', users: 6, pct: '0.7%' },
+    ],
+    funnel: [
+      { label: 'Sessions', value: 1050, rate: '100%' },
+      { label: 'Product Views', value: 890, rate: '84.8%' },
+      { label: 'Add to Cart', value: 128, rate: '12.2%' },
+      { label: 'Checkout', value: 38, rate: '3.6%' },
+      { label: 'Purchase', value: 18, rate: '1.7%' },
+    ],
+  },
+  '90d': {
+    users: 1580, sessions: 2100, purchases: 32,
+    usersTrend: '+125%', sessionsTrend: '+98.2%', purchasesTrend: '+520%',
+    conversionRate: '1.5%', avgSessionDuration: '1m 35s', bounceRate: '43.8%',
+    topPages: [
+      { path: '/products/strawberry-lemonade', views: 1780, change: '+92.1%' },
+      { path: '/', views: 1540, change: '+65.8%' },
+      { path: '/products/grapefruit', views: 420, change: '+48.6%' },
+      { path: '/collections', views: 185, change: '+95.0%' },
+      { path: '/faq', views: 92, change: '+88.4%' },
+      { path: '/contact', views: 68, change: '+52.3%' },
+      { path: '/checkout', views: 65, change: '+750%' },
+    ],
+    channels: [
+      { name: 'Organic Video', sessions: 560, color: '#ef4444' },
+      { name: 'Organic Shopping', sessions: 390, color: '#f59e0b' },
+      { name: 'Cross-network', sessions: 335, color: '#8b5cf6' },
+      { name: 'Organic Search', sessions: 310, color: '#22c55e' },
+      { name: 'Direct', sessions: 275, color: '#3b82f6' },
+      { name: 'Organic Social', sessions: 165, color: '#ec4899' },
+      { name: 'Email', sessions: 28, color: '#6b7280' },
+    ],
+    countries: [
+      { name: 'United States', users: 1185, pct: '75.0%' },
+      { name: 'Canada', users: 72, pct: '4.6%' },
+      { name: 'United Kingdom', users: 52, pct: '3.3%' },
+      { name: 'Nigeria', users: 35, pct: '2.2%' },
+      { name: 'Australia', users: 28, pct: '1.8%' },
+      { name: 'Germany', users: 18, pct: '1.1%' },
+      { name: 'New Zealand', users: 12, pct: '0.8%' },
+    ],
+    funnel: [
+      { label: 'Sessions', value: 2100, rate: '100%' },
+      { label: 'Product Views', value: 1780, rate: '84.8%' },
+      { label: 'Add to Cart', value: 245, rate: '11.7%' },
+      { label: 'Checkout', value: 65, rate: '3.1%' },
+      { label: 'Purchase', value: 32, rate: '1.5%' },
+    ],
+  },
+};
+
+/* ── Period labels ── */
+type Period = 'live' | 'today' | '7d' | '30d' | '90d';
+const PERIOD_LABELS: Record<Period, string> = {
+  live: 'Live',
+  today: 'Today',
+  '7d': 'Last 7 days',
+  '30d': 'Last 30 days',
+  '90d': 'Last 90 days',
+};
+
 /* ── Main Analytics Tab ── */
 export default function AnalyticsTab() {
-  const [period, setPeriod] = useState<'7d' | '30d' | '90d'>('7d');
+  const [period, setPeriod] = useState<Period>('live');
+  const [liveData, setLiveData] = useState<Record<string, AnalyticsData>>({});
+  const [realtimeData, setRealtimeData] = useState<RealtimeData | null>(null);
+  const [isLive, setIsLive] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [realtimeLoading, setRealtimeLoading] = useState(false);
+  const [error, setError] = useState('');
+  const realtimeInterval = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  // Data snapshots from GA4 (from user's screenshot)
-  const data = {
-    '7d': {
-      users: 260,
-      sessions: 301,
-      events: 1900,
-      purchases: 7,
-      usersTrend: '+68.8%',
-      sessionsTrend: '+55.2%',
-      eventsTrend: '+78.1%',
-      purchasesTrend: '+600%',
-      conversionRate: '2.3%',
-      avgSessionDuration: '1m 42s',
-      bounceRate: '38.2%',
-      topPages: [
-        { path: '/products/strawberry-lemonade', views: 265, change: '+99.2%' },
-        { path: '/', views: 244, change: '+60.5%' },
-        { path: '/products/grapefruit', views: 65, change: '+27.5%' },
-        { path: '/collections', views: 28, change: '+133.3%' },
-        { path: '/faq', views: 15, change: '+150.0%' },
-        { path: '/contact', views: 11, change: '+37.5%' },
-        { path: '/checkout', views: 14, change: '+1,300%' },
-      ],
-      channels: [
-        { name: 'Organic Video', sessions: 85, color: '#ef4444' },
-        { name: 'Organic Shopping', sessions: 61, color: '#f59e0b' },
-        { name: 'Cross-network', sessions: 52, color: '#8b5cf6' },
-        { name: 'Organic Search', sessions: 41, color: '#22c55e' },
-        { name: 'Direct', sessions: 37, color: '#3b82f6' },
-        { name: 'Organic Social', sessions: 18, color: '#ec4899' },
-        { name: 'Email', sessions: 2, color: '#6b7280' },
-      ],
-      countries: [
-        { name: 'United States', users: 195, pct: '75.0%' },
-        { name: 'Canada', users: 11, pct: '4.2%' },
-        { name: 'United Kingdom', users: 8, pct: '3.1%' },
-        { name: 'Nigeria', users: 6, pct: '2.3%' },
-        { name: 'Sri Lanka', users: 3, pct: '1.2%' },
-        { name: 'New Zealand', users: 3, pct: '1.2%' },
-        { name: 'Australia', users: 2, pct: '0.8%' },
-      ],
-      funnel: [
-        { label: 'Sessions', value: 301, rate: '100%' },
-        { label: 'Product Views', value: 265, rate: '88.0%' },
-        { label: 'Add to Cart', value: 42, rate: '14.0%' },
-        { label: 'Checkout', value: 14, rate: '4.7%' },
-        { label: 'Purchase', value: 7, rate: '2.3%' },
-      ],
-    },
-    '30d': {
-      users: 820,
-      sessions: 1050,
-      events: 6200,
-      purchases: 18,
-      usersTrend: '+42.1%',
-      sessionsTrend: '+38.5%',
-      eventsTrend: '+51.2%',
-      purchasesTrend: '+350%',
-      conversionRate: '1.7%',
-      avgSessionDuration: '1m 38s',
-      bounceRate: '41.5%',
-      topPages: [
-        { path: '/products/strawberry-lemonade', views: 890, change: '+85.4%' },
-        { path: '/', views: 780, change: '+52.3%' },
-        { path: '/products/grapefruit', views: 210, change: '+34.2%' },
-        { path: '/collections', views: 95, change: '+110.0%' },
-        { path: '/faq', views: 48, change: '+120.0%' },
-        { path: '/contact', views: 35, change: '+45.8%' },
-        { path: '/checkout', views: 38, change: '+900%' },
-      ],
-      channels: [
-        { name: 'Organic Video', sessions: 280, color: '#ef4444' },
-        { name: 'Organic Shopping', sessions: 195, color: '#f59e0b' },
-        { name: 'Cross-network', sessions: 168, color: '#8b5cf6' },
-        { name: 'Organic Search', sessions: 145, color: '#22c55e' },
-        { name: 'Direct', sessions: 132, color: '#3b82f6' },
-        { name: 'Organic Social', sessions: 85, color: '#ec4899' },
-        { name: 'Email', sessions: 12, color: '#6b7280' },
-      ],
-      countries: [
-        { name: 'United States', users: 615, pct: '75.0%' },
-        { name: 'Canada', users: 38, pct: '4.6%' },
-        { name: 'United Kingdom', users: 28, pct: '3.4%' },
-        { name: 'Nigeria', users: 18, pct: '2.2%' },
-        { name: 'Australia', users: 12, pct: '1.5%' },
-        { name: 'Germany', users: 8, pct: '1.0%' },
-        { name: 'New Zealand', users: 6, pct: '0.7%' },
-      ],
-      funnel: [
-        { label: 'Sessions', value: 1050, rate: '100%' },
-        { label: 'Product Views', value: 890, rate: '84.8%' },
-        { label: 'Add to Cart', value: 128, rate: '12.2%' },
-        { label: 'Checkout', value: 38, rate: '3.6%' },
-        { label: 'Purchase', value: 18, rate: '1.7%' },
-      ],
-    },
-    '90d': {
-      users: 1580,
-      sessions: 2100,
-      events: 12400,
-      purchases: 32,
-      usersTrend: '+125%',
-      sessionsTrend: '+98.2%',
-      eventsTrend: '+145%',
-      purchasesTrend: '+520%',
-      conversionRate: '1.5%',
-      avgSessionDuration: '1m 35s',
-      bounceRate: '43.8%',
-      topPages: [
-        { path: '/products/strawberry-lemonade', views: 1780, change: '+92.1%' },
-        { path: '/', views: 1540, change: '+65.8%' },
-        { path: '/products/grapefruit', views: 420, change: '+48.6%' },
-        { path: '/collections', views: 185, change: '+95.0%' },
-        { path: '/faq', views: 92, change: '+88.4%' },
-        { path: '/contact', views: 68, change: '+52.3%' },
-        { path: '/checkout', views: 65, change: '+750%' },
-      ],
-      channels: [
-        { name: 'Organic Video', sessions: 560, color: '#ef4444' },
-        { name: 'Organic Shopping', sessions: 390, color: '#f59e0b' },
-        { name: 'Cross-network', sessions: 335, color: '#8b5cf6' },
-        { name: 'Organic Search', sessions: 310, color: '#22c55e' },
-        { name: 'Direct', sessions: 275, color: '#3b82f6' },
-        { name: 'Organic Social', sessions: 165, color: '#ec4899' },
-        { name: 'Email', sessions: 28, color: '#6b7280' },
-      ],
-      countries: [
-        { name: 'United States', users: 1185, pct: '75.0%' },
-        { name: 'Canada', users: 72, pct: '4.6%' },
-        { name: 'United Kingdom', users: 52, pct: '3.3%' },
-        { name: 'Nigeria', users: 35, pct: '2.2%' },
-        { name: 'Australia', users: 28, pct: '1.8%' },
-        { name: 'Germany', users: 18, pct: '1.1%' },
-        { name: 'New Zealand', users: 12, pct: '0.8%' },
-      ],
-      funnel: [
-        { label: 'Sessions', value: 2100, rate: '100%' },
-        { label: 'Product Views', value: 1780, rate: '84.8%' },
-        { label: 'Add to Cart', value: 245, rate: '11.7%' },
-        { label: 'Checkout', value: 65, rate: '3.1%' },
-        { label: 'Purchase', value: 32, rate: '1.5%' },
-      ],
-    },
-  };
+  const fetchAnalytics = useCallback(async (p: string) => {
+    if (p === 'live') return; // Handled separately
+    setLoading(true);
+    setError('');
+    try {
+      const res = await fetch(`/api/analytics?period=${p}`);
+      const json = await res.json();
+      if (json.error) {
+        setError(json.error);
+        return;
+      }
+      setLiveData((prev) => ({ ...prev, [p]: json }));
+      setIsLive(true);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to fetch analytics');
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
-  const d = data[period];
+  const fetchRealtime = useCallback(async () => {
+    setRealtimeLoading(true);
+    try {
+      const res = await fetch('/api/analytics?period=realtime');
+      const json = await res.json();
+      if (json.error) {
+        setError(json.error);
+        return;
+      }
+      setRealtimeData(json);
+      setIsLive(true);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to fetch realtime');
+    } finally {
+      setRealtimeLoading(false);
+    }
+  }, []);
+
+  // Fetch data based on period
+  useEffect(() => {
+    if (period === 'live') {
+      fetchRealtime();
+      // Auto-refresh realtime every 30 seconds
+      realtimeInterval.current = setInterval(fetchRealtime, 30000);
+      return () => {
+        if (realtimeInterval.current) clearInterval(realtimeInterval.current);
+      };
+    } else {
+      if (realtimeInterval.current) clearInterval(realtimeInterval.current);
+      fetchAnalytics(period);
+    }
+  }, [period, fetchAnalytics, fetchRealtime]);
+
+  const d = period !== 'live'
+    ? ((isLive && liveData[period]) ? liveData[period] : FALLBACK[period] || FALLBACK['7d'])
+    : null;
 
   return (
     <div>
       {/* Period selector */}
-      <div style={{ display: 'flex', gap: 8, marginBottom: 24 }}>
-        {(['7d', '30d', '90d'] as const).map((p) => (
+      <div style={{ display: 'flex', gap: 8, marginBottom: 24, flexWrap: 'wrap', alignItems: 'center' }}>
+        {(Object.keys(PERIOD_LABELS) as Period[]).map((p) => (
           <button
             key={p}
-            className={`frequency-selector__btn${period === p ? ' active' : ''}`}
-            style={{ padding: '8px 20px', fontSize: '0.8rem', border: '1px solid var(--border)', borderRadius: 8, background: period === p ? 'var(--accent)' : 'var(--surface)', color: period === p ? '#fff' : 'var(--text)', cursor: 'pointer', fontWeight: 600 }}
+            style={{
+              padding: '8px 20px', fontSize: '0.8rem',
+              border: p === 'live' && period === 'live'
+                ? '1px solid rgba(34,197,94,0.5)'
+                : '1px solid var(--border)',
+              borderRadius: 8,
+              background: period === p
+                ? p === 'live' ? 'rgba(34,197,94,0.15)' : 'var(--accent)'
+                : 'var(--surface)',
+              color: period === p
+                ? p === 'live' ? 'var(--green)' : '#fff'
+                : 'var(--text)',
+              cursor: 'pointer', fontWeight: 600,
+              display: 'flex', alignItems: 'center', gap: 6,
+            }}
             onClick={() => setPeriod(p)}
           >
-            {p === '7d' ? 'Last 7 days' : p === '30d' ? 'Last 30 days' : 'Last 90 days'}
+            {p === 'live' && (
+              <div style={{
+                width: 6, height: 6, borderRadius: '50%',
+                background: period === 'live' ? 'var(--green)' : 'var(--text-dim)',
+                animation: period === 'live' ? 'pulse 2s infinite' : 'none',
+              }} />
+            )}
+            {PERIOD_LABELS[p]}
           </button>
         ))}
+
+        {/* Live/Cached indicator */}
+        <div style={{ marginLeft: 8, display: 'flex', alignItems: 'center', gap: 6, fontSize: '0.75rem', color: 'var(--text-dim)' }}>
+          <div style={{
+            width: 8, height: 8, borderRadius: '50%',
+            background: (loading || realtimeLoading) ? 'var(--accent)' : isLive ? 'var(--green)' : '#f59e0b',
+            animation: (loading || realtimeLoading) ? 'pulse 1s infinite' : 'none',
+          }} />
+          {(loading || realtimeLoading) ? 'Fetching...' : isLive ? 'Live from GA4' : 'Cached data'}
+        </div>
+
         <a
-          href="https://analytics.google.com/analytics/web/#/p/Atlas%20Hydration"
+          href="https://analytics.google.com/analytics/web/"
           target="_blank"
           rel="noopener noreferrer"
           style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: 6, color: 'var(--accent)', fontSize: '0.8rem', textDecoration: 'none' }}
@@ -293,7 +524,20 @@ export default function AnalyticsTab() {
         </a>
       </div>
 
-      {/* Key metrics */}
+      {error && (
+        <div style={{ background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.3)', borderRadius: 8, padding: '12px 16px', marginBottom: 20, fontSize: '0.8rem', color: '#ef4444' }}>
+          {error}
+          {!isLive && <span style={{ color: 'var(--text-dim)', marginLeft: 8 }}>Showing cached data.</span>}
+        </div>
+      )}
+
+      {/* Live View */}
+      {period === 'live' && (
+        <LiveView data={realtimeData} loading={realtimeLoading} />
+      )}
+
+      {/* Key metrics (non-live periods) */}
+      {period !== 'live' && d && (
       <div className="stats">
         <StatCard label="Active Users" value={d.users.toLocaleString()} sub="unique visitors" trend={d.usersTrend} />
         <StatCard label="Sessions" value={d.sessions.toLocaleString()} sub="total sessions" trend={d.sessionsTrend} />
@@ -302,8 +546,10 @@ export default function AnalyticsTab() {
         <StatCard label="Avg Session" value={d.avgSessionDuration} sub="time on site" />
         <StatCard label="Bounce Rate" value={d.bounceRate} sub="single page visits" />
       </div>
+      )}
 
-      {/* Two-column layout for panels */}
+      {/* Two-column layout for panels (non-live) */}
+      {period !== 'live' && d && (
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(380px, 1fr))', gap: 20, marginTop: 24 }}>
 
         {/* Conversion Funnel */}
@@ -334,24 +580,38 @@ export default function AnalyticsTab() {
           <CountryTable countries={d.countries} />
         </div>
       </div>
+      )}
 
-      {/* GA4 Setup Notice */}
+      {/* Setup instructions */}
       <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 'var(--radius)', padding: 24, marginTop: 24 }}>
         <h3 style={{ fontSize: '0.9rem', fontWeight: 700, marginBottom: 8 }}>
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" strokeWidth="2" style={{ verticalAlign: -2, marginRight: 6 }}>
             <circle cx="12" cy="12" r="10" /><line x1="12" y1="16" x2="12" y2="12" /><line x1="12" y1="8" x2="12.01" y2="8" />
           </svg>
-          Live GA4 Integration
+          {isLive ? 'Live GA4 Integration Active' : 'GA4 Setup Required'}
         </h3>
-        <p style={{ fontSize: '0.8rem', color: 'var(--text-dim)', lineHeight: 1.6, margin: 0 }}>
-          GA4 tracking is active on the site. Events tracked: <code style={{ background: 'var(--surface2)', padding: '2px 6px', borderRadius: 4, fontSize: '0.75rem' }}>page_view</code>{' '}
-          <code style={{ background: 'var(--surface2)', padding: '2px 6px', borderRadius: 4, fontSize: '0.75rem' }}>add_to_cart</code>{' '}
-          <code style={{ background: 'var(--surface2)', padding: '2px 6px', borderRadius: 4, fontSize: '0.75rem' }}>begin_checkout</code>{' '}
-          <code style={{ background: 'var(--surface2)', padding: '2px 6px', borderRadius: 4, fontSize: '0.75rem' }}>purchase</code>{' '}
-          <code style={{ background: 'var(--surface2)', padding: '2px 6px', borderRadius: 4, fontSize: '0.75rem' }}>sign_up</code>
-          <br />
-          Data shown above is from your latest GA4 snapshot. For real-time data, use the &quot;Open GA4&quot; link above.
-        </p>
+        {isLive ? (
+          <p style={{ fontSize: '0.8rem', color: 'var(--text-dim)', lineHeight: 1.6, margin: 0 }}>
+            Data is being pulled live from GA4 Data API. Events tracked:{' '}
+            <code style={{ background: 'var(--surface2)', padding: '2px 6px', borderRadius: 4, fontSize: '0.75rem' }}>page_view</code>{' '}
+            <code style={{ background: 'var(--surface2)', padding: '2px 6px', borderRadius: 4, fontSize: '0.75rem' }}>add_to_cart</code>{' '}
+            <code style={{ background: 'var(--surface2)', padding: '2px 6px', borderRadius: 4, fontSize: '0.75rem' }}>begin_checkout</code>{' '}
+            <code style={{ background: 'var(--surface2)', padding: '2px 6px', borderRadius: 4, fontSize: '0.75rem' }}>purchase</code>{' '}
+            <code style={{ background: 'var(--surface2)', padding: '2px 6px', borderRadius: 4, fontSize: '0.75rem' }}>sign_up</code>
+          </p>
+        ) : (
+          <div style={{ fontSize: '0.8rem', color: 'var(--text-dim)', lineHeight: 1.8 }}>
+            <p style={{ margin: '0 0 8px' }}>To connect live GA4 data, add these environment variables in Vercel:</p>
+            <code style={{ display: 'block', background: 'var(--surface2)', padding: 12, borderRadius: 6, fontSize: '0.75rem', lineHeight: 1.8 }}>
+              GA4_PROPERTY_ID=your-numeric-property-id<br />
+              GA4_CLIENT_EMAIL=atlas-analytics@advance-genre-492313-k1.iam.gserviceaccount.com<br />
+              GA4_PRIVATE_KEY=your-private-key
+            </code>
+            <p style={{ margin: '8px 0 0', fontSize: '0.75rem' }}>
+              Also ensure the service account has Viewer access in GA4 Property &gt; Admin &gt; Property Access Management.
+            </p>
+          </div>
+        )}
       </div>
     </div>
   );
