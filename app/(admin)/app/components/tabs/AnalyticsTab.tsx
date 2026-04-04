@@ -26,6 +26,11 @@ interface RealtimeData {
   countries: { country: string; activeUsers: number }[];
   cities: { city: string; activeUsers: number }[];
   devices: { device: string; activeUsers: number }[];
+  sources: { source: string; activeUsers: number }[];
+  browsers: { browser: string; activeUsers: number }[];
+  operatingSystems: { os: string; activeUsers: number }[];
+  events: { event: string; city: string; country: string; count: number }[];
+  revenue: { total: number; orders: number; avgOrderValue: number };
 }
 
 /* ── Stat card component ── */
@@ -140,11 +145,106 @@ function Funnel({ steps }: { steps: { label: string; value: number; rate?: strin
   );
 }
 
+/* ── Sparkline SVG ── */
+function Sparkline({ data, width = 200, height = 40 }: { data: number[]; width?: number; height?: number }) {
+  if (data.length < 2) return null;
+  const max = Math.max(...data, 1);
+  const min = Math.min(...data, 0);
+  const range = max - min || 1;
+  const points = data.map((v, i) => {
+    const x = (i / (data.length - 1)) * width;
+    const y = height - ((v - min) / range) * (height - 4) - 2;
+    return `${x},${y}`;
+  }).join(' ');
+  const areaPoints = `0,${height} ${points} ${width},${height}`;
+  return (
+    <svg width={width} height={height} style={{ display: 'block' }}>
+      <polyline points={areaPoints} fill="rgba(34,197,94,0.1)" stroke="none" />
+      <polyline points={points} fill="none" stroke="var(--green)" strokeWidth={2} strokeLinejoin="round" strokeLinecap="round" />
+      {data.length > 0 && (
+        <circle
+          cx={(data.length - 1) / (data.length - 1) * width}
+          cy={height - ((data[data.length - 1] - min) / range) * (height - 4) - 2}
+          r={3} fill="var(--green)"
+        />
+      )}
+    </svg>
+  );
+}
+
+/* ── Event descriptions ── */
+const EVENT_LABELS: Record<string, { label: string; icon: string; color: string }> = {
+  'page_view': { label: 'viewed a page', icon: '👁', color: 'var(--accent)' },
+  'add_to_cart': { label: 'added to cart', icon: '🛒', color: '#f59e0b' },
+  'begin_checkout': { label: 'started checkout', icon: '💳', color: '#8b5cf6' },
+  'purchase': { label: 'completed a purchase', icon: '✅', color: 'var(--green)' },
+  'sign_up': { label: 'signed up', icon: '📧', color: '#ec4899' },
+  'session_start': { label: 'started a session', icon: '🚀', color: 'var(--accent)' },
+  'first_visit': { label: 'visited for the first time', icon: '✨', color: '#22c55e' },
+  'scroll': { label: 'scrolled the page', icon: '📜', color: 'var(--text-dim)' },
+  'click': { label: 'clicked a link', icon: '👆', color: 'var(--accent)' },
+};
+
+/* ── Source icons/colors ── */
+const SOURCE_STYLES: Record<string, { color: string }> = {
+  'google': { color: '#4285f4' },
+  'instagram': { color: '#e4405f' },
+  'tiktok': { color: '#000000' },
+  'facebook': { color: '#1877f2' },
+  'youtube': { color: '#ff0000' },
+  'twitter': { color: '#1da1f2' },
+  'bing': { color: '#008373' },
+  '(direct)': { color: 'var(--accent)' },
+  '(not set)': { color: 'var(--text-dim)' },
+};
+
+/* ── Donut chart ── */
+function DonutChart({ items, size = 120 }: { items: { label: string; value: number; color: string }[]; size?: number }) {
+  const total = items.reduce((s, i) => s + i.value, 0) || 1;
+  const r = size / 2 - 8;
+  const cx = size / 2;
+  const cy = size / 2;
+  let cumAngle = -90;
+
+  return (
+    <div style={{ display: 'flex', alignItems: 'center', gap: 16, flexWrap: 'wrap' }}>
+      <svg width={size} height={size} style={{ flexShrink: 0 }}>
+        {items.map((item) => {
+          const angle = (item.value / total) * 360;
+          const startAngle = cumAngle;
+          cumAngle += angle;
+          const endAngle = cumAngle;
+          const largeArc = angle > 180 ? 1 : 0;
+          const rad = (a: number) => (a * Math.PI) / 180;
+          const x1 = cx + r * Math.cos(rad(startAngle));
+          const y1 = cy + r * Math.sin(rad(startAngle));
+          const x2 = cx + r * Math.cos(rad(endAngle));
+          const y2 = cy + r * Math.sin(rad(endAngle));
+          const d = `M ${cx} ${cy} L ${x1} ${y1} A ${r} ${r} 0 ${largeArc} 1 ${x2} ${y2} Z`;
+          return <path key={item.label} d={d} fill={item.color} opacity={0.8} />;
+        })}
+        <circle cx={cx} cy={cy} r={r * 0.55} fill="var(--surface)" />
+        <text x={cx} y={cy - 4} textAnchor="middle" fill="var(--text)" fontSize={16} fontWeight={700}>{total}</text>
+        <text x={cx} y={cy + 12} textAnchor="middle" fill="var(--text-dim)" fontSize={9}>users</text>
+      </svg>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+        {items.map((item) => (
+          <div key={item.label} style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: '0.75rem' }}>
+            <div style={{ width: 8, height: 8, borderRadius: 2, background: item.color, flexShrink: 0 }} />
+            <span style={{ color: 'var(--text-dim)' }}>{item.label}</span>
+            <span style={{ fontWeight: 600 }}>{item.value}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 /* ── Live View component ── */
-function LiveView({ data, loading }: { data: RealtimeData | null; loading: boolean }) {
+function LiveView({ data, loading, sparklineData }: { data: RealtimeData | null; loading: boolean; sparklineData: number[] }) {
   return (
     <div style={{ marginBottom: 24 }}>
-      {/* Active users hero */}
+      {/* Active users hero + sparkline */}
       <div style={{
         background: 'linear-gradient(135deg, rgba(34,197,94,0.1) 0%, rgba(59,130,246,0.1) 100%)',
         border: '1px solid rgba(34,197,94,0.3)',
@@ -178,10 +278,48 @@ function LiveView({ data, loading }: { data: RealtimeData | null; loading: boole
         }}>
           {data?.activeUsers ?? '--'}
         </div>
-        <div style={{ fontSize: '0.75rem', color: 'var(--text-dim)', marginTop: 8 }}>
+        <div style={{ fontSize: '0.75rem', color: 'var(--text-dim)', marginTop: 8, marginBottom: 12 }}>
           visitors on your site
         </div>
+        {/* Sparkline */}
+        {sparklineData.length >= 2 && (
+          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 8 }}>
+            <span style={{ fontSize: '0.65rem', color: 'var(--text-dim)' }}>Last 30 min</span>
+            <Sparkline data={sparklineData} width={280} height={40} />
+          </div>
+        )}
       </div>
+
+      {/* Revenue ticker */}
+      {data?.revenue && data.revenue.orders > 0 && (
+        <div style={{
+          display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 16,
+          marginBottom: 20,
+        }}>
+          <div style={{
+            background: 'linear-gradient(135deg, rgba(34,197,94,0.08) 0%, rgba(34,197,94,0.02) 100%)',
+            border: '1px solid rgba(34,197,94,0.2)',
+            borderRadius: 'var(--radius)', padding: '20px 16px', textAlign: 'center',
+          }}>
+            <div style={{ fontSize: '0.7rem', color: 'var(--text-dim)', textTransform: 'uppercase', letterSpacing: 1, marginBottom: 6 }}>Today&apos;s Revenue</div>
+            <div style={{ fontSize: '1.8rem', fontWeight: 800, color: 'var(--green)' }}>${data.revenue.total.toFixed(2)}</div>
+          </div>
+          <div style={{
+            background: 'var(--surface)', border: '1px solid var(--border)',
+            borderRadius: 'var(--radius)', padding: '20px 16px', textAlign: 'center',
+          }}>
+            <div style={{ fontSize: '0.7rem', color: 'var(--text-dim)', textTransform: 'uppercase', letterSpacing: 1, marginBottom: 6 }}>Orders Today</div>
+            <div style={{ fontSize: '1.8rem', fontWeight: 800, color: 'var(--text)' }}>{data.revenue.orders}</div>
+          </div>
+          <div style={{
+            background: 'var(--surface)', border: '1px solid var(--border)',
+            borderRadius: 'var(--radius)', padding: '20px 16px', textAlign: 'center',
+          }}>
+            <div style={{ fontSize: '0.7rem', color: 'var(--text-dim)', textTransform: 'uppercase', letterSpacing: 1, marginBottom: 6 }}>Avg Order Value</div>
+            <div style={{ fontSize: '1.8rem', fontWeight: 800, color: 'var(--text)' }}>${data.revenue.avgOrderValue.toFixed(2)}</div>
+          </div>
+        </div>
+      )}
 
       {/* Three columns: active pages + active countries + active cities */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 20 }}>
@@ -298,6 +436,113 @@ function LiveView({ data, loading }: { data: RealtimeData | null; loading: boole
           )}
         </div>
       </div>
+
+      {/* Row 2: Traffic Sources + Browser/OS */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 20, marginTop: 20 }}>
+        {/* Traffic Sources */}
+        <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 'var(--radius)', padding: 24 }}>
+          <h3 style={{ fontSize: '0.9rem', fontWeight: 700, marginBottom: 12 }}>Traffic Sources</h3>
+          {data?.sources?.length ? (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+              {data.sources.map((s) => {
+                const style = SOURCE_STYLES[s.source.toLowerCase()] || { color: 'var(--text-dim)' };
+                return (
+                  <div key={s.source} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.8rem' }}>
+                    <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                      <div style={{ width: 8, height: 8, borderRadius: '50%', background: style.color, flexShrink: 0 }} />
+                      {s.source}
+                    </span>
+                    <span style={{
+                      fontWeight: 700, color: 'var(--accent)',
+                      background: 'rgba(59,130,246,0.1)', padding: '2px 10px', borderRadius: 12, fontSize: '0.75rem',
+                    }}>
+                      {s.activeUsers}
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+          ) : (
+            <div style={{ fontSize: '0.8rem', color: 'var(--text-dim)' }}>
+              {loading ? 'Loading...' : 'No active sources'}
+            </div>
+          )}
+        </div>
+
+        {/* Browser breakdown */}
+        <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 'var(--radius)', padding: 24 }}>
+          <h3 style={{ fontSize: '0.9rem', fontWeight: 700, marginBottom: 16 }}>Browsers</h3>
+          {data?.browsers?.length ? (
+            <DonutChart items={data.browsers.map((b, i) => ({
+              label: b.browser,
+              value: b.activeUsers,
+              color: ['#4285f4', '#ef4444', '#f59e0b', '#22c55e', '#8b5cf6', '#ec4899'][i % 6],
+            }))} />
+          ) : (
+            <div style={{ fontSize: '0.8rem', color: 'var(--text-dim)' }}>
+              {loading ? 'Loading...' : 'No browser data'}
+            </div>
+          )}
+        </div>
+
+        {/* OS breakdown */}
+        <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 'var(--radius)', padding: 24 }}>
+          <h3 style={{ fontSize: '0.9rem', fontWeight: 700, marginBottom: 16 }}>Operating Systems</h3>
+          {data?.operatingSystems?.length ? (
+            <DonutChart items={data.operatingSystems.map((o, i) => ({
+              label: o.os,
+              value: o.activeUsers,
+              color: ['#3b82f6', '#22c55e', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899'][i % 6],
+            }))} />
+          ) : (
+            <div style={{ fontSize: '0.8rem', color: 'var(--text-dim)' }}>
+              {loading ? 'Loading...' : 'No OS data'}
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Live Event Feed */}
+      {data?.events?.length ? (
+        <div style={{
+          background: 'var(--surface)', border: '1px solid var(--border)',
+          borderRadius: 'var(--radius)', padding: 24, marginTop: 20,
+        }}>
+          <h3 style={{ fontSize: '0.9rem', fontWeight: 700, marginBottom: 4 }}>Live Event Feed</h3>
+          <p style={{ fontSize: '0.75rem', color: 'var(--text-dim)', marginBottom: 16 }}>Recent activity on your site</p>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 10, maxHeight: 300, overflowY: 'auto' }}>
+            {data.events
+              .filter((e) => !['scroll', 'user_engagement'].includes(e.event))
+              .map((e, i) => {
+                const info = EVENT_LABELS[e.event] || { label: e.event, icon: '📊', color: 'var(--text-dim)' };
+                const location = [e.city, e.country].filter(Boolean).join(', ');
+                return (
+                  <div key={`${e.event}-${e.city}-${i}`} style={{
+                    display: 'flex', alignItems: 'center', gap: 12,
+                    padding: '10px 14px',
+                    background: 'var(--surface2)', borderRadius: 8,
+                    fontSize: '0.8rem',
+                    borderLeft: `3px solid ${info.color}`,
+                  }}>
+                    <span style={{ fontSize: '1.1rem', flexShrink: 0 }}>{info.icon}</span>
+                    <div style={{ flex: 1 }}>
+                      <span style={{ color: 'var(--text)' }}>
+                        Someone{location ? ` in ${location}` : ''}{' '}
+                        <span style={{ color: info.color, fontWeight: 600 }}>{info.label}</span>
+                      </span>
+                    </div>
+                    <span style={{
+                      fontSize: '0.7rem', color: 'var(--text-dim)',
+                      background: 'var(--surface)', padding: '2px 8px', borderRadius: 8,
+                    }}>
+                      x{e.count}
+                    </span>
+                  </div>
+                );
+              })}
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 }
@@ -475,6 +720,7 @@ export default function AnalyticsTab() {
   const [error, setError] = useState('');
   const [lastUpdated, setLastUpdated] = useState('');
   const realtimeInterval = useRef<ReturnType<typeof setInterval> | null>(null);
+  const [sparklineHistory, setSparklineHistory] = useState<number[]>([]);
 
   const fetchAnalytics = useCallback(async (p: string) => {
     if (p === 'live') return; // Handled separately
@@ -509,6 +755,8 @@ export default function AnalyticsTab() {
       setRealtimeData(json);
       setIsLive(true);
       setLastUpdated(new Date().toLocaleTimeString());
+      // Track sparkline history (max 60 points = 30 min at 30s intervals)
+      setSparklineHistory((prev) => [...prev.slice(-59), json.activeUsers ?? 0]);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to fetch realtime');
     } finally {
@@ -602,7 +850,7 @@ export default function AnalyticsTab() {
       {/* Live View */}
       {period === 'live' && (
         <>
-          <LiveView data={realtimeData} loading={realtimeLoading} />
+          <LiveView data={realtimeData} loading={realtimeLoading} sparklineData={sparklineHistory} />
           {realtimeData?.countries?.length ? (
             <div style={{ marginBottom: 20 }}>
               <WorldMap countries={realtimeData.countries} />
