@@ -87,75 +87,88 @@ export async function GET(request: Request) {
   // Handle realtime request
   if (period === 'realtime') {
     try {
+      const safeRealtime = (body: Record<string, unknown>) =>
+        fetchGA4Realtime(body).catch((e) => {
+          console.error('Realtime query failed:', e instanceof Error ? e.message : e);
+          return { rows: [] };
+        });
+      const safeReport = (body: Record<string, unknown>) =>
+        fetchGA4Report(body).catch((e) => {
+          console.error('Report query failed:', e instanceof Error ? e.message : e);
+          return { rows: [] };
+        });
+
       const [
         activeUsers, realtimePages, realtimeCountries, realtimeCities,
-        realtimeDevices, realtimeSources, realtimeBrowsers, realtimeOS,
+        realtimeDevices, todaySources, todayBrowsers, realtimeOS,
         realtimeEvents, todayRevenue,
       ] = await Promise.all([
-        fetchGA4Realtime({
+        safeRealtime({
           metrics: [{ name: 'activeUsers' }],
         }),
-        fetchGA4Realtime({
+        safeRealtime({
           dimensions: [{ name: 'unifiedScreenName' }],
           metrics: [{ name: 'activeUsers' }],
           orderBys: [{ metric: { metricName: 'activeUsers' }, desc: true }],
           limit: 10,
         }),
-        fetchGA4Realtime({
+        safeRealtime({
           dimensions: [{ name: 'country' }],
           metrics: [{ name: 'activeUsers' }],
           orderBys: [{ metric: { metricName: 'activeUsers' }, desc: true }],
           limit: 10,
         }),
-        fetchGA4Realtime({
+        safeRealtime({
           dimensions: [{ name: 'city' }],
           metrics: [{ name: 'activeUsers' }],
           orderBys: [{ metric: { metricName: 'activeUsers' }, desc: true }],
           limit: 10,
         }),
-        fetchGA4Realtime({
+        safeRealtime({
           dimensions: [{ name: 'deviceCategory' }],
           metrics: [{ name: 'activeUsers' }],
           orderBys: [{ metric: { metricName: 'activeUsers' }, desc: true }],
           limit: 10,
         }),
-        // Traffic sources
-        fetchGA4Realtime({
+        // Traffic sources (not realtime — use today's report)
+        safeReport({
+          dateRanges: [{ startDate: 'today', endDate: 'today' }],
           dimensions: [{ name: 'sessionSource' }],
           metrics: [{ name: 'activeUsers' }],
           orderBys: [{ metric: { metricName: 'activeUsers' }, desc: true }],
           limit: 10,
         }),
-        // Browsers
-        fetchGA4Realtime({
+        // Browsers (not realtime — use today's report)
+        safeReport({
+          dateRanges: [{ startDate: 'today', endDate: 'today' }],
           dimensions: [{ name: 'browser' }],
           metrics: [{ name: 'activeUsers' }],
           orderBys: [{ metric: { metricName: 'activeUsers' }, desc: true }],
           limit: 10,
         }),
-        // Operating systems
-        fetchGA4Realtime({
+        // Operating systems (platform is valid for realtime)
+        safeRealtime({
           dimensions: [{ name: 'platform' }],
           metrics: [{ name: 'activeUsers' }],
           orderBys: [{ metric: { metricName: 'activeUsers' }, desc: true }],
           limit: 10,
         }),
         // Recent events
-        fetchGA4Realtime({
+        safeRealtime({
           dimensions: [{ name: 'eventName' }, { name: 'city' }, { name: 'country' }],
           metrics: [{ name: 'eventCount' }],
           orderBys: [{ metric: { metricName: 'eventCount' }, desc: true }],
           limit: 15,
         }),
-        // Today's revenue (from regular report, not realtime)
-        fetchGA4Report({
+        // Today's revenue
+        safeReport({
           dateRanges: [{ startDate: 'today', endDate: 'today' }],
           metrics: [
             { name: 'totalRevenue' },
             { name: 'ecommercePurchases' },
             { name: 'averagePurchaseRevenue' },
           ],
-        }).catch(() => null),
+        }),
       ]);
 
       const totalActive = Number(activeUsers.rows?.[0]?.metricValues?.[0]?.value || 0);
@@ -182,12 +195,12 @@ export async function GET(request: Request) {
 
       type RTRow = { dimensionValues?: { value: string }[]; metricValues?: { value: string }[] };
 
-      const sources = (realtimeSources.rows || []).map((r: RTRow) => ({
+      const sources = (todaySources.rows || []).map((r: RTRow) => ({
         source: r.dimensionValues?.[0]?.value || '(direct)',
         activeUsers: Number(r.metricValues?.[0]?.value || 0),
       }));
 
-      const browsers = (realtimeBrowsers.rows || []).map((r: RTRow) => ({
+      const browsers = (todayBrowsers.rows || []).map((r: RTRow) => ({
         browser: r.dimensionValues?.[0]?.value || '',
         activeUsers: Number(r.metricValues?.[0]?.value || 0),
       }));
