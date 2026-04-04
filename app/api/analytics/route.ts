@@ -6,6 +6,7 @@ const CLIENT_EMAIL = process.env.GA4_CLIENT_EMAIL || '';
 const PRIVATE_KEY = (process.env.GA4_PRIVATE_KEY || '').replace(/\\n/g, '\n');
 
 const GA4_API = `https://analyticsdata.googleapis.com/v1beta/properties/${PROPERTY_ID}:runReport`;
+const GA4_REALTIME_API = `https://analyticsdata.googleapis.com/v1beta/properties/${PROPERTY_ID}:runRealtimeReport`;
 
 function getAuth() {
   return new GoogleAuth({
@@ -17,15 +18,20 @@ function getAuth() {
   });
 }
 
-async function fetchGA4Report(body: Record<string, unknown>) {
+async function getAccessToken() {
   const auth = getAuth();
   const client = await auth.getClient();
   const token = await client.getAccessToken();
+  return token.token;
+}
+
+async function fetchGA4Report(body: Record<string, unknown>) {
+  const token = await getAccessToken();
 
   const res = await fetch(GA4_API, {
     method: 'POST',
     headers: {
-      Authorization: `Bearer ${token.token}`,
+      Authorization: `Bearer ${token}`,
       'Content-Type': 'application/json',
     },
     body: JSON.stringify(body),
@@ -39,11 +45,24 @@ async function fetchGA4Report(body: Record<string, unknown>) {
   return res.json();
 }
 
-function sumMetric(report: { rows?: { metricValues?: { value: string }[] }[] }, index = 0): number {
-  if (!report.rows) return 0;
-  return report.rows.reduce((sum: number, row: { metricValues?: { value: string }[] }) => {
-    return sum + Number(row.metricValues?.[index]?.value || 0);
-  }, 0);
+async function fetchGA4Realtime(body: Record<string, unknown>) {
+  const token = await getAccessToken();
+
+  const res = await fetch(GA4_REALTIME_API, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(body),
+  });
+
+  if (!res.ok) {
+    const text = await res.text();
+    throw new Error(`GA4 Realtime API error ${res.status}: ${text}`);
+  }
+
+  return res.json();
 }
 
 function getDimensionRows(report: { rows?: { dimensionValues?: { value: string }[]; metricValues?: { value: string }[] }[] }) {
@@ -65,9 +84,61 @@ export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const period = searchParams.get('period') || '7d';
 
-  const days = period === '90d' ? 90 : period === '30d' ? 30 : 7;
-  const dateRange = { startDate: `${days}daysAgo`, endDate: 'today' };
-  const prevDateRange = { startDate: `${days * 2}daysAgo`, endDate: `${days + 1}daysAgo` };
+  // Handle realtime request
+  if (period === 'realtime') {
+    try {
+      const [activeUsers, realtimePages, realtimeCountries] = await Promise.all([
+        fetchGA4Realtime({
+          metrics: [{ name: 'activeUsers' }],
+        }),
+        fetchGA4Realtime({
+          dimensions: [{ name: 'unifiedScreenName' }],
+          metrics: [{ name: 'activeUsers' }],
+          orderBys: [{ metric: { metricName: 'activeUsers' }, desc: true }],
+          limit: 10,
+        }),
+        fetchGA4Realtime({
+          dimensions: [{ name: 'country' }],
+          metrics: [{ name: 'activeUsers' }],
+          orderBys: [{ metric: { metricName: 'activeUsers' }, desc: true }],
+          limit: 10,
+        }),
+      ]);
+
+      const totalActive = Number(activeUsers.rows?.[0]?.metricValues?.[0]?.value || 0);
+
+      const pages = (realtimePages.rows || []).map((r: { dimensionValues?: { value: string }[]; metricValues?: { value: string }[] }) => ({
+        page: r.dimensionValues?.[0]?.value || '/',
+        activeUsers: Number(r.metricValues?.[0]?.value || 0),
+      }));
+
+      const countries = (realtimeCountries.rows || []).map((r: { dimensionValues?: { value: string }[]; metricValues?: { value: string }[] }) => ({
+        country: r.dimensionValues?.[0]?.value || '',
+        activeUsers: Number(r.metricValues?.[0]?.value || 0),
+      }));
+
+      return NextResponse.json({
+        realtime: true,
+        activeUsers: totalActive,
+        pages,
+        countries,
+      });
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      console.error('GA4 Realtime API error:', message);
+      return NextResponse.json({ error: message }, { status: 500 });
+    }
+  }
+
+  // Handle today: startDate = endDate = today, compare with yesterday
+  const isToday = period === 'today';
+  const days = isToday ? 0 : period === '90d' ? 90 : period === '30d' ? 30 : 7;
+  const dateRange = isToday
+    ? { startDate: 'today', endDate: 'today' }
+    : { startDate: `${days}daysAgo`, endDate: 'today' };
+  const prevDateRange = isToday
+    ? { startDate: 'yesterday', endDate: 'yesterday' }
+    : { startDate: `${days * 2}daysAgo`, endDate: `${days + 1}daysAgo` };
 
   try {
     // Run all queries in parallel

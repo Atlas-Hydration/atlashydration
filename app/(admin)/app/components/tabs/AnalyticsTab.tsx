@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 
 /* ── Types ── */
 interface AnalyticsData {
@@ -17,6 +17,12 @@ interface AnalyticsData {
   channels: { name: string; sessions: number; color: string }[];
   countries: { name: string; users: number; pct: string }[];
   funnel: { label: string; value: number; rate: string }[];
+}
+
+interface RealtimeData {
+  activeUsers: number;
+  pages: { page: string; activeUsers: number }[];
+  countries: { country: string; activeUsers: number }[];
 }
 
 /* ── Stat card component ── */
@@ -131,8 +137,140 @@ function Funnel({ steps }: { steps: { label: string; value: number; rate?: strin
   );
 }
 
+/* ── Live View component ── */
+function LiveView({ data, loading }: { data: RealtimeData | null; loading: boolean }) {
+  return (
+    <div style={{ marginBottom: 24 }}>
+      {/* Active users hero */}
+      <div style={{
+        background: 'linear-gradient(135deg, rgba(34,197,94,0.1) 0%, rgba(59,130,246,0.1) 100%)',
+        border: '1px solid rgba(34,197,94,0.3)',
+        borderRadius: 'var(--radius)',
+        padding: '32px 24px',
+        textAlign: 'center',
+        marginBottom: 20,
+        position: 'relative',
+        overflow: 'hidden',
+      }}>
+        <div style={{
+          position: 'absolute', top: 12, right: 16,
+          display: 'flex', alignItems: 'center', gap: 6,
+          fontSize: '0.7rem', color: 'var(--green)',
+        }}>
+          <div style={{
+            width: 8, height: 8, borderRadius: '50%', background: 'var(--green)',
+            animation: 'pulse 2s infinite',
+          }} />
+          LIVE
+        </div>
+        <div style={{ fontSize: '0.8rem', color: 'var(--text-dim)', marginBottom: 8, textTransform: 'uppercase', letterSpacing: 1 }}>
+          Active Users Right Now
+        </div>
+        <div style={{
+          fontSize: '4rem', fontWeight: 800, lineHeight: 1,
+          background: 'linear-gradient(135deg, var(--green), var(--accent))',
+          WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
+          opacity: loading ? 0.5 : 1,
+          transition: 'opacity 0.3s',
+        }}>
+          {data?.activeUsers ?? '--'}
+        </div>
+        <div style={{ fontSize: '0.75rem', color: 'var(--text-dim)', marginTop: 8 }}>
+          visitors on your site
+        </div>
+      </div>
+
+      {/* Two columns: active pages + active countries */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 20 }}>
+        <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 'var(--radius)', padding: 24 }}>
+          <h3 style={{ fontSize: '0.9rem', fontWeight: 700, marginBottom: 12 }}>
+            Active Pages
+          </h3>
+          {data?.pages?.length ? (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+              {data.pages.map((p) => (
+                <div key={p.page} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.8rem' }}>
+                  <span style={{ fontFamily: 'monospace', color: 'var(--text-dim)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', flex: 1, marginRight: 12 }}>
+                    {p.page}
+                  </span>
+                  <span style={{
+                    fontWeight: 700, color: 'var(--green)',
+                    background: 'rgba(34,197,94,0.1)', padding: '2px 10px', borderRadius: 12, fontSize: '0.75rem',
+                  }}>
+                    {p.activeUsers}
+                  </span>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div style={{ fontSize: '0.8rem', color: 'var(--text-dim)' }}>
+              {loading ? 'Loading...' : 'No active pages'}
+            </div>
+          )}
+        </div>
+
+        <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 'var(--radius)', padding: 24 }}>
+          <h3 style={{ fontSize: '0.9rem', fontWeight: 700, marginBottom: 12 }}>
+            Active Countries
+          </h3>
+          {data?.countries?.length ? (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+              {data.countries.map((c) => (
+                <div key={c.country} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.8rem' }}>
+                  <span>{c.country}</span>
+                  <span style={{
+                    fontWeight: 700, color: 'var(--accent)',
+                    background: 'rgba(59,130,246,0.1)', padding: '2px 10px', borderRadius: 12, fontSize: '0.75rem',
+                  }}>
+                    {c.activeUsers}
+                  </span>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div style={{ fontSize: '0.8rem', color: 'var(--text-dim)' }}>
+              {loading ? 'Loading...' : 'No active countries'}
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 /* ── Fallback hardcoded data ── */
 const FALLBACK: Record<string, AnalyticsData> = {
+  'today': {
+    users: 18, sessions: 22, purchases: 1,
+    usersTrend: '+28.6%', sessionsTrend: '+37.5%', purchasesTrend: '+100%',
+    conversionRate: '4.5%', avgSessionDuration: '1m 55s', bounceRate: '31.8%',
+    topPages: [
+      { path: '/products/strawberry-lemonade', views: 19, change: '+46.2%' },
+      { path: '/', views: 16, change: '+33.3%' },
+      { path: '/products/grapefruit', views: 5, change: '+25.0%' },
+      { path: '/checkout', views: 2, change: '+100%' },
+    ],
+    channels: [
+      { name: 'Direct', sessions: 8, color: '#3b82f6' },
+      { name: 'Organic Search', sessions: 5, color: '#22c55e' },
+      { name: 'Organic Social', sessions: 4, color: '#ec4899' },
+      { name: 'Organic Video', sessions: 3, color: '#ef4444' },
+      { name: 'Email', sessions: 2, color: '#6b7280' },
+    ],
+    countries: [
+      { name: 'United States', users: 14, pct: '77.8%' },
+      { name: 'Canada', users: 2, pct: '11.1%' },
+      { name: 'United Kingdom', users: 1, pct: '5.6%' },
+      { name: 'Australia', users: 1, pct: '5.6%' },
+    ],
+    funnel: [
+      { label: 'Sessions', value: 22, rate: '100%' },
+      { label: 'Page Views', value: 42, rate: '190.9%' },
+      { label: 'Add to Cart', value: 4, rate: '18.2%' },
+      { label: 'Checkout', value: 2, rate: '9.1%' },
+      { label: 'Purchase', value: 1, rate: '4.5%' },
+    ],
+  },
   '7d': {
     users: 260, sessions: 301, purchases: 7,
     usersTrend: '+68.8%', sessionsTrend: '+55.2%', purchasesTrend: '+600%',
@@ -252,15 +390,29 @@ const FALLBACK: Record<string, AnalyticsData> = {
   },
 };
 
+/* ── Period labels ── */
+type Period = 'live' | 'today' | '7d' | '30d' | '90d';
+const PERIOD_LABELS: Record<Period, string> = {
+  live: 'Live',
+  today: 'Today',
+  '7d': 'Last 7 days',
+  '30d': 'Last 30 days',
+  '90d': 'Last 90 days',
+};
+
 /* ── Main Analytics Tab ── */
 export default function AnalyticsTab() {
-  const [period, setPeriod] = useState<'7d' | '30d' | '90d'>('7d');
+  const [period, setPeriod] = useState<Period>('live');
   const [liveData, setLiveData] = useState<Record<string, AnalyticsData>>({});
+  const [realtimeData, setRealtimeData] = useState<RealtimeData | null>(null);
   const [isLive, setIsLive] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [realtimeLoading, setRealtimeLoading] = useState(false);
   const [error, setError] = useState('');
+  const realtimeInterval = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const fetchAnalytics = useCallback(async (p: string) => {
+    if (p === 'live') return; // Handled separately
     setLoading(true);
     setError('');
     try {
@@ -279,25 +431,75 @@ export default function AnalyticsTab() {
     }
   }, []);
 
-  // Fetch on mount and period change
-  useEffect(() => {
-    fetchAnalytics(period);
-  }, [period, fetchAnalytics]);
+  const fetchRealtime = useCallback(async () => {
+    setRealtimeLoading(true);
+    try {
+      const res = await fetch('/api/analytics?period=realtime');
+      const json = await res.json();
+      if (json.error) {
+        setError(json.error);
+        return;
+      }
+      setRealtimeData(json);
+      setIsLive(true);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to fetch realtime');
+    } finally {
+      setRealtimeLoading(false);
+    }
+  }, []);
 
-  const d = (isLive && liveData[period]) ? liveData[period] : FALLBACK[period];
+  // Fetch data based on period
+  useEffect(() => {
+    if (period === 'live') {
+      fetchRealtime();
+      // Auto-refresh realtime every 30 seconds
+      realtimeInterval.current = setInterval(fetchRealtime, 30000);
+      return () => {
+        if (realtimeInterval.current) clearInterval(realtimeInterval.current);
+      };
+    } else {
+      if (realtimeInterval.current) clearInterval(realtimeInterval.current);
+      fetchAnalytics(period);
+    }
+  }, [period, fetchAnalytics, fetchRealtime]);
+
+  const d = period !== 'live'
+    ? ((isLive && liveData[period]) ? liveData[period] : FALLBACK[period] || FALLBACK['7d'])
+    : null;
 
   return (
     <div>
       {/* Period selector */}
       <div style={{ display: 'flex', gap: 8, marginBottom: 24, flexWrap: 'wrap', alignItems: 'center' }}>
-        {(['7d', '30d', '90d'] as const).map((p) => (
+        {(Object.keys(PERIOD_LABELS) as Period[]).map((p) => (
           <button
             key={p}
-            className={`frequency-selector__btn${period === p ? ' active' : ''}`}
-            style={{ padding: '8px 20px', fontSize: '0.8rem', border: '1px solid var(--border)', borderRadius: 8, background: period === p ? 'var(--accent)' : 'var(--surface)', color: period === p ? '#fff' : 'var(--text)', cursor: 'pointer', fontWeight: 600 }}
+            style={{
+              padding: '8px 20px', fontSize: '0.8rem',
+              border: p === 'live' && period === 'live'
+                ? '1px solid rgba(34,197,94,0.5)'
+                : '1px solid var(--border)',
+              borderRadius: 8,
+              background: period === p
+                ? p === 'live' ? 'rgba(34,197,94,0.15)' : 'var(--accent)'
+                : 'var(--surface)',
+              color: period === p
+                ? p === 'live' ? 'var(--green)' : '#fff'
+                : 'var(--text)',
+              cursor: 'pointer', fontWeight: 600,
+              display: 'flex', alignItems: 'center', gap: 6,
+            }}
             onClick={() => setPeriod(p)}
           >
-            {p === '7d' ? 'Last 7 days' : p === '30d' ? 'Last 30 days' : 'Last 90 days'}
+            {p === 'live' && (
+              <div style={{
+                width: 6, height: 6, borderRadius: '50%',
+                background: period === 'live' ? 'var(--green)' : 'var(--text-dim)',
+                animation: period === 'live' ? 'pulse 2s infinite' : 'none',
+              }} />
+            )}
+            {PERIOD_LABELS[p]}
           </button>
         ))}
 
@@ -305,10 +507,10 @@ export default function AnalyticsTab() {
         <div style={{ marginLeft: 8, display: 'flex', alignItems: 'center', gap: 6, fontSize: '0.75rem', color: 'var(--text-dim)' }}>
           <div style={{
             width: 8, height: 8, borderRadius: '50%',
-            background: loading ? 'var(--accent)' : isLive ? 'var(--green)' : '#f59e0b',
-            animation: loading ? 'pulse 1s infinite' : 'none',
+            background: (loading || realtimeLoading) ? 'var(--accent)' : isLive ? 'var(--green)' : '#f59e0b',
+            animation: (loading || realtimeLoading) ? 'pulse 1s infinite' : 'none',
           }} />
-          {loading ? 'Fetching...' : isLive ? 'Live from GA4' : 'Cached data'}
+          {(loading || realtimeLoading) ? 'Fetching...' : isLive ? 'Live from GA4' : 'Cached data'}
         </div>
 
         <a
@@ -329,7 +531,13 @@ export default function AnalyticsTab() {
         </div>
       )}
 
-      {/* Key metrics */}
+      {/* Live View */}
+      {period === 'live' && (
+        <LiveView data={realtimeData} loading={realtimeLoading} />
+      )}
+
+      {/* Key metrics (non-live periods) */}
+      {period !== 'live' && d && (
       <div className="stats">
         <StatCard label="Active Users" value={d.users.toLocaleString()} sub="unique visitors" trend={d.usersTrend} />
         <StatCard label="Sessions" value={d.sessions.toLocaleString()} sub="total sessions" trend={d.sessionsTrend} />
@@ -338,8 +546,10 @@ export default function AnalyticsTab() {
         <StatCard label="Avg Session" value={d.avgSessionDuration} sub="time on site" />
         <StatCard label="Bounce Rate" value={d.bounceRate} sub="single page visits" />
       </div>
+      )}
 
-      {/* Two-column layout for panels */}
+      {/* Two-column layout for panels (non-live) */}
+      {period !== 'live' && d && (
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(380px, 1fr))', gap: 20, marginTop: 24 }}>
 
         {/* Conversion Funnel */}
@@ -370,6 +580,7 @@ export default function AnalyticsTab() {
           <CountryTable countries={d.countries} />
         </div>
       </div>
+      )}
 
       {/* Setup instructions */}
       <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 'var(--radius)', padding: 24, marginTop: 24 }}>
