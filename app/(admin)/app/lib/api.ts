@@ -288,6 +288,7 @@ export async function fetchShopInfo(): Promise<ShopInfo> {
 // FETCH CUSTOMERS (Admin API only)
 // =============================================
 export async function fetchCustomers(): Promise<CustomerNode[]> {
+  if (!USE_WORKER) return []; // Customers require Admin API, not available via Storefront
   const data = await gql(`{
     customers(first: 50, sortKey: UPDATED_AT, reverse: true) {
       edges {
@@ -310,6 +311,7 @@ export async function fetchCustomers(): Promise<CustomerNode[]> {
 // FETCH ORDERS (Admin API only)
 // =============================================
 export async function fetchOrders(): Promise<OrderNode[]> {
+  if (!USE_WORKER) return []; // Orders require Admin API, not available via Storefront
   const data = await gql(`{
     orders(first: 50, sortKey: CREATED_AT, reverse: true) {
       edges {

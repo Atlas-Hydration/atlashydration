@@ -9812,23 +9812,36 @@ img {
     border-right: none; border-bottom: 1px solid var(--border);
     max-height: 0; overflow: hidden; transition: max-height 0.3s ease;
   }
-  .sidebar.open { max-height: 500px; }
+  .sidebar.open { max-height: 600px; overflow-y: auto; }
   .sidebar__nav { padding: 8px 10px; }
-  .sidebar__link { padding: 8px 12px; }
+  .sidebar__link { padding: 8px 12px; font-size: 0.8rem; }
+  .sidebar__footer { padding: 12px 10px; }
+  .sidebar__footer-actions { flex-wrap: wrap; }
   .sidebar-toggle { display: block; }
   .app__main { height: auto; overflow-y: auto; }
-  .dashboard { padding: 20px 16px; }
-  .topbar { padding: 0 16px; }
-  .stats { grid-template-columns: 1fr 1fr; }
-  .table { font-size: 0.75rem; }
-  .table th, .table td { padding: 10px 12px; }
+  .dashboard { padding: 16px 12px; }
+  .topbar { padding: 0 12px; gap: 8px; }
+  .topbar__title { font-size: 0.85rem; }
+  .topbar__status { font-size: 0.55rem; max-width: 140px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .stats-grid, .stats { grid-template-columns: 1fr 1fr; gap: 10px; }
+  .stat-card { padding: 16px 14px; }
+  .stat-card__label { font-size: 0.6rem; }
+  .stat-card__value { font-size: 1.4rem; }
+  .stat-card__sub { font-size: 0.65rem; }
+  .table { font-size: 0.72rem; }
+  .table th, .table td { padding: 8px 10px; }
+  .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
   .seo-header { flex-direction: column; align-items: flex-start; }
   .orders-header { flex-direction: column; align-items: flex-start; }
+  .sidebar__brand { padding: 12px 16px; }
+  .sidebar__brand-logo { max-width: 80px; }
+  .sidebar__section-label { padding: 8px 12px 4px; }
 }
 @media (max-width: 480px) {
-  .stats { grid-template-columns: 1fr; }
+  .stats-grid, .stats { grid-template-columns: 1fr; }
   .login-card { padding: 32px 24px; }
   .login-card--premium { padding: 36px 28px; border-radius: 20px; }
   .login-card__logo-img { width: 150px; }
   .orders-stats { grid-template-columns: 1fr; }
+  .topbar__status { display: none; }
 }
