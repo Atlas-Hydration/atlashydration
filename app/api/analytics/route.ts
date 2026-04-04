@@ -87,7 +87,11 @@ export async function GET(request: Request) {
   // Handle realtime request
   if (period === 'realtime') {
     try {
-      const [activeUsers, realtimePages, realtimeCountries, realtimeCities, realtimeDevices] = await Promise.all([
+      const [
+        activeUsers, realtimePages, realtimeCountries, realtimeCities,
+        realtimeDevices, realtimeSources, realtimeBrowsers, realtimeOS,
+        realtimeEvents, todayRevenue,
+      ] = await Promise.all([
         fetchGA4Realtime({
           metrics: [{ name: 'activeUsers' }],
         }),
@@ -115,6 +119,43 @@ export async function GET(request: Request) {
           orderBys: [{ metric: { metricName: 'activeUsers' }, desc: true }],
           limit: 10,
         }),
+        // Traffic sources
+        fetchGA4Realtime({
+          dimensions: [{ name: 'sessionSource' }],
+          metrics: [{ name: 'activeUsers' }],
+          orderBys: [{ metric: { metricName: 'activeUsers' }, desc: true }],
+          limit: 10,
+        }),
+        // Browsers
+        fetchGA4Realtime({
+          dimensions: [{ name: 'browser' }],
+          metrics: [{ name: 'activeUsers' }],
+          orderBys: [{ metric: { metricName: 'activeUsers' }, desc: true }],
+          limit: 10,
+        }),
+        // Operating systems
+        fetchGA4Realtime({
+          dimensions: [{ name: 'operatingSystem' }],
+          metrics: [{ name: 'activeUsers' }],
+          orderBys: [{ metric: { metricName: 'activeUsers' }, desc: true }],
+          limit: 10,
+        }),
+        // Recent events
+        fetchGA4Realtime({
+          dimensions: [{ name: 'eventName' }, { name: 'city' }, { name: 'country' }],
+          metrics: [{ name: 'eventCount' }],
+          orderBys: [{ metric: { metricName: 'eventCount' }, desc: true }],
+          limit: 15,
+        }),
+        // Today's revenue (from regular report, not realtime)
+        fetchGA4Report({
+          dateRanges: [{ startDate: 'today', endDate: 'today' }],
+          metrics: [
+            { name: 'totalRevenue' },
+            { name: 'ecommercePurchases' },
+            { name: 'averagePurchaseRevenue' },
+          ],
+        }).catch(() => null),
       ]);
 
       const totalActive = Number(activeUsers.rows?.[0]?.metricValues?.[0]?.value || 0);
@@ -139,6 +180,37 @@ export async function GET(request: Request) {
         activeUsers: Number(r.metricValues?.[0]?.value || 0),
       }));
 
+      type RTRow = { dimensionValues?: { value: string }[]; metricValues?: { value: string }[] };
+
+      const sources = (realtimeSources.rows || []).map((r: RTRow) => ({
+        source: r.dimensionValues?.[0]?.value || '(direct)',
+        activeUsers: Number(r.metricValues?.[0]?.value || 0),
+      }));
+
+      const browsers = (realtimeBrowsers.rows || []).map((r: RTRow) => ({
+        browser: r.dimensionValues?.[0]?.value || '',
+        activeUsers: Number(r.metricValues?.[0]?.value || 0),
+      }));
+
+      const operatingSystems = (realtimeOS.rows || []).map((r: RTRow) => ({
+        os: r.dimensionValues?.[0]?.value || '',
+        activeUsers: Number(r.metricValues?.[0]?.value || 0),
+      }));
+
+      const events = (realtimeEvents.rows || []).map((r: RTRow) => ({
+        event: r.dimensionValues?.[0]?.value || '',
+        city: r.dimensionValues?.[1]?.value || '',
+        country: r.dimensionValues?.[2]?.value || '',
+        count: Number(r.metricValues?.[0]?.value || 0),
+      }));
+
+      const revRow = todayRevenue?.rows?.[0];
+      const revenue = {
+        total: Number(revRow?.metricValues?.[0]?.value || 0),
+        orders: Number(revRow?.metricValues?.[1]?.value || 0),
+        avgOrderValue: Number(revRow?.metricValues?.[2]?.value || 0),
+      };
+
       return NextResponse.json({
         realtime: true,
         activeUsers: totalActive,
@@ -146,6 +218,11 @@ export async function GET(request: Request) {
         countries,
         cities,
         devices,
+        sources,
+        browsers,
+        operatingSystems,
+        events,
+        revenue,
       });
     } catch (err) {
       const message = err instanceof Error ? err.message : String(err);
