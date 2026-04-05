@@ -282,7 +282,9 @@ function renderFullSlide(slide: Slide): HTMLCanvasElement {
 }
 
 // ─── SLIDE THUMBNAIL — renders full-res then scales via drawImage ───
-function SlidePreview({ slide, onClick }: { slide: Slide; onClick: () => void }) {
+function SlidePreview({ slide, onClick, topic, deckNum, slideNum }: {
+  slide: Slide; onClick: () => void; topic: string; deckNum: number; slideNum: number;
+}) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   useEffect(() => {
     const c = canvasRef.current;
@@ -298,17 +300,40 @@ function SlidePreview({ slide, onClick }: { slide: Slide; onClick: () => void })
   }, [slide]);
 
   return (
-    <canvas ref={canvasRef} onClick={onClick} style={{
-      width: THUMB_W, height: THUMB_H,
-      borderRadius: 8, flexShrink: 0, cursor: 'pointer',
-      border: '1px solid #272727', transition: 'transform 0.15s, border-color 0.15s',
-    }} onMouseEnter={e => { e.currentTarget.style.borderColor = ACCENT; e.currentTarget.style.transform = 'scale(1.03)'; }}
-       onMouseLeave={e => { e.currentTarget.style.borderColor = '#272727'; e.currentTarget.style.transform = 'scale(1)'; }} />
+    <div style={{ position: 'relative', flexShrink: 0 }}>
+      <canvas ref={canvasRef} onClick={onClick} style={{
+        width: THUMB_W, height: THUMB_H, display: 'block',
+        borderRadius: 8, cursor: 'pointer',
+        border: '1px solid #272727', transition: 'transform 0.15s, border-color 0.15s',
+      }} onMouseEnter={e => { e.currentTarget.style.borderColor = ACCENT; e.currentTarget.style.transform = 'scale(1.03)'; }}
+         onMouseLeave={e => { e.currentTarget.style.borderColor = '#272727'; e.currentTarget.style.transform = 'scale(1)'; }} />
+      <button
+        onClick={async (e) => { e.stopPropagation(); await exportSlide(slide, topic, deckNum, slideNum); }}
+        title={`Download slide ${slideNum}`}
+        style={{
+          position: 'absolute', bottom: 6, right: 6, width: 28, height: 28,
+          borderRadius: 6, border: 'none', cursor: 'pointer',
+          background: 'rgba(0,0,0,0.6)', color: '#fff',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          opacity: 0.7, transition: 'opacity 0.15s',
+        }}
+        onMouseEnter={e => { e.currentTarget.style.opacity = '1'; }}
+        onMouseLeave={e => { e.currentTarget.style.opacity = '0.7'; }}
+      >
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+          <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
+          <polyline points="7 10 12 15 17 10" />
+          <line x1="12" y1="15" x2="12" y2="3" />
+        </svg>
+      </button>
+    </div>
   );
 }
 
 // ─── FULL-SIZE MODAL ───
-function SlideModal({ slide, onClose }: { slide: Slide | null; onClose: () => void }) {
+function SlideModal({ slide, onClose, topic, deckNum, slideNum }: {
+  slide: Slide | null; onClose: () => void; topic: string; deckNum: number; slideNum: number;
+}) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   useEffect(() => {
     if (!slide) return;
@@ -324,29 +349,52 @@ function SlideModal({ slide, onClose }: { slide: Slide | null; onClose: () => vo
   return (
     <div onClick={onClose} style={{
       position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.9)', zIndex: 1000,
-      display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer',
-      overflow: 'auto', padding: 40,
+      display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+      cursor: 'pointer', overflow: 'auto', padding: 20, gap: 16,
     }}>
       <canvas ref={canvasRef} style={{
-        width: W * 0.5, height: H * 0.5, borderRadius: 12,
-        boxShadow: '0 40px 100px rgba(0,0,0,0.7)',
+        width: Math.min(W * 0.5, window.innerWidth - 40),
+        height: 'auto', aspectRatio: `${W}/${H}`,
+        borderRadius: 12, boxShadow: '0 40px 100px rgba(0,0,0,0.7)',
       }} onClick={e => e.stopPropagation()} />
+      <button
+        onClick={async (e) => { e.stopPropagation(); await exportSlide(slide, topic, deckNum, slideNum); }}
+        style={{
+          padding: '10px 24px', borderRadius: 8, border: 'none',
+          background: ACCENT, color: '#fff', fontWeight: 600, fontSize: '0.85rem',
+          cursor: 'pointer', fontFamily: 'inherit',
+        }}
+      >Download This Slide</button>
     </div>
   );
 }
 
 // ─── EXPORT ───
+function slideFilename(topic: string, deckNum: number, slideNum: number): string {
+  const slug = topic.toLowerCase().replace(/[^a-z0-9]+/g, '-').slice(0, 30);
+  return `atlas-${slug}-${String(deckNum).padStart(2, '0')}-slide-${String(slideNum).padStart(2, '0')}.jpg`;
+}
+
 async function exportSlide(slide: Slide, topic: string, deckNum: number, slideNum: number): Promise<void> {
   await document.fonts.ready;
   const c = renderFullSlide(slide);
-  const dataUrl = c.toDataURL('image/jpeg', 0.95);
-  const a = document.createElement('a');
-  const slug = topic.toLowerCase().replace(/[^a-z0-9]+/g, '-').slice(0, 30);
-  a.href = dataUrl;
-  a.download = `atlas-${slug}-${String(deckNum).padStart(2, '0')}-slide-${String(slideNum).padStart(2, '0')}.jpg`;
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
+  return new Promise<void>((resolve) => {
+    c.toBlob((blob) => {
+      if (!blob) { resolve(); return; }
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = slideFilename(topic, deckNum, slideNum);
+      a.style.display = 'none';
+      document.body.appendChild(a);
+      a.click();
+      setTimeout(() => {
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        resolve();
+      }, 100);
+    }, 'image/jpeg', 0.95);
+  });
 }
 
 // ─── MAIN COMPONENT ───
@@ -358,7 +406,7 @@ export default function ContentMachineTab() {
   const [downloading, setDownloading] = useState(false);
   const [lastGenerated, setLastGenerated] = useState('');
   const [focusTopics, setFocusTopics] = useState<string[]>(TOPIC_CATEGORIES.slice(0, 5));
-  const [modalSlide, setModalSlide] = useState<Slide | null>(null);
+  const [modalSlide, setModalSlide] = useState<{ slide: Slide; topic: string; deckNum: number; slideNum: number } | null>(null);
   const cancelRef = useRef(false);
   const today = new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
 
@@ -436,7 +484,13 @@ export default function ContentMachineTab() {
 
   return (
     <div style={{ padding: '0 4px' }}>
-      <SlideModal slide={modalSlide} onClose={() => setModalSlide(null)} />
+      <SlideModal
+        slide={modalSlide?.slide ?? null}
+        topic={modalSlide?.topic ?? ''}
+        deckNum={modalSlide?.deckNum ?? 0}
+        slideNum={modalSlide?.slideNum ?? 0}
+        onClose={() => setModalSlide(null)}
+      />
 
       {/* Stats */}
       <div className="stats-grid" style={{ marginBottom: 24 }}>
@@ -516,7 +570,8 @@ export default function ContentMachineTab() {
               </div>
               <div style={thumbStrip} className="hide-scrollbar">
                 {deck.slides.map((slide, si) => (
-                  <SlidePreview key={si} slide={slide} onClick={() => setModalSlide(slide)} />
+                  <SlidePreview key={si} slide={slide} topic={deck.topic} deckNum={di + 1} slideNum={si + 1}
+                    onClick={() => setModalSlide({ slide, topic: deck.topic, deckNum: di + 1, slideNum: si + 1 })} />
                 ))}
               </div>
               <div style={{ display: 'flex', gap: 8, marginTop: 12, flexWrap: 'wrap' }}>
