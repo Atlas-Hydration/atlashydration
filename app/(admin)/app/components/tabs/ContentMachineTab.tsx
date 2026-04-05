@@ -26,6 +26,7 @@ const TOPIC_CATEGORIES = [
 const W = 1080, H = 1920;
 const THUMB_W = 200, THUMB_H = 356;
 const ACCENT = '#C8514A';
+const DOMAIN = 'atlas-hydration.com';
 
 function wrapLines(ctx: CanvasRenderingContext2D, text: string, maxW: number): string[] {
   const words = text.split(' ');
@@ -51,9 +52,10 @@ function drawRotatedRect(ctx: CanvasRenderingContext2D, x: number, y: number, w:
   ctx.restore();
 }
 
-function drawGrain(ctx: CanvasRenderingContext2D) {
-  ctx.fillStyle = 'rgba(255,255,255,0.015)';
-  for (let i = 0; i < 8000; i++) {
+function drawGrain(ctx: CanvasRenderingContext2D, count = 6000) {
+  for (let i = 0; i < count; i++) {
+    const a = 0.01 + Math.random() * 0.02;
+    ctx.fillStyle = `rgba(255,255,255,${a})`;
     ctx.fillRect(Math.random() * W, Math.random() * H, 1, 1);
   }
 }
@@ -63,209 +65,202 @@ function drawSlide(ctx: CanvasRenderingContext2D, slide: Slide) {
 
   if (slide.type === 'hook') {
     // ── HOOK SLIDE ──
-    // 1. Base fill
-    ctx.fillStyle = '#0D0D0D';
+    ctx.fillStyle = '#080810';
     ctx.fillRect(0, 0, W, H);
 
-    // 2. Radial glow
-    const glow = ctx.createRadialGradient(540, 960, 0, 540, 960, 900);
-    glow.addColorStop(0, 'rgba(200,81,74,0.25)');
+    // Large radial glow
+    const glow = ctx.createRadialGradient(540, 800, 0, 540, 800, 900);
+    glow.addColorStop(0, 'rgba(200,81,74,0.22)');
+    glow.addColorStop(0.5, 'rgba(200,81,74,0.06)');
     glow.addColorStop(1, 'rgba(0,0,0,0)');
     ctx.fillStyle = glow;
     ctx.fillRect(0, 0, W, H);
 
-    // 3. Geometric background rectangles
-    drawRotatedRect(ctx, 650, 200, 600, 600, 35, 'rgba(200,81,74,0.06)');
-    drawRotatedRect(ctx, -100, 1100, 500, 500, 20, 'rgba(200,81,74,0.04)');
-    drawRotatedRect(ctx, 800, 1400, 300, 300, 45, 'rgba(255,255,255,0.02)');
+    // Background geometric shapes
+    drawRotatedRect(ctx, 600, 100, 700, 700, 35, 'rgba(200,81,74,0.05)');
+    drawRotatedRect(ctx, -150, 1000, 550, 550, 20, 'rgba(200,81,74,0.035)');
+    drawRotatedRect(ctx, 750, 1350, 400, 400, -15, 'rgba(255,255,255,0.015)');
 
-    // 4. Thin horizontal accent line
-    ctx.strokeStyle = ACCENT;
-    ctx.lineWidth = 2;
-    ctx.beginPath();
-    ctx.moveTo(80, 820);
-    ctx.lineTo(200, 820);
-    ctx.stroke();
+    // Accent line
+    ctx.fillStyle = ACCENT;
+    ctx.fillRect(80, 700, 80, 3);
 
-    // 5. Headline — large, bold, left-aligned
+    // Headline
     ctx.textAlign = 'left';
-    ctx.font = '800 108px "DM Sans", sans-serif';
+    ctx.font = '800 96px "DM Sans", sans-serif';
     ctx.fillStyle = '#FFFFFF';
-    // Split into lines at ~18 chars
-    const hookWords = slide.headline.split(' ');
-    const hookLines: string[] = [];
-    let hLine = '';
-    for (const w of hookWords) {
-      if ((hLine + w).length > 18 && hLine) { hookLines.push(hLine.trim()); hLine = w + ' '; }
-      else { hLine += w + ' '; }
-    }
-    if (hLine.trim()) hookLines.push(hLine.trim());
-    hookLines.slice(0, 2).forEach((l, i) => ctx.fillText(l, 80, 920 + i * 130));
+    const hookLines = wrapLines(ctx, slide.headline, W - 160);
+    hookLines.slice(0, 3).forEach((l, i) => ctx.fillText(l, 80, 810 + i * 120));
 
-    // 6. Atlas Hydration bottom
-    ctx.textAlign = 'center';
-    ctx.font = '400 32px "DM Mono", monospace';
-    ctx.fillStyle = 'rgba(255,255,255,0.35)';
-    ctx.fillText('Atlas Hydration', 540, 1800);
+    // Subtle bottom bar
+    ctx.fillStyle = 'rgba(200,81,74,0.15)';
+    ctx.fillRect(0, H - 200, W, 200);
 
-    // 7. Noise grain
+    // Brand lockup bottom
+    ctx.textAlign = 'left';
+    ctx.font = '700 28px "DM Sans", sans-serif';
+    ctx.fillStyle = 'rgba(255,255,255,0.5)';
+    ctx.fillText('Atlas Hydration', 80, H - 80);
+
+    ctx.textAlign = 'right';
+    ctx.font = '400 24px "DM Mono", monospace';
+    ctx.fillStyle = 'rgba(255,255,255,0.3)';
+    ctx.fillText(DOMAIN, W - 80, H - 80);
+
     drawGrain(ctx);
 
   } else if (slide.type === 'cta') {
     // ── CTA SLIDE ──
-    // 1. Base fill
-    ctx.fillStyle = '#0F0F0F';
+    ctx.fillStyle = '#0A0A0E';
     ctx.fillRect(0, 0, W, H);
 
-    // 2. Radial glow
-    const glow = ctx.createRadialGradient(540, 900, 0, 540, 900, 600);
-    glow.addColorStop(0, 'rgba(200,81,74,0.2)');
+    // Radial glow
+    const glow = ctx.createRadialGradient(540, 750, 0, 540, 750, 650);
+    glow.addColorStop(0, 'rgba(200,81,74,0.18)');
     glow.addColorStop(1, 'transparent');
     ctx.fillStyle = glow;
     ctx.fillRect(0, 0, W, H);
 
-    // 3. Abstract background circles
-    ctx.lineWidth = 1;
-    [[400, 'rgba(200,81,74,0.08)'], [300, 'rgba(200,81,74,0.12)'], [200, 'rgba(255,255,255,0.05)']].forEach(([r, c]) => {
-      ctx.strokeStyle = c as string;
-      ctx.lineWidth = 1;
+    // Concentric circles
+    [500, 380, 260, 160].forEach((r, i) => {
+      ctx.strokeStyle = `rgba(200,81,74,${0.04 + i * 0.025})`;
+      ctx.lineWidth = 0.8;
       ctx.beginPath();
-      ctx.arc(540, 700, r as number, 0, Math.PI * 2);
+      ctx.arc(540, 700, r, 0, Math.PI * 2);
       ctx.stroke();
     });
-    ctx.strokeStyle = 'rgba(200,81,74,0.05)';
-    ctx.lineWidth = 0.5;
-    ctx.beginPath();
-    ctx.arc(540, 700, 500, 0, Math.PI * 2);
-    ctx.stroke();
 
-    // 4. ATLAS text — manually spaced letters
+    // ATLAS text with letter spacing
     ctx.textAlign = 'center';
-    ctx.font = '800 120px "DM Sans", sans-serif';
+    ctx.font = '800 110px "DM Sans", sans-serif';
     ctx.fillStyle = '#FFFFFF';
-    const atlasLetters = 'ATLAS'.split('');
-    const letterSpacing = 30;
-    const totalW = atlasLetters.reduce((sum, l) => sum + ctx.measureText(l).width, 0) + letterSpacing * (atlasLetters.length - 1);
-    let lx = 540 - totalW / 2;
-    for (const letter of atlasLetters) {
+    const letters = 'ATLAS'.split('');
+    const sp = 28;
+    const tw = letters.reduce((s, l) => s + ctx.measureText(l).width, 0) + sp * 4;
+    let lx = 540 - tw / 2;
+    for (const letter of letters) {
       const lw = ctx.measureText(letter).width;
-      ctx.fillText(letter, lx + lw / 2, 760);
-      lx += lw + letterSpacing;
+      ctx.fillText(letter, lx + lw / 2, 720);
+      lx += lw + sp;
     }
 
-    // 5. Thin accent line
-    ctx.strokeStyle = ACCENT;
-    ctx.lineWidth = 1.5;
-    ctx.beginPath();
-    ctx.moveTo(440, 810);
-    ctx.lineTo(640, 810);
-    ctx.stroke();
-
-    // 6. Headline
-    ctx.font = '500 52px "DM Sans", sans-serif';
-    ctx.fillStyle = 'rgba(255,255,255,0.85)';
-    ctx.textAlign = 'center';
-    ctx.fillText(slide.headline, 540, 920);
-
-    // 7. Body
-    ctx.font = '300 36px "DM Sans", sans-serif';
-    ctx.fillStyle = '#666666';
-    ctx.fillText('Zero Sugar Electrolytes', 540, 990);
-
-    // 8. URL
-    ctx.font = '400 32px "DM Mono", monospace';
+    // Accent line
     ctx.fillStyle = ACCENT;
-    ctx.fillText('atlashydration.com', 540, 1100);
+    ctx.fillRect(540 - 40, 780, 80, 2.5);
 
-    // 9. Stat pills
+    // Headline
+    ctx.font = '500 48px "DM Sans", sans-serif';
+    ctx.fillStyle = 'rgba(255,255,255,0.9)';
+    ctx.fillText(slide.headline, 540, 880);
+
+    // Subtitle
+    ctx.font = '300 32px "DM Sans", sans-serif';
+    ctx.fillStyle = '#777';
+    ctx.fillText('Zero Sugar Electrolytes', 540, 950);
+
+    // URL
+    ctx.font = '400 30px "DM Mono", monospace';
+    ctx.fillStyle = ACCENT;
+    ctx.fillText(DOMAIN, 540, 1060);
+
+    // Stat pills
     const pills = ['500mg K+', '200mg Mg', '600mg Na', '0g Sugar'];
-    const pillW = 200, pillH = 70, pillR = 35, pillGap = 20;
-    const totalPW = pills.length * pillW + (pills.length - 1) * pillGap;
-    const psx = (W - totalPW) / 2;
-    ctx.font = '500 26px "DM Sans", sans-serif';
+    const pw = 195, ph = 64, pr = 32, pg = 16;
+    const tpw = pills.length * pw + (pills.length - 1) * pg;
+    const psx = (W - tpw) / 2;
+    ctx.font = '500 24px "DM Sans", sans-serif';
     pills.forEach((p, i) => {
-      const px = psx + i * (pillW + pillGap);
-      ctx.fillStyle = 'rgba(255,255,255,0.05)';
-      ctx.beginPath();
-      ctx.roundRect(px, 1220, pillW, pillH, pillR);
-      ctx.fill();
-      ctx.strokeStyle = 'rgba(255,255,255,0.1)';
+      const px = psx + i * (pw + pg);
+      ctx.fillStyle = 'rgba(255,255,255,0.04)';
+      ctx.beginPath(); ctx.roundRect(px, 1180, pw, ph, pr); ctx.fill();
+      ctx.strokeStyle = 'rgba(255,255,255,0.08)';
       ctx.lineWidth = 1;
-      ctx.beginPath();
-      ctx.roundRect(px, 1220, pillW, pillH, pillR);
-      ctx.stroke();
-      ctx.fillStyle = '#888888';
+      ctx.beginPath(); ctx.roundRect(px, 1180, pw, ph, pr); ctx.stroke();
+      ctx.fillStyle = 'rgba(255,255,255,0.6)';
       ctx.textAlign = 'center';
-      ctx.fillText(p, px + pillW / 2, 1220 + 44);
+      ctx.fillText(p, px + pw / 2, 1180 + 40);
     });
+
+    // Bottom tagline
+    ctx.font = '300 26px "DM Sans", sans-serif';
+    ctx.fillStyle = 'rgba(255,255,255,0.25)';
+    ctx.textAlign = 'center';
+    ctx.fillText('Electrolytes. Vitamins. Zero Sugar.', 540, H - 100);
 
     drawGrain(ctx);
 
   } else {
     // ── CONTENT SLIDES (2-7) ──
     const isLight = slide.slide_number % 2 === 0;
+    const bg = isLight ? '#F4F1EC' : '#111318';
+    const blockFill = isLight ? 'rgba(200,81,74,0.06)' : 'rgba(200,81,74,0.10)';
+    const bigNumColor = isLight ? 'rgba(0,0,0,0.035)' : 'rgba(255,255,255,0.025)';
+    const headColor = isLight ? '#141414' : '#F0EDE8';
+    const bodyColor = isLight ? '#6B6B6B' : '#777';
+    const counterColor = isLight ? '#C0C0C0' : '#3A3A3A';
+    const wordmarkColor = isLight ? '#D0D0D0' : '#2A2A2A';
+    const accentBar = isLight ? ACCENT : '#D4604F';
 
-    // Colors
-    const bg = isLight ? '#F5F2EE' : '#161820';
-    const blockFill = isLight ? 'rgba(200,81,74,0.08)' : 'rgba(200,81,74,0.12)';
-    const bigNumColor = isLight ? 'rgba(0,0,0,0.04)' : 'rgba(255,255,255,0.03)';
-    const headColor = isLight ? '#111111' : '#F0EDE8';
-    const bodyColor = isLight ? '#777777' : '#666666';
-    const counterColor = isLight ? '#BBBBBB' : '#444444';
-    const wordmarkColor = isLight ? '#CCCCCC' : '#333333';
-
-    // 1. Base fill
     ctx.fillStyle = bg;
     ctx.fillRect(0, 0, W, H);
 
-    // 2. Left color block
+    // Left color block
     ctx.fillStyle = blockFill;
-    ctx.fillRect(0, 0, 180, H);
+    ctx.fillRect(0, 0, 160, H);
 
-    // 3. Vertical accent bar
-    ctx.fillStyle = ACCENT;
-    ctx.fillRect(0, 280, 6, 900);
+    // Accent bar
+    ctx.fillStyle = accentBar;
+    ctx.fillRect(0, 250, 6, 950);
 
-    // 4. Massive background number
+    // Background number
     ctx.textAlign = 'right';
-    ctx.font = '900 520px "DM Sans", sans-serif';
+    ctx.font = '900 500px "DM Sans", sans-serif';
     ctx.fillStyle = bigNumColor;
-    ctx.fillText(sn, 1020, 1700);
+    ctx.fillText(sn, 1020, 1680);
 
-    // 5. Top decorative line cluster
-    ctx.strokeStyle = ACCENT;
-    ctx.lineWidth = 1;
-    ctx.beginPath(); ctx.moveTo(220, 240); ctx.lineTo(320, 240); ctx.stroke();
-    ctx.strokeStyle = 'rgba(200,81,74,0.4)';
-    ctx.beginPath(); ctx.moveTo(220, 252); ctx.lineTo(280, 252); ctx.stroke();
-    ctx.strokeStyle = 'rgba(200,81,74,0.2)';
-    ctx.beginPath(); ctx.moveTo(220, 264); ctx.lineTo(250, 264); ctx.stroke();
+    // Line cluster
+    ctx.strokeStyle = accentBar;
+    ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.moveTo(200, 230); ctx.lineTo(320, 230); ctx.stroke();
+    ctx.globalAlpha = 0.5;
+    ctx.beginPath(); ctx.moveTo(200, 244); ctx.lineTo(270, 244); ctx.stroke();
+    ctx.globalAlpha = 0.25;
+    ctx.beginPath(); ctx.moveTo(200, 258); ctx.lineTo(240, 258); ctx.stroke();
+    ctx.globalAlpha = 1;
 
-    // 6. Slide counter top-right
+    // Counter
     ctx.textAlign = 'right';
-    ctx.font = '400 28px "DM Mono", monospace';
+    ctx.font = '400 26px "DM Mono", monospace';
     ctx.fillStyle = counterColor;
     ctx.fillText(`${sn} / 08`, 1000, 100);
 
-    // 7. Headline
+    // Headline
     ctx.textAlign = 'left';
-    ctx.font = '700 88px "DM Sans", sans-serif';
+    ctx.font = '700 82px "DM Sans", sans-serif';
     ctx.fillStyle = headColor;
-    const headLines = wrapLines(ctx, slide.headline, 820);
-    let hy = 680;
-    headLines.forEach(l => { ctx.fillText(l, 220, hy); hy += 106; });
+    const hl = wrapLines(ctx, slide.headline, 780);
+    let hy = 640;
+    hl.forEach(l => { ctx.fillText(l, 200, hy); hy += 100; });
 
-    // 8. Body text
-    ctx.font = '300 40px "DM Sans", sans-serif';
+    // Body
+    ctx.font = '300 38px "DM Sans", sans-serif';
     ctx.fillStyle = bodyColor;
-    const bodyLines = wrapLines(ctx, slide.body, 820);
+    const bl = wrapLines(ctx, slide.body, 780);
     let by = hy + 40;
-    bodyLines.forEach(l => { ctx.fillText(l, 220, by); by += 64; });
+    bl.forEach(l => { ctx.fillText(l, 200, by); by += 60; });
 
-    // 9. Atlas wordmark bottom-left
-    ctx.font = '600 30px "DM Sans", sans-serif';
+    // Bottom brand bar
+    ctx.fillStyle = isLight ? 'rgba(0,0,0,0.02)' : 'rgba(255,255,255,0.015)';
+    ctx.fillRect(0, H - 160, W, 160);
+
+    ctx.font = '600 28px "DM Sans", sans-serif';
     ctx.fillStyle = wordmarkColor;
-    ctx.fillText('Atlas', 220, 1840);
+    ctx.textAlign = 'left';
+    ctx.fillText('Atlas Hydration', 200, H - 70);
+
+    ctx.font = '400 22px "DM Mono", monospace';
+    ctx.textAlign = 'right';
+    ctx.fillText(DOMAIN, 1000, H - 72);
   }
 }
 
@@ -378,21 +373,35 @@ function slideFilename(topic: string, deckNum: number, slideNum: number): string
 async function exportSlide(slide: Slide, topic: string, deckNum: number, slideNum: number): Promise<void> {
   await document.fonts.ready;
   const c = renderFullSlide(slide);
+  const filename = slideFilename(topic, deckNum, slideNum);
+
   return new Promise<void>((resolve) => {
-    c.toBlob((blob) => {
+    c.toBlob(async (blob) => {
       if (!blob) { resolve(); return; }
+
+      // Try Web Share API first (mobile — saves to Photos/share sheet)
+      if (navigator.share && navigator.canShare) {
+        try {
+          const file = new File([blob], filename, { type: 'image/jpeg' });
+          if (navigator.canShare({ files: [file] })) {
+            await navigator.share({ files: [file] });
+            resolve();
+            return;
+          }
+        } catch {
+          // User cancelled or share failed — fall through to download
+        }
+      }
+
+      // Fallback: blob URL download
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = slideFilename(topic, deckNum, slideNum);
+      a.download = filename;
       a.style.display = 'none';
       document.body.appendChild(a);
       a.click();
-      setTimeout(() => {
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-        resolve();
-      }, 100);
+      setTimeout(() => { document.body.removeChild(a); URL.revokeObjectURL(url); resolve(); }, 150);
     }, 'image/jpeg', 0.95);
   });
 }
