@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useCallback, useRef } from 'react';
 import dynamic from 'next/dynamic';
-import DateRangeSlider from '../DateRangeSlider';
 
 const LiveMap = dynamic(() => import('../LiveMap'), { ssr: false });
 
@@ -953,24 +952,17 @@ const FALLBACK: Record<string, AnalyticsData> = {
 };
 
 /* ── Period labels ── */
-type Period = 'live' | 'today' | 'custom';
-const DEFAULT_RANGE_DAYS = 7;
-
-function rangeKey(start: Date, end: Date): string {
-  const fmt = (d: Date) => d.toISOString().slice(0, 10);
-  return `${fmt(start)}_${fmt(end)}`;
-}
+type Period = 'live' | 'today' | '7d' | '30d' | '90d';
+const RANGE_OPTIONS: { value: Exclude<Period, 'live' | 'today'>; label: string }[] = [
+  { value: '7d', label: 'Last 7 days' },
+  { value: '30d', label: 'Last 30 days' },
+  { value: '90d', label: 'Last 90 days' },
+];
 
 /* ── Main Analytics Tab ── */
 export default function AnalyticsTab() {
   const [period, setPeriod] = useState<Period>('live');
-  const [customRange, setCustomRange] = useState<{ start: Date; end: Date }>(() => {
-    const end = new Date();
-    end.setHours(0, 0, 0, 0);
-    const start = new Date(end);
-    start.setDate(start.getDate() - DEFAULT_RANGE_DAYS);
-    return { start, end };
-  });
+  const [rangeChoice, setRangeChoice] = useState<Exclude<Period, 'live' | 'today'>>('7d');
   const [liveData, setLiveData] = useState<Record<string, AnalyticsData>>({});
   const [realtimeData, setRealtimeData] = useState<RealtimeData | null>(null);
   const [isLive, setIsLive] = useState(false);
@@ -981,25 +973,18 @@ export default function AnalyticsTab() {
   const realtimeInterval = useRef<ReturnType<typeof setInterval> | null>(null);
   const [sparklineHistory, setSparklineHistory] = useState<number[]>([]);
 
-  const fetchAnalytics = useCallback(async (p: Period, range?: { start: Date; end: Date }) => {
+  const fetchAnalytics = useCallback(async (p: Period) => {
     if (p === 'live') return; // Handled separately
     setLoading(true);
     setError('');
     try {
-      let url = `/api/analytics?period=${p}&t=${Date.now()}`;
-      let cacheKey: string = p;
-      if (p === 'custom' && range) {
-        const fmt = (d: Date) => d.toISOString().slice(0, 10);
-        url += `&startDate=${fmt(range.start)}&endDate=${fmt(range.end)}`;
-        cacheKey = rangeKey(range.start, range.end);
-      }
-      const res = await fetch(url, { cache: 'no-store' });
+      const res = await fetch(`/api/analytics?period=${p}&t=${Date.now()}`, { cache: 'no-store' });
       const json = await res.json();
       if (json.error) {
         setError(json.error);
         return;
       }
-      setLiveData((prev) => ({ ...prev, [cacheKey]: json }));
+      setLiveData((prev) => ({ ...prev, [p]: json }));
       setIsLive(true);
       setLastUpdated(new Date().toLocaleTimeString());
     } catch (err) {
@@ -1041,13 +1026,12 @@ export default function AnalyticsTab() {
       };
     } else {
       if (realtimeInterval.current) clearInterval(realtimeInterval.current);
-      fetchAnalytics(period, period === 'custom' ? customRange : undefined);
+      fetchAnalytics(period);
     }
-  }, [period, customRange, fetchAnalytics, fetchRealtime]);
+  }, [period, fetchAnalytics, fetchRealtime]);
 
-  const cacheKey = period === 'custom' ? rangeKey(customRange.start, customRange.end) : period;
   const d = period !== 'live'
-    ? ((isLive && liveData[cacheKey]) ? liveData[cacheKey] : FALLBACK['today'] || FALLBACK['7d'])
+    ? ((isLive && liveData[period]) ? liveData[period] : FALLBACK[period] || FALLBACK['7d'])
     : null;
 
   return (
@@ -1087,28 +1071,38 @@ export default function AnalyticsTab() {
           Today
         </button>
 
-        {/* Date range slider */}
-        <div
-          onClick={() => {
-            if (period !== 'custom') setPeriod('custom');
+        {/* Range dropdown */}
+        <select
+          value={period === 'live' || period === 'today' ? rangeChoice : period}
+          onChange={(e) => {
+            const val = e.target.value as Exclude<Period, 'live' | 'today'>;
+            setRangeChoice(val);
+            setPeriod(val);
           }}
           style={{
-            flex: 1,
-            minWidth: 360,
-            opacity: period === 'custom' ? 1 : 0.65,
-            cursor: period === 'custom' ? 'default' : 'pointer',
-            transition: 'opacity 0.2s',
+            padding: '8px 14px',
+            fontSize: '0.8rem',
+            border: (period !== 'live' && period !== 'today') ? '1px solid var(--accent)' : '1px solid var(--border)',
+            borderRadius: 8,
+            background: (period !== 'live' && period !== 'today') ? 'var(--accent)' : 'var(--surface)',
+            color: (period !== 'live' && period !== 'today') ? '#fff' : 'var(--text)',
+            cursor: 'pointer',
+            fontWeight: 600,
+            appearance: 'none',
+            WebkitAppearance: 'none',
+            MozAppearance: 'none',
+            backgroundImage: `url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6' fill='none' stroke='${(period !== 'live' && period !== 'today') ? 'white' : '%23999'}' stroke-width='1.5'%3e%3cpath d='M1 1l4 4 4-4'/%3e%3c/svg%3e")`,
+            backgroundRepeat: 'no-repeat',
+            backgroundPosition: 'right 12px center',
+            paddingRight: 32,
           }}
         >
-          <DateRangeSlider
-            start={customRange.start}
-            end={customRange.end}
-            onChange={(start, end) => {
-              setCustomRange({ start, end });
-              if (period !== 'custom') setPeriod('custom');
-            }}
-          />
-        </div>
+          {RANGE_OPTIONS.map((o) => (
+            <option key={o.value} value={o.value} style={{ background: 'var(--surface)', color: 'var(--text)' }}>
+              {o.label}
+            </option>
+          ))}
+        </select>
 
         {/* Live/Cached indicator */}
         <div style={{ marginLeft: 8, display: 'flex', alignItems: 'center', gap: 6, fontSize: '0.75rem', color: 'var(--text-dim)' }}>
