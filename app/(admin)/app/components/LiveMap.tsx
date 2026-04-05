@@ -139,7 +139,21 @@ export default function LiveMap({ countries, cities = [], height = 420 }: LiveMa
     map.addControl(new mapboxgl.AttributionControl({ compact: true }), 'bottom-right');
     map.addControl(new mapboxgl.NavigationControl({ showCompass: false }), 'top-right');
     mapRef.current = map;
+
+    // Trigger resize after load — handles the case where the parent
+    // container was 0-sized at mount (e.g. hidden tab) and the canvas
+    // didn't render tiles.
+    map.on('load', () => map.resize());
+
+    // Observe container size changes and resize the map. This covers
+    // tab switches, window resizes, and any layout shifts.
+    const ro = new ResizeObserver(() => {
+      if (mapRef.current) mapRef.current.resize();
+    });
+    ro.observe(container.current);
+
     return () => {
+      ro.disconnect();
       map.remove();
       mapRef.current = null;
     };
