@@ -344,7 +344,9 @@ async function exportSlide(slide: Slide, topic: string, deckNum: number, slideNu
   const slug = topic.toLowerCase().replace(/[^a-z0-9]+/g, '-').slice(0, 30);
   a.href = dataUrl;
   a.download = `atlas-${slug}-${String(deckNum).padStart(2, '0')}-slide-${String(slideNum).padStart(2, '0')}.jpg`;
+  document.body.appendChild(a);
   a.click();
+  document.body.removeChild(a);
 }
 
 // ─── MAIN COMPONENT ───
@@ -353,6 +355,7 @@ export default function ContentMachineTab() {
   const [decks, setDecks] = useState<Deck[]>([]);
   const [error, setError] = useState('');
   const [exportProgress, setExportProgress] = useState('');
+  const [downloading, setDownloading] = useState(false);
   const [lastGenerated, setLastGenerated] = useState('');
   const [focusTopics, setFocusTopics] = useState<string[]>(TOPIC_CATEGORIES.slice(0, 5));
   const [modalSlide, setModalSlide] = useState<Slide | null>(null);
@@ -387,15 +390,17 @@ export default function ContentMachineTab() {
 
   const handleExportAll = useCallback(async () => {
     cancelRef.current = false;
+    setDownloading(true);
     for (let d = 0; d < decks.length; d++) {
       for (let s = 0; s < decks[d].slides.length; s++) {
-        if (cancelRef.current) { setExportProgress(''); return; }
-        setExportProgress(`Deck ${d + 1}/${decks.length} — Slide ${s + 1}/8`);
+        if (cancelRef.current) { setExportProgress(''); setDownloading(false); return; }
+        setExportProgress(`Downloading slide ${s + 1} of 8 (Deck ${d + 1}/${decks.length})`);
         await exportSlide(decks[d].slides[s], decks[d].topic, d + 1, s + 1);
-        await new Promise(r => setTimeout(r, 150));
+        await new Promise(r => setTimeout(r, 300));
       }
     }
     setExportProgress('');
+    setDownloading(false);
   }, [decks]);
 
   const togglePosted = (i: number) => {
@@ -488,7 +493,7 @@ export default function ContentMachineTab() {
               <span style={{ fontSize: '0.75rem', color: '#888', marginLeft: 10 }}>{decks.length} / 5 Ready</span>
             </div>
             <div style={{ display: 'flex', gap: 8 }}>
-              <button style={ghost} onClick={handleExportAll}>Download All ({decks.length * 8} slides)</button>
+              <button style={{ ...ghost, opacity: downloading ? 0.5 : 1, cursor: downloading ? 'wait' : 'pointer' }} disabled={downloading} onClick={handleExportAll}>{downloading ? exportProgress : `Download All (${decks.length * 8} slides)`}</button>
               <button style={btn({ padding: '8px 16px', fontSize: '0.78rem' })} disabled={generating} onClick={generate}>
                 {generating ? 'Regenerating...' : 'Regenerate All'}
               </button>
@@ -515,13 +520,15 @@ export default function ContentMachineTab() {
                 ))}
               </div>
               <div style={{ display: 'flex', gap: 8, marginTop: 12, flexWrap: 'wrap' }}>
-                <button style={ghost} onClick={async () => {
+                <button style={{ ...ghost, opacity: downloading ? 0.5 : 1, cursor: downloading ? 'wait' : 'pointer' }} disabled={downloading} onClick={async () => {
+                  setDownloading(true);
                   for (let s = 0; s < deck.slides.length; s++) {
-                    setExportProgress(`Deck ${di + 1} — Slide ${s + 1}/8`);
+                    setExportProgress(`Downloading slide ${s + 1} of 8...`);
                     await exportSlide(deck.slides[s], deck.topic, di + 1, s + 1);
-                    await new Promise(r => setTimeout(r, 150));
+                    await new Promise(r => setTimeout(r, 300));
                   }
                   setExportProgress('');
+                  setDownloading(false);
                 }}>Download All Slides</button>
                 <button style={ghost} onClick={() => navigator.clipboard.writeText(deck.topic)}>Copy Topic</button>
                 <button style={{ ...ghost, color: deck.posted ? '#16a34a' : 'var(--text-dim)' }} onClick={() => togglePosted(di)}>
