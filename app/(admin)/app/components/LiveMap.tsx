@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 
@@ -123,40 +123,66 @@ export default function LiveMap({ countries, cities = [], height = 420 }: LiveMa
   const container = useRef<HTMLDivElement>(null);
   const mapRef = useRef<mapboxgl.Map | null>(null);
   const markers = useRef<mapboxgl.Marker[]>([]);
+  const [mapError, setMapError] = useState<string | null>(null);
 
   // Initialize map once
   useEffect(() => {
     if (!container.current || mapRef.current || !MAPBOX_TOKEN) return;
-    mapboxgl.accessToken = MAPBOX_TOKEN;
-    const map = new mapboxgl.Map({
-      container: container.current,
-      style: 'mapbox://styles/mapbox/dark-v11',
-      center: [0, 20],
-      zoom: 1.2,
-      projection: 'mercator',
-      attributionControl: false,
-    });
-    map.addControl(new mapboxgl.AttributionControl({ compact: true }), 'bottom-right');
-    map.addControl(new mapboxgl.NavigationControl({ showCompass: false }), 'top-right');
-    mapRef.current = map;
+    try {
+      mapboxgl.accessToken = MAPBOX_TOKEN;
+      const map = new mapboxgl.Map({
+        container: container.current,
+        style: 'mapbox://styles/mapbox/dark-v11',
+        center: [0, 20],
+        zoom: 1.2,
+        projection: 'mercator',
+        attributionControl: false,
+      });
+      map.addControl(new mapboxgl.AttributionControl({ compact: true }), 'bottom-right');
+      map.addControl(new mapboxgl.NavigationControl({ showCompass: false }), 'top-right');
+      mapRef.current = map;
 
-    // Trigger resize after load — handles the case where the parent
-    // container was 0-sized at mount (e.g. hidden tab) and the canvas
-    // didn't render tiles.
-    map.on('load', () => map.resize());
+      // Log and surface any mapbox errors (token issues, tile failures).
+      map.on('error', (e: { error?: Error & { status?: number } }) => {
+        const msg = e?.error?.message || 'Unknown map error';
+        const status = e?.error?.status;
+        console.error('[Mapbox]', msg, e);
+        setMapError(status ? `${msg} (HTTP ${status})` : msg);
+      });
 
-    // Observe container size changes and resize the map. This covers
-    // tab switches, window resizes, and any layout shifts.
-    const ro = new ResizeObserver(() => {
-      if (mapRef.current) mapRef.current.resize();
-    });
-    ro.observe(container.current);
+      // Trigger resize after load — handles 0-sized parent containers
+      // (e.g. hidden tab at mount) and forces tile loading.
+      map.on('load', () => {
+        map.resize();
+        setMapError(null);
+      });
 
-    return () => {
-      ro.disconnect();
-      map.remove();
-      mapRef.current = null;
-    };
+      // Fallback: call resize() a few times after mount in case the
+      // ResizeObserver doesn't fire (e.g. container already had its
+      // final size but the canvas was created before paint).
+      const t1 = setTimeout(() => mapRef.current?.resize(), 100);
+      const t2 = setTimeout(() => mapRef.current?.resize(), 500);
+      const t3 = setTimeout(() => mapRef.current?.resize(), 1500);
+
+      // Observe container size changes and resize the map.
+      const ro = new ResizeObserver(() => {
+        mapRef.current?.resize();
+      });
+      ro.observe(container.current);
+
+      return () => {
+        clearTimeout(t1);
+        clearTimeout(t2);
+        clearTimeout(t3);
+        ro.disconnect();
+        map.remove();
+        mapRef.current = null;
+      };
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err);
+      console.error('[Mapbox] init failed:', msg);
+      setMapError(msg);
+    }
   }, []);
 
   // Update markers whenever data changes
@@ -249,16 +275,38 @@ export default function LiveMap({ countries, cities = [], height = 420 }: LiveMa
         .mapboxgl-popup-content { background: #fff; border-radius: 6px; padding: 8px 10px; }
         .mapboxgl-popup-tip { border-top-color: #fff !important; border-bottom-color: #fff !important; }
       `}</style>
-      <div
-        ref={container}
-        style={{
-          width: '100%',
-          height,
-          borderRadius: 'var(--radius)',
-          overflow: 'hidden',
-          border: '1px solid var(--border)',
-        }}
-      />
+      <div style={{ position: 'relative', width: '100%', height }}>
+        <div
+          ref={container}
+          style={{
+            width: '100%',
+            height: '100%',
+            borderRadius: 'var(--radius)',
+            overflow: 'hidden',
+            border: '1px solid var(--border)',
+          }}
+        />
+        {mapError && (
+          <div
+            style={{
+              position: 'absolute',
+              top: 16,
+              left: 16,
+              right: 16,
+              padding: '10px 14px',
+              background: 'rgba(239,68,68,0.12)',
+              border: '1px solid rgba(239,68,68,0.4)',
+              borderRadius: 8,
+              color: '#fca5a5',
+              fontSize: '0.78rem',
+              fontFamily: 'monospace',
+              pointerEvents: 'none',
+            }}
+          >
+            Mapbox error: {mapError}
+          </div>
+        )}
+      </div>
     </>
   );
 }
