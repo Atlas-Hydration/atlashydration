@@ -200,12 +200,12 @@ export async function GET(request: Request) {
             { name: 'eventName' },
             { name: 'city' },
             { name: 'country' },
-            { name: 'hour' },
+            { name: 'dateHourMinute' },
             { name: 'pagePath' },
             { name: 'deviceCategory' },
           ],
           metrics: [{ name: 'eventCount' }],
-          orderBys: [{ dimension: { dimensionName: 'hour' }, desc: true }],
+          orderBys: [{ dimension: { dimensionName: 'dateHourMinute' }, desc: true }],
           limit: 50,
         }),
       ]);
@@ -275,16 +275,25 @@ export async function GET(request: Request) {
         };
       });
 
-      // Today's events as fallback — convert hour to approximate minutesAgo
-      const nowHour = new Date().getHours();
+      // Today's events as fallback — convert dateHourMinute (YYYYMMDDHHMM) to minutesAgo
       const todayEventsParsed = (todayEvents.rows || []).map((r: RTRow) => {
-        const hour = Number(r.dimensionValues?.[3]?.value || 0);
-        const hoursAgo = Math.max(0, nowHour - hour);
+        const dhm = r.dimensionValues?.[3]?.value || '';
+        let minutesAgo = 0;
+        if (dhm.length >= 12) {
+          // Parse YYYYMMDDHHMM into a Date object (GA4 uses property timezone)
+          const year = parseInt(dhm.substring(0, 4), 10);
+          const month = parseInt(dhm.substring(4, 6), 10) - 1;
+          const day = parseInt(dhm.substring(6, 8), 10);
+          const hour = parseInt(dhm.substring(8, 10), 10);
+          const min = parseInt(dhm.substring(10, 12), 10);
+          const eventTime = new Date(year, month, day, hour, min);
+          minutesAgo = Math.max(0, Math.round((Date.now() - eventTime.getTime()) / 60000));
+        }
         return {
           event: r.dimensionValues?.[0]?.value || '',
           city: r.dimensionValues?.[1]?.value || '',
           country: r.dimensionValues?.[2]?.value || '',
-          minutesAgo: hoursAgo * 60,
+          minutesAgo,
           page: r.dimensionValues?.[4]?.value || '',
           device: r.dimensionValues?.[5]?.value || '',
           count: Number(r.metricValues?.[0]?.value || 0),
