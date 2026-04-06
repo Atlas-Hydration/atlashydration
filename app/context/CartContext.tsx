@@ -481,7 +481,16 @@ export function CartProvider({ children }: { children: ReactNode }) {
     if (!hasSubscriptions) {
       const co = checkoutRef.current;
       if (co && co.webUrl) {
-        window.location.href = co.webUrl;
+        // Ensure checkout URL uses .myshopify.com (not custom domain that may not point to Shopify)
+        let url = co.webUrl;
+        try {
+          const parsed = new URL(url);
+          if (!parsed.hostname.endsWith('.myshopify.com')) {
+            parsed.hostname = SHOPIFY_DOMAIN;
+            url = parsed.toString();
+          }
+        } catch { /* use original */ }
+        window.location.href = url;
         return;
       }
     }
@@ -568,18 +577,26 @@ export function CartProvider({ children }: { children: ReactNode }) {
       const checkoutUrl = json?.data?.cartCreate?.cart?.checkoutUrl;
 
       if (checkoutUrl) {
+        // Ensure checkout URL uses .myshopify.com domain
+        const url = new URL(checkoutUrl);
+        if (!url.hostname.endsWith('.myshopify.com')) {
+          url.hostname = SHOPIFY_DOMAIN;
+        }
         // Append discount code if stored from bundle selector
         const discountCode = localStorage.getItem('atlas_discount_code');
-        const url = new URL(checkoutUrl);
         if (discountCode) {
           url.searchParams.set('discount', discountCode);
           localStorage.removeItem('atlas_discount_code');
         }
         window.location.href = url.toString();
       } else {
-        // Fallback: redirect to store
+        // Fallback: cart permalink
         console.error("cartCreate failed:", json?.data?.cartCreate?.userErrors);
-        window.location.href = `https://${SHOPIFY_DOMAIN}`;
+        const parts = lines.map((l) => {
+          const id = (l as { merchandiseId: string }).merchandiseId.replace("gid://shopify/ProductVariant/", "");
+          return `${id}:${(l as { quantity: number }).quantity}`;
+        });
+        window.location.href = `https://${SHOPIFY_DOMAIN}/cart/${parts.join(",")}`;
       }
     } catch (err) {
       console.error("Checkout error:", err);
