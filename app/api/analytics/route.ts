@@ -108,7 +108,7 @@ export async function GET(request: Request) {
       const [
         activeUsers, realtimePages, realtimeCountries, realtimeCities,
         realtimeDevices, todaySources, todayBrowsers, realtimeOS,
-        realtimeEvents, todayRevenue, todayEvents,
+        realtimeEvents, realtimeEventDetails, todayRevenue, todayEvents,
       ] = await Promise.all([
         safeRealtime({
           metrics: [{ name: 'activeUsers' }],
@@ -160,12 +160,22 @@ export async function GET(request: Request) {
           orderBys: [{ metric: { metricName: 'activeUsers' }, desc: true }],
           limit: 10,
         }),
-        // Recent events (include minutesAgo for relative time)
+        // Recent events — core dimensions only (more dimensions = more likely to fail)
         safeRealtime({
           dimensions: [
             { name: 'eventName' },
             { name: 'city' },
             { name: 'country' },
+            { name: 'minutesAgo' },
+          ],
+          metrics: [{ name: 'eventCount' }],
+          orderBys: [{ dimension: { dimensionName: 'minutesAgo' } }],
+          limit: 50,
+        }),
+        // Extra event detail (page + device) — separate query so core events still work if this fails
+        safeRealtime({
+          dimensions: [
+            { name: 'eventName' },
             { name: 'minutesAgo' },
             { name: 'unifiedScreenName' },
             { name: 'deviceCategory' },
@@ -239,16 +249,31 @@ export async function GET(request: Request) {
         activeUsers: Number(r.metricValues?.[0]?.value || 0),
       }));
 
-      const realtimeEventsParsed = (realtimeEvents.rows || []).map((r: RTRow) => ({
-        event: r.dimensionValues?.[0]?.value || '',
-        city: r.dimensionValues?.[1]?.value || '',
-        country: r.dimensionValues?.[2]?.value || '',
-        minutesAgo: Number(r.dimensionValues?.[3]?.value || 0),
-        page: r.dimensionValues?.[4]?.value || '',
-        device: r.dimensionValues?.[5]?.value || '',
-        count: Number(r.metricValues?.[0]?.value || 0),
-        live: true,
-      }));
+      // Build page/device lookup from detail query
+      const detailLookup = new Map<string, { page: string; device: string }>();
+      for (const r of (realtimeEventDetails.rows || []) as RTRow[]) {
+        const key = `${r.dimensionValues?.[0]?.value || ''}|${r.dimensionValues?.[1]?.value || ''}`;
+        detailLookup.set(key, {
+          page: r.dimensionValues?.[2]?.value || '',
+          device: r.dimensionValues?.[3]?.value || '',
+        });
+      }
+
+      const realtimeEventsParsed = (realtimeEvents.rows || []).map((r: RTRow) => {
+        const eventName = r.dimensionValues?.[0]?.value || '';
+        const minutesAgo = r.dimensionValues?.[3]?.value || '0';
+        const detail = detailLookup.get(`${eventName}|${minutesAgo}`) || { page: '', device: '' };
+        return {
+          event: eventName,
+          city: r.dimensionValues?.[1]?.value || '',
+          country: r.dimensionValues?.[2]?.value || '',
+          minutesAgo: Number(minutesAgo),
+          page: detail.page,
+          device: detail.device,
+          count: Number(r.metricValues?.[0]?.value || 0),
+          live: true,
+        };
+      });
 
       // Today's events as fallback — convert hour to approximate minutesAgo
       const nowHour = new Date().getHours();
