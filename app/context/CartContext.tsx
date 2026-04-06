@@ -475,25 +475,8 @@ export function CartProvider({ children }: { children: ReactNode }) {
       });
     }
 
-    const hasSubscriptions = items.some((i) => i.subscriptionFrequency);
-
-    // For non-subscription carts, use the existing Shopify Buy SDK checkout URL
-    if (!hasSubscriptions) {
-      const co = checkoutRef.current;
-      if (co && co.webUrl) {
-        // Ensure checkout URL uses .myshopify.com (not custom domain that may not point to Shopify)
-        let url = co.webUrl;
-        try {
-          const parsed = new URL(url);
-          if (!parsed.hostname.endsWith('.myshopify.com')) {
-            parsed.hostname = SHOPIFY_DOMAIN;
-            url = parsed.toString();
-          }
-        } catch { /* use original */ }
-        window.location.href = url;
-        return;
-      }
-    }
+    // Always use Storefront API cartCreate for consistent checkout experience
+    // (Buy SDK checkout URLs don't support selling plans or discount codes)
 
     // Build line items with selling plan references
     const lines = items
@@ -564,7 +547,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     `;
 
     try {
-      const res = await fetch(`https://${SHOPIFY_DOMAIN}/api/2026-04/graphql.json`, {
+      const res = await fetch(`https://${SHOPIFY_DOMAIN}/api/2024-10/graphql.json`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -594,20 +577,24 @@ export function CartProvider({ children }: { children: ReactNode }) {
         }
         window.location.href = url.toString();
       } else {
-        // Fallback: cart permalink
+        // Fallback: cart permalink with selling_plan support
         console.error("cartCreate failed:", json?.data?.cartCreate?.userErrors);
         const parts = lines.map((l) => {
-          const id = (l as { merchandiseId: string }).merchandiseId.replace("gid://shopify/ProductVariant/", "");
-          return `${id}:${(l as { quantity: number }).quantity}`;
+          const line = l as { merchandiseId: string; quantity: number; sellingPlanId?: string };
+          const id = line.merchandiseId.replace("gid://shopify/ProductVariant/", "");
+          const spId = line.sellingPlanId?.replace("gid://shopify/SellingPlan/", "");
+          return spId ? `${id}:${line.quantity}:${spId}` : `${id}:${line.quantity}`;
         });
         window.location.href = `https://${SHOPIFY_DOMAIN}/cart/${parts.join(",")}`;
       }
     } catch (err) {
       console.error("Checkout error:", err);
-      // Fallback: non-subscription /cart/ permalink
+      // Fallback: /cart/ permalink with selling_plan support
       const parts = lines.map((l) => {
-        const id = (l as { merchandiseId: string }).merchandiseId.replace("gid://shopify/ProductVariant/", "");
-        return `${id}:${(l as { quantity: number }).quantity}`;
+        const line = l as { merchandiseId: string; quantity: number; sellingPlanId?: string };
+        const id = line.merchandiseId.replace("gid://shopify/ProductVariant/", "");
+        const spId = line.sellingPlanId?.replace("gid://shopify/SellingPlan/", "");
+        return spId ? `${id}:${line.quantity}:${spId}` : `${id}:${line.quantity}`;
       });
       window.location.href = `https://${SHOPIFY_DOMAIN}/cart/${parts.join(",")}`;
     }
