@@ -1,6 +1,5 @@
 const posts = [
   {
-    href: "/blog",
     image: "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=600&h=400&fit=crop&crop=center",
     imageAlt: "Athlete training with intensity",
     episode: "Episode 1",
@@ -9,7 +8,6 @@ const posts = [
     excerpt: "At 600mg per serving, Atlas replaces what sweat takes — preventing fatigue, cramps, and cognitive decline.",
   },
   {
-    href: "/blog",
     image: "https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?w=600&h=400&fit=crop&crop=center",
     imageAlt: "Athlete recovering post-workout",
     episode: "Episode 2",
@@ -18,7 +16,6 @@ const posts = [
     excerpt: "Critical for gut integrity and immune function — especially after intense training when stores are depleted.",
   },
   {
-    href: "/blog",
     image: "https://images.unsplash.com/photo-1552674605-db6ffd4facb5?w=600&h=400&fit=crop&crop=center",
     imageAlt: "Runner pushing through training",
     episode: "Episode 3",
@@ -27,7 +24,6 @@ const posts = [
     excerpt: "Near-zero glycemic impact keeps energy stable. No spikes, no crashes — just clean fuel for performance.",
   },
   {
-    href: null,
     image: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=600&h=400&fit=crop&crop=center",
     imageAlt: "Hydration during outdoor activity",
     episode: "Episode 4",
@@ -50,44 +46,25 @@ export default function BlogSection() {
           </p>
         </div>
         <div className="blog__grid blog__grid--4">
-          {posts.map((post) => {
-            const inner = (
-              <>
-                {post.comingSoon && <span className="blog__coming-soon-badge">Coming Soon</span>}
-                <div className="blog__card-image">
-                  <img src={post.image} alt={post.imageAlt} loading="lazy" />
-                </div>
-                <div className="blog__card-content">
-                  <span className="blog__card-episode">{post.episode}</span>
-                  <span className="blog__card-tag">{post.tag}</span>
-                  <h3 className="blog__card-title">{post.title}</h3>
-                  <p className="blog__card-excerpt">{post.excerpt}</p>
-                </div>
-              </>
-            );
-
-            if (post.comingSoon || !post.href) {
-              return (
-                <div className="blog__card blog__card--coming-soon" key={post.title}>
-                  {inner}
-                </div>
-              );
-            }
-
-            return (
-              <a href={post.href} className="blog__card" key={post.title}>
-                {inner}
-              </a>
-            );
-          })}
+          {posts.map((post) => (
+            <div className={`blog__card${post.comingSoon ? " blog__card--coming-soon" : ""}`} key={post.title} style={{ cursor: "default" }}>
+              {post.comingSoon && <span className="blog__coming-soon-badge">Coming Soon</span>}
+              <div className="blog__card-image">
+                <img src={post.image} alt={post.imageAlt} loading="lazy" />
+              </div>
+              <div className="blog__card-content">
+                <span className="blog__card-episode">{post.episode}</span>
+                <span className="blog__card-tag">{post.tag}</span>
+                <h3 className="blog__card-title">{post.title}</h3>
+                <p className="blog__card-excerpt">{post.excerpt}</p>
+              </div>
+            </div>
+          ))}
         </div>
         <div className="blog__cta">
-          <a href="/blog" className="blog__view-all">
-            View All Episodes{" "}
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M5 12h14M12 5l7 7-7 7" />
-            </svg>
-          </a>
+          <span style={{ fontSize: "var(--text-sm)", color: "var(--color-text-muted)" }}>
+            More episodes coming soon
+          </span>
         </div>
       </div>
     </section>
