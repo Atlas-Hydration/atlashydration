@@ -277,6 +277,9 @@ export async function GET(request: Request) {
   } else if (isToday) {
     dateRange = { startDate: 'today', endDate: 'today' };
     prevDateRange = { startDate: 'yesterday', endDate: 'yesterday' };
+  } else if (period === 'yesterday') {
+    dateRange = { startDate: 'yesterday', endDate: 'yesterday' };
+    prevDateRange = { startDate: '2daysAgo', endDate: '2daysAgo' };
   } else {
     dateRange = { startDate: `${days}daysAgo`, endDate: 'today' };
     prevDateRange = { startDate: `${days * 2}daysAgo`, endDate: `${days + 1}daysAgo` };
