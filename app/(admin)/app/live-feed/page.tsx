@@ -107,6 +107,31 @@ function countryFlag(country: string): string {
   );
 }
 
+/* ── Atlas Universe Names ── */
+const ATLAS_NAMES = [
+  'Poseidon', 'Triton', 'Nereus', 'Oceanus', 'Tethys', 'Amphitrite',
+  'Proteus', 'Galene', 'Thalassa', 'Pontus', 'Aegir', 'Ran',
+  'Mira', 'Calypso', 'Naiad', 'Undine', 'Marinus', 'Pelagius',
+  'Coral', 'Reef', 'Tide', 'Drift', 'Cascade', 'Ripple',
+  'Atlas', 'Orion', 'Nova', 'Zenith', 'Astra', 'Vega',
+  'Lyra', 'Cetus', 'Hydra', 'Dorado', 'Piscis', 'Aquila',
+  'Zephyr', 'Borealis', 'Solstice', 'Meridian', 'Horizon', 'Summit',
+  'Echo', 'Flux', 'Prism', 'Ember', 'Onyx', 'Quartz',
+];
+
+function hashString(s: string): number {
+  let h = 0;
+  for (let i = 0; i < s.length; i++) {
+    h = ((h << 5) - h + s.charCodeAt(i)) | 0;
+  }
+  return Math.abs(h);
+}
+
+function getAtlasName(city: string, country: string): string {
+  const key = `${city}|${country}`;
+  return ATLAS_NAMES[hashString(key) % ATLAS_NAMES.length];
+}
+
 /* ── Event labels ── */
 const EVENT_LABELS: Record<string, { label: string; Icon: (p: EventIconProps) => React.JSX.Element; color: string }> = {
   'page_view': { label: 'viewed a page', Icon: EventIcon.eye, color: '#3b82f6' },
@@ -311,6 +336,7 @@ export default function LiveFeedPage() {
   const [revenue, setRevenue] = useState<RevenueData>({ total: 0, orders: 0, avgOrderValue: 0 });
   const [soundEnabled, setSoundEnabled] = useState(false);
   const [revenueBanner, setRevenueBanner] = useState<string | null>(null);
+  const [expandedKey, setExpandedKey] = useState<string | null>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   // Running totals (accumulated across refreshes)
@@ -323,6 +349,8 @@ export default function LiveFeedPage() {
   const soundPlayedKeysRef = useRef<Set<string>>(new Set());
   const lastRevenueRef = useRef<number>(0);
   const revenueBannerTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  // Track visitor sessions: city|country -> { events, firstSeen, pages }
+  const visitorMapRef = useRef<Map<string, { events: number; firstSeen: number; pages: Set<string>; lastEvent: string }>>(new Map());
 
   const fetchData = useCallback(async () => {
     try {
@@ -333,6 +361,25 @@ export default function LiveFeedPage() {
       const newEvents: EventRow[] = json.events || [];
       setSources(json.sources || []);
       setRevenue(json.revenue || { total: 0, orders: 0, avgOrderValue: 0 });
+
+      // Track visitor sessions
+      for (const e of newEvents) {
+        const vk = `${e.city}|${e.country}`;
+        const existing = visitorMapRef.current.get(vk);
+        if (existing) {
+          existing.events += e.count || 1;
+          if (e.page && e.page !== '(not set)') existing.pages.add(e.page);
+          existing.lastEvent = e.event;
+          if (e.minutesAgo !== undefined) existing.firstSeen = Math.max(existing.firstSeen, e.minutesAgo);
+        } else {
+          visitorMapRef.current.set(vk, {
+            events: e.count || 1,
+            firstSeen: e.minutesAgo ?? 0,
+            pages: new Set(e.page && e.page !== '(not set)' ? [e.page] : []),
+            lastEvent: e.event,
+          });
+        }
+      }
 
       // Track new event keys for animation
       const currentKeys = new Set(newEvents.map(eventKey));
@@ -581,61 +628,112 @@ export default function LiveFeedPage() {
                 const isNew = e.event === 'first_visit' || e.event === 'session_start';
                 const k = eventKey(e);
                 const isAnimated = newEventKeysRef.current.has(k);
+                const isExpanded = expandedKey === `${k}-${i}`;
+                const visitorKey = `${e.city}|${e.country}`;
+                const visitor = visitorMapRef.current.get(visitorKey);
+                const isRepeat = visitor && visitor.events > 1;
+                const atlasName = (e.city && e.country) ? getAtlasName(e.city, e.country) : null;
                 return (
                   <div
                     key={`${k}-${i}`}
+                    onClick={() => setExpandedKey(isExpanded ? null : `${k}-${i}`)}
                     style={{
-                      display: 'flex', alignItems: 'center', gap: 14,
+                      display: 'flex', flexDirection: 'column', gap: 0,
                       padding: '14px 18px',
-                      background: 'rgba(255,255,255,0.03)',
+                      background: isExpanded ? 'rgba(255,255,255,0.06)' : 'rgba(255,255,255,0.03)',
                       borderRadius: 10,
                       borderLeft: `3px solid ${info.color}`,
                       transition: 'background 0.15s',
                       animation: isAnimated ? 'slideIn 0.35s ease-out' : undefined,
+                      cursor: 'pointer',
                     }}
                   >
-                    <span style={{
-                      display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-                      width: 36, height: 36, borderRadius: 10,
-                      background: 'rgba(255,255,255,0.05)', flexShrink: 0,
-                    }}>
-                      <info.Icon color={info.color} size={18} />
-                    </span>
-                    <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 3 }}>
-                      <span style={{ fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
-                        Someone{location ? ` in ${location}` : ''}
-                        {e.device && (
-                          <span style={{ display: 'inline-flex', alignItems: 'center', opacity: 0.6 }}>
-                            {getDeviceIcon(e.device)}
-                          </span>
-                        )}
-                        {' '}
-                        <span style={{ color: info.color, fontWeight: 600 }}>{info.label}</span>
-                        {isNew && (
-                          <span style={{
-                            fontSize: '0.6rem', fontWeight: 700,
-                            background: 'rgba(34,197,94,0.15)', color: '#22c55e',
-                            padding: '1px 6px', borderRadius: 8,
-                            letterSpacing: '0.04em',
-                          }}>
-                            NEW
-                          </span>
-                        )}
-                      </span>
-                      {e.page && e.page !== '(not set)' && (
-                        <span style={{ fontSize: '0.7rem', color: '#4b5563' }}>
-                          on {e.page}
-                        </span>
-                      )}
-                      <span style={{ fontSize: '0.72rem', color: '#6b7280' }}>{when}</span>
-                    </div>
-                    {e.count > 1 && (
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
                       <span style={{
-                        fontSize: '0.72rem', color: '#6b7280',
-                        background: 'rgba(255,255,255,0.04)', padding: '3px 10px', borderRadius: 8,
+                        display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+                        width: 36, height: 36, borderRadius: 10,
+                        background: 'rgba(255,255,255,0.05)', flexShrink: 0,
                       }}>
-                        x{e.count}
+                        <info.Icon color={info.color} size={18} />
                       </span>
+                      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 3 }}>
+                        <span style={{ fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
+                          {isRepeat && atlasName ? (
+                            <span style={{ color: '#e5e7eb', fontWeight: 600 }}>{atlasName}</span>
+                          ) : (
+                            'Someone'
+                          )}
+                          {location ? ` in ${location}` : ''}
+                          <span style={{ display: 'inline-flex', alignItems: 'center', opacity: 0.6 }}>
+                            {getDeviceIcon(e.device || '')}
+                          </span>
+                          {' '}
+                          <span style={{ color: info.color, fontWeight: 600 }}>{info.label}</span>
+                          {isNew && (
+                            <span style={{
+                              fontSize: '0.6rem', fontWeight: 700,
+                              background: 'rgba(34,197,94,0.15)', color: '#22c55e',
+                              padding: '1px 6px', borderRadius: 8,
+                              letterSpacing: '0.04em',
+                            }}>
+                              NEW
+                            </span>
+                          )}
+                          {isRepeat && (
+                            <span style={{
+                              fontSize: '0.6rem', fontWeight: 700,
+                              background: 'rgba(59,130,246,0.15)', color: '#60a5fa',
+                              padding: '1px 6px', borderRadius: 8,
+                            }}>
+                              RETURNING
+                            </span>
+                          )}
+                        </span>
+                        {e.page && e.page !== '(not set)' && (
+                          <span style={{ fontSize: '0.7rem', color: '#4b5563' }}>
+                            on {e.page}
+                          </span>
+                        )}
+                        <span style={{ fontSize: '0.72rem', color: '#6b7280' }}>{when}</span>
+                      </div>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
+                        {e.count > 1 && (
+                          <span style={{
+                            fontSize: '0.72rem', color: '#6b7280',
+                            background: 'rgba(255,255,255,0.04)', padding: '3px 10px', borderRadius: 8,
+                          }}>
+                            x{e.count}
+                          </span>
+                        )}
+                        <svg width={12} height={12} viewBox="0 0 24 24" fill="none" stroke="#4b5563" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
+                          style={{ transform: isExpanded ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.2s' }}>
+                          <polyline points="6 9 12 15 18 9" />
+                        </svg>
+                      </div>
+                    </div>
+                    {/* Expanded detail panel */}
+                    {isExpanded && visitor && (
+                      <div style={{
+                        marginTop: 12, paddingTop: 12,
+                        borderTop: '1px solid rgba(255,255,255,0.06)',
+                        display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px 20px',
+                        fontSize: '0.75rem',
+                      }}>
+                        <DetailItem label="Visitor" value={atlasName || 'Anonymous'} />
+                        <DetailItem label="Device" value={e.device || 'Desktop'} />
+                        <DetailItem label="Time on site" value={visitor.firstSeen > 0 ? `~${visitor.firstSeen} min` : 'Just arrived'} />
+                        <DetailItem label="Total events" value={String(visitor.events)} />
+                        <DetailItem label="Pages visited" value={visitor.pages.size > 0 ? String(visitor.pages.size) : '1'} />
+                        <DetailItem label="Last action" value={EVENT_LABELS[visitor.lastEvent]?.label || visitor.lastEvent} />
+                        {visitor.pages.size > 0 && (
+                          <div style={{ gridColumn: '1 / -1' }}>
+                            <span style={{ color: '#6b7280', fontSize: '0.7rem' }}>Pages: </span>
+                            <span style={{ color: '#9ca3af', fontSize: '0.7rem' }}>
+                              {Array.from(visitor.pages).join(', ')}
+                            </span>
+                          </div>
+                        )}
+                      </div>
                     )}
                   </div>
                 );
@@ -682,6 +780,16 @@ function TotalPill({ label, count, color }: { label: string; count: number; colo
       <div style={{ width: 6, height: 6, borderRadius: '50%', background: color, opacity: 0.7 }} />
       <span style={{ color: '#9ca3af' }}>{label}</span>
       <span style={{ color: '#e5e7eb', fontWeight: 600 }}>{count}</span>
+    </div>
+  );
+}
+
+/* ── Detail item for expanded panel ── */
+function DetailItem({ label, value }: { label: string; value: string }) {
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+      <span style={{ color: '#6b7280', fontSize: '0.68rem', textTransform: 'uppercase', letterSpacing: '0.04em' }}>{label}</span>
+      <span style={{ color: '#d1d5db', fontWeight: 500 }}>{value}</span>
     </div>
   );
 }
