@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { useCart, computePromo } from "@/app/context/CartContext";
 
 export default function CartDrawer() {
@@ -11,6 +12,12 @@ export default function CartDrawer() {
     removeFromCart,
     checkout,
   } = useCart();
+  const [discountCode, setDiscountCode] = useState('');
+
+  useEffect(() => {
+    const code = localStorage.getItem('atlas_discount_code') || '';
+    setDiscountCode(code);
+  }, [isCartOpen]);
 
   const subtotal = items.reduce(
     (sum, item) => sum + item.price * item.quantity,
@@ -70,7 +77,7 @@ export default function CartDrawer() {
                 <div className="cart-item" key={`${item.slug}-${index}`}>
                   {item.image && (
                     <div className="cart-item__image">
-                      <img src={item.image} alt={item.title} />
+                      <img src={item.image} alt={item.title} onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
                     </div>
                   )}
                   <div className="cart-item__info">
@@ -136,6 +143,16 @@ export default function CartDrawer() {
                   <span className="cart-promo__savings">
                     You save ${discount.toFixed(2)}
                   </span>
+                </div>
+              )}
+              {discountCode && (
+                <div style={{
+                  padding: '10px 14px', background: 'rgba(22,163,74,0.08)',
+                  borderRadius: 8, display: 'flex', alignItems: 'center', gap: 8,
+                  fontSize: '0.82rem', color: '#16a34a', fontWeight: 500, marginTop: 8,
+                }}>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M20 6L9 17l-5-5" /></svg>
+                  {discountCode} applied {discountCode === 'ATLAS3GET1' && '· Free pouch added'}
                 </div>
               )}
             </>

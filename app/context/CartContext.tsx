@@ -562,7 +562,14 @@ export function CartProvider({ children }: { children: ReactNode }) {
       const checkoutUrl = json?.data?.cartCreate?.cart?.checkoutUrl;
 
       if (checkoutUrl) {
-        window.location.href = checkoutUrl;
+        // Append discount code if stored from bundle selector
+        const discountCode = localStorage.getItem('atlas_discount_code');
+        const url = new URL(checkoutUrl);
+        if (discountCode) {
+          url.searchParams.set('discount', discountCode);
+          localStorage.removeItem('atlas_discount_code');
+        }
+        window.location.href = url.toString();
       } else {
         // Fallback: redirect to store
         console.error("cartCreate failed:", json?.data?.cartCreate?.userErrors);
