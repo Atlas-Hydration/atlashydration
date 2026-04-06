@@ -97,7 +97,7 @@ declare global {
 // ---------------------------------------------------------------------------
 
 const SHOPIFY_DOMAIN = "7fa7b7-42.myshopify.com";
-const STOREFRONT_TOKEN = "390caf7f28b55c8958daeab3fcd55f76";
+const STOREFRONT_TOKEN = process.env.NEXT_PUBLIC_SHOPIFY_STOREFRONT_TOKEN || "";
 const SDK_URL =
   "https://sdks.shopifycdn.com/buy-button/latest/buy-button-storefront.min.js";
 const STORAGE_CART_KEY = "atlas_cart";
