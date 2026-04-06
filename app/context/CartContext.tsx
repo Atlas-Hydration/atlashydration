@@ -545,6 +545,9 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
     if (lines.length === 0) return;
 
+    // Log lines for debugging subscription issues
+    console.log('[Atlas Checkout] Cart lines:', JSON.stringify(lines, null, 2));
+
     // Use Storefront API cartCreate mutation
     const mutation = `
       mutation cartCreate($input: CartInput!) {
@@ -561,7 +564,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     `;
 
     try {
-      const res = await fetch(`https://${SHOPIFY_DOMAIN}/api/2024-01/graphql.json`, {
+      const res = await fetch(`https://${SHOPIFY_DOMAIN}/api/2025-01/graphql.json`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -574,6 +577,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
       });
 
       const json = await res.json();
+      console.log('[Atlas Checkout] cartCreate response:', JSON.stringify(json, null, 2));
       const checkoutUrl = json?.data?.cartCreate?.cart?.checkoutUrl;
 
       if (checkoutUrl) {
