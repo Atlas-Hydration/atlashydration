@@ -7320,8 +7320,7 @@ img {
   }
 
   .product-hero__info {
-    position: sticky;
-    top: 90px;
+    position: static;
     align-self: start;
   }
 
