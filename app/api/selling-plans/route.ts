@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 
 const SHOPIFY_DOMAIN = "7fa7b7-42.myshopify.com";
-const STOREFRONT_TOKEN = process.env.NEXT_PUBLIC_SHOPIFY_STOREFRONT_TOKEN || "";
+const STOREFRONT_TOKEN = process.env.NEXT_PUBLIC_SHOPIFY_STOREFRONT_TOKEN || "390caf7f28b55c8958daeab3fcd55f76";
 
 export async function GET() {
   const query = `{
