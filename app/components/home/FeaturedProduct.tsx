@@ -81,9 +81,16 @@ export default function FeaturedProduct() {
 
   const bundleQty = bundleOption === 3 ? 4 : bundleOption === 2 ? 2 : 1;
   const bundleSavings = bundleOption === 3 ? 39.97 : bundleOption === 2 ? 4.99 : 0;
+  const bundleCode = bundleOption === 3 ? 'ATLAS3GET1' : bundleOption === 2 ? 'ATLAS2PACK' : '';
 
   const handleAdd = async () => {
     setAdding(true);
+    // Store discount code for checkout
+    if (bundleCode) {
+      localStorage.setItem('atlas_discount_code', bundleCode);
+    } else {
+      localStorage.removeItem('atlas_discount_code');
+    }
     const subFreq = purchaseType === "subscribe" ? frequency : undefined;
     await addToCart(selectedFlavor, bundleQty, subFreq);
     if (timerRef.current) clearTimeout(timerRef.current);
