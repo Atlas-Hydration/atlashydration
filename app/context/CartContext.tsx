@@ -168,8 +168,17 @@ function checkoutToItems(co: ShopifyCheckout): CartItem[] {
     const variantSuffix =
       li.variant.title !== "Default Title" ? ` — ${li.variant.title}` : "";
 
+    // Try to recover slug from title
+    let slug = "";
+    for (const s of Object.keys(PRODUCTS)) {
+      if (li.title.toLowerCase().includes(PRODUCTS[s].name.toLowerCase())) {
+        slug = s;
+        break;
+      }
+    }
+
     return {
-      slug: "",
+      slug,
       title: `${li.title}${variantSuffix}`,
       price: variantPrice,
       quantity: li.quantity,
@@ -227,12 +236,33 @@ export function CartProvider({ children }: { children: ReactNode }) {
     // Merge subscription metadata back into items using variant ID matching
     const meta = subscriptionMetaRef.current;
     for (const item of cartItems) {
-      if (item.variantId && meta[item.variantId]) {
-        item.subscriptionFrequency = meta[item.variantId];
-        // Find the product to get subscribe price
+      // Try direct match first
+      let freq = item.variantId ? meta[item.variantId] : undefined;
+      // Try decoding base64 variant ID (SDK returns base64-encoded GIDs)
+      if (!freq && item.variantId) {
+        try {
+          const decoded = atob(item.variantId);
+          freq = meta[decoded];
+        } catch { /* not base64 */ }
+      }
+      // Try matching against known product variant GIDs
+      if (!freq) {
         for (const slug of Object.keys(PRODUCTS)) {
-          if (PRODUCTS[slug].variantId === item.variantId) {
+          const p = PRODUCTS[slug];
+          const numericId = p.variantId.split('/').pop();
+          if (item.variantId && (item.variantId.includes(numericId!) || item.title.toLowerCase().includes(p.name.toLowerCase()))) {
+            freq = meta[p.variantId];
+            if (freq) { item.slug = slug; }
+            break;
+          }
+        }
+      }
+      if (freq) {
+        item.subscriptionFrequency = freq;
+        for (const slug of Object.keys(PRODUCTS)) {
+          if (PRODUCTS[slug].variantId === item.variantId || item.title.toLowerCase().includes(PRODUCTS[slug].name.toLowerCase())) {
             item.price = PRODUCTS[slug].subscribePrice;
+            item.slug = slug;
             break;
           }
         }
