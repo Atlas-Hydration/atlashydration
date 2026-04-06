@@ -27,7 +27,7 @@ export default function FeaturedProduct() {
   const [purchaseType, setPurchaseType] = useState<"subscribe" | "onetime">("subscribe");
   const [frequency, setFrequency] = useState(2);
   const [adding, setAdding] = useState(false);
-  const [quantity, setQuantity] = useState(1);
+  const [bundleOption, setBundleOption] = useState<1 | 2 | 3>(1);
   const { addToCart } = useCart();
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const dragStartX = useRef(0);
@@ -79,10 +79,13 @@ export default function FeaturedProduct() {
   }, [selectedFlavor]);
 
 
+  const bundleQty = bundleOption === 3 ? 4 : bundleOption === 2 ? 2 : 1;
+  const bundleSavings = bundleOption === 3 ? 39.97 : bundleOption === 2 ? 4.99 : 0;
+
   const handleAdd = async () => {
     setAdding(true);
     const subFreq = purchaseType === "subscribe" ? frequency : undefined;
-    await addToCart(selectedFlavor, quantity, subFreq);
+    await addToCart(selectedFlavor, bundleQty, subFreq);
     if (timerRef.current) clearTimeout(timerRef.current);
     timerRef.current = setTimeout(() => setAdding(false), 1200);
   };
@@ -242,12 +245,32 @@ export default function FeaturedProduct() {
               </label>
             </div>
 
-            <div className="product-hero__buy" style={{ marginTop: 8 }}>
-              <div className="qty-selector">
-                <button className="qty-selector__btn" aria-label="Decrease quantity" onClick={() => setQuantity((q) => Math.max(1, q - 1))}>&minus;</button>
-                <input type="number" className="qty-selector__input" value={quantity} min={1} max={10} aria-label="Quantity" onChange={(e) => { const v = parseInt(e.target.value, 10); if (v >= 1 && v <= 10) setQuantity(v); }} />
-                <button className="qty-selector__btn" aria-label="Increase quantity" onClick={() => setQuantity((q) => Math.min(10, q + 1))}>+</button>
-              </div>
+            {/* Bundle Selector */}
+            <div className="bundle-selector">
+              <button type="button" className={`bundle-card${bundleOption === 1 ? " bundle-card--active" : ""}`} onClick={() => setBundleOption(1)}>
+                <div className="bundle-card__title">1 Pouch</div>
+                <div className="bundle-card__price">$29.99</div>
+                <div className="bundle-card__per">$1.87 / stick</div>
+              </button>
+              <button type="button" className={`bundle-card${bundleOption === 2 ? " bundle-card--active" : ""}`} onClick={() => setBundleOption(2)}>
+                <span className="bundle-card__badge bundle-card__badge--green">Best Value</span>
+                <div className="bundle-card__title">2 Pouches</div>
+                <div className="bundle-card__price">$54.99</div>
+                <div className="bundle-card__per">$1.72 / stick · Save $5</div>
+              </button>
+              <button type="button" className={`bundle-card${bundleOption === 3 ? " bundle-card--active" : ""}`} onClick={() => setBundleOption(3)}>
+                <span className="bundle-card__badge bundle-card__badge--red">Free Pouch</span>
+                <div className="bundle-card__title">3 + 1 FREE</div>
+                <div className="bundle-card__price">$79.99</div>
+                <div className="bundle-card__per">$1.25 / stick · Save $40</div>
+                <div className="bundle-card__popular">Most Popular</div>
+              </button>
+            </div>
+            {bundleSavings > 0 && (
+              <div className="bundle-savings">You&apos;re saving ${bundleSavings.toFixed(2)} on this order</div>
+            )}
+
+            <div style={{ marginTop: 12 }}>
               <button
                 className={`btn btn--primary btn--lg${adding ? " btn--added" : ""}`}
                 onClick={handleAdd}

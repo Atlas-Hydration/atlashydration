@@ -16,14 +16,11 @@ export default function FounderSection() {
             </div>
             <div className="founder__signature">
               <div className="founder__sig-header">
-                <img
+                <div
                   className="founder__sig-avatar"
-                  src="/images/gemini-generated-image-544vz0544vz0544v-1.webp"
-                  alt="Garrett Ray"
-                  width="48"
-                  height="48"
-                  loading="lazy"
-                />
+                  style={{ width: 48, height: 48, borderRadius: "50%", background: "#1A1A1A", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1rem", fontWeight: 700, color: "#C8514A" }}
+                  aria-label="Garrett Ray"
+                >GR</div>
                 <div className="founder__sig-info">
                   <span className="founder__sig-name">Garrett Ray</span>
                   <span className="founder__sig-role">Founder, Atlas Hydration</span>
@@ -39,12 +36,21 @@ export default function FounderSection() {
               </a>
             </div>
           </div>
-          <div className="founder__image">
-            <img
-              src="/images/gemini-generated-image-544vz0544vz0544v-1.webp"
-              alt="Garrett Ray, founder of Atlas Hydration"
-              loading="lazy"
-            />
+          {/* REPLACE: Add real founder photo here */}
+          <div className="founder__image founder__image--placeholder">
+            <div style={{
+              width: "100%", height: "100%", minHeight: 400,
+              background: "linear-gradient(135deg, #1A1A1A 0%, #2A2A2A 100%)",
+              display: "flex", alignItems: "center", justifyContent: "center",
+              borderRadius: "inherit",
+            }}>
+              <img
+                src="/logo.svg"
+                alt="Atlas Hydration"
+                style={{ width: 120, height: "auto", opacity: 0.15, filter: "brightness(10)" }}
+                loading="lazy"
+              />
+            </div>
           </div>
         </div>
       </div>
