@@ -31,8 +31,74 @@ interface RealtimeData {
   sources: { source: string; activeUsers: number }[];
   browsers: { browser: string; activeUsers: number }[];
   operatingSystems: { os: string; activeUsers: number }[];
-  events: { event: string; city: string; country: string; count: number; minutesAgo?: number }[];
+  events: { event: string; city: string; country: string; count: number; minutesAgo?: number; page?: string; device?: string }[];
   revenue: { total: number; orders: number; avgOrderValue: number };
+}
+
+/* ── Device icons ── */
+const DeviceIconSmall = {
+  desktop: () => (
+    <svg width={13} height={13} viewBox="0 0 24 24" fill="none" stroke="var(--text-dim)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="2" y="3" width="20" height="14" rx="2" ry="2" /><line x1="8" y1="21" x2="16" y2="21" /><line x1="12" y1="17" x2="12" y2="21" />
+    </svg>
+  ),
+  mobile: () => (
+    <svg width={13} height={13} viewBox="0 0 24 24" fill="none" stroke="var(--text-dim)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="5" y="2" width="14" height="20" rx="2" ry="2" /><line x1="12" y1="18" x2="12.01" y2="18" />
+    </svg>
+  ),
+  tablet: () => (
+    <svg width={13} height={13} viewBox="0 0 24 24" fill="none" stroke="var(--text-dim)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="4" y="2" width="16" height="20" rx="2" ry="2" /><line x1="12" y1="18" x2="12.01" y2="18" />
+    </svg>
+  ),
+};
+
+function getDeviceIconSmall(device: string) {
+  const d = (device || '').toLowerCase();
+  if (d === 'mobile') return <DeviceIconSmall.mobile />;
+  if (d === 'tablet') return <DeviceIconSmall.tablet />;
+  return <DeviceIconSmall.desktop />;
+}
+
+/* ── Country flag emoji ── */
+const COUNTRY_CODES: Record<string, string> = {
+  'United States': 'US', 'United Kingdom': 'GB', 'Canada': 'CA', 'Australia': 'AU',
+  'Germany': 'DE', 'France': 'FR', 'Japan': 'JP', 'India': 'IN', 'Brazil': 'BR',
+  'Mexico': 'MX', 'Spain': 'ES', 'Italy': 'IT', 'Netherlands': 'NL', 'Sweden': 'SE',
+  'Norway': 'NO', 'Denmark': 'DK', 'Finland': 'FI', 'Poland': 'PL', 'Switzerland': 'CH',
+  'Belgium': 'BE', 'Austria': 'AT', 'Portugal': 'PT', 'Ireland': 'IE', 'New Zealand': 'NZ',
+  'South Korea': 'KR', 'China': 'CN', 'Russia': 'RU', 'Argentina': 'AR', 'Colombia': 'CO',
+  'Chile': 'CL', 'South Africa': 'ZA', 'Israel': 'IL', 'Turkey': 'TR',
+  'Thailand': 'TH', 'Indonesia': 'ID', 'Philippines': 'PH', 'Singapore': 'SG', 'Taiwan': 'TW',
+};
+
+function countryFlag(country: string): string {
+  const code = COUNTRY_CODES[country];
+  if (!code) return '';
+  return String.fromCodePoint(...code.split('').map(c => 0x1F1E6 + c.charCodeAt(0) - 65));
+}
+
+/* ── Atlas Universe Names ── */
+const ATLAS_NAMES = [
+  'Poseidon', 'Triton', 'Nereus', 'Oceanus', 'Tethys', 'Amphitrite',
+  'Proteus', 'Galene', 'Thalassa', 'Pontus', 'Aegir', 'Ran',
+  'Mira', 'Calypso', 'Naiad', 'Undine', 'Marinus', 'Pelagius',
+  'Coral', 'Reef', 'Tide', 'Drift', 'Cascade', 'Ripple',
+  'Atlas', 'Orion', 'Nova', 'Zenith', 'Astra', 'Vega',
+  'Lyra', 'Cetus', 'Hydra', 'Dorado', 'Piscis', 'Aquila',
+  'Zephyr', 'Borealis', 'Solstice', 'Meridian', 'Horizon', 'Summit',
+  'Echo', 'Flux', 'Prism', 'Ember', 'Onyx', 'Quartz',
+];
+
+function hashStr(s: string): number {
+  let h = 0;
+  for (let i = 0; i < s.length; i++) h = ((h << 5) - h + s.charCodeAt(i)) | 0;
+  return Math.abs(h);
+}
+
+function getAtlasName(city: string, country: string): string {
+  return ATLAS_NAMES[hashStr(`${city}|${country}`) % ATLAS_NAMES.length];
 }
 
 /* ── Stat card component ── */
@@ -779,8 +845,12 @@ function LiveView({ data, loading, sparklineData }: { data: RealtimeData | null;
               .filter((e) => !['scroll', 'user_engagement'].includes(e.event))
               .map((e, i) => {
                 const info = EVENT_LABELS[e.event] || { label: e.event, Icon: EventIcon.activity, color: 'var(--text-dim)' };
-                const location = [e.city, e.country].filter(Boolean).join(', ');
+                const flag = countryFlag(e.country);
+                const cityDisplay = e.city || '';
+                const location = flag ? `${flag} ${cityDisplay}` : [cityDisplay, e.country].filter(Boolean).join(', ');
                 const when = formatMinutesAgo(e.minutesAgo ?? 0);
+                const isNew = e.event === 'first_visit' || e.event === 'session_start';
+                const atlasName = (e.city && e.country) ? getAtlasName(e.city, e.country) : null;
                 return (
                   <div key={`${e.event}-${e.city}-${e.minutesAgo}-${i}`} style={{
                     display: 'flex', alignItems: 'center', gap: 12,
@@ -797,18 +867,35 @@ function LiveView({ data, loading, sparklineData }: { data: RealtimeData | null;
                       <info.Icon color={info.color} size={15} />
                     </span>
                     <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 2 }}>
-                      <span style={{ color: 'var(--text)' }}>
-                        Someone{location ? ` in ${location}` : ''}{' '}
+                      <span style={{ color: 'var(--text)', display: 'flex', alignItems: 'center', gap: 5, flexWrap: 'wrap' }}>
+                        {atlasName ? (
+                          <span style={{ fontWeight: 600 }}>{atlasName}</span>
+                        ) : 'Someone'}
+                        {location ? ` in ${location}` : ''}
+                        <span style={{ display: 'inline-flex', opacity: 0.5 }}>{getDeviceIconSmall(e.device || '')}</span>
+                        {' '}
                         <span style={{ color: info.color, fontWeight: 600 }}>{info.label}</span>
+                        {isNew && (
+                          <span style={{
+                            fontSize: '0.58rem', fontWeight: 700,
+                            background: 'rgba(34,197,94,0.15)', color: 'var(--green)',
+                            padding: '1px 5px', borderRadius: 6,
+                          }}>NEW</span>
+                        )}
                       </span>
+                      {e.page && e.page !== '(not set)' && (
+                        <span style={{ fontSize: '0.68rem', color: 'var(--text-dim)' }}>on {e.page}</span>
+                      )}
                       <span style={{ fontSize: '0.7rem', color: 'var(--text-dim)' }}>{when}</span>
                     </div>
-                    <span style={{
-                      fontSize: '0.7rem', color: 'var(--text-dim)',
-                      background: 'var(--surface)', padding: '2px 8px', borderRadius: 8,
-                    }}>
-                      x{e.count}
-                    </span>
+                    {e.count > 1 && (
+                      <span style={{
+                        fontSize: '0.7rem', color: 'var(--text-dim)',
+                        background: 'var(--surface)', padding: '2px 8px', borderRadius: 8,
+                      }}>
+                        x{e.count}
+                      </span>
+                    )}
                   </div>
                 );
               })}
