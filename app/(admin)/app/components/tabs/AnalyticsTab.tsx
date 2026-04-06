@@ -832,6 +832,34 @@ const FALLBACK: Record<string, AnalyticsData> = {
       { label: 'Purchase', value: 1, rate: '4.5%' },
     ],
   },
+  'yesterday': {
+    users: 15, sessions: 19, purchases: 0,
+    usersTrend: '-16.7%', sessionsTrend: '-13.6%', purchasesTrend: '-100%',
+    conversionRate: '0%', avgSessionDuration: '1m 32s', bounceRate: '42.1%',
+    topPages: [
+      { path: '/', views: 14, change: '-12.5%' },
+      { path: '/products/strawberry-lemonade', views: 10, change: '-9.1%' },
+      { path: '/products/grapefruit', views: 4, change: '-20.0%' },
+    ],
+    channels: [
+      { name: 'Direct', sessions: 7, color: '#3b82f6' },
+      { name: 'Organic Social', sessions: 5, color: '#ec4899' },
+      { name: 'Organic Search', sessions: 4, color: '#22c55e' },
+      { name: 'Email', sessions: 3, color: '#6b7280' },
+    ],
+    countries: [
+      { name: 'United States', users: 12, pct: '80.0%' },
+      { name: 'Canada', users: 2, pct: '13.3%' },
+      { name: 'United Kingdom', users: 1, pct: '6.7%' },
+    ],
+    funnel: [
+      { label: 'Sessions', value: 19, rate: '100%' },
+      { label: 'Page Views', value: 34, rate: '178.9%' },
+      { label: 'Add to Cart', value: 2, rate: '10.5%' },
+      { label: 'Checkout', value: 0, rate: '0%' },
+      { label: 'Purchase', value: 0, rate: '0%' },
+    ],
+  },
   '7d': {
     users: 260, sessions: 301, purchases: 7,
     usersTrend: '+68.8%', sessionsTrend: '+55.2%', purchasesTrend: '+600%',
@@ -952,8 +980,8 @@ const FALLBACK: Record<string, AnalyticsData> = {
 };
 
 /* ── Period labels ── */
-type Period = 'live' | 'today' | '7d' | '30d' | '90d';
-const RANGE_OPTIONS: { value: Exclude<Period, 'live' | 'today'>; label: string }[] = [
+type Period = 'live' | 'today' | 'yesterday' | '7d' | '30d' | '90d';
+const RANGE_OPTIONS: { value: Exclude<Period, 'live' | 'today' | 'yesterday'>; label: string }[] = [
   { value: '7d', label: 'Last 7 days' },
   { value: '30d', label: 'Last 30 days' },
   { value: '90d', label: 'Last 90 days' },
@@ -962,7 +990,7 @@ const RANGE_OPTIONS: { value: Exclude<Period, 'live' | 'today'>; label: string }
 /* ── Main Analytics Tab ── */
 export default function AnalyticsTab() {
   const [period, setPeriod] = useState<Period>('live');
-  const [rangeChoice, setRangeChoice] = useState<Exclude<Period, 'live' | 'today'>>('7d');
+  const [rangeChoice, setRangeChoice] = useState<Exclude<Period, 'live' | 'today' | 'yesterday'>>('7d');
   const [liveData, setLiveData] = useState<Record<string, AnalyticsData>>({});
   const [realtimeData, setRealtimeData] = useState<RealtimeData | null>(null);
   const [isLive, setIsLive] = useState(false);
@@ -972,6 +1000,25 @@ export default function AnalyticsTab() {
   const [lastUpdated, setLastUpdated] = useState('');
   const realtimeInterval = useRef<ReturnType<typeof setInterval> | null>(null);
   const [sparklineHistory, setSparklineHistory] = useState<number[]>([]);
+  const [fullscreen, setFullscreen] = useState(false);
+  const dashboardRef = useRef<HTMLDivElement>(null);
+
+  const toggleFullscreen = useCallback(() => {
+    if (!document.fullscreenElement && dashboardRef.current) {
+      dashboardRef.current.requestFullscreen().catch(() => {});
+      setFullscreen(true);
+      setPeriod('live'); // Auto-switch to live in fullscreen
+    } else if (document.fullscreenElement) {
+      document.exitFullscreen().catch(() => {});
+      setFullscreen(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    const handleFsChange = () => setFullscreen(!!document.fullscreenElement);
+    document.addEventListener('fullscreenchange', handleFsChange);
+    return () => document.removeEventListener('fullscreenchange', handleFsChange);
+  }, []);
 
   const fetchAnalytics = useCallback(async (p: Period) => {
     if (p === 'live') return; // Handled separately
@@ -1035,8 +1082,10 @@ export default function AnalyticsTab() {
     : null;
 
   return (
-    <div>
-      {/* Period selector: Live + Today buttons + custom range slider */}
+    <div ref={dashboardRef} style={fullscreen ? {
+      background: 'var(--bg)', padding: 32, overflowY: 'auto', height: '100vh',
+    } : undefined}>
+      {/* Period selector */}
       <div style={{ display: 'flex', gap: 10, marginBottom: 32, flexWrap: 'wrap', alignItems: 'center' }}>
         <button
           style={{
@@ -1070,28 +1119,41 @@ export default function AnalyticsTab() {
         >
           Today
         </button>
+        <button
+          style={{
+            padding: '8px 20px', fontSize: '0.8rem',
+            border: '1px solid var(--border)',
+            borderRadius: 8,
+            background: period === 'yesterday' ? 'var(--accent)' : 'var(--surface)',
+            color: period === 'yesterday' ? '#fff' : 'var(--text)',
+            cursor: 'pointer', fontWeight: 600,
+          }}
+          onClick={() => setPeriod('yesterday')}
+        >
+          Yesterday
+        </button>
 
         {/* Range dropdown */}
         <select
-          value={period === 'live' || period === 'today' ? rangeChoice : period}
+          value={['live', 'today', 'yesterday'].includes(period) ? rangeChoice : period}
           onChange={(e) => {
-            const val = e.target.value as Exclude<Period, 'live' | 'today'>;
+            const val = e.target.value as Exclude<Period, 'live' | 'today' | 'yesterday'>;
             setRangeChoice(val);
             setPeriod(val);
           }}
           style={{
             padding: '8px 14px',
             fontSize: '0.8rem',
-            border: (period !== 'live' && period !== 'today') ? '1px solid var(--accent)' : '1px solid var(--border)',
+            border: !['live', 'today', 'yesterday'].includes(period) ? '1px solid var(--accent)' : '1px solid var(--border)',
             borderRadius: 8,
-            background: (period !== 'live' && period !== 'today') ? 'var(--accent)' : 'var(--surface)',
-            color: (period !== 'live' && period !== 'today') ? '#fff' : 'var(--text)',
+            background: !['live', 'today', 'yesterday'].includes(period) ? 'var(--accent)' : 'var(--surface)',
+            color: !['live', 'today', 'yesterday'].includes(period) ? '#fff' : 'var(--text)',
             cursor: 'pointer',
             fontWeight: 600,
             appearance: 'none',
             WebkitAppearance: 'none',
             MozAppearance: 'none',
-            backgroundImage: `url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6' fill='none' stroke='${(period !== 'live' && period !== 'today') ? 'white' : '%23999'}' stroke-width='1.5'%3e%3cpath d='M1 1l4 4 4-4'/%3e%3c/svg%3e")`,
+            backgroundImage: `url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6' fill='none' stroke='${!['live', 'today', 'yesterday'].includes(period) ? 'white' : '%23999'}' stroke-width='1.5'%3e%3cpath d='M1 1l4 4 4-4'/%3e%3c/svg%3e")`,
             backgroundRepeat: 'no-repeat',
             backgroundPosition: 'right 12px center',
             paddingRight: 32,
@@ -1115,15 +1177,36 @@ export default function AnalyticsTab() {
           {lastUpdated && <span style={{ marginLeft: 6, opacity: 0.7 }}>({lastUpdated})</span>}
         </div>
 
-        <a
-          href="https://analytics.google.com/analytics/web/"
-          target="_blank"
-          rel="noopener noreferrer"
-          style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: 6, color: 'var(--accent)', fontSize: '0.8rem', textDecoration: 'none' }}
-        >
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6" /><polyline points="15 3 21 3 21 9" /><line x1="10" y1="14" x2="21" y2="3" /></svg>
-          Open GA4
-        </a>
+        <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: 12 }}>
+          <button
+            onClick={toggleFullscreen}
+            title={fullscreen ? 'Exit fullscreen' : 'Fullscreen'}
+            style={{
+              display: 'flex', alignItems: 'center', gap: 6,
+              padding: '6px 14px', fontSize: '0.8rem', fontWeight: 600,
+              background: fullscreen ? 'var(--accent)' : 'var(--surface)',
+              color: fullscreen ? '#fff' : 'var(--text)',
+              border: '1px solid var(--border)', borderRadius: 8,
+              cursor: 'pointer',
+            }}
+          >
+            {fullscreen ? (
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="4 14 10 14 10 20" /><polyline points="20 10 14 10 14 4" /><line x1="14" y1="10" x2="21" y2="3" /><line x1="3" y1="21" x2="10" y2="14" /></svg>
+            ) : (
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="15 3 21 3 21 9" /><polyline points="9 21 3 21 3 15" /><line x1="21" y1="3" x2="14" y2="10" /><line x1="3" y1="21" x2="10" y2="14" /></svg>
+            )}
+            {fullscreen ? 'Exit' : 'Fullscreen'}
+          </button>
+          <a
+            href="https://analytics.google.com/analytics/web/"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{ display: 'flex', alignItems: 'center', gap: 6, color: 'var(--accent)', fontSize: '0.8rem', textDecoration: 'none' }}
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6" /><polyline points="15 3 21 3 21 9" /><line x1="10" y1="14" x2="21" y2="3" /></svg>
+            Open GA4
+          </a>
+        </div>
       </div>
 
       {error && (
