@@ -752,7 +752,27 @@ function LiveView({ data, loading, sparklineData }: { data: RealtimeData | null;
           background: 'var(--surface)', border: '1px solid var(--border)',
           borderRadius: 'var(--radius)', padding: 24, marginTop: 20,
         }}>
-          <h3 style={{ fontSize: '0.9rem', fontWeight: 700, marginBottom: 4 }}>Live Event Feed</h3>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 4 }}>
+            <h3 style={{ fontSize: '0.9rem', fontWeight: 700 }}>Live Event Feed</h3>
+            <button
+              onClick={() => window.open('/app/live-feed', 'atlas-live-feed', 'width=520,height=700,menubar=no,toolbar=no,location=no,status=no')}
+              title="Pop out live feed"
+              style={{
+                display: 'flex', alignItems: 'center', gap: 6,
+                padding: '5px 12px', fontSize: '0.72rem', fontWeight: 600,
+                background: 'rgba(255,255,255,0.04)', color: 'var(--text-dim)',
+                border: '1px solid var(--border)', borderRadius: 6,
+                cursor: 'pointer',
+              }}
+            >
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6" />
+                <polyline points="15 3 21 3 21 9" />
+                <line x1="10" y1="14" x2="21" y2="3" />
+              </svg>
+              Pop out
+            </button>
+          </div>
           <p style={{ fontSize: '0.75rem', color: 'var(--text-dim)', marginBottom: 16 }}>Recent activity on your site</p>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 10, maxHeight: 300, overflowY: 'auto' }}>
             {data.events
@@ -1000,25 +1020,6 @@ export default function AnalyticsTab() {
   const [lastUpdated, setLastUpdated] = useState('');
   const realtimeInterval = useRef<ReturnType<typeof setInterval> | null>(null);
   const [sparklineHistory, setSparklineHistory] = useState<number[]>([]);
-  const [fullscreen, setFullscreen] = useState(false);
-  const dashboardRef = useRef<HTMLDivElement>(null);
-
-  const toggleFullscreen = useCallback(() => {
-    if (!document.fullscreenElement && dashboardRef.current) {
-      dashboardRef.current.requestFullscreen().catch(() => {});
-      setFullscreen(true);
-      setPeriod('live'); // Auto-switch to live in fullscreen
-    } else if (document.fullscreenElement) {
-      document.exitFullscreen().catch(() => {});
-      setFullscreen(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    const handleFsChange = () => setFullscreen(!!document.fullscreenElement);
-    document.addEventListener('fullscreenchange', handleFsChange);
-    return () => document.removeEventListener('fullscreenchange', handleFsChange);
-  }, []);
 
   const fetchAnalytics = useCallback(async (p: Period) => {
     if (p === 'live') return; // Handled separately
@@ -1082,9 +1083,7 @@ export default function AnalyticsTab() {
     : null;
 
   return (
-    <div ref={dashboardRef} style={fullscreen ? {
-      background: 'var(--bg)', padding: 32, overflowY: 'auto', height: '100vh',
-    } : undefined}>
+    <div>
       {/* Period selector */}
       <div style={{ display: 'flex', gap: 10, marginBottom: 32, flexWrap: 'wrap', alignItems: 'center' }}>
         <button
@@ -1177,36 +1176,15 @@ export default function AnalyticsTab() {
           {lastUpdated && <span style={{ marginLeft: 6, opacity: 0.7 }}>({lastUpdated})</span>}
         </div>
 
-        <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: 12 }}>
-          <button
-            onClick={toggleFullscreen}
-            title={fullscreen ? 'Exit fullscreen' : 'Fullscreen'}
-            style={{
-              display: 'flex', alignItems: 'center', gap: 6,
-              padding: '6px 14px', fontSize: '0.8rem', fontWeight: 600,
-              background: fullscreen ? 'var(--accent)' : 'var(--surface)',
-              color: fullscreen ? '#fff' : 'var(--text)',
-              border: '1px solid var(--border)', borderRadius: 8,
-              cursor: 'pointer',
-            }}
-          >
-            {fullscreen ? (
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="4 14 10 14 10 20" /><polyline points="20 10 14 10 14 4" /><line x1="14" y1="10" x2="21" y2="3" /><line x1="3" y1="21" x2="10" y2="14" /></svg>
-            ) : (
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="15 3 21 3 21 9" /><polyline points="9 21 3 21 3 15" /><line x1="21" y1="3" x2="14" y2="10" /><line x1="3" y1="21" x2="10" y2="14" /></svg>
-            )}
-            {fullscreen ? 'Exit' : 'Fullscreen'}
-          </button>
-          <a
-            href="https://analytics.google.com/analytics/web/"
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{ display: 'flex', alignItems: 'center', gap: 6, color: 'var(--accent)', fontSize: '0.8rem', textDecoration: 'none' }}
-          >
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6" /><polyline points="15 3 21 3 21 9" /><line x1="10" y1="14" x2="21" y2="3" /></svg>
-            Open GA4
-          </a>
-        </div>
+        <a
+          href="https://analytics.google.com/analytics/web/"
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: 6, color: 'var(--accent)', fontSize: '0.8rem', textDecoration: 'none' }}
+        >
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6" /><polyline points="15 3 21 3 21 9" /><line x1="10" y1="14" x2="21" y2="3" /></svg>
+          Open GA4
+        </a>
       </div>
 
       {error && (

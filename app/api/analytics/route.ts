@@ -374,18 +374,29 @@ export async function GET(request: Request) {
     const mins = Math.floor(avgSessionSec / 60);
     const secs = Math.round(avgSessionSec % 60);
 
-    // Parse top pages (with comparison)
+    // Parse top pages (with comparison) — deduplicate by path
     const pageRows = pages.rows || [];
-    const topPages = pageRows.slice(0, 10).map((r: { dimensionValues?: { value: string }[]; metricValues?: { value: string }[] }) => {
-      const path = r.dimensionValues?.[0]?.value || '/';
-      const currentViews = Number(r.metricValues?.[0]?.value || 0);
-      const prevViews = Number(r.metricValues?.[1]?.value || 0);
-      return {
+    const pageMap = new Map<string, { views: number; prevViews: number }>();
+    for (const r of pageRows) {
+      const path = (r as { dimensionValues?: { value: string }[] }).dimensionValues?.[0]?.value || '/';
+      const currentViews = Number((r as { metricValues?: { value: string }[] }).metricValues?.[0]?.value || 0);
+      const prevViews = Number((r as { metricValues?: { value: string }[] }).metricValues?.[1]?.value || 0);
+      const existing = pageMap.get(path);
+      if (existing) {
+        existing.views += currentViews;
+        existing.prevViews += prevViews;
+      } else {
+        pageMap.set(path, { views: currentViews, prevViews });
+      }
+    }
+    const topPages = [...pageMap.entries()]
+      .sort((a, b) => b[1].views - a[1].views)
+      .slice(0, 10)
+      .map(([path, { views, prevViews }]) => ({
         path,
-        views: currentViews,
-        change: trendPct(currentViews, prevViews),
-      };
-    });
+        views,
+        change: trendPct(views, prevViews),
+      }));
 
     // Parse channels
     const channelColors: Record<string, string> = {
