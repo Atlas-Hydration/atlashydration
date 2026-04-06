@@ -4722,8 +4722,51 @@ img {
   overflow: hidden;
 }
 
-.cta-dark--science {
-  background: url('https://images.unsplash.com/photo-1559757175-7cb057fba93c?w=1920&q=80') center/cover no-repeat;
+.cta-dark--video {
+  background: #0a0a0a;
+}
+
+.cta-dark__video-poster {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.cta-dark__video-poster-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.cta-dark__video-cf {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 120vw;
+  height: 120vh;
+  min-width: 120%;
+  min-height: 120%;
+  transform: translate(-50%, -50%);
+  border: 0;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.cta-dark__video-cf--desktop {
+  display: block;
+}
+
+.cta-dark__video-cf--mobile {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .cta-dark__video-cf--desktop {
+    display: none;
+  }
+  .cta-dark__video-cf--mobile {
+    display: block;
+  }
 }
 
 .cta-dark__overlay {
