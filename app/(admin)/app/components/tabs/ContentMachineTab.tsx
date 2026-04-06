@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useCallback, useRef, useEffect } from 'react';
+import JSZip from 'jszip';
 
 // ─── TYPES ───
 interface Slide {
@@ -406,6 +407,82 @@ async function exportSlide(slide: Slide, topic: string, deckNum: number, slideNu
   });
 }
 
+function slugify(text: string): string {
+  return text.toLowerCase().replace(/[^a-z0-9]+/g, '-').slice(0, 30);
+}
+
+async function renderSlideBlob(slide: Slide): Promise<Blob> {
+  await document.fonts.ready;
+  const c = renderFullSlide(slide);
+  return new Promise((resolve) => {
+    c.toBlob((blob) => resolve(blob!), 'image/jpeg', 0.95);
+  });
+}
+
+async function downloadDeckZip(
+  deck: Deck, deckNum: number,
+  onProgress: (msg: string) => void,
+  cancelRef: { current: boolean },
+): Promise<void> {
+  const zip = new JSZip();
+  const folderName = slugify(deck.topic);
+  const folder = zip.folder(folderName)!;
+
+  for (let i = 0; i < deck.slides.length; i++) {
+    if (cancelRef.current) return;
+    onProgress(`Adding slide ${i + 1} of ${deck.slides.length}...`);
+    const blob = await renderSlideBlob(deck.slides[i]);
+    folder.file(`atlas-${folderName}-slide-${String(i + 1).padStart(2, '0')}.jpg`, blob);
+  }
+
+  onProgress('Creating ZIP...');
+  const zipBlob = await zip.generateAsync({ type: 'blob' });
+  const url = URL.createObjectURL(zipBlob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `atlas-${folderName}-slides.zip`;
+  a.style.display = 'none';
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(() => { document.body.removeChild(a); URL.revokeObjectURL(url); }, 150);
+}
+
+async function downloadBatchZip(
+  decks: Deck[],
+  onProgress: (msg: string) => void,
+  cancelRef: { current: boolean },
+): Promise<void> {
+  const zip = new JSZip();
+  const dateStr = new Date().toLocaleDateString('en-US', { month: 'long', day: '2-digit' }).toLowerCase().replace(/\s+/g, '-');
+  const batchFolder = zip.folder(`atlas-content-batch-${dateStr}`)!;
+
+  for (let d = 0; d < decks.length; d++) {
+    if (cancelRef.current) return;
+    const deck = decks[d];
+    const deckSlug = slugify(deck.topic);
+    const deckFolder = batchFolder.folder(deckSlug)!;
+
+    for (let s = 0; s < deck.slides.length; s++) {
+      if (cancelRef.current) return;
+      const totalDone = d * 8 + s + 1;
+      onProgress(`Deck ${d + 1}/${decks.length} — Slide ${s + 1}/8 (${totalDone}/${decks.length * 8} total)`);
+      const blob = await renderSlideBlob(deck.slides[s]);
+      deckFolder.file(`atlas-${deckSlug}-slide-${String(s + 1).padStart(2, '0')}.jpg`, blob);
+    }
+  }
+
+  onProgress('Creating ZIP...');
+  const zipBlob = await zip.generateAsync({ type: 'blob' });
+  const url = URL.createObjectURL(zipBlob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `atlas-batch-${dateStr}.zip`;
+  a.style.display = 'none';
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(() => { document.body.removeChild(a); URL.revokeObjectURL(url); }, 150);
+}
+
 // ─── MAIN COMPONENT ───
 export default function ContentMachineTab() {
   const [generating, setGenerating] = useState(false);
@@ -448,14 +525,9 @@ export default function ContentMachineTab() {
   const handleExportAll = useCallback(async () => {
     cancelRef.current = false;
     setDownloading(true);
-    for (let d = 0; d < decks.length; d++) {
-      for (let s = 0; s < decks[d].slides.length; s++) {
-        if (cancelRef.current) { setExportProgress(''); setDownloading(false); return; }
-        setExportProgress(`Downloading slide ${s + 1} of 8 (Deck ${d + 1}/${decks.length})`);
-        await exportSlide(decks[d].slides[s], decks[d].topic, d + 1, s + 1);
-        await new Promise(r => setTimeout(r, 300));
-      }
-    }
+    try {
+      await downloadBatchZip(decks, (msg) => setExportProgress(msg), cancelRef);
+    } catch (e) { console.error('Batch download failed:', e); }
     setExportProgress('');
     setDownloading(false);
   }, [decks]);
@@ -586,11 +658,10 @@ export default function ContentMachineTab() {
               <div style={{ display: 'flex', gap: 8, marginTop: 12, flexWrap: 'wrap' }}>
                 <button style={{ ...ghost, opacity: downloading ? 0.5 : 1, cursor: downloading ? 'wait' : 'pointer' }} disabled={downloading} onClick={async () => {
                   setDownloading(true);
-                  for (let s = 0; s < deck.slides.length; s++) {
-                    setExportProgress(`Downloading slide ${s + 1} of 8...`);
-                    await exportSlide(deck.slides[s], deck.topic, di + 1, s + 1);
-                    await new Promise(r => setTimeout(r, 300));
-                  }
+                  cancelRef.current = false;
+                  try {
+                    await downloadDeckZip(deck, di + 1, (msg) => setExportProgress(msg), cancelRef);
+                  } catch (e) { console.error('Deck download failed:', e); }
                   setExportProgress('');
                   setDownloading(false);
                 }}>Download All Slides</button>
