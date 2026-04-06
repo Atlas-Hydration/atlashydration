@@ -184,6 +184,12 @@ function checkoutToItems(co: ShopifyCheckout): CartItem[] {
 // ---------------------------------------------------------------------------
 
 function computePromo(items: CartItem[]) {
+  // Bundle discounts are handled by Shopify discount codes (ATLAS2PACK, ATLAS3GET1)
+  // Don't apply client-side discounts when a bundle code is active
+  if (typeof window !== 'undefined' && localStorage.getItem('atlas_discount_code')) {
+    return { freeItems: 0, discount: 0 };
+  }
+
   const totalQty = items.reduce((sum, i) => sum + i.quantity, 0);
   const freeItems = Math.floor(totalQty / 3);
   let discount = 0;
