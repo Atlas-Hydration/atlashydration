@@ -564,7 +564,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     `;
 
     try {
-      const res = await fetch(`https://${SHOPIFY_DOMAIN}/api/2024-04/graphql.json`, {
+      const res = await fetch(`https://${SHOPIFY_DOMAIN}/api/2026-04/graphql.json`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
