@@ -402,7 +402,7 @@ export default function LiveFeedPage() {
 
   useEffect(() => {
     fetchData();
-    intervalRef.current = setInterval(fetchData, 15000);
+    intervalRef.current = setInterval(fetchData, 10000);
     return () => { if (intervalRef.current) clearInterval(intervalRef.current); };
   }, [fetchData]);
 
@@ -472,6 +472,8 @@ export default function LiveFeedPage() {
         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/logo.svg" alt="Atlas" style={{ height: 22, width: 'auto', opacity: 0.9 }} />
           <div style={{
             width: 8, height: 8, borderRadius: '50%',
             background: '#22c55e',
@@ -525,7 +527,7 @@ export default function LiveFeedPage() {
           <span style={{
             background: 'rgba(255,255,255,0.04)', padding: '4px 10px', borderRadius: 6,
           }}>
-            Auto-refresh 15s
+            Auto-refresh 10s
           </span>
         </div>
       </div>

@@ -267,10 +267,15 @@ export async function GET(request: Request) {
         };
       });
 
-      // Merge: realtime events first, then fill with today's events
-      const events = realtimeEventsParsed.length > 0
-        ? realtimeEventsParsed
-        : todayEventsParsed.slice(0, 50);
+      // Merge: realtime events first, then append today's older events
+      // Deduplicate by event+city+page so realtime events take priority
+      const seenKeys = new Set(realtimeEventsParsed.map(
+        (e: { event: string; city: string; page: string }) => `${e.event}|${e.city}|${e.page}`
+      ));
+      const olderToday = todayEventsParsed.filter(
+        (e: { event: string; city: string; page: string }) => !seenKeys.has(`${e.event}|${e.city}|${e.page}`)
+      );
+      const events = [...realtimeEventsParsed, ...olderToday].slice(0, 60);
 
       const revRow = todayRevenue?.rows?.[0];
       const revenue = {
