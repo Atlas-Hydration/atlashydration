@@ -475,10 +475,44 @@ export function CartProvider({ children }: { children: ReactNode }) {
       });
     }
 
-    // Always use Storefront API cartCreate for consistent checkout experience
-    // (Buy SDK checkout URLs don't support selling plans or discount codes)
+    // Read and clear discount code
+    const discountCode = localStorage.getItem('atlas_discount_code');
+    if (discountCode) localStorage.removeItem('atlas_discount_code');
 
-    // Build line items with selling plan references
+    // Determine if any items have subscriptions
+    const hasSubscriptions = items.some((i) => i.subscriptionFrequency);
+
+    // For subscription carts, use Shopify /cart/ permalink with selling_plan
+    // This is the most reliable method — cartCreate sometimes silently drops selling plans
+    if (hasSubscriptions) {
+      const cartParts: string[] = [];
+      let sellingPlanId = '';
+
+      for (const item of items) {
+        const product = PRODUCTS[item.slug];
+        if (!product) continue;
+        const variantNum = product.variantId.replace('gid://shopify/ProductVariant/', '');
+        cartParts.push(`${variantNum}:${item.quantity}`);
+        if (item.subscriptionFrequency && SELLING_PLANS[item.subscriptionFrequency]) {
+          sellingPlanId = SELLING_PLANS[item.subscriptionFrequency];
+        }
+      }
+
+      if (cartParts.length === 0) return;
+
+      let url = `https://${SHOPIFY_DOMAIN}/cart/${cartParts.join(',')}`;
+      const params = new URLSearchParams();
+      if (sellingPlanId) params.set('selling_plan', sellingPlanId);
+      if (discountCode) params.set('discount', discountCode);
+      const qs = params.toString();
+      if (qs) url += `?${qs}`;
+
+      console.log('[Atlas Checkout] Subscription cart permalink:', url);
+      window.location.href = url;
+      return;
+    }
+
+    // For non-subscription carts, build lines for cartCreate
     const lines = items
       .map((item) => {
         let variantGid: string | null = null;
@@ -513,27 +547,13 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
         if (!variantGid) return null;
 
-        const line: { merchandiseId: string; quantity: number; sellingPlanId?: string } = {
-          merchandiseId: variantGid,
-          quantity: item.quantity,
-        };
-
-        if (item.subscriptionFrequency && SELLING_PLANS[item.subscriptionFrequency]) {
-          line.sellingPlanId = `gid://shopify/SellingPlan/${SELLING_PLANS[item.subscriptionFrequency]}`;
-        }
-
-        return line;
+        return { merchandiseId: variantGid, quantity: item.quantity };
       })
       .filter(Boolean);
 
     if (lines.length === 0) return;
 
-    // Log lines for debugging subscription issues
-    console.log('[Atlas Checkout] Cart lines:', JSON.stringify(lines, null, 2));
-
-    // Read and clear discount code
-    const discountCode = localStorage.getItem('atlas_discount_code');
-    if (discountCode) localStorage.removeItem('atlas_discount_code');
+    console.log('[Atlas Checkout] Non-subscription cart lines:', JSON.stringify(lines, null, 2));
 
     // Use Storefront API cartCreate mutation
     const mutation = `
@@ -573,25 +593,26 @@ export function CartProvider({ children }: { children: ReactNode }) {
       if (checkoutUrl) {
         window.location.href = checkoutUrl;
       } else {
-        // Fallback: cart permalink (selling_plan as query param)
+        // Fallback: cart permalink for non-subscription
         console.error("cartCreate failed:", json?.data?.cartCreate?.userErrors, json?.errors);
-        const firstLine = lines[0] as { merchandiseId: string; quantity: number; sellingPlanId?: string } | undefined;
-        if (!firstLine) return;
-        const variantNum = firstLine.merchandiseId.replace("gid://shopify/ProductVariant/", "");
-        const totalQty = lines.reduce((s, l) => s + ((l as { quantity: number }).quantity || 0), 0);
-        const spId = firstLine.sellingPlanId?.replace("gid://shopify/SellingPlan/", "");
-        let fallbackUrl = `https://${SHOPIFY_DOMAIN}/cart/${variantNum}:${totalQty}`;
-        if (spId) fallbackUrl += `?selling_plan=${spId}`;
+        const parts = items.map(item => {
+          const product = PRODUCTS[item.slug];
+          if (!product) return null;
+          const vid = product.variantId.replace('gid://shopify/ProductVariant/', '');
+          return `${vid}:${item.quantity}`;
+        }).filter(Boolean);
+        let fallbackUrl = `https://${SHOPIFY_DOMAIN}/cart/${parts.join(',')}`;
+        if (discountCode) fallbackUrl += `?discount=${discountCode}`;
         window.location.href = fallbackUrl;
       }
     } catch (err) {
       console.error("Checkout error:", err);
-      // Last resort: simple cart permalink
-      const firstLine = lines[0] as { merchandiseId: string; quantity: number } | undefined;
-      if (!firstLine) return;
-      const variantNum = firstLine.merchandiseId.replace("gid://shopify/ProductVariant/", "");
-      const totalQty = lines.reduce((s, l) => s + ((l as { quantity: number }).quantity || 0), 0);
-      window.location.href = `https://${SHOPIFY_DOMAIN}/cart/${variantNum}:${totalQty}`;
+      const parts = items.map(item => {
+        const product = PRODUCTS[item.slug];
+        if (!product) return null;
+        return `${product.variantId.replace('gid://shopify/ProductVariant/', '')}:${item.quantity}`;
+      }).filter(Boolean);
+      window.location.href = `https://${SHOPIFY_DOMAIN}/cart/${parts.join(',')}`;
     }
   }, [items]);
 
