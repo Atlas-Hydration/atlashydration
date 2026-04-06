@@ -531,6 +531,10 @@ export function CartProvider({ children }: { children: ReactNode }) {
     // Log lines for debugging subscription issues
     console.log('[Atlas Checkout] Cart lines:', JSON.stringify(lines, null, 2));
 
+    // Read and clear discount code
+    const discountCode = localStorage.getItem('atlas_discount_code');
+    if (discountCode) localStorage.removeItem('atlas_discount_code');
+
     // Use Storefront API cartCreate mutation
     const mutation = `
       mutation cartCreate($input: CartInput!) {
@@ -546,8 +550,11 @@ export function CartProvider({ children }: { children: ReactNode }) {
       }
     `;
 
+    const cartInput: { lines: typeof lines; discountCodes?: string[] } = { lines };
+    if (discountCode) cartInput.discountCodes = [discountCode];
+
     try {
-      const res = await fetch(`https://${SHOPIFY_DOMAIN}/api/2024-10/graphql.json`, {
+      const res = await fetch(`https://${SHOPIFY_DOMAIN}/api/2024-07/graphql.json`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -555,7 +562,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
         },
         body: JSON.stringify({
           query: mutation,
-          variables: { input: { lines } },
+          variables: { input: cartInput },
         }),
       });
 
@@ -564,39 +571,27 @@ export function CartProvider({ children }: { children: ReactNode }) {
       const checkoutUrl = json?.data?.cartCreate?.cart?.checkoutUrl;
 
       if (checkoutUrl) {
-        // Ensure checkout URL uses .myshopify.com domain
-        const url = new URL(checkoutUrl);
-        if (!url.hostname.endsWith('.myshopify.com')) {
-          url.hostname = SHOPIFY_DOMAIN;
-        }
-        // Append discount code if stored from bundle selector
-        const discountCode = localStorage.getItem('atlas_discount_code');
-        if (discountCode) {
-          url.searchParams.set('discount', discountCode);
-          localStorage.removeItem('atlas_discount_code');
-        }
-        window.location.href = url.toString();
+        window.location.href = checkoutUrl;
       } else {
-        // Fallback: cart permalink with selling_plan support
-        console.error("cartCreate failed:", json?.data?.cartCreate?.userErrors);
-        const parts = lines.map((l) => {
-          const line = l as { merchandiseId: string; quantity: number; sellingPlanId?: string };
-          const id = line.merchandiseId.replace("gid://shopify/ProductVariant/", "");
-          const spId = line.sellingPlanId?.replace("gid://shopify/SellingPlan/", "");
-          return spId ? `${id}:${line.quantity}:${spId}` : `${id}:${line.quantity}`;
-        });
-        window.location.href = `https://${SHOPIFY_DOMAIN}/cart/${parts.join(",")}`;
+        // Fallback: cart permalink (selling_plan as query param)
+        console.error("cartCreate failed:", json?.data?.cartCreate?.userErrors, json?.errors);
+        const firstLine = lines[0] as { merchandiseId: string; quantity: number; sellingPlanId?: string } | undefined;
+        if (!firstLine) return;
+        const variantNum = firstLine.merchandiseId.replace("gid://shopify/ProductVariant/", "");
+        const totalQty = lines.reduce((s, l) => s + ((l as { quantity: number }).quantity || 0), 0);
+        const spId = firstLine.sellingPlanId?.replace("gid://shopify/SellingPlan/", "");
+        let fallbackUrl = `https://${SHOPIFY_DOMAIN}/cart/${variantNum}:${totalQty}`;
+        if (spId) fallbackUrl += `?selling_plan=${spId}`;
+        window.location.href = fallbackUrl;
       }
     } catch (err) {
       console.error("Checkout error:", err);
-      // Fallback: /cart/ permalink with selling_plan support
-      const parts = lines.map((l) => {
-        const line = l as { merchandiseId: string; quantity: number; sellingPlanId?: string };
-        const id = line.merchandiseId.replace("gid://shopify/ProductVariant/", "");
-        const spId = line.sellingPlanId?.replace("gid://shopify/SellingPlan/", "");
-        return spId ? `${id}:${line.quantity}:${spId}` : `${id}:${line.quantity}`;
-      });
-      window.location.href = `https://${SHOPIFY_DOMAIN}/cart/${parts.join(",")}`;
+      // Last resort: simple cart permalink
+      const firstLine = lines[0] as { merchandiseId: string; quantity: number } | undefined;
+      if (!firstLine) return;
+      const variantNum = firstLine.merchandiseId.replace("gid://shopify/ProductVariant/", "");
+      const totalQty = lines.reduce((s, l) => s + ((l as { quantity: number }).quantity || 0), 0);
+      window.location.href = `https://${SHOPIFY_DOMAIN}/cart/${variantNum}:${totalQty}`;
     }
   }, [items]);
 
