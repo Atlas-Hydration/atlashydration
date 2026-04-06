@@ -375,10 +375,17 @@ export function CartProvider({ children }: { children: ReactNode }) {
         delete subscriptionMetaRef.current[product.variantId];
       }
 
-      if (client && co) {
+      // For subscriptions, ALWAYS use local cart — the Buy SDK checkout
+      // cannot carry selling plans and will strip them on sync
+      if (subscriptionFrequency) {
+        addToLocalCart(productSlug, qty, subscriptionFrequency);
+        return;
+      }
+
+      if (clientRef.current && checkoutRef.current) {
         const lineItems = [{ variantId: product.variantId, quantity: qty }];
-        client.checkout
-          .addLineItems(co.id, lineItems)
+        clientRef.current.checkout
+          .addLineItems(checkoutRef.current.id, lineItems)
           .then((updated) => {
             syncFromCheckout(updated);
             setIsCartOpen(true);
