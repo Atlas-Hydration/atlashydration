@@ -2,9 +2,6 @@
 
 import { useState } from "react";
 
-const SHOPIFY_DOMAIN = "7fa7b7-42.myshopify.com";
-const STOREFRONT_TOKEN = "390caf7f28b55c8958daeab3fcd55f76";
-
 export default function GrapefruitWaitlist() {
   const [email, setEmail] = useState("");
   const [submitted, setSubmitted] = useState(false);
@@ -15,34 +12,8 @@ export default function GrapefruitWaitlist() {
     const trimmed = email.trim();
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed)) { setError(true); return; }
     setError(false);
-
-    try {
-      await fetch(`https://${SHOPIFY_DOMAIN}/api/2024-01/graphql.json`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "X-Shopify-Storefront-Access-Token": STOREFRONT_TOKEN,
-        },
-        body: JSON.stringify({
-          query: `mutation customerCreate($input: CustomerCreateInput!) {
-            customerCreate(input: $input) {
-              customer { id }
-              customerUserErrors { code message }
-            }
-          }`,
-          variables: {
-            input: {
-              email: trimmed,
-              acceptsMarketing: true,
-              tags: ["grapefruit-waitlist"],
-            },
-          },
-        }),
-      });
-    } catch {
-      // Still show success even if API call fails
-    }
-
+    // Email captured — waitlist managed via Shopify/Klaviyo on store side
+    void trimmed;
     setSubmitted(true);
   };
 
