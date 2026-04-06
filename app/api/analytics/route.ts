@@ -105,10 +105,10 @@ export async function GET(request: Request) {
           return { rows: [] };
         });
 
+      // Batch 1: core realtime queries (7 calls)
       const [
         activeUsers, realtimePages, realtimeCountries, realtimeCities,
-        realtimeDevices, todaySources, todayBrowsers, realtimeOS,
-        realtimeEvents, realtimeEventDetails, todayRevenue, todayEvents,
+        realtimeDevices, realtimeOS, realtimeEvents,
       ] = await Promise.all([
         safeRealtime({
           metrics: [{ name: 'activeUsers' }],
@@ -137,30 +137,13 @@ export async function GET(request: Request) {
           orderBys: [{ metric: { metricName: 'activeUsers' }, desc: true }],
           limit: 10,
         }),
-        // Traffic sources (not realtime — use today's report)
-        safeReport({
-          dateRanges: [{ startDate: 'today', endDate: 'today' }],
-          dimensions: [{ name: 'sessionSource' }],
-          metrics: [{ name: 'activeUsers' }],
-          orderBys: [{ metric: { metricName: 'activeUsers' }, desc: true }],
-          limit: 10,
-        }),
-        // Browsers (not realtime — use today's report)
-        safeReport({
-          dateRanges: [{ startDate: 'today', endDate: 'today' }],
-          dimensions: [{ name: 'browser' }],
-          metrics: [{ name: 'activeUsers' }],
-          orderBys: [{ metric: { metricName: 'activeUsers' }, desc: true }],
-          limit: 10,
-        }),
-        // Operating systems (platform is valid for realtime)
         safeRealtime({
           dimensions: [{ name: 'platform' }],
           metrics: [{ name: 'activeUsers' }],
           orderBys: [{ metric: { metricName: 'activeUsers' }, desc: true }],
           limit: 10,
         }),
-        // Recent events — core dimensions only (more dimensions = more likely to fail)
+        // Recent events
         safeRealtime({
           dimensions: [
             { name: 'eventName' },
@@ -172,19 +155,26 @@ export async function GET(request: Request) {
           orderBys: [{ dimension: { dimensionName: 'minutesAgo' } }],
           limit: 50,
         }),
-        // Extra event detail (page + device) — separate query so core events still work if this fails
-        safeRealtime({
-          dimensions: [
-            { name: 'eventName' },
-            { name: 'minutesAgo' },
-            { name: 'unifiedScreenName' },
-            { name: 'deviceCategory' },
-          ],
-          metrics: [{ name: 'eventCount' }],
-          orderBys: [{ dimension: { dimensionName: 'minutesAgo' } }],
-          limit: 50,
+      ]);
+
+      // Batch 2: today report queries (4 calls — runs after batch 1 to avoid quota)
+      const [
+        todaySources, todayBrowsers, todayRevenue, todayEvents,
+      ] = await Promise.all([
+        safeReport({
+          dateRanges: [{ startDate: 'today', endDate: 'today' }],
+          dimensions: [{ name: 'sessionSource' }],
+          metrics: [{ name: 'activeUsers' }],
+          orderBys: [{ metric: { metricName: 'activeUsers' }, desc: true }],
+          limit: 10,
         }),
-        // Today's revenue
+        safeReport({
+          dateRanges: [{ startDate: 'today', endDate: 'today' }],
+          dimensions: [{ name: 'browser' }],
+          metrics: [{ name: 'activeUsers' }],
+          orderBys: [{ metric: { metricName: 'activeUsers' }, desc: true }],
+          limit: 10,
+        }),
         safeReport({
           dateRanges: [{ startDate: 'today', endDate: 'today' }],
           metrics: [
@@ -193,7 +183,7 @@ export async function GET(request: Request) {
             { name: 'averagePurchaseRevenue' },
           ],
         }),
-        // Today's recent events (fallback when realtime is empty)
+        // Today's recent events (fallback + page/device detail)
         safeReport({
           dateRanges: [{ startDate: 'today', endDate: 'today' }],
           dimensions: [
@@ -249,25 +239,27 @@ export async function GET(request: Request) {
         activeUsers: Number(r.metricValues?.[0]?.value || 0),
       }));
 
-      // Build page/device lookup from detail query
+      // Build page/device lookup from today's events (keyed by event+city)
       const detailLookup = new Map<string, { page: string; device: string }>();
-      for (const r of (realtimeEventDetails.rows || []) as RTRow[]) {
+      for (const r of (todayEvents.rows || []) as RTRow[]) {
         const key = `${r.dimensionValues?.[0]?.value || ''}|${r.dimensionValues?.[1]?.value || ''}`;
-        detailLookup.set(key, {
-          page: r.dimensionValues?.[2]?.value || '',
-          device: r.dimensionValues?.[3]?.value || '',
-        });
+        if (!detailLookup.has(key)) {
+          detailLookup.set(key, {
+            page: r.dimensionValues?.[4]?.value || '',
+            device: r.dimensionValues?.[5]?.value || '',
+          });
+        }
       }
 
       const realtimeEventsParsed = (realtimeEvents.rows || []).map((r: RTRow) => {
         const eventName = r.dimensionValues?.[0]?.value || '';
-        const minutesAgo = r.dimensionValues?.[3]?.value || '0';
-        const detail = detailLookup.get(`${eventName}|${minutesAgo}`) || { page: '', device: '' };
+        const city = r.dimensionValues?.[1]?.value || '';
+        const detail = detailLookup.get(`${eventName}|${city}`) || { page: '', device: '' };
         return {
           event: eventName,
-          city: r.dimensionValues?.[1]?.value || '',
+          city,
           country: r.dimensionValues?.[2]?.value || '',
-          minutesAgo: Number(minutesAgo),
+          minutesAgo: Number(r.dimensionValues?.[3]?.value || 0),
           page: detail.page,
           device: detail.device,
           count: Number(r.metricValues?.[0]?.value || 0),
