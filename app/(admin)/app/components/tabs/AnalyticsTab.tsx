@@ -747,33 +747,33 @@ function LiveView({ data, loading, sparklineData }: { data: RealtimeData | null;
       </div>
 
       {/* Live Event Feed */}
-      {data?.events?.length ? (
-        <div style={{
-          background: 'var(--surface)', border: '1px solid var(--border)',
-          borderRadius: 'var(--radius)', padding: 24, marginTop: 20,
-        }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 4 }}>
-            <h3 style={{ fontSize: '0.9rem', fontWeight: 700 }}>Live Event Feed</h3>
-            <button
-              onClick={() => window.open('/app/live-feed', 'atlas-live-feed', 'width=520,height=700,menubar=no,toolbar=no,location=no,status=no')}
-              title="Pop out live feed"
-              style={{
-                display: 'flex', alignItems: 'center', gap: 6,
-                padding: '5px 12px', fontSize: '0.72rem', fontWeight: 600,
-                background: 'rgba(255,255,255,0.04)', color: 'var(--text-dim)',
-                border: '1px solid var(--border)', borderRadius: 6,
-                cursor: 'pointer',
-              }}
-            >
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6" />
-                <polyline points="15 3 21 3 21 9" />
-                <line x1="10" y1="14" x2="21" y2="3" />
-              </svg>
-              Pop out
-            </button>
-          </div>
-          <p style={{ fontSize: '0.75rem', color: 'var(--text-dim)', marginBottom: 16 }}>Recent activity on your site</p>
+      <div style={{
+        background: 'var(--surface)', border: '1px solid var(--border)',
+        borderRadius: 'var(--radius)', padding: 24, marginTop: 20,
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 4 }}>
+          <h3 style={{ fontSize: '0.9rem', fontWeight: 700 }}>Live Event Feed</h3>
+          <button
+            onClick={() => window.open('/app/live-feed', 'atlas-live-feed', 'width=520,height=700,menubar=no,toolbar=no,location=no,status=no')}
+            title="Pop out live feed"
+            style={{
+              display: 'flex', alignItems: 'center', gap: 6,
+              padding: '5px 12px', fontSize: '0.72rem', fontWeight: 600,
+              background: 'rgba(255,255,255,0.04)', color: 'var(--text-dim)',
+              border: '1px solid var(--border)', borderRadius: 6,
+              cursor: 'pointer',
+            }}
+          >
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6" />
+              <polyline points="15 3 21 3 21 9" />
+              <line x1="10" y1="14" x2="21" y2="3" />
+            </svg>
+            Pop out
+          </button>
+        </div>
+        <p style={{ fontSize: '0.75rem', color: 'var(--text-dim)', marginBottom: 16 }}>Recent activity on your site</p>
+        {data?.events?.length ? (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 10, maxHeight: 300, overflowY: 'auto' }}>
             {data.events
               .filter((e) => !['scroll', 'user_engagement'].includes(e.event))
@@ -813,8 +813,12 @@ function LiveView({ data, loading, sparklineData }: { data: RealtimeData | null;
                 );
               })}
           </div>
-        </div>
-      ) : null}
+        ) : (
+          <div style={{ textAlign: 'center', padding: '24px 0', color: 'var(--text-dim)', fontSize: '0.8rem' }}>
+            Waiting for events...
+          </div>
+        )}
+      </div>
     </div>
   );
 }

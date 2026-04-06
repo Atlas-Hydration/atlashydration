@@ -108,7 +108,7 @@ export async function GET(request: Request) {
       const [
         activeUsers, realtimePages, realtimeCountries, realtimeCities,
         realtimeDevices, todaySources, todayBrowsers, realtimeOS,
-        realtimeEvents, todayRevenue,
+        realtimeEvents, todayRevenue, todayEvents,
       ] = await Promise.all([
         safeRealtime({
           metrics: [{ name: 'activeUsers' }],
@@ -167,10 +167,12 @@ export async function GET(request: Request) {
             { name: 'city' },
             { name: 'country' },
             { name: 'minutesAgo' },
+            { name: 'unifiedScreenName' },
+            { name: 'deviceCategory' },
           ],
           metrics: [{ name: 'eventCount' }],
           orderBys: [{ dimension: { dimensionName: 'minutesAgo' } }],
-          limit: 30,
+          limit: 50,
         }),
         // Today's revenue
         safeReport({
@@ -180,6 +182,21 @@ export async function GET(request: Request) {
             { name: 'ecommercePurchases' },
             { name: 'averagePurchaseRevenue' },
           ],
+        }),
+        // Today's recent events (fallback when realtime is empty)
+        safeReport({
+          dateRanges: [{ startDate: 'today', endDate: 'today' }],
+          dimensions: [
+            { name: 'eventName' },
+            { name: 'city' },
+            { name: 'country' },
+            { name: 'hour' },
+            { name: 'pagePath' },
+            { name: 'deviceCategory' },
+          ],
+          metrics: [{ name: 'eventCount' }],
+          orderBys: [{ dimension: { dimensionName: 'hour' }, desc: true }],
+          limit: 50,
         }),
       ]);
 
@@ -222,13 +239,38 @@ export async function GET(request: Request) {
         activeUsers: Number(r.metricValues?.[0]?.value || 0),
       }));
 
-      const events = (realtimeEvents.rows || []).map((r: RTRow) => ({
+      const realtimeEventsParsed = (realtimeEvents.rows || []).map((r: RTRow) => ({
         event: r.dimensionValues?.[0]?.value || '',
         city: r.dimensionValues?.[1]?.value || '',
         country: r.dimensionValues?.[2]?.value || '',
         minutesAgo: Number(r.dimensionValues?.[3]?.value || 0),
+        page: r.dimensionValues?.[4]?.value || '',
+        device: r.dimensionValues?.[5]?.value || '',
         count: Number(r.metricValues?.[0]?.value || 0),
+        live: true,
       }));
+
+      // Today's events as fallback — convert hour to approximate minutesAgo
+      const nowHour = new Date().getHours();
+      const todayEventsParsed = (todayEvents.rows || []).map((r: RTRow) => {
+        const hour = Number(r.dimensionValues?.[3]?.value || 0);
+        const hoursAgo = Math.max(0, nowHour - hour);
+        return {
+          event: r.dimensionValues?.[0]?.value || '',
+          city: r.dimensionValues?.[1]?.value || '',
+          country: r.dimensionValues?.[2]?.value || '',
+          minutesAgo: hoursAgo * 60,
+          page: r.dimensionValues?.[4]?.value || '',
+          device: r.dimensionValues?.[5]?.value || '',
+          count: Number(r.metricValues?.[0]?.value || 0),
+          live: false,
+        };
+      });
+
+      // Merge: realtime events first, then fill with today's events
+      const events = realtimeEventsParsed.length > 0
+        ? realtimeEventsParsed
+        : todayEventsParsed.slice(0, 50);
 
       const revRow = todayRevenue?.rows?.[0];
       const revenue = {
