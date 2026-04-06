@@ -178,7 +178,9 @@ export function CartProvider({ children }: { children: ReactNode }) {
   }, [removeFromCart]);
 
   // -----------------------------------------------------------------------
-  // checkout — redirect to Shopify /cart/ permalink
+  // checkout — POST hidden form to Shopify /cart/add then redirect to /checkout
+  // This creates a real Shopify cart session with selling_plan attached,
+  // then sends the user to standard Shopify checkout (not Shop Pay).
   // -----------------------------------------------------------------------
   const checkout = useCallback(() => {
     if (items.length === 0) return;
@@ -195,38 +197,61 @@ export function CartProvider({ children }: { children: ReactNode }) {
       });
     }
 
-    // Build cart permalink parts: variant_id:quantity
-    const cartParts: string[] = [];
-    let sellingPlanId = '';
+    // Build a hidden form that POSTs to Shopify's /cart endpoint
+    // This is the standard way headless stores add items with selling plans
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = `https://${SHOPIFY_DOMAIN}/cart/add`;
+    form.style.display = 'none';
 
+    // Add each cart item as form fields
+    // Shopify /cart/add accepts: id, quantity, selling_plan
+    // For multiple items we need to use the items[] format
+    let itemIndex = 0;
     for (const item of items) {
       const product = PRODUCTS[item.slug];
       if (!product) continue;
       const variantNum = product.variantId.replace('gid://shopify/ProductVariant/', '');
-      cartParts.push(`${variantNum}:${item.quantity}`);
+
+      const addField = (name: string, value: string) => {
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = name;
+        input.value = value;
+        form.appendChild(input);
+      };
+
+      addField(`items[${itemIndex}][id]`, variantNum);
+      addField(`items[${itemIndex}][quantity]`, String(item.quantity));
+
       if (item.subscriptionFrequency && SELLING_PLANS[item.subscriptionFrequency]) {
-        sellingPlanId = SELLING_PLANS[item.subscriptionFrequency];
+        addField(`items[${itemIndex}][selling_plan]`, SELLING_PLANS[item.subscriptionFrequency]);
       }
+
+      itemIndex++;
     }
 
-    if (cartParts.length === 0) return;
+    // Tell Shopify to redirect to checkout after adding
+    const returnField = document.createElement('input');
+    returnField.type = 'hidden';
+    returnField.name = 'return_to';
+    returnField.value = '/checkout';
+    form.appendChild(returnField);
 
-    // Build URL with selling_plan and discount params
-    let url = `https://${SHOPIFY_DOMAIN}/cart/${cartParts.join(',')}`;
-    const params = new URLSearchParams();
-    if (sellingPlanId) params.set('selling_plan', sellingPlanId);
-
+    // Apply discount code if set
     const discountCode = localStorage.getItem('atlas_discount_code');
     if (discountCode) {
-      params.set('discount', discountCode);
+      const discountField = document.createElement('input');
+      discountField.type = 'hidden';
+      discountField.name = 'discount';
+      discountField.value = discountCode;
+      form.appendChild(discountField);
       localStorage.removeItem('atlas_discount_code');
     }
 
-    const qs = params.toString();
-    if (qs) url += `?${qs}`;
-
-    console.log('[Atlas Checkout]', url);
-    window.location.href = url;
+    console.log('[Atlas Checkout] Submitting form to /cart/add with return_to=/checkout');
+    document.body.appendChild(form);
+    form.submit();
   }, [items]);
 
   // -----------------------------------------------------------------------
