@@ -87,13 +87,19 @@ export default function ProductPage({ config }: { config: ProductPageConfig }) {
   const { addToCart } = useCart();
   const [purchaseOption, setPurchaseOption] = useState<"subscribe" | "onetime">("subscribe");
   const [frequency, setFrequency] = useState(2);
-  const [quantity, setQuantity] = useState(1);
+  const [bundleOption, setBundleOption] = useState<1 | 2 | 3>(1);
   const [openAccordion, setOpenAccordion] = useState<number | null>(null);
 
+  const bundleQty = bundleOption === 3 ? 4 : bundleOption === 2 ? 2 : 1;
+  const bundleSavings = bundleOption === 3 ? 29.99 : bundleOption === 2 ? 4.99 : 0;
+  const bundleCode = bundleOption === 3 ? 'ATLAS3GET1' : bundleOption === 2 ? 'ATLAS2PACK' : '';
+
   const handleAddToCart = useCallback(() => {
+    localStorage.removeItem('atlas_discount_code');
+    if (bundleCode) localStorage.setItem('atlas_discount_code', bundleCode);
     const isSubscription = purchaseOption === "subscribe";
-    addToCart(config.slug, quantity, isSubscription ? frequency : undefined);
-  }, [addToCart, config.slug, quantity, purchaseOption, frequency]);
+    addToCart(config.slug, bundleQty, isSubscription ? frequency : undefined);
+  }, [addToCart, config.slug, bundleQty, bundleCode, purchaseOption, frequency]);
 
   const buyButtonText = config.preorder ? "Pre-Order" : "Add to Cart";
   const ctaButtonText = config.preorder ? "Pre-Order — $29.99" : "Order — $29.99";
@@ -170,14 +176,34 @@ export default function ProductPage({ config }: { config: ProductPageConfig }) {
                 </label>
               </div>
 
-              <p className="product-hero__promo"><strong>Limited Time. Buy 3 Get 1 Free</strong></p>
+              <div style={{ marginTop: 4, marginBottom: 4 }}>
+                <span style={{ fontSize: '0.7rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.08em', color: '#C8514A' }}>Limited Time: Buy 3 Get 1 Free</span>
+              </div>
+              <div className="bundle-selector">
+                <button type="button" className={`bundle-card${bundleOption === 1 ? " bundle-card--active" : ""}`} onClick={() => setBundleOption(1)}>
+                  <div className="bundle-card__title">1 Pouch</div>
+                  <div className="bundle-card__price">$29.99</div>
+                  <div className="bundle-card__per">$1.87 / stick</div>
+                </button>
+                <button type="button" className={`bundle-card${bundleOption === 2 ? " bundle-card--active" : ""}`} onClick={() => setBundleOption(2)}>
+                  <span className="bundle-card__badge bundle-card__badge--green">Best Value</span>
+                  <div className="bundle-card__title">2 Pouches</div>
+                  <div className="bundle-card__price">$54.99</div>
+                  <div className="bundle-card__per">$1.72 / stick · Save $5</div>
+                </button>
+                <button type="button" className={`bundle-card${bundleOption === 3 ? " bundle-card--active" : ""}`} onClick={() => setBundleOption(3)}>
+                  <span className="bundle-card__badge bundle-card__badge--red">Free Pouch</span>
+                  <div className="bundle-card__title">3 + 1 FREE</div>
+                  <div className="bundle-card__price">$79.99</div>
+                  <div className="bundle-card__per">$1.25 / stick · Save $29.99</div>
+                  <div className="bundle-card__popular">Most Popular</div>
+                </button>
+              </div>
+              {bundleSavings > 0 && (
+                <div className="bundle-savings">You&apos;re saving ${bundleSavings.toFixed(2)} on this order</div>
+              )}
 
               <div className="product-hero__buy">
-                <div className="qty-selector">
-                  <button className="qty-selector__btn" aria-label="Decrease quantity" onClick={() => setQuantity((q) => Math.max(1, q - 1))}>&minus;</button>
-                  <input type="number" className="qty-selector__input" value={quantity} min={1} max={10} aria-label="Quantity" onChange={(e) => { const v = parseInt(e.target.value, 10); if (v >= 1 && v <= 10) setQuantity(v); }} />
-                  <button className="qty-selector__btn" aria-label="Increase quantity" onClick={() => setQuantity((q) => Math.min(10, q + 1))}>+</button>
-                </div>
                 <button className="btn btn--primary btn--lg" onClick={handleAddToCart}>{buyButtonText}</button>
               </div>
 
