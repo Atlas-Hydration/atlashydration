@@ -7,10 +7,12 @@
  * Idempotent: checks for existing templates by name, updates if found.
  *
  * Usage:
- *   KLAVIYO_API_KEY=pk_xxx node scripts/deploy-klaviyo.js
- *   KLAVIYO_API_KEY=pk_xxx node scripts/deploy-klaviyo.js --dry-run
- *   KLAVIYO_API_KEY=pk_xxx node scripts/deploy-klaviyo.js --test-render
+ *   node scripts/deploy-klaviyo.js              # full deploy
+ *   node scripts/deploy-klaviyo.js --dry-run    # validate only
+ *   node scripts/deploy-klaviyo.js --test-render # deploy + test render
  */
+
+require('dotenv').config();
 
 const fs = require('fs');
 const path = require('path');

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo, useCallback } from 'react';
+import { useState, useMemo, useCallback, useEffect } from 'react';
 
 // ─── TYPES ───────────────────────────────────────────────────────────────────
 
@@ -302,6 +302,76 @@ export default function EmailStudioTab() {
   const [selectedId, setSelectedId] = useState<string>('w1');
   const [previewMode, setPreviewMode] = useState<'desktop' | 'mobile'>('desktop');
   const [copied, setCopied] = useState(false);
+  const [klaviyoKey, setKlaviyoKey] = useState('');
+  const [klaviyoStatus, setKlaviyoStatus] = useState<'idle' | 'connected' | 'error'>('idle');
+  const [syncing, setSyncing] = useState(false);
+  const [syncResults, setSyncResults] = useState<Record<string, string>>({});
+  const [showSettings, setShowSettings] = useState(false);
+
+  // Load Klaviyo key from localStorage
+  useEffect(() => {
+    const saved = localStorage.getItem('atlas_klaviyo_key');
+    if (saved) { setKlaviyoKey(saved); testKlaviyoConnection(saved); }
+  }, []);
+
+  async function testKlaviyoConnection(key: string) {
+    try {
+      const res = await fetch('https://a.klaviyo.com/api/templates?page[size]=1', {
+        headers: { 'Authorization': `Klaviyo-API-Key ${key}`, 'Accept': 'application/vnd.api+json', 'revision': '2024-10-15' },
+      });
+      setKlaviyoStatus(res.ok ? 'connected' : 'error');
+    } catch { setKlaviyoStatus('error'); }
+  }
+
+  function saveKlaviyoKey(key: string) {
+    setKlaviyoKey(key);
+    localStorage.setItem('atlas_klaviyo_key', key);
+    if (key) testKlaviyoConnection(key);
+    else setKlaviyoStatus('idle');
+    setShowSettings(false);
+  }
+
+  async function syncToKlaviyo(email: typeof EMAILS[0]) {
+    if (!klaviyoKey) { setShowSettings(true); return; }
+    const html = buildEmailHtml(email);
+    const name = `Atlas ${email.flow === 'welcome' ? 'Welcome' : email.flow === 'cart' ? 'Cart' : email.flow === 'post' ? 'PostPurchase' : 'Winback'} ${String(email.num).padStart(2,'0')} — ${email.subject.slice(0, 40)}`;
+    const hdrs = { 'Authorization': `Klaviyo-API-Key ${klaviyoKey}`, 'Content-Type': 'application/vnd.api+json', 'Accept': 'application/vnd.api+json', 'revision': '2024-10-15' };
+
+    // Check if exists
+    const checkRes = await fetch(`https://a.klaviyo.com/api/templates?filter=equals(name,"${encodeURIComponent(name)}")`, { headers: hdrs });
+    const checkJson = await checkRes.json();
+    const existing = checkJson?.data?.[0];
+
+    let templateId: string;
+    if (existing) {
+      const res = await fetch(`https://a.klaviyo.com/api/templates/${existing.id}`, {
+        method: 'PATCH', headers: hdrs,
+        body: JSON.stringify({ data: { type: 'template', id: existing.id, attributes: { name, html } } }),
+      });
+      const json = await res.json();
+      templateId = json?.data?.id || existing.id;
+    } else {
+      const res = await fetch('https://a.klaviyo.com/api/templates', {
+        method: 'POST', headers: hdrs,
+        body: JSON.stringify({ data: { type: 'template', attributes: { name, editor_type: 'CODE', html } } }),
+      });
+      const json = await res.json();
+      templateId = json?.data?.id || '';
+    }
+
+    setSyncResults(prev => ({ ...prev, [email.id]: templateId }));
+    return templateId;
+  }
+
+  async function syncAllToKlaviyo() {
+    if (!klaviyoKey) { setShowSettings(true); return; }
+    setSyncing(true);
+    for (const email of EMAILS) {
+      await syncToKlaviyo(email);
+      await new Promise(r => setTimeout(r, 500));
+    }
+    setSyncing(false);
+  }
 
   const flowEmails = useMemo(() => EMAILS.filter((e) => e.flow === activeFlow), [activeFlow]);
   const selectedEmail = useMemo(() => EMAILS.find((e) => e.id === selectedId) ?? EMAILS[0], [selectedId]);
@@ -357,6 +427,74 @@ export default function EmailStudioTab() {
           </div>
         ))}
       </div>
+
+      {/* Klaviyo Controls */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 16, flexWrap: 'wrap' }}>
+        <div style={{
+          fontSize: '0.7rem', fontWeight: 600, padding: '3px 10px', borderRadius: 4,
+          background: klaviyoStatus === 'connected' ? 'rgba(22,163,74,0.15)' : klaviyoStatus === 'error' ? 'rgba(200,81,74,0.15)' : '#1C1C1C',
+          color: klaviyoStatus === 'connected' ? '#16a34a' : klaviyoStatus === 'error' ? '#C8514A' : '#666',
+        }}>
+          {klaviyoStatus === 'connected' ? 'KLAVIYO CONNECTED' : klaviyoStatus === 'error' ? 'KLAVIYO ERROR' : 'KLAVIYO NOT CONNECTED'}
+        </div>
+        <button onClick={() => setShowSettings(true)} style={{
+          padding: '4px 12px', borderRadius: 6, fontSize: '0.7rem', fontWeight: 500,
+          border: '1px solid #272727', background: 'transparent', color: '#888',
+          cursor: 'pointer', fontFamily: 'inherit',
+        }}>Settings</button>
+        {klaviyoStatus === 'connected' && (
+          <button onClick={syncAllToKlaviyo} disabled={syncing} style={{
+            padding: '4px 12px', borderRadius: 6, fontSize: '0.7rem', fontWeight: 600,
+            border: 'none', background: '#C8514A', color: '#fff',
+            cursor: syncing ? 'wait' : 'pointer', fontFamily: 'inherit',
+            opacity: syncing ? 0.6 : 1,
+          }}>{syncing ? 'Syncing...' : 'Sync All to Klaviyo'}</button>
+        )}
+        <div style={{ flex: 1 }} />
+        {Object.keys(syncResults).length > 0 && (
+          <span style={{ fontSize: '0.65rem', color: '#16a34a' }}>
+            {Object.keys(syncResults).length}/{EMAILS.length} synced
+          </span>
+        )}
+      </div>
+
+      {/* Klaviyo Settings Modal */}
+      {showSettings && (
+        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.7)', zIndex: 999, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+          onClick={() => setShowSettings(false)}>
+          <div style={{ background: '#161616', borderRadius: 14, border: '1px solid #272727', padding: 28, width: 400, maxWidth: '90vw' }}
+            onClick={e => e.stopPropagation()}>
+            <div style={{ fontSize: '0.95rem', fontWeight: 600, color: '#fff', marginBottom: 12 }}>Klaviyo API Key</div>
+            <p style={{ fontSize: '0.78rem', color: '#888', marginBottom: 16, lineHeight: 1.5 }}>
+              Get your key from: Klaviyo → Settings → API Keys → Create Private API Key.<br />
+              Required scopes: templates:read, templates:write
+            </p>
+            <input
+              type="password"
+              placeholder="pk_..."
+              defaultValue={klaviyoKey}
+              onKeyDown={e => { if (e.key === 'Enter') saveKlaviyoKey((e.target as HTMLInputElement).value); }}
+              style={{
+                width: '100%', padding: '10px 14px', borderRadius: 8, border: '1px solid #272727',
+                background: '#1C1C1C', color: '#fff', fontFamily: 'monospace', fontSize: '0.82rem', marginBottom: 12,
+              }}
+            />
+            <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end' }}>
+              <button onClick={() => setShowSettings(false)} style={{
+                padding: '8px 16px', borderRadius: 8, border: '1px solid #272727', background: 'transparent',
+                color: '#888', fontSize: '0.78rem', fontWeight: 500, cursor: 'pointer', fontFamily: 'inherit',
+              }}>Cancel</button>
+              <button onClick={() => {
+                const input = document.querySelector('input[placeholder="pk_..."]') as HTMLInputElement;
+                saveKlaviyoKey(input?.value || '');
+              }} style={{
+                padding: '8px 16px', borderRadius: 8, border: 'none', background: '#C8514A',
+                color: '#fff', fontSize: '0.78rem', fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit',
+              }}>Save</button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Main Layout */}
       <div style={s.main}>
@@ -434,6 +572,12 @@ export default function EmailStudioTab() {
                   <div style={{ fontSize: '13px', fontWeight: 600, color: sel ? '#FFF' : '#CCC', lineHeight: 1.3 }}>
                     {em.subject}
                   </div>
+                  {syncResults[em.id] && (
+                    <div style={{ fontSize: '9px', color: '#16a34a', marginTop: 2, display: 'flex', alignItems: 'center', gap: 4 }}>
+                      <span style={{ width: 5, height: 5, borderRadius: '50%', background: '#16a34a', display: 'inline-block' }} />
+                      Synced · <a href={`https://www.klaviyo.com/email-templates/${syncResults[em.id]}/editor`} target="_blank" rel="noopener noreferrer" style={{ color: '#16a34a', textDecoration: 'none' }}>{syncResults[em.id]}</a>
+                    </div>
+                  )}
                 </button>
               );
             })}
