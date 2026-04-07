@@ -49,7 +49,7 @@ const EMAILS: Email[] = [
     eyebrow: 'WELCOME TO ATLAS',
     headline: 'Hydration that actually works.',
     subheadline: 'Premium electrolytes. Zero sugar. Built for people who demand more.',
-    body: 'You just joined a community that takes hydration seriously.<br><br>Here is what makes Atlas different:<br><br>&#10003; 1,000mg electrolytes per serving — more than the leading brands<br>&#10003; Zero sugar, zero artificial sweeteners, zero junk<br>&#10003; Created by a commercial pilot who needed hydration that actually performed<br><br>Your body loses up to 2 liters of water per day through normal activity. Most people replace volume but not electrolytes. Atlas fixes that.',
+    body: 'You just joined a community that takes hydration seriously.<br><br>Here is what makes Atlas different:<br><br>&#10003; 1,769mg electrolytes per serving — more than the leading brands<br>&#10003; Zero sugar, zero artificial sweeteners, zero junk<br>&#10003; Created by a commercial pilot who needed hydration that actually performed<br><br>Your body loses up to 2 liters of water per day through normal activity. Most people replace volume but not electrolytes. Atlas fixes that.',
     ctaText: 'Shop Now', ctaUrl: 'https://atlas-hydration.com/products/strawberry-lemonade',
   },
   {
@@ -69,7 +69,7 @@ const EMAILS: Email[] = [
     eyebrow: 'THE SCIENCE',
     headline: '11 grams of sugar per serving. That is Liquid IV.',
     subheadline: 'We thought you should know what is really in your hydration.',
-    body: 'Most electrolyte brands market themselves as healthy. Here is what they do not tell you:<br><br>Liquid IV: 11g sugar per serving<br>Gatorade: 34g sugar per bottle<br>LMNT: Great electrolytes, but limited flavors and $1.50/stick<br><br>Atlas: 0g sugar. 1,000mg electrolytes. Under $1/serving.<br><br>We did not create Atlas to compete. We created it because every option had a tradeoff we were not willing to accept. You should not have to choose between taste, performance, and clean ingredients.',
+    body: 'Most electrolyte brands market themselves as healthy. Here is what they do not tell you:<br><br>Liquid IV: 11g sugar per serving<br>Gatorade: 34g sugar per bottle<br>LMNT: Great electrolytes, but limited flavors and $1.50/stick<br><br>Atlas: 0g sugar. 1,769mg electrolytes. 16 stick packs per box.<br><br>We did not create Atlas to compete. We created it because every option had a tradeoff we were not willing to accept. You should not have to choose between taste, performance, and clean ingredients.',
     ctaText: 'See the Difference', ctaUrl: 'https://atlas-hydration.com/products/strawberry-lemonade',
   },
   {
@@ -89,7 +89,7 @@ const EMAILS: Email[] = [
     eyebrow: 'LAST CHANCE',
     headline: 'Your 10% off expires in 24 hours.',
     subheadline: 'This is your final reminder. After this, the code is gone.',
-    body: 'When you signed up, we promised you 10% off your first order. That offer expires tomorrow.<br><br>Here is what you get with Atlas:<br><br>&#10003; 1,000mg premium electrolytes<br>&#10003; Zero sugar, zero artificial sweeteners<br>&#10003; Tastes incredible — Strawberry Lemonade<br>&#10003; Free shipping on orders over $50<br>&#10003; 30-day money-back guarantee<br><br>Use code WELCOME10 at checkout. This is the last time we will send this.',
+    body: 'When you signed up, we promised you 10% off your first order. That offer expires tomorrow.<br><br>Here is what you get with Atlas:<br><br>&#10003; 1,769mg premium electrolytes<br>&#10003; Zero sugar, zero artificial sweeteners<br>&#10003; Tastes incredible — Strawberry Lemonade<br>&#10003; Free shipping on orders over $50<br>&#10003; 30-day money-back guarantee<br><br>Use code WELCOME10 at checkout. This is the last time we will send this.',
     ctaText: 'Claim 10% Off', ctaUrl: 'https://atlas-hydration.com/products/strawberry-lemonade',
   },
 
