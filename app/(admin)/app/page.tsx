@@ -15,6 +15,7 @@ import ShopInfoTab from './components/tabs/ShopInfoTab';
 import RoadmapTab from './components/tabs/RoadmapTab';
 import ContentMachineTab from './components/tabs/ContentMachineTab';
 import StrategyLabTab from './components/tabs/StrategyLabTab';
+import EmailStudioTab from './components/tabs/EmailStudioTab';
 import AnalyticsTab from './components/tabs/AnalyticsTab';
 
 import {
@@ -43,11 +44,12 @@ type Tab =
   | 'roadmap'
   | 'content-machine'
   | 'analytics'
-  | 'strategy-lab';
+  | 'strategy-lab'
+  | 'email-studio';
 
 const ALL_TABS: Tab[] = [
   'products', 'variants', 'collections', 'orders', 'customers',
-  'seo', 'geo', 'shop', 'roadmap', 'analytics', 'content-machine', 'strategy-lab',
+  'seo', 'geo', 'shop', 'roadmap', 'analytics', 'content-machine', 'strategy-lab', 'email-studio',
 ];
 
 const PAGE_TITLES: Record<Tab, string> = {
@@ -63,6 +65,7 @@ const PAGE_TITLES: Record<Tab, string> = {
   analytics: 'Analytics',
   'content-machine': 'Content Machine',
   'strategy-lab': 'Strategy Lab',
+  'email-studio': 'Email Studio',
 };
 
 interface DashboardData {
@@ -313,6 +316,7 @@ export default function AdminPage() {
                 {activeTab === 'analytics' && <AnalyticsTab />}
                 {activeTab === 'content-machine' && <ContentMachineTab />}
                 {activeTab === 'strategy-lab' && <StrategyLabTab />}
+                {activeTab === 'email-studio' && <EmailStudioTab />}
 
               </>
             )}
