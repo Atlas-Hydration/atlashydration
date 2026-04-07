@@ -316,60 +316,48 @@ export default function EmailStudioTab() {
 
   async function testKlaviyoConnection(key: string) {
     try {
-      const res = await fetch('https://a.klaviyo.com/api/templates?page[size]=1', {
-        headers: { 'Authorization': `Klaviyo-API-Key ${key}`, 'Accept': 'application/vnd.api+json', 'revision': '2024-10-15' },
+      // Test via our server-side route to avoid CORS
+      const res = await fetch('/api/klaviyo-sync', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ apiKey: key, emailIndex: 0 }),
       });
-      setKlaviyoStatus(res.ok ? 'connected' : 'error');
+      const data = await res.json();
+      // If first template syncs or already exists, connection works
+      setKlaviyoStatus(data.results?.[0]?.status === 'created' || data.results?.[0]?.status === 'updated' ? 'connected' : 'error');
+      if (data.results?.[0]?.id) {
+        setSyncResults(prev => ({ ...prev, [EMAILS[0].id]: data.results[0].id }));
+      }
     } catch { setKlaviyoStatus('error'); }
   }
 
   function saveKlaviyoKey(key: string) {
     setKlaviyoKey(key);
     localStorage.setItem('atlas_klaviyo_key', key);
-    if (key) testKlaviyoConnection(key);
+    if (key) { setKlaviyoStatus('idle'); testKlaviyoConnection(key); }
     else setKlaviyoStatus('idle');
     setShowSettings(false);
-  }
-
-  async function syncToKlaviyo(email: typeof EMAILS[0]) {
-    if (!klaviyoKey) { setShowSettings(true); return; }
-    const html = buildEmailHtml(email);
-    const name = `Atlas ${email.flow === 'welcome' ? 'Welcome' : email.flow === 'cart' ? 'Cart' : email.flow === 'post' ? 'PostPurchase' : 'Winback'} ${String(email.num).padStart(2,'0')} — ${email.subject.slice(0, 40)}`;
-    const hdrs = { 'Authorization': `Klaviyo-API-Key ${klaviyoKey}`, 'Content-Type': 'application/vnd.api+json', 'Accept': 'application/vnd.api+json', 'revision': '2024-10-15' };
-
-    // Check if exists
-    const checkRes = await fetch(`https://a.klaviyo.com/api/templates?filter=equals(name,"${encodeURIComponent(name)}")`, { headers: hdrs });
-    const checkJson = await checkRes.json();
-    const existing = checkJson?.data?.[0];
-
-    let templateId: string;
-    if (existing) {
-      const res = await fetch(`https://a.klaviyo.com/api/templates/${existing.id}`, {
-        method: 'PATCH', headers: hdrs,
-        body: JSON.stringify({ data: { type: 'template', id: existing.id, attributes: { name, html } } }),
-      });
-      const json = await res.json();
-      templateId = json?.data?.id || existing.id;
-    } else {
-      const res = await fetch('https://a.klaviyo.com/api/templates', {
-        method: 'POST', headers: hdrs,
-        body: JSON.stringify({ data: { type: 'template', attributes: { name, editor_type: 'CODE', html } } }),
-      });
-      const json = await res.json();
-      templateId = json?.data?.id || '';
-    }
-
-    setSyncResults(prev => ({ ...prev, [email.id]: templateId }));
-    return templateId;
   }
 
   async function syncAllToKlaviyo() {
     if (!klaviyoKey) { setShowSettings(true); return; }
     setSyncing(true);
-    for (const email of EMAILS) {
-      await syncToKlaviyo(email);
-      await new Promise(r => setTimeout(r, 500));
-    }
+    try {
+      const res = await fetch('/api/klaviyo-sync', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ apiKey: klaviyoKey }),
+      });
+      const data = await res.json();
+      if (data.results) {
+        const newResults: Record<string, string> = {};
+        data.results.forEach((r: { name: string; id?: string }, i: number) => {
+          if (r.id && EMAILS[i]) newResults[EMAILS[i].id] = r.id;
+        });
+        setSyncResults(prev => ({ ...prev, ...newResults }));
+        setKlaviyoStatus('connected');
+      }
+    } catch { /* */ }
     setSyncing(false);
   }
 
