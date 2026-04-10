@@ -11,8 +11,8 @@
 const KLAVIYO_COMPANY_ID = "XLatdi";
 
 // Default list ID for general email signups
-// TODO: Replace with actual Klaviyo List ID from Klaviyo → Audience → Lists → Settings
-const DEFAULT_LIST_ID = "RKvJ6V";
+// From: Klaviyo → Audience → Lists → Email List → Settings → List ID
+const DEFAULT_LIST_ID = "XDwcHp";
 
 interface SubscribeOptions {
   email: string;
