@@ -8,6 +8,7 @@ import {
   useCallback,
   type ReactNode,
 } from "react";
+import { subscribeToKlaviyo } from "@/app/lib/klaviyo";
 
 const DISMISSED_KEY = "atlas_popup_dismissed";
 
@@ -66,9 +67,12 @@ export function PopupProvider({ children }: { children: ReactNode }) {
       }
       setError(false);
 
-      // Email captured — customer sees the discount code directly
-      // Marketing automation handled by Shopify/Klaviyo on the store side
-      void trimmed; // email available for future integration
+      // Submit to Klaviyo Email List with signup source
+      await subscribeToKlaviyo({
+        email: trimmed,
+        source: "Popup — 10% Off Welcome",
+        properties: { "Discount Offered": "WELCOME10" },
+      });
 
       setSubmitted(true);
 

@@ -41,6 +41,11 @@ export default function RootLayout({
           gtag('js', new Date());
           gtag('config', 'G-J2NYD0S2BR');
         `}</Script>
+        {/* Klaviyo Onsite Tracking */}
+        <Script
+          src="https://static.klaviyo.com/onsite/js/klaviyo.js?company_id=XLatdi"
+          strategy="afterInteractive"
+        />
         <meta name="theme-color" content="#1d1d1f" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
