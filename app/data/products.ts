@@ -11,6 +11,12 @@ export interface Product {
   images: string[];
   description: string;
   tags: string[];
+  /** Cart line-item label, e.g. "16 Pack". Omit for single-unit products. */
+  packLabel?: string;
+  /** Bullet list of product details, shown on the dedicated product page. */
+  details?: string[];
+  /** Care/cleaning instructions, shown on the dedicated product page. */
+  care?: string;
 }
 
 export const PRODUCTS: Record<string, Product> = {
@@ -40,6 +46,7 @@ export const PRODUCTS: Record<string, Product> = {
       "Vitamin C",
       "Keto Friendly",
     ],
+    packLabel: "16 Pack",
   },
   grapefruit: {
     name: "Grapefruit",
@@ -67,5 +74,41 @@ export const PRODUCTS: Record<string, Product> = {
       "Vitamin C",
       "Keto Friendly",
     ],
+    packLabel: "16 Pack",
+  },
+  bottle: {
+    name: "Atlas Performance Water Bottle",
+    slug: "bottle",
+    price: 19.99,
+    subscribePrice: 19.99,
+    perStick: 19.99,
+    subscribePerStick: 19.99,
+    variantId: "gid://shopify/ProductVariant/8405820440650",
+    color: "#1d1d1f",
+    colorRgb: "29, 29, 31",
+    images: [
+      "https://cdn.shopify.com/s/files/1/0595/8133/3578/files/Screenshot2026-08-25at5.38.09PM.png?v=1787693894",
+      "https://cdn.shopify.com/s/files/1/0595/8133/3578/files/Screenshot2026-08-25at5.28.14PM.png?v=1787693470",
+      "https://cdn.shopify.com/s/files/1/0595/8133/3578/files/atlas-bottle-02-courtside.jpg?v=1787691591",
+      "https://cdn.shopify.com/s/files/1/0595/8133/3578/files/Screenshot2026-08-25at5.37.32PM.png?v=1787693858",
+      "https://cdn.shopify.com/s/files/1/0595/8133/3578/files/Screenshot2026-08-25at5.39.00PM.png?v=1787693945",
+    ],
+    description:
+      "Built for daily movement. The Atlas Performance Water Bottle pairs a lightweight, easy-squeeze design with a 26 oz capacity and Specialized Purist technology to help keep your water tasting clean without lingering odors or flavors. Made for everything from training and padel to travel and everyday hydration.",
+    tags: ["26 oz", "BPA-Free", "Leak-Free", "Made in USA"],
+    details: [
+      "26 oz capacity",
+      "Purist inner-wall technology",
+      "MoFlo 2.0 high-flow cap",
+      "Leak-free screw-top design",
+      "Easy-squeeze LDPE construction",
+      "BPA-free",
+      "Made with FDA food-grade materials",
+      "Wide opening for ice and powdered drink mixes",
+      "Translucent bottle with black Atlas branding",
+      "Made and printed in California",
+    ],
+    care:
+      "Rinse after use with warm water and mild soap. Top-rack dishwasher safe. Avoid abrasive brushes or materials on the inside of the bottle.",
   },
 };
