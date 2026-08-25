@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import HeroSection from "@/app/components/home/HeroSection";
 import VitaminStrip from "@/app/components/home/VitaminStrip";
 import FeaturedProduct from "@/app/components/home/FeaturedProduct";
+import BottleSection from "@/app/components/home/BottleSection";
 import ScienceSection from "@/app/components/home/ScienceSection";
 import CompareSection from "@/app/components/home/CompareSection";
 import ReviewsSection from "@/app/components/home/ReviewsSection";
@@ -64,6 +65,7 @@ export default function Home() {
       <HeroSection />
       <VitaminStrip />
       <FeaturedProduct />
+      <BottleSection />
       <ScienceSection />
       <CompareSection />
       <ReviewsSection />

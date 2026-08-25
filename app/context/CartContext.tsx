@@ -134,7 +134,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
             ...prev,
             {
               slug: productSlug,
-              title: `${product.name} — 16 Pack`,
+              title: product.packLabel ? `${product.name} — ${product.packLabel}` : product.name,
               price,
               quantity: qty,
               image: product.images[0] ?? null,
