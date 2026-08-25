@@ -10046,20 +10046,7 @@ img {
 }
 
 .bottle-section__image {
-  background: #ffffff;
-  border-radius: var(--radius-lg);
-  padding: 48px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
-}
-
-.bottle-section__image img {
-  max-height: 480px;
-  width: auto;
-  margin: 0 auto;
-  filter: drop-shadow(0 30px 40px rgba(0,0,0,0.12));
+  position: relative;
 }
 
 .bottle-section__eyebrow {
