@@ -4378,7 +4378,7 @@ img {
    Featured Product Section (Landing)
    ======================================== */
 .featured-product {
-  padding: 120px 0;
+  padding: 120px 0 72px;
   background: #ffffff;
 }
 
@@ -10033,8 +10033,9 @@ img {
    ======================================== */
 
 .bottle-section {
-  padding: 120px 0;
-  background: #ffffff;
+  padding: 72px 0 120px;
+  background: var(--color-bg-light);
+  border-top: 1px solid var(--color-border);
 }
 
 .bottle-section__grid {
@@ -10045,12 +10046,13 @@ img {
 }
 
 .bottle-section__image {
-  background: linear-gradient(180deg, #f7f7f7 0%, #ececec 100%);
+  background: #ffffff;
   border-radius: var(--radius-lg);
   padding: 48px;
   display: flex;
   align-items: center;
   justify-content: center;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
 }
 
 .bottle-section__image img {
@@ -10256,7 +10258,7 @@ img {
 }
 
 .bottle-page__hero {
-  padding: 64px 0 100px;
+  padding: 90px 0 60px;
 }
 
 .bottle-page__hero-grid {
@@ -10267,21 +10269,18 @@ img {
 }
 
 .bottle-page__gallery-main {
-  background: linear-gradient(180deg, #f7f7f7 0%, #ececec 100%);
+  background: var(--color-surface);
   border-radius: var(--radius-lg);
-  aspect-ratio: 4 / 5;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 40px;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
   margin-bottom: 16px;
 }
 
 .bottle-page__gallery-main img {
-  max-height: 100%;
-  max-width: 100%;
-  object-fit: contain;
-  filter: drop-shadow(0 30px 40px rgba(0,0,0,0.12));
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 }
 
 .bottle-page__gallery-thumbs {
@@ -10304,6 +10303,7 @@ img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  display: block;
 }
 
 .bottle-page__gallery-thumb.active {
@@ -10476,6 +10476,7 @@ img {
 }
 
 @media (max-width: 900px) {
+  .bottle-page__hero { padding: 110px 0 40px; }
   .bottle-page__hero-grid { grid-template-columns: 1fr; gap: 40px; }
   .bottle-page__title { font-size: var(--heading-lg); }
   .bottle-page__features-grid { grid-template-columns: 1fr 1fr; }
