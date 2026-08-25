@@ -1,11 +1,16 @@
 "use client";
 
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 import Link from "next/link";
 import { useCart } from "@/app/context/CartContext";
 import { PRODUCTS } from "@/app/data/products";
 
 const bottle = PRODUCTS.bottle;
+
+const BOTTLE_IMAGES = bottle.images.map((src, i) => ({
+  src,
+  alt: i === 0 ? "Atlas Performance Water Bottle — 26 oz" : "Atlas Performance Water Bottle lifestyle",
+}));
 
 const FEATURES = [
   { label: "26 oz Capacity", icon: (
@@ -23,10 +28,54 @@ const FEATURES = [
 ];
 
 export default function BottleSection() {
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const [dragOffset, setDragOffset] = useState(0);
+  const [isDragging, setIsDragging] = useState(false);
   const [qty, setQty] = useState(1);
   const [adding, setAdding] = useState(false);
   const { addToCart } = useCart();
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const dragStartX = useRef(0);
+  const galleryRef = useRef<HTMLDivElement>(null);
+
+  const goTo = useCallback((idx: number) => {
+    setCurrentSlide(idx);
+    setDragOffset(0);
+    setIsDragging(false);
+  }, []);
+
+  const prev = useCallback(() => goTo(currentSlide === 0 ? BOTTLE_IMAGES.length - 1 : currentSlide - 1), [currentSlide, goTo]);
+  const next = useCallback(() => goTo(currentSlide === BOTTLE_IMAGES.length - 1 ? 0 : currentSlide + 1), [currentSlide, goTo]);
+
+  const handleTouchStart = useCallback((e: React.TouchEvent) => {
+    dragStartX.current = e.touches[0].clientX;
+    setIsDragging(true);
+    setDragOffset(0);
+  }, []);
+
+  const handleTouchMove = useCallback((e: React.TouchEvent) => {
+    if (!isDragging) return;
+    const dx = e.touches[0].clientX - dragStartX.current;
+    setDragOffset(dx);
+  }, [isDragging]);
+
+  const handleTouchEnd = useCallback(() => {
+    if (!isDragging) return;
+    const width = galleryRef.current?.offsetWidth || 375;
+    const threshold = width * 0.15;
+    if (dragOffset < -threshold) {
+      next();
+    } else if (dragOffset > threshold) {
+      prev();
+    } else {
+      setDragOffset(0);
+      setIsDragging(false);
+    }
+  }, [isDragging, dragOffset, next, prev]);
+
+  useEffect(() => {
+    if (timerRef.current) clearTimeout(timerRef.current);
+  }, []);
 
   const handleAdd = useCallback(() => {
     setAdding(true);
@@ -35,16 +84,71 @@ export default function BottleSection() {
     timerRef.current = setTimeout(() => setAdding(false), 1200);
   }, [addToCart, qty]);
 
+  const translateX = -currentSlide * 100 + (isDragging ? (dragOffset / (galleryRef.current?.offsetWidth || 375)) * 100 : 0);
+
   return (
     <section className="bottle-section" id="bottle" aria-label="Atlas Performance Water Bottle">
       <div className="container">
         <div className="bottle-section__grid">
           <div className="bottle-section__image">
-            <img
-              src={bottle.images[0]}
-              alt="Atlas Performance Water Bottle — 26 oz"
-              loading="lazy"
-            />
+            <div className="fp-gallery">
+              <div
+                className="fp-gallery__main"
+                ref={galleryRef}
+                onTouchStart={handleTouchStart}
+                onTouchMove={handleTouchMove}
+                onTouchEnd={handleTouchEnd}
+              >
+                <div
+                  className="fp-gallery__track"
+                  style={{
+                    transform: `translateX(${translateX}%)`,
+                    transition: isDragging ? "none" : "transform 0.4s cubic-bezier(0.25, 0.1, 0.25, 1)",
+                    willChange: "transform",
+                  }}
+                >
+                  {BOTTLE_IMAGES.map((img, i) => (
+                    <div className="fp-gallery__slide-wrap" key={i}>
+                      <img
+                        className="fp-gallery__slide-img"
+                        src={img.src}
+                        alt={img.alt}
+                        loading={i === 0 ? "eager" : "lazy"}
+                        draggable={false}
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <button className="fp-gallery__arrow fp-gallery__arrow--prev" aria-label="Previous image" onClick={prev}>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M15 18l-6-6 6-6" /></svg>
+              </button>
+              <button className="fp-gallery__arrow fp-gallery__arrow--next" aria-label="Next image" onClick={next}>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M9 18l6-6-6-6" /></svg>
+              </button>
+              <div className="fp-gallery__dots">
+                {BOTTLE_IMAGES.map((_, i) => (
+                  <button
+                    key={i}
+                    className={`fp-gallery__dot${i === currentSlide ? " active" : ""}`}
+                    onClick={() => goTo(i)}
+                    aria-label={`Image ${i + 1}`}
+                  />
+                ))}
+              </div>
+              <div className="fp-gallery__thumbs">
+                {BOTTLE_IMAGES.map((img, i) => (
+                  <button
+                    key={i}
+                    className={`fp-gallery__thumb${i === currentSlide ? " active" : ""}`}
+                    onClick={() => goTo(i)}
+                    aria-label={`Image ${i + 1}`}
+                  >
+                    <img src={img.src} alt={img.alt} loading="lazy" />
+                  </button>
+                ))}
+              </div>
+            </div>
           </div>
 
           <div className="bottle-section__info">
