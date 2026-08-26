@@ -1,7 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useCart, computeBottlePromo } from "@/app/context/CartContext";
+import { useCart, computeBottlePromo, deriveDiscountCode } from "@/app/context/CartContext";
 import { PRODUCTS } from "@/app/data/products";
 import CartRewardsBar from "@/app/components/CartRewardsBar";
 
@@ -17,18 +16,13 @@ export default function CartDrawer() {
     checkout,
     addToCart,
   } = useCart();
-  const [discountCode, setDiscountCode] = useState('');
-
-  useEffect(() => {
-    const code = localStorage.getItem('atlas_discount_code') || '';
-    setDiscountCode(code);
-  }, [isCartOpen]);
 
   const subtotal = items.reduce(
     (sum, item) => sum + item.price * item.quantity,
     0
   );
   const { qualifyingQty, bottleInCart, unlocked } = computeBottlePromo(items);
+  const discountCode = deriveDiscountCode(items);
 
   return (
     <div
@@ -156,11 +150,7 @@ export default function CartDrawer() {
                     <button
                       type="button"
                       className="cart-promo__bottle-btn"
-                      onClick={() => {
-                        localStorage.removeItem('atlas_discount_code');
-                        setDiscountCode('');
-                        addToCart("bottle", 1);
-                      }}
+                      onClick={() => addToCart("bottle", 1)}
                     >
                       Add Free Bottle
                     </button>

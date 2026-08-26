@@ -1,15 +1,10 @@
 "use client";
 
 import { useState, useRef, useCallback } from "react";
-import { useCart } from "@/app/context/CartContext";
+import { useCart, KIT_BOTTLE_PRICE } from "@/app/context/CartContext";
 import { PRODUCTS } from "@/app/data/products";
 
 const bottle = PRODUCTS.bottle;
-
-// Shopify discount code that must exist in the store, configured to bring
-// the combined Mix + Bottle order to $39.98 (matches the price shown here).
-const KIT_DISCOUNT_CODE = "ATLASKIT10";
-const BOTTLE_KIT_PRICE = 9.99;
 
 export default function CompleteKitBundle({
   mixSlug,
@@ -23,14 +18,13 @@ export default function CompleteKitBundle({
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const mix = PRODUCTS[mixSlug];
-  const combinedPrice = mix.price + BOTTLE_KIT_PRICE;
+  const combinedPrice = mix.price + KIT_BOTTLE_PRICE;
   const fullPrice = mix.price + bottle.price;
 
   const handleAdd = useCallback(() => {
     setAdding(true);
-    localStorage.setItem("atlas_discount_code", KIT_DISCOUNT_CODE);
     addToCart(mixSlug, 1);
-    addToCart("bottle", 1, undefined, BOTTLE_KIT_PRICE);
+    addToCart("bottle", 1, undefined, KIT_BOTTLE_PRICE);
     if (timerRef.current) clearTimeout(timerRef.current);
     timerRef.current = setTimeout(() => setAdding(false), 1200);
   }, [addToCart, mixSlug]);
