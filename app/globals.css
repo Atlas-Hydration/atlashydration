@@ -2967,6 +2967,16 @@ img {
   margin-top: 12px;
 }
 
+.cart-drawer__promo-line {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--text-xs);
+  font-weight: 600;
+  color: #16a34a;
+  margin-bottom: 12px;
+}
+
 /* Cart promo banner */
 .cart-promo {
   background: #f0fdf4;
@@ -3034,6 +3044,35 @@ img {
   background: #dcfce7;
 }
 
+.cart-rewards__stop-icon--box {
+  display: flex;
+  color: var(--color-text-dim);
+  transition: color 0.3s ease;
+}
+
+.cart-rewards__stop--unlocked .cart-rewards__stop-icon--box {
+  color: #16a34a;
+}
+
+.cart-rewards__stop-icon--img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  overflow: hidden;
+  filter: grayscale(1) opacity(0.55);
+  transition: filter 0.3s ease;
+}
+
+.cart-rewards__stop--unlocked .cart-rewards__stop-icon--img {
+  filter: none;
+}
+
+.cart-rewards__stop-icon--img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
 .cart-rewards__labels {
   position: relative;
   height: 14px;
@@ -3060,26 +3099,6 @@ img {
 .cart-rewards__labels--three span:nth-child(3) {
   position: absolute;
   right: 0;
-}
-
-.cart-promo__badge {
-  font-size: var(--text-xs);
-  font-weight: 800;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: #16a34a;
-}
-
-.cart-promo__detail {
-  font-size: var(--text-sm);
-  color: #15803d;
-  font-weight: 500;
-}
-
-.cart-promo__savings {
-  font-size: var(--text-btn);
-  font-weight: 700;
-  color: #16a34a;
 }
 
 .cart-promo__bottle-card {

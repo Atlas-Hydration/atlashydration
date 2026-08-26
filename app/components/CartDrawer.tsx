@@ -144,15 +144,15 @@ export default function CartDrawer() {
 
               {tier !== "none" && !bottleInCart && (
                 <div className="cart-promo cart-promo--unlocked">
-                  <span className="cart-promo__badge">
-                    {tier === "free" ? "FREE BOTTLE UNLOCKED" : "50% OFF BOTTLE UNLOCKED"}
-                  </span>
                   <div className="cart-promo__bottle-card">
                     {bottle.images[0] && (
                       <img className="cart-promo__bottle-img" src={bottle.images[0]} alt={bottle.name} />
                     )}
                     <div className="cart-promo__bottle-info">
-                      <span className="cart-promo__bottle-name">{bottle.name}</span>
+                      <span className="cart-promo__bottle-name">
+                        {bottle.name}
+                        <span className="cart-item__discount-tag">{tier === "free" ? "FREE" : "50% OFF"}</span>
+                      </span>
                       <span className="cart-promo__bottle-price">
                         <span className="cart-promo__bottle-price-original">${BOTTLE_FULL_PRICE.toFixed(2)}</span>{" "}
                         {tier === "free" ? "FREE" : `$${BOTTLE_HALF_PRICE.toFixed(2)}`}
@@ -168,27 +168,6 @@ export default function CartDrawer() {
                   </div>
                 </div>
               )}
-              {tier !== "none" && bottleInCart && (
-                <div className="cart-promo cart-promo--unlocked">
-                  <span className="cart-promo__badge">
-                    {tier === "free" ? "FREE BOTTLE UNLOCKED" : "50% OFF BOTTLE UNLOCKED"}
-                  </span>
-                  <span className="cart-promo__detail">
-                    {tier === "free" ? "Atlas Performance Bottle is on us." : "Atlas Performance Bottle is 50% off."}
-                  </span>
-                  <span className="cart-promo__savings">You save ${bottleDiscountAmount.toFixed(2)}</span>
-                </div>
-              )}
-              {discountCode && (
-                <div style={{
-                  padding: '10px 14px', background: 'rgba(22,163,74,0.08)',
-                  borderRadius: 8, display: 'flex', alignItems: 'center', gap: 8,
-                  fontSize: '0.82rem', color: '#16a34a', fontWeight: 500, marginTop: 8,
-                }}>
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M20 6L9 17l-5-5" /></svg>
-                  {discountCode} applied
-                </div>
-              )}
             </>
           )}
         </div>
@@ -198,6 +177,12 @@ export default function CartDrawer() {
           className="cart-drawer__footer"
           style={{ display: items.length === 0 ? "none" : "block" }}
         >
+          {discountCode && (
+            <p className="cart-drawer__promo-line">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><path d="M20 6L9 17l-5-5" /></svg>
+              {discountCode} applied
+            </p>
+          )}
           <div className="cart-drawer__subtotal">
             <span>Subtotal</span>
             <span>${subtotal.toFixed(2)}</span>
