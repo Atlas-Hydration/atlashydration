@@ -156,7 +156,11 @@ export default function CartDrawer() {
                     <button
                       type="button"
                       className="cart-promo__bottle-btn"
-                      onClick={() => addToCart("bottle", 1)}
+                      onClick={() => {
+                        localStorage.removeItem('atlas_discount_code');
+                        setDiscountCode('');
+                        addToCart("bottle", 1);
+                      }}
                     >
                       Add Free Bottle
                     </button>
