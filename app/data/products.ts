@@ -83,7 +83,7 @@ export const PRODUCTS: Record<string, Product> = {
     subscribePrice: 19.99,
     perStick: 19.99,
     subscribePerStick: 19.99,
-    variantId: "gid://shopify/ProductVariant/8405820440650",
+    variantId: "gid://shopify/ProductVariant/44103798358090",
     color: "#1d1d1f",
     colorRgb: "29, 29, 31",
     images: [
