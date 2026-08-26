@@ -68,22 +68,21 @@ function loadCart(): CartItem[] {
 }
 
 // ---------------------------------------------------------------------------
-// Buy 3 Get 1 Free promo calculation
+// Buy 4 Qualifying Pouches, Get 1 Atlas Bottle Free
 // ---------------------------------------------------------------------------
 
-function computePromo(items: CartItem[]) {
-  // Bundle discounts handled by Shopify discount codes
-  if (typeof window !== 'undefined' && localStorage.getItem('atlas_discount_code')) {
-    return { freeItems: 0, discount: 0 };
-  }
-  const totalQty = items.reduce((sum, i) => sum + i.quantity, 0);
-  const freeItems = Math.floor(totalQty / 3);
-  let discount = 0;
-  if (freeItems > 0 && items.length > 0) {
-    const cheapest = Math.min(...items.map((i) => i.price));
-    discount = cheapest * freeItems;
-  }
-  return { freeItems, discount };
+const QUALIFYING_POUCH_SLUGS = ["strawberry-lemonade", "grapefruit"];
+const BOTTLE_PROMO_THRESHOLD = 4;
+
+function computeBottlePromo(items: CartItem[]) {
+  const qualifyingQty = items.reduce(
+    (sum, i) => (QUALIFYING_POUCH_SLUGS.includes(i.slug) ? sum + i.quantity : sum),
+    0
+  );
+  const bottleInCart = items.some((i) => i.slug === "bottle" && i.quantity > 0);
+  const unlocked = qualifyingQty >= BOTTLE_PROMO_THRESHOLD;
+  const remaining = Math.max(0, BOTTLE_PROMO_THRESHOLD - qualifyingQty);
+  return { qualifyingQty, bottleInCart, unlocked, remaining };
 }
 
 // ---------------------------------------------------------------------------
@@ -297,4 +296,4 @@ export function useCart() {
   return ctx;
 }
 
-export { computePromo };
+export { computeBottlePromo };

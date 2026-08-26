@@ -1,7 +1,10 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useCart, computePromo } from "@/app/context/CartContext";
+import { useCart, computeBottlePromo } from "@/app/context/CartContext";
+import { PRODUCTS } from "@/app/data/products";
+
+const bottle = PRODUCTS.bottle;
 
 export default function CartDrawer() {
   const {
@@ -11,6 +14,7 @@ export default function CartDrawer() {
     updateQuantity,
     removeFromCart,
     checkout,
+    addToCart,
   } = useCart();
   const [discountCode, setDiscountCode] = useState('');
 
@@ -23,8 +27,13 @@ export default function CartDrawer() {
     (sum, item) => sum + item.price * item.quantity,
     0
   );
-  const { freeItems, discount } = computePromo(items);
-  const finalTotal = subtotal - discount;
+  const { qualifyingQty, bottleInCart, unlocked, remaining } = computeBottlePromo(items);
+  const bottlePromoState: "unlocked-no-bottle" | "unlocked-with-bottle" | "downgrade" | "progress" | "none" =
+    unlocked && !bottleInCart ? "unlocked-no-bottle"
+    : unlocked && bottleInCart ? "unlocked-with-bottle"
+    : !unlocked && bottleInCart ? "downgrade"
+    : qualifyingQty > 0 ? "progress"
+    : "none";
 
   return (
     <div
@@ -133,16 +142,49 @@ export default function CartDrawer() {
                 </div>
               ))}
 
-              {/* Buy 3 Get 1 Free promo */}
-              {freeItems > 0 && (
-                <div className="cart-promo">
-                  <span className="cart-promo__badge">BUY 3 GET 1 FREE</span>
+              {/* Buy 4 Qualifying Pouches, Get 1 Atlas Bottle Free */}
+              {bottlePromoState === "progress" && (
+                <div className="cart-promo cart-promo--progress">
                   <span className="cart-promo__detail">
-                    {freeItems} free item{freeItems > 1 ? "s" : ""} applied!
+                    Add {remaining} more pouch{remaining > 1 ? "es" : ""} to unlock a FREE Atlas Performance Bottle.
                   </span>
-                  <span className="cart-promo__savings">
-                    You save ${discount.toFixed(2)}
+                </div>
+              )}
+              {bottlePromoState === "downgrade" && (
+                <div className="cart-promo cart-promo--progress">
+                  <span className="cart-promo__detail">
+                    Add {remaining} more pouch{remaining > 1 ? "es" : ""} to make your bottle FREE.
                   </span>
+                </div>
+              )}
+              {bottlePromoState === "unlocked-no-bottle" && (
+                <div className="cart-promo cart-promo--unlocked">
+                  <span className="cart-promo__badge">FREE BOTTLE UNLOCKED</span>
+                  <div className="cart-promo__bottle-card">
+                    {bottle.images[0] && (
+                      <img className="cart-promo__bottle-img" src={bottle.images[0]} alt={bottle.name} />
+                    )}
+                    <div className="cart-promo__bottle-info">
+                      <span className="cart-promo__bottle-name">{bottle.name}</span>
+                      <span className="cart-promo__bottle-price">
+                        <span className="cart-promo__bottle-price-original">${bottle.price.toFixed(2)}</span> FREE
+                      </span>
+                    </div>
+                    <button
+                      type="button"
+                      className="cart-promo__bottle-btn"
+                      onClick={() => addToCart("bottle", 1)}
+                    >
+                      Add Free Bottle
+                    </button>
+                  </div>
+                </div>
+              )}
+              {bottlePromoState === "unlocked-with-bottle" && (
+                <div className="cart-promo cart-promo--unlocked">
+                  <span className="cart-promo__badge">FREE BOTTLE UNLOCKED</span>
+                  <span className="cart-promo__detail">Atlas Performance Bottle is on us.</span>
+                  <span className="cart-promo__savings">You save ${bottle.price.toFixed(2)}</span>
                 </div>
               )}
               {discountCode && (
@@ -152,7 +194,7 @@ export default function CartDrawer() {
                   fontSize: '0.82rem', color: '#16a34a', fontWeight: 500, marginTop: 8,
                 }}>
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M20 6L9 17l-5-5" /></svg>
-                  {discountCode} applied {discountCode === 'ATLAS3GET1' && '· Free pouch added'}
+                  {discountCode} applied
                 </div>
               )}
             </>
@@ -166,24 +208,7 @@ export default function CartDrawer() {
         >
           <div className="cart-drawer__subtotal">
             <span>Subtotal</span>
-            <span>
-              {discount > 0 ? (
-                <>
-                  <span
-                    style={{
-                      textDecoration: "line-through",
-                      color: "#999",
-                      fontSize: "0.85em",
-                    }}
-                  >
-                    ${subtotal.toFixed(2)}
-                  </span>{" "}
-                  ${finalTotal.toFixed(2)}
-                </>
-              ) : (
-                `$${subtotal.toFixed(2)}`
-              )}
-            </span>
+            <span>${subtotal.toFixed(2)}</span>
           </div>
           <button
             className="btn btn--primary btn--full"
