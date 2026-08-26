@@ -27,7 +27,7 @@ interface CartContextValue {
   items: CartItem[];
   cartCount: number;
   isCartOpen: boolean;
-  addToCart: (productSlug: string, qty?: number, subscriptionFrequency?: number, overridePrice?: number) => void;
+  addToCart: (productSlug: string, qty?: number, subscriptionFrequency?: number) => void;
   removeFromCart: (index: number) => void;
   updateQuantity: (index: number, qty: number) => void;
   openCart: () => void;
@@ -68,11 +68,20 @@ function loadCart(): CartItem[] {
 }
 
 // ---------------------------------------------------------------------------
-// Buy 4 Qualifying Pouches, Get 1 Atlas Bottle Free
+// Bottle discount tiers, purely a function of qualifying pouch quantity:
+// 2 pouches -> bottle 50% off, 4 pouches -> bottle free. Both are meant to be
+// real Shopify "Buy X Get Y" automatic discounts (no code), so the tier here
+// only ever describes/displays the expected discount — it never overrides
+// the bottle's actual line-item price, which always stays its real $19.99.
 // ---------------------------------------------------------------------------
 
 const QUALIFYING_POUCH_SLUGS = ["strawberry-lemonade", "grapefruit"];
-const BOTTLE_PROMO_THRESHOLD = 4;
+export const BOTTLE_HALF_OFF_THRESHOLD = 2;
+export const BOTTLE_FREE_THRESHOLD = 4;
+export const BOTTLE_FULL_PRICE = 19.99;
+export const BOTTLE_HALF_PRICE = 9.99;
+
+export type BottleTier = "none" | "half" | "free";
 
 function computeBottlePromo(items: CartItem[]) {
   const qualifyingQty = items.reduce(
@@ -80,25 +89,29 @@ function computeBottlePromo(items: CartItem[]) {
     0
   );
   const bottleInCart = items.some((i) => i.slug === "bottle" && i.quantity > 0);
-  const unlocked = qualifyingQty >= BOTTLE_PROMO_THRESHOLD;
-  const remaining = Math.max(0, BOTTLE_PROMO_THRESHOLD - qualifyingQty);
-  return { qualifyingQty, bottleInCart, unlocked, remaining };
+
+  const tier: BottleTier =
+    qualifyingQty >= BOTTLE_FREE_THRESHOLD ? "free"
+    : qualifyingQty >= BOTTLE_HALF_OFF_THRESHOLD ? "half"
+    : "none";
+
+  const remainingToNextTier =
+    tier === "free" ? 0
+    : tier === "half" ? BOTTLE_FREE_THRESHOLD - qualifyingQty
+    : BOTTLE_HALF_OFF_THRESHOLD - qualifyingQty;
+
+  return { qualifyingQty, bottleInCart, tier, remainingToNextTier };
 }
 
 // ---------------------------------------------------------------------------
 // Discount code — derived fresh from actual cart contents every time, rather
 // than tracked as click-state, so it can never go stale or get silently
-// wiped by an unrelated "Add to Cart" click elsewhere.
+// wiped by an unrelated "Add to Cart" click elsewhere. Only the 2-pouch
+// same-flavor bundle still uses a coupon code; the bottle tiers above rely
+// on Shopify's own automatic discounts, not a code.
 // ---------------------------------------------------------------------------
 
-const KIT_BOTTLE_PRICE = 9.99;
-
 function deriveDiscountCode(items: CartItem[]): string {
-  const kitBottle = items.find(
-    (i) => i.slug === "bottle" && Math.abs(i.price - KIT_BOTTLE_PRICE) < 0.01
-  );
-  if (kitBottle) return "ATLASKIT10";
-
   const twoPack = items.find(
     (i) => QUALIFYING_POUCH_SLUGS.includes(i.slug) && i.quantity === 2 && !i.subscriptionFrequency
   );
@@ -126,11 +139,11 @@ export function CartProvider({ children }: { children: ReactNode }) {
   // addToCart
   // -----------------------------------------------------------------------
   const addToCart = useCallback(
-    (productSlug: string, qty = 1, subscriptionFrequency?: number, overridePrice?: number) => {
+    (productSlug: string, qty = 1, subscriptionFrequency?: number) => {
       const product = PRODUCTS[productSlug];
       if (!product) return;
 
-      const price = overridePrice ?? (subscriptionFrequency ? product.subscribePrice : product.price);
+      const price = subscriptionFrequency ? product.subscribePrice : product.price;
 
       // GA4 tracking
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -317,4 +330,4 @@ export function useCart() {
   return ctx;
 }
 
-export { computeBottlePromo, deriveDiscountCode, KIT_BOTTLE_PRICE };
+export { computeBottlePromo, deriveDiscountCode };

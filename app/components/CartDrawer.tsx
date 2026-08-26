@@ -1,6 +1,6 @@
 "use client";
 
-import { useCart, computeBottlePromo, deriveDiscountCode } from "@/app/context/CartContext";
+import { useCart, computeBottlePromo, deriveDiscountCode, BOTTLE_HALF_PRICE, BOTTLE_FULL_PRICE } from "@/app/context/CartContext";
 import { PRODUCTS } from "@/app/data/products";
 import CartRewardsBar from "@/app/components/CartRewardsBar";
 
@@ -21,8 +21,11 @@ export default function CartDrawer() {
     (sum, item) => sum + item.price * item.quantity,
     0
   );
-  const { qualifyingQty, bottleInCart, unlocked } = computeBottlePromo(items);
+  const { qualifyingQty, bottleInCart, tier } = computeBottlePromo(items);
   const discountCode = deriveDiscountCode(items);
+
+  const bottleDiscountAmount = tier === "free" ? BOTTLE_FULL_PRICE : tier === "half" ? BOTTLE_FULL_PRICE - BOTTLE_HALF_PRICE : 0;
+  const estimatedTotal = subtotal - bottleDiscountAmount;
 
   return (
     <div
@@ -82,6 +85,11 @@ export default function CartDrawer() {
                     <h4 className="cart-item__title">{item.title}</h4>
                     <p className="cart-item__price">
                       ${item.price.toFixed(2)}
+                      {item.slug === "bottle" && tier !== "none" && (
+                        <span className="cart-item__discount-tag">
+                          {tier === "free" ? "FREE" : "50% OFF"}
+                        </span>
+                      )}
                     </p>
                     {item.subscriptionFrequency && (
                       <p className="cart-item__subscription">
@@ -131,12 +139,14 @@ export default function CartDrawer() {
                 </div>
               ))}
 
-              {/* Sliding-scale rewards: Free Shipping @ $40, Free Bottle @ 4 pouches */}
-              <CartRewardsBar subtotal={subtotal} qualifyingQty={qualifyingQty} bottleInCart={bottleInCart} />
+              {/* Sliding-scale rewards: Free Shipping @ $40, 50% Off Bottle @ 2 pouches, Free Bottle @ 4 pouches */}
+              <CartRewardsBar subtotal={subtotal} qualifyingQty={qualifyingQty} tier={tier} />
 
-              {unlocked && !bottleInCart && (
+              {tier !== "none" && !bottleInCart && (
                 <div className="cart-promo cart-promo--unlocked">
-                  <span className="cart-promo__badge">FREE BOTTLE UNLOCKED</span>
+                  <span className="cart-promo__badge">
+                    {tier === "free" ? "FREE BOTTLE UNLOCKED" : "50% OFF BOTTLE UNLOCKED"}
+                  </span>
                   <div className="cart-promo__bottle-card">
                     {bottle.images[0] && (
                       <img className="cart-promo__bottle-img" src={bottle.images[0]} alt={bottle.name} />
@@ -144,7 +154,8 @@ export default function CartDrawer() {
                     <div className="cart-promo__bottle-info">
                       <span className="cart-promo__bottle-name">{bottle.name}</span>
                       <span className="cart-promo__bottle-price">
-                        <span className="cart-promo__bottle-price-original">${bottle.price.toFixed(2)}</span> FREE
+                        <span className="cart-promo__bottle-price-original">${BOTTLE_FULL_PRICE.toFixed(2)}</span>{" "}
+                        {tier === "free" ? "FREE" : `$${BOTTLE_HALF_PRICE.toFixed(2)}`}
                       </span>
                     </div>
                     <button
@@ -152,16 +163,20 @@ export default function CartDrawer() {
                       className="cart-promo__bottle-btn"
                       onClick={() => addToCart("bottle", 1)}
                     >
-                      Add Free Bottle
+                      {tier === "free" ? "Add Free Bottle" : "Add Bottle"}
                     </button>
                   </div>
                 </div>
               )}
-              {unlocked && bottleInCart && (
+              {tier !== "none" && bottleInCart && (
                 <div className="cart-promo cart-promo--unlocked">
-                  <span className="cart-promo__badge">FREE BOTTLE UNLOCKED</span>
-                  <span className="cart-promo__detail">Atlas Performance Bottle is on us.</span>
-                  <span className="cart-promo__savings">You save ${bottle.price.toFixed(2)}</span>
+                  <span className="cart-promo__badge">
+                    {tier === "free" ? "FREE BOTTLE UNLOCKED" : "50% OFF BOTTLE UNLOCKED"}
+                  </span>
+                  <span className="cart-promo__detail">
+                    {tier === "free" ? "Atlas Performance Bottle is on us." : "Atlas Performance Bottle is 50% off."}
+                  </span>
+                  <span className="cart-promo__savings">You save ${bottleDiscountAmount.toFixed(2)}</span>
                 </div>
               )}
               {discountCode && (
@@ -187,6 +202,12 @@ export default function CartDrawer() {
             <span>Subtotal</span>
             <span>${subtotal.toFixed(2)}</span>
           </div>
+          {bottleInCart && bottleDiscountAmount > 0 && (
+            <div className="cart-drawer__estimated">
+              <span>Estimated after bottle discount</span>
+              <span>${estimatedTotal.toFixed(2)}</span>
+            </div>
+          )}
           <button
             className="btn btn--primary btn--full"
             onClick={checkout}
