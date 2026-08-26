@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useCart } from "@/app/context/CartContext";
 import { SupplementFactsWithPanel } from "@/app/components/IngredientDetailPanel";
 import FaqSection from "@/app/components/home/FaqSection";
-import BottleUpsell from "@/app/components/BottleUpsell";
+import CompleteKitBundle from "@/app/components/CompleteKitBundle";
 
 interface ProductImage {
   src: string;
@@ -205,7 +205,7 @@ export default function ProductPage({ config }: { config: ProductPageConfig }) {
                 <button className="btn btn--primary btn--lg" onClick={handleAddToCart}>{buyButtonText}</button>
               </div>
 
-              <BottleUpsell />
+              <CompleteKitBundle mixSlug={config.slug} mixName={config.flavorName} />
 
               <div className="product-accordions" style={{ marginTop: 16 }}>
                 {config.accordionItems.map((acc, i) => (

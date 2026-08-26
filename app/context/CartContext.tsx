@@ -27,7 +27,7 @@ interface CartContextValue {
   items: CartItem[];
   cartCount: number;
   isCartOpen: boolean;
-  addToCart: (productSlug: string, qty?: number, subscriptionFrequency?: number) => void;
+  addToCart: (productSlug: string, qty?: number, subscriptionFrequency?: number, overridePrice?: number) => void;
   removeFromCart: (index: number) => void;
   updateQuantity: (index: number, qty: number) => void;
   openCart: () => void;
@@ -105,9 +105,11 @@ export function CartProvider({ children }: { children: ReactNode }) {
   // addToCart
   // -----------------------------------------------------------------------
   const addToCart = useCallback(
-    (productSlug: string, qty = 1, subscriptionFrequency?: number) => {
+    (productSlug: string, qty = 1, subscriptionFrequency?: number, overridePrice?: number) => {
       const product = PRODUCTS[productSlug];
       if (!product) return;
+
+      const price = overridePrice ?? (subscriptionFrequency ? product.subscribePrice : product.price);
 
       // GA4 tracking
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -115,8 +117,8 @@ export function CartProvider({ children }: { children: ReactNode }) {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         (window as any).gtag('event', 'add_to_cart', {
           currency: 'USD',
-          value: (subscriptionFrequency ? product.subscribePrice : product.price) * qty,
-          items: [{ item_id: productSlug, item_name: product.name, quantity: qty, price: subscriptionFrequency ? product.subscribePrice : product.price }],
+          value: price * qty,
+          items: [{ item_id: productSlug, item_name: product.name, quantity: qty, price }],
         });
       }
 
@@ -129,7 +131,6 @@ export function CartProvider({ children }: { children: ReactNode }) {
             idx === existing ? { ...item, quantity: item.quantity + qty } : item
           );
         } else {
-          const price = subscriptionFrequency ? product.subscribePrice : product.price;
           next = [
             ...prev,
             {

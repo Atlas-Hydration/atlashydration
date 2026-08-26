@@ -4,6 +4,7 @@ import { useState, useRef, useCallback } from "react";
 import Link from "next/link";
 import { useCart } from "@/app/context/CartContext";
 import { PRODUCTS } from "@/app/data/products";
+import CompleteKitBundle from "@/app/components/CompleteKitBundle";
 
 const bottle = PRODUCTS.bottle;
 
@@ -88,8 +89,14 @@ export default function BottleProductPage() {
             </div>
 
             <div className="bottle-page__info">
-              <p className="bottle-page__eyebrow">Atlas Gear</p>
+              <div className="bottle-page__eyebrow-row">
+                <p className="bottle-page__eyebrow">Atlas Gear</p>
+                <span className="bottle-page__new-badge">New</span>
+              </div>
               <h1 className="bottle-page__title">Built for daily movement.</h1>
+              <p className="bottle-page__proof">
+                The same bottle our founder — a commercial pilot — keeps within reach on every layover, workout, and long day at a desk.
+              </p>
               <p className="bottle-page__desc">
                 The Atlas Performance Water Bottle pairs a lightweight, easy-squeeze design with a 26 oz
                 capacity and Specialized Purist technology to help keep your water tasting clean without
@@ -154,15 +161,16 @@ export default function BottleProductPage() {
         </div>
       </section>
 
-      {/* Cross-sell */}
-      <section className="bottle-page__cross-sell" aria-label="Shop electrolytes">
+      {/* Cross-sell / Bundle */}
+      <section className="bottle-page__cross-sell" aria-label="Complete your kit">
         <div className="container">
           <div className="bottle-page__cross-sell-inner">
             <div>
-              <h2>Pair it with Atlas Electrolytes</h2>
+              <h2>Complete Your Kit</h2>
               <p>Fill it up with zero-sugar hydration — 1,769mg electrolytes, B vitamins, and Vitamin C per stick.</p>
+              <Link href="/products/strawberry-lemonade" className="bottle-page__cross-sell-link">Or shop electrolytes on their own →</Link>
             </div>
-            <Link href="/products/strawberry-lemonade" className="btn btn--white btn--lg">Shop Electrolytes</Link>
+            <CompleteKitBundle mixSlug="strawberry-lemonade" mixName="Strawberry Lemonade Electrolyte Mix" />
           </div>
         </div>
       </section>
