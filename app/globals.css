@@ -1615,6 +1615,17 @@ img {
   font-weight: 600;
 }
 
+.product-hero__bundle-teaser {
+  font-size: var(--text-xs);
+  font-weight: 600;
+  color: #16a34a;
+  background: rgba(22, 163, 74, 0.08);
+  border-radius: 8px;
+  padding: 8px 12px;
+  margin-bottom: 14px;
+  text-align: center;
+}
+
 /* Purchase Options */
 .purchase-options {
   display: flex;
@@ -1643,7 +1654,7 @@ img {
 }
 
 .purchase-option--subscribe {
-  margin-top: 14px;
+  margin-top: 26px;
 }
 
 .purchase-option--subscribe.active {
@@ -1829,10 +1840,17 @@ img {
   font-weight: 600;
 }
 
+.bundle-selector__scope-label {
+  font-size: var(--text-xs);
+  font-weight: 600;
+  color: var(--color-text-muted);
+  margin: 0 0 8px;
+}
+
 /* Bundle Selector */
 .bundle-selector {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   gap: 10px;
   margin-bottom: 10px;
 }
@@ -1866,11 +1884,9 @@ img {
   line-height: 1.5;
 }
 .bundle-card__badge--green { background: #16a34a; color: #fff; }
-.bundle-card__badge--red { background: #C8514A; color: #fff; }
 .bundle-card__title { font-size: 0.85rem; font-weight: 700; margin-bottom: 4px; }
 .bundle-card__price { font-size: 1rem; font-weight: 700; letter-spacing: -0.02em; }
 .bundle-card__per { font-size: 0.68rem; color: #888; margin-top: 2px; }
-.bundle-card__popular { font-size: 0.6rem; font-weight: 600; color: #C8514A; margin-top: 4px; text-transform: uppercase; letter-spacing: 0.04em; }
 .bundle-savings {
   text-align: center;
   font-size: 0.78rem;
@@ -10487,12 +10503,12 @@ img {
 }
 
 .complete-kit__eyebrow {
-  font-size: 0.62rem;
-  font-weight: 700;
-  letter-spacing: 0.1em;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--color-text-dim);
-  margin-bottom: 2px;
+  color: #16a34a;
+  margin-bottom: 3px;
 }
 
 .complete-kit__name {
@@ -10522,9 +10538,9 @@ img {
 
 .complete-kit__btn {
   flex-shrink: 0;
-  background: var(--color-primary);
-  color: #fff;
-  border: none;
+  background: transparent;
+  color: var(--color-primary);
+  border: 1.5px solid var(--color-primary);
   border-radius: 999px;
   padding: 12px 22px;
   font-size: var(--text-xs);
@@ -10532,14 +10548,19 @@ img {
   letter-spacing: 0.04em;
   text-transform: uppercase;
   cursor: pointer;
-  transition: opacity 0.2s ease;
+  transition: all 0.2s ease;
   white-space: nowrap;
 }
 
-.complete-kit__btn:hover { opacity: 0.85; }
+.complete-kit__btn:hover {
+  background: var(--color-primary);
+  color: #fff;
+}
 
 .complete-kit__btn--added {
   background: #22c55e;
+  border-color: #22c55e;
+  color: #fff;
 }
 
 @media (max-width: 560px) {
@@ -10696,6 +10717,28 @@ img {
   text-align: center;
   font-weight: 600;
   font-size: var(--text-base);
+}
+
+.bottle-page__perks {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-top: 14px;
+}
+
+.bottle-page__perk {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 0;
+  font-size: var(--text-sm);
+  font-weight: 500;
+  color: var(--color-text);
+}
+
+.bottle-page__perk svg {
+  color: #16a34a;
+  flex-shrink: 0;
 }
 
 .bottle-page__details-list {

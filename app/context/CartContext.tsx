@@ -111,13 +111,22 @@ function computeBottlePromo(items: CartItem[]) {
 // on Shopify's own automatic discounts, not a code.
 // ---------------------------------------------------------------------------
 
-function deriveDiscountCode(items: CartItem[]): string {
-  const twoPack = items.find(
+export const TWO_PACK_DISCOUNT_AMOUNT = 4.99;
+
+function findTwoPack(items: CartItem[]) {
+  return items.find(
     (i) => QUALIFYING_POUCH_SLUGS.includes(i.slug) && i.quantity === 2 && !i.subscriptionFrequency
   );
-  if (twoPack) return "ATLAS2PACK";
+}
 
-  return "";
+function deriveDiscountCode(items: CartItem[]): string {
+  return findTwoPack(items) ? "ATLAS2PACK" : "";
+}
+
+// Real dollar amount of the 2-pack discount, so the cart total can reflect
+// it immediately rather than only after Shopify applies the code at checkout.
+function computeTwoPackDiscount(items: CartItem[]): number {
+  return findTwoPack(items) ? TWO_PACK_DISCOUNT_AMOUNT : 0;
 }
 
 // ---------------------------------------------------------------------------
@@ -330,4 +339,4 @@ export function useCart() {
   return ctx;
 }
 
-export { computeBottlePromo, deriveDiscountCode };
+export { computeBottlePromo, deriveDiscountCode, computeTwoPackDiscount };
