@@ -2,8 +2,10 @@
 
 import type { BottleTier } from "@/app/context/CartContext";
 import { BOTTLE_HALF_OFF_THRESHOLD, BOTTLE_FREE_THRESHOLD } from "@/app/context/CartContext";
+import { PRODUCTS } from "@/app/data/products";
 
 const FREE_SHIPPING_THRESHOLD = 40;
+const bottle = PRODUCTS.bottle;
 
 export default function CartRewardsBar({
   subtotal,
@@ -49,13 +51,23 @@ export default function CartRewardsBar({
       <div className="cart-rewards__track">
         <div className="cart-rewards__fill" style={{ width: `${fillPct}%` }} />
         <div className={`cart-rewards__stop${shippingUnlocked ? " cart-rewards__stop--unlocked" : ""}`} style={{ left: "33%" }}>
-          <span className="cart-rewards__stop-icon">🚚</span>
+          <span className="cart-rewards__stop-icon cart-rewards__stop-icon--box" aria-hidden="true">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M21 8l-9-5-9 5 9 5 9-5z" />
+              <path d="M3 8v8l9 5 9-5V8" />
+              <path d="M12 13v8" />
+            </svg>
+          </span>
         </div>
         <div className={`cart-rewards__stop${halfUnlocked ? " cart-rewards__stop--unlocked" : ""}`} style={{ left: "66%" }}>
-          <span className="cart-rewards__stop-icon">🥤</span>
+          <span className="cart-rewards__stop-icon cart-rewards__stop-icon--img">
+            <img src={bottle.images[0]} alt="" />
+          </span>
         </div>
         <div className={`cart-rewards__stop${freeUnlocked ? " cart-rewards__stop--unlocked" : ""}`} style={{ left: "100%" }}>
-          <span className="cart-rewards__stop-icon">🍾</span>
+          <span className="cart-rewards__stop-icon cart-rewards__stop-icon--img">
+            <img src={bottle.images[0]} alt="" />
+          </span>
         </div>
       </div>
       <div className="cart-rewards__labels cart-rewards__labels--three">
