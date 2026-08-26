@@ -177,9 +177,6 @@ export default function ProductPage({ config }: { config: ProductPageConfig }) {
                 </label>
               </div>
 
-              <div style={{ marginTop: 4, marginBottom: 4 }}>
-                <span style={{ fontSize: '0.7rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.08em', color: '#C8514A' }}>Limited Time: Buy 3 Get 1 Free</span>
-              </div>
               <div className="bundle-selector">
                 <button type="button" className={`bundle-card${bundleOption === 1 ? " bundle-card--active" : ""}`} onClick={() => setBundleOption(1)}>
                   <div className="bundle-card__title">1 Pouch</div>

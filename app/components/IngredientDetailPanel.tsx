@@ -47,6 +47,18 @@ const INGREDIENT_DATA: Record<string, IngredientInfo> = {
     ],
     goodFor: ["Heart Health", "Cramp Prevention", "Blood Pressure"],
   },
+  chloride: {
+    name: "Chloride",
+    dose: "469mg — 20% DV",
+    desc: "Delivered from Pink Himalayan Salt alongside sodium. Chloride works with sodium and potassium to maintain fluid balance and is a key component of stomach acid.",
+    effects: [
+      "Maintains fluid balance and blood volume alongside sodium",
+      "Supports proper acid-base (pH) balance in the blood",
+      "A key component of stomach acid (HCl) for digestion",
+      "Assists nerve impulse transmission and muscle function",
+    ],
+    goodFor: ["Hydration", "Fluid Balance", "Digestion"],
+  },
   vitaminb3: {
     name: "Vitamin B3 (Niacin)",
     dose: "24mg — 150% DV",
@@ -143,6 +155,7 @@ const ELECTROLYTE_ROWS: RowDef[] = [
   { key: "sodium", label: <><strong>Sodium</strong> (as Sodium Citrate and Pink Himalayan Salt) 600mg</>, dv: "26%" },
   { key: "magnesium", label: <><strong>Magnesium</strong> (as Magnesium Malate) 200mg</>, dv: "48%" },
   { key: "potassium", label: <><strong>Potassium</strong> (as Potassium Citrate) 500mg</>, dv: "11%" },
+  { key: "chloride", label: <><strong>Chloride</strong> (as Pink Himalayan Salt) 469mg</>, dv: "20%" },
 ];
 
 const VITAMIN_ROWS: RowDef[] = [

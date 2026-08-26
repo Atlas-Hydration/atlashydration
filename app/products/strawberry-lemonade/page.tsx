@@ -48,7 +48,7 @@ const faqJsonLd = {
       name: "What electrolytes does Atlas contain?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "Each stick pack contains 1,769mg of total electrolytes: 600mg Sodium (from Sodium Citrate and Pink Himalayan Salt), 500mg Potassium (from Potassium Citrate), and 200mg Magnesium (from Magnesium Malate). More per serving than LMNT, Liquid I.V., or WaterBoy.",
+        text: "Each stick pack contains 1,769mg of total electrolytes: 600mg Sodium (from Sodium Citrate and Pink Himalayan Salt), 500mg Potassium (from Potassium Citrate), 200mg Magnesium (from Magnesium Malate), and 469mg Chloride (from Pink Himalayan Salt). More per serving than LMNT, Liquid I.V., or WaterBoy.",
       },
     },
     {
@@ -88,7 +88,7 @@ const faqJsonLd = {
       name: "How many electrolytes per serving?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "1,769mg per serving from three key minerals: 600mg Sodium, 500mg Potassium, and 200mg Magnesium.",
+        text: "1,769mg per serving from four key electrolytes: 600mg Sodium, 500mg Potassium, 200mg Magnesium, and 469mg Chloride.",
       },
     },
   ],
@@ -110,7 +110,7 @@ const accordionItems = [
     content: (
       <>
         <p><strong>Atlas Hydration Strawberry Lemonade</strong> is a premium zero-sugar electrolyte drink mix engineered for superior hydration, recovery, and everyday performance. Each box contains 16 individually wrapped stick packs — perfect for the gym, office, or travel.</p>
-        <p><strong>Key Electrolytes:</strong> Sodium 500mg, Potassium 400mg, Magnesium 60mg. <strong>Vitamins:</strong> Vitamin C 90mg, Niacin (B3) 20mg, Pantothenic Acid (B5) 10mg, Vitamin B6 2mg, Vitamin B12 8mcg. <strong>Amino Acids:</strong> L-Glutamine 1,000mg, L-Taurine 200mg.</p>
+        <p><strong>Key Electrolytes:</strong> Sodium 600mg, Potassium 500mg, Magnesium 200mg, Chloride 469mg. <strong>Vitamins:</strong> Vitamin C 90mg, Niacin (B3) 24mg, Pantothenic Acid (B5) 5mg, Vitamin B6 2mg, Vitamin B12 8mcg. <strong>Amino Acids:</strong> L-Glutamine 1,000mg, L-Alanine 200mg.</p>
         <p><strong>Other Ingredients:</strong> Citric Acid, Natural Strawberry &amp; Lemon Flavors, Bamboo Extract, Annatto Seed Extract (color), Stevia Leaf Extract, Allulose.</p>
       </>
     ),
