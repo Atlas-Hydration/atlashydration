@@ -23,6 +23,7 @@ export default function CartDrawer() {
   );
   const { qualifyingQty, bottleInCart, tier } = computeBottlePromo(items);
   const discountCode = deriveDiscountCode(items);
+  const hasSubscription = items.some((i) => i.subscriptionFrequency);
 
   // Only counts if the bottle is actually in the cart contributing to the subtotal —
   // an unlocked tier alone (before the bottle is added) must not discount the total.
@@ -144,7 +145,7 @@ export default function CartDrawer() {
               ))}
 
               {/* Sliding-scale rewards: Free Shipping @ $40, 50% Off Bottle @ 2 pouches, Free Bottle @ 4 pouches */}
-              <CartRewardsBar subtotal={subtotal} qualifyingQty={qualifyingQty} tier={tier} />
+              <CartRewardsBar subtotal={subtotal} qualifyingQty={qualifyingQty} tier={tier} hasSubscription={hasSubscription} />
 
               {tier !== "none" && !bottleInCart && (
                 <div className="cart-promo cart-promo--unlocked">

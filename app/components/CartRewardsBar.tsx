@@ -11,17 +11,20 @@ export default function CartRewardsBar({
   subtotal,
   qualifyingQty,
   tier,
+  hasSubscription,
 }: {
   subtotal: number;
   qualifyingQty: number;
   tier: BottleTier;
+  hasSubscription: boolean;
 }) {
-  const shippingUnlocked = subtotal >= FREE_SHIPPING_THRESHOLD;
+  // Subscriptions always ship free, regardless of order value.
+  const shippingUnlocked = hasSubscription || subtotal >= FREE_SHIPPING_THRESHOLD;
   const halfUnlocked = tier === "half" || tier === "free";
   const freeUnlocked = tier === "free";
 
   // Three stops, evenly spaced at 33% / 66% / 100%.
-  const shippingSegmentPct = Math.min(subtotal / FREE_SHIPPING_THRESHOLD, 1) * 33;
+  const shippingSegmentPct = shippingUnlocked ? 33 : Math.min(subtotal / FREE_SHIPPING_THRESHOLD, 1) * 33;
   const halfSegmentPct = !shippingUnlocked
     ? shippingSegmentPct
     : 33 + Math.min(qualifyingQty / BOTTLE_HALF_OFF_THRESHOLD, 1) * 33;
@@ -37,6 +40,8 @@ export default function CartRewardsBar({
   let statusText: string;
   if (!shippingUnlocked) {
     statusText = `Add $${remainingShipping.toFixed(2)} more to unlock free shipping.`;
+  } else if (hasSubscription && tier === "none" && subtotal < FREE_SHIPPING_THRESHOLD) {
+    statusText = `Your subscription ships free — add ${remainingToHalf} more pouch${remainingToHalf > 1 ? "es" : ""} to unlock 50% off the Atlas Bottle.`;
   } else if (tier === "none") {
     statusText = `Add ${remainingToHalf} more pouch${remainingToHalf > 1 ? "es" : ""} to unlock 50% off the Atlas Bottle.`;
   } else if (tier === "half") {
