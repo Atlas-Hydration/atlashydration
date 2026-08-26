@@ -92,14 +92,11 @@ export default function ProductPage({ config }: { config: ProductPageConfig }) {
   const [openAccordion, setOpenAccordion] = useState<number | null>(null);
 
   const bundleSavings = qty === 2 ? 4.99 : 0;
-  const bundleCode = qty === 2 ? 'ATLAS2PACK' : '';
 
   const handleAddToCart = useCallback(() => {
-    localStorage.removeItem('atlas_discount_code');
-    if (bundleCode) localStorage.setItem('atlas_discount_code', bundleCode);
     const isSubscription = purchaseOption === "subscribe";
     addToCart(config.slug, qty, isSubscription ? frequency : undefined);
-  }, [addToCart, config.slug, qty, bundleCode, purchaseOption, frequency]);
+  }, [addToCart, config.slug, qty, purchaseOption, frequency]);
 
   const buyButtonText = config.preorder ? "Pre-Order" : "Add to Cart";
   const ctaButtonText = config.preorder ? "Pre-Order — $29.99" : "Order — $29.99";

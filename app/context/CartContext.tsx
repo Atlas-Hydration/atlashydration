@@ -86,6 +86,28 @@ function computeBottlePromo(items: CartItem[]) {
 }
 
 // ---------------------------------------------------------------------------
+// Discount code — derived fresh from actual cart contents every time, rather
+// than tracked as click-state, so it can never go stale or get silently
+// wiped by an unrelated "Add to Cart" click elsewhere.
+// ---------------------------------------------------------------------------
+
+const KIT_BOTTLE_PRICE = 9.99;
+
+function deriveDiscountCode(items: CartItem[]): string {
+  const kitBottle = items.find(
+    (i) => i.slug === "bottle" && Math.abs(i.price - KIT_BOTTLE_PRICE) < 0.01
+  );
+  if (kitBottle) return "ATLASKIT10";
+
+  const twoPack = items.find(
+    (i) => QUALIFYING_POUCH_SLUGS.includes(i.slug) && i.quantity === 2 && !i.subscriptionFrequency
+  );
+  if (twoPack) return "ATLAS2PACK";
+
+  return "";
+}
+
+// ---------------------------------------------------------------------------
 // Provider
 // ---------------------------------------------------------------------------
 
@@ -238,15 +260,14 @@ export function CartProvider({ children }: { children: ReactNode }) {
     returnField.value = '/checkout';
     form.appendChild(returnField);
 
-    // Apply discount code if set
-    const discountCode = localStorage.getItem('atlas_discount_code');
+    // Apply discount code, derived fresh from what's actually in the cart
+    const discountCode = deriveDiscountCode(items);
     if (discountCode) {
       const discountField = document.createElement('input');
       discountField.type = 'hidden';
       discountField.name = 'discount';
       discountField.value = discountCode;
       form.appendChild(discountField);
-      localStorage.removeItem('atlas_discount_code');
     }
 
     console.log('[Atlas Checkout] Submitting form to /cart/add with return_to=/checkout');
@@ -296,4 +317,4 @@ export function useCart() {
   return ctx;
 }
 
-export { computeBottlePromo };
+export { computeBottlePromo, deriveDiscountCode, KIT_BOTTLE_PRICE };

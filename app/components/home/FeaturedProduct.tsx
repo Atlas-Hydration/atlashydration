@@ -81,16 +81,9 @@ export default function FeaturedProduct() {
 
 
   const bundleSavings = qty === 2 ? 4.99 : 0;
-  const bundleCode = qty === 2 ? 'ATLAS2PACK' : '';
 
   const handleAdd = async () => {
     setAdding(true);
-    // Clear any existing bundle discount code first
-    localStorage.removeItem('atlas_discount_code');
-    // Then set the new one if applicable
-    if (bundleCode) {
-      localStorage.setItem('atlas_discount_code', bundleCode);
-    }
     const subFreq = purchaseType === "subscribe" ? frequency : undefined;
     await addToCart(selectedFlavor, qty, subFreq);
     if (timerRef.current) clearTimeout(timerRef.current);
