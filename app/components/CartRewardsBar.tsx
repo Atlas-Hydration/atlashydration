@@ -72,7 +72,7 @@ export default function CartRewardsBar({
       </div>
       <div className="cart-rewards__labels cart-rewards__labels--three">
         <span>Free Shipping</span>
-        <span>50% Off Bottle</span>
+        <span>50% Off</span>
         <span>Free Bottle</span>
       </div>
     </div>

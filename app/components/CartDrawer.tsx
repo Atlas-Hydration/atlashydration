@@ -183,14 +183,25 @@ export default function CartDrawer() {
               {discountCode} applied
             </p>
           )}
-          <div className="cart-drawer__subtotal">
-            <span>Subtotal</span>
-            <span>${subtotal.toFixed(2)}</span>
-          </div>
-          {bottleInCart && bottleDiscountAmount > 0 && (
-            <div className="cart-drawer__estimated">
-              <span>Estimated after bottle discount</span>
-              <span>${estimatedTotal.toFixed(2)}</span>
+          {bottleInCart && bottleDiscountAmount > 0 ? (
+            <>
+              <div className="cart-drawer__line">
+                <span>Subtotal</span>
+                <span>${subtotal.toFixed(2)}</span>
+              </div>
+              <div className="cart-drawer__line cart-drawer__line--discount">
+                <span>{tier === "free" ? "Free bottle" : "Bottle discount"}</span>
+                <span>&minus;${bottleDiscountAmount.toFixed(2)}</span>
+              </div>
+              <div className="cart-drawer__total">
+                <span>Total</span>
+                <span>${estimatedTotal.toFixed(2)}</span>
+              </div>
+            </>
+          ) : (
+            <div className="cart-drawer__total">
+              <span>Total</span>
+              <span>${subtotal.toFixed(2)}</span>
             </div>
           )}
           <button
