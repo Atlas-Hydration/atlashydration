@@ -6,7 +6,7 @@ const faqItems = [
   {
     question: "What electrolytes does Atlas contain?",
     answer:
-      'Each stick pack contains <strong>1,769mg of total electrolytes</strong>: 600mg Sodium (from Sodium Citrate and Pink Himalayan Salt), 500mg Potassium (from Potassium Citrate), and 200mg Magnesium (from Magnesium Malate). More per serving than LMNT, Liquid I.V., or WaterBoy.',
+      'Each stick pack contains <strong>1,769mg of total electrolytes</strong>: 600mg Sodium (from Sodium Citrate and Pink Himalayan Salt), 500mg Potassium (from Potassium Citrate), 200mg Magnesium (from Magnesium Malate), and 469mg Chloride (from Pink Himalayan Salt). More per serving than LMNT, Liquid I.V., or WaterBoy.',
   },
   {
     question: "Is Atlas sugar-free?",
@@ -31,7 +31,7 @@ const faqItems = [
   {
     question: "How many electrolytes per serving?",
     answer:
-      '<strong>1,769mg per serving</strong> from three key minerals: 600mg Sodium, 500mg Potassium, and 200mg Magnesium. The ACSM recommends sodium replacement during exercise for fluid balance — Atlas provides 26% DV in a single stick pack.',
+      '<strong>1,769mg per serving</strong> from four key electrolytes: 600mg Sodium, 500mg Potassium, 200mg Magnesium, and 469mg Chloride. The ACSM recommends sodium replacement during exercise for fluid balance — Atlas provides 26% DV in a single stick pack.',
   },
   {
     question: "Who founded Atlas and why?",
