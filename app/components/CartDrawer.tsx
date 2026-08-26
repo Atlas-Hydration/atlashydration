@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useCart, computeBottlePromo } from "@/app/context/CartContext";
 import { PRODUCTS } from "@/app/data/products";
+import CartRewardsBar from "@/app/components/CartRewardsBar";
 
 const bottle = PRODUCTS.bottle;
 
@@ -27,13 +28,7 @@ export default function CartDrawer() {
     (sum, item) => sum + item.price * item.quantity,
     0
   );
-  const { qualifyingQty, bottleInCart, unlocked, remaining } = computeBottlePromo(items);
-  const bottlePromoState: "unlocked-no-bottle" | "unlocked-with-bottle" | "downgrade" | "progress" | "none" =
-    unlocked && !bottleInCart ? "unlocked-no-bottle"
-    : unlocked && bottleInCart ? "unlocked-with-bottle"
-    : !unlocked && bottleInCart ? "downgrade"
-    : qualifyingQty > 0 ? "progress"
-    : "none";
+  const { qualifyingQty, bottleInCart, unlocked } = computeBottlePromo(items);
 
   return (
     <div
@@ -142,22 +137,10 @@ export default function CartDrawer() {
                 </div>
               ))}
 
-              {/* Buy 4 Qualifying Pouches, Get 1 Atlas Bottle Free */}
-              {bottlePromoState === "progress" && (
-                <div className="cart-promo cart-promo--progress">
-                  <span className="cart-promo__detail">
-                    Add {remaining} more pouch{remaining > 1 ? "es" : ""} to unlock a FREE Atlas Performance Bottle.
-                  </span>
-                </div>
-              )}
-              {bottlePromoState === "downgrade" && (
-                <div className="cart-promo cart-promo--progress">
-                  <span className="cart-promo__detail">
-                    Add {remaining} more pouch{remaining > 1 ? "es" : ""} to make your bottle FREE.
-                  </span>
-                </div>
-              )}
-              {bottlePromoState === "unlocked-no-bottle" && (
+              {/* Sliding-scale rewards: Free Shipping @ $40, Free Bottle @ 4 pouches */}
+              <CartRewardsBar subtotal={subtotal} qualifyingQty={qualifyingQty} bottleInCart={bottleInCart} />
+
+              {unlocked && !bottleInCart && (
                 <div className="cart-promo cart-promo--unlocked">
                   <span className="cart-promo__badge">FREE BOTTLE UNLOCKED</span>
                   <div className="cart-promo__bottle-card">
@@ -180,7 +163,7 @@ export default function CartDrawer() {
                   </div>
                 </div>
               )}
-              {bottlePromoState === "unlocked-with-bottle" && (
+              {unlocked && bottleInCart && (
                 <div className="cart-promo cart-promo--unlocked">
                   <span className="cart-promo__badge">FREE BOTTLE UNLOCKED</span>
                   <span className="cart-promo__detail">Atlas Performance Bottle is on us.</span>

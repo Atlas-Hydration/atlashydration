@@ -2,6 +2,7 @@
 
 import { useState, useRef, useCallback, useEffect } from "react";
 import { useCart } from "@/app/context/CartContext";
+import CompleteKitBundle from "@/app/components/CompleteKitBundle";
 
 const FLAVOR_IMAGES = {
   "strawberry-lemonade": [
@@ -27,7 +28,7 @@ export default function FeaturedProduct() {
   const [purchaseType, setPurchaseType] = useState<"subscribe" | "onetime">("subscribe");
   const [frequency, setFrequency] = useState(2);
   const [adding, setAdding] = useState(false);
-  const [bundleOption, setBundleOption] = useState<1 | 2>(1);
+  const [qty, setQty] = useState(1);
   const { addToCart } = useCart();
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const dragStartX = useRef(0);
@@ -79,9 +80,8 @@ export default function FeaturedProduct() {
   }, [selectedFlavor]);
 
 
-  const bundleQty = bundleOption === 2 ? 2 : 1;
-  const bundleSavings = bundleOption === 2 ? 4.99 : 0;
-  const bundleCode = bundleOption === 2 ? 'ATLAS2PACK' : '';
+  const bundleSavings = qty === 2 ? 4.99 : 0;
+  const bundleCode = qty === 2 ? 'ATLAS2PACK' : '';
 
   const handleAdd = async () => {
     setAdding(true);
@@ -92,7 +92,7 @@ export default function FeaturedProduct() {
       localStorage.setItem('atlas_discount_code', bundleCode);
     }
     const subFreq = purchaseType === "subscribe" ? frequency : undefined;
-    await addToCart(selectedFlavor, bundleQty, subFreq);
+    await addToCart(selectedFlavor, qty, subFreq);
     if (timerRef.current) clearTimeout(timerRef.current);
     timerRef.current = setTimeout(() => setAdding(false), 1200);
   };
@@ -254,20 +254,33 @@ export default function FeaturedProduct() {
 
             {/* Bundle Selector */}
             <div className="bundle-selector">
-              <button type="button" className={`bundle-card${bundleOption === 1 ? " bundle-card--active" : ""}`} onClick={() => setBundleOption(1)}>
+              <button type="button" className={`bundle-card${qty === 1 ? " bundle-card--active" : ""}`} onClick={() => setQty(1)}>
                 <div className="bundle-card__title">1 Pouch</div>
                 <div className="bundle-card__price">$29.99</div>
                 <div className="bundle-card__per">$1.87 / stick</div>
               </button>
-              <button type="button" className={`bundle-card${bundleOption === 2 ? " bundle-card--active" : ""}`} onClick={() => setBundleOption(2)}>
+              <button type="button" className={`bundle-card${qty === 2 ? " bundle-card--active" : ""}`} onClick={() => setQty(2)}>
                 <span className="bundle-card__badge bundle-card__badge--green">Best Value</span>
                 <div className="bundle-card__title">2 Pouches</div>
                 <div className="bundle-card__price">$54.99</div>
                 <div className="bundle-card__per">$1.72 / stick · Save $5</div>
               </button>
             </div>
+
+            <div className="qty-stepper">
+              <span className="qty-stepper__label">Or choose your own quantity</span>
+              <div className="qty-stepper__control">
+                <button type="button" aria-label="Decrease quantity" onClick={() => setQty((q) => Math.max(1, q - 1))}>−</button>
+                <span>{qty}</span>
+                <button type="button" aria-label="Increase quantity" onClick={() => setQty((q) => Math.min(20, q + 1))}>+</button>
+              </div>
+              <span className="qty-stepper__total">${(qty === 2 ? 54.99 : qty * 29.99).toFixed(2)}</span>
+            </div>
             {bundleSavings > 0 && (
               <div className="bundle-savings">You&apos;re saving ${bundleSavings.toFixed(2)} on this order</div>
+            )}
+            {qty >= 4 && qty < 8 && (
+              <div className="qty-stepper__promo-hint">🎉 4+ pouches unlocks a FREE Atlas Performance Bottle in your cart!</div>
             )}
 
             <div style={{ marginTop: 12 }}>
@@ -278,6 +291,11 @@ export default function FeaturedProduct() {
                 {adding ? "Added!" : isPreorder ? "Pre-Order" : "Add to Cart"}
               </button>
             </div>
+
+            <CompleteKitBundle
+              mixSlug={selectedFlavor}
+              mixName={selectedFlavor === "grapefruit" ? "Grapefruit Electrolyte Mix" : "Strawberry Lemonade Electrolyte Mix"}
+            />
           </div>
         </div>
       </div>

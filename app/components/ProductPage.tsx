@@ -88,19 +88,18 @@ export default function ProductPage({ config }: { config: ProductPageConfig }) {
   const { addToCart } = useCart();
   const [purchaseOption, setPurchaseOption] = useState<"subscribe" | "onetime">("subscribe");
   const [frequency, setFrequency] = useState(2);
-  const [bundleOption, setBundleOption] = useState<1 | 2>(1);
+  const [qty, setQty] = useState(1);
   const [openAccordion, setOpenAccordion] = useState<number | null>(null);
 
-  const bundleQty = bundleOption === 2 ? 2 : 1;
-  const bundleSavings = bundleOption === 2 ? 4.99 : 0;
-  const bundleCode = bundleOption === 2 ? 'ATLAS2PACK' : '';
+  const bundleSavings = qty === 2 ? 4.99 : 0;
+  const bundleCode = qty === 2 ? 'ATLAS2PACK' : '';
 
   const handleAddToCart = useCallback(() => {
     localStorage.removeItem('atlas_discount_code');
     if (bundleCode) localStorage.setItem('atlas_discount_code', bundleCode);
     const isSubscription = purchaseOption === "subscribe";
-    addToCart(config.slug, bundleQty, isSubscription ? frequency : undefined);
-  }, [addToCart, config.slug, bundleQty, bundleCode, purchaseOption, frequency]);
+    addToCart(config.slug, qty, isSubscription ? frequency : undefined);
+  }, [addToCart, config.slug, qty, bundleCode, purchaseOption, frequency]);
 
   const buyButtonText = config.preorder ? "Pre-Order" : "Add to Cart";
   const ctaButtonText = config.preorder ? "Pre-Order — $29.99" : "Order — $29.99";
@@ -178,20 +177,33 @@ export default function ProductPage({ config }: { config: ProductPageConfig }) {
               </div>
 
               <div className="bundle-selector">
-                <button type="button" className={`bundle-card${bundleOption === 1 ? " bundle-card--active" : ""}`} onClick={() => setBundleOption(1)}>
+                <button type="button" className={`bundle-card${qty === 1 ? " bundle-card--active" : ""}`} onClick={() => setQty(1)}>
                   <div className="bundle-card__title">1 Pouch</div>
                   <div className="bundle-card__price">$29.99</div>
                   <div className="bundle-card__per">$1.87 / stick</div>
                 </button>
-                <button type="button" className={`bundle-card${bundleOption === 2 ? " bundle-card--active" : ""}`} onClick={() => setBundleOption(2)}>
+                <button type="button" className={`bundle-card${qty === 2 ? " bundle-card--active" : ""}`} onClick={() => setQty(2)}>
                   <span className="bundle-card__badge bundle-card__badge--green">Best Value</span>
                   <div className="bundle-card__title">2 Pouches</div>
                   <div className="bundle-card__price">$54.99</div>
                   <div className="bundle-card__per">$1.72 / stick · Save $5</div>
                 </button>
               </div>
+
+              <div className="qty-stepper">
+                <span className="qty-stepper__label">Or choose your own quantity</span>
+                <div className="qty-stepper__control">
+                  <button type="button" aria-label="Decrease quantity" onClick={() => setQty((q) => Math.max(1, q - 1))}>−</button>
+                  <span>{qty}</span>
+                  <button type="button" aria-label="Increase quantity" onClick={() => setQty((q) => Math.min(20, q + 1))}>+</button>
+                </div>
+                <span className="qty-stepper__total">${(qty === 2 ? 54.99 : qty * 29.99).toFixed(2)}</span>
+              </div>
               {bundleSavings > 0 && (
                 <div className="bundle-savings">You&apos;re saving ${bundleSavings.toFixed(2)} on this order</div>
+              )}
+              {qty >= 4 && qty < 8 && (
+                <div className="qty-stepper__promo-hint">🎉 4+ pouches unlocks a FREE Atlas Performance Bottle in your cart!</div>
               )}
 
               <div className="product-hero__buy">

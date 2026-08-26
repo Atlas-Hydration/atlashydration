@@ -4,6 +4,7 @@ import { useState, useRef, useCallback, useEffect } from "react";
 import Link from "next/link";
 import { useCart } from "@/app/context/CartContext";
 import { PRODUCTS } from "@/app/data/products";
+import CompleteKitBundle from "@/app/components/CompleteKitBundle";
 
 const bottle = PRODUCTS.bottle;
 
@@ -199,6 +200,8 @@ export default function BottleSection() {
               View full details
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M9 18l6-6-6-6" /></svg>
             </Link>
+
+            <CompleteKitBundle mixSlug="strawberry-lemonade" mixName="Strawberry Lemonade Electrolyte Mix" />
           </div>
         </div>
       </div>
