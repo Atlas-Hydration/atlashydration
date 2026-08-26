@@ -27,7 +27,7 @@ export default function FeaturedProduct() {
   const [purchaseType, setPurchaseType] = useState<"subscribe" | "onetime">("subscribe");
   const [frequency, setFrequency] = useState(2);
   const [adding, setAdding] = useState(false);
-  const [bundleOption, setBundleOption] = useState<1 | 2 | 3>(1);
+  const [bundleOption, setBundleOption] = useState<1 | 2>(1);
   const { addToCart } = useCart();
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const dragStartX = useRef(0);
@@ -79,9 +79,9 @@ export default function FeaturedProduct() {
   }, [selectedFlavor]);
 
 
-  const bundleQty = bundleOption === 3 ? 4 : bundleOption === 2 ? 2 : 1;
-  const bundleSavings = bundleOption === 3 ? 29.99 : bundleOption === 2 ? 4.99 : 0;
-  const bundleCode = bundleOption === 3 ? 'ATLAS3GET1' : bundleOption === 2 ? 'ATLAS2PACK' : '';
+  const bundleQty = bundleOption === 2 ? 2 : 1;
+  const bundleSavings = bundleOption === 2 ? 4.99 : 0;
+  const bundleCode = bundleOption === 2 ? 'ATLAS2PACK' : '';
 
   const handleAdd = async () => {
     setAdding(true);
@@ -264,13 +264,6 @@ export default function FeaturedProduct() {
                 <div className="bundle-card__title">2 Pouches</div>
                 <div className="bundle-card__price">$54.99</div>
                 <div className="bundle-card__per">$1.72 / stick · Save $5</div>
-              </button>
-              <button type="button" className={`bundle-card${bundleOption === 3 ? " bundle-card--active" : ""}`} onClick={() => setBundleOption(3)}>
-                <span className="bundle-card__badge bundle-card__badge--red">Free Pouch</span>
-                <div className="bundle-card__title">3 + 1 FREE</div>
-                <div className="bundle-card__price">$79.99</div>
-                <div className="bundle-card__per">$1.25 / stick · Save $29.99</div>
-                <div className="bundle-card__popular">Most Popular</div>
               </button>
             </div>
             {bundleSavings > 0 && (
