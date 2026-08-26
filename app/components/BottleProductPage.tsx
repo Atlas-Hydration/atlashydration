@@ -8,6 +8,12 @@ import CompleteKitBundle from "@/app/components/CompleteKitBundle";
 
 const bottle = PRODUCTS.bottle;
 
+const CheckSvg = () => (
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+    <path d="M20 6L9 17l-5-5" />
+  </svg>
+);
+
 const FEATURES = [
   {
     title: "Purist Technology",
@@ -119,6 +125,12 @@ export default function BottleProductPage() {
               >
                 {adding ? "Added!" : "Add to Cart"}
               </button>
+
+              <div className="bottle-page__perks">
+                <div className="bottle-page__perk"><CheckSvg /><span>BPA-free, food-grade material</span></div>
+                <div className="bottle-page__perk"><CheckSvg /><span>Dishwasher safe, top rack</span></div>
+                <div className="bottle-page__perk"><CheckSvg /><span>Ships with every Atlas order</span></div>
+              </div>
 
               <div className="product-accordions" style={{ marginTop: 28 }}>
                 {accordions.map((acc, i) => (

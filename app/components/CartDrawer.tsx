@@ -1,6 +1,6 @@
 "use client";
 
-import { useCart, computeBottlePromo, deriveDiscountCode, BOTTLE_HALF_PRICE, BOTTLE_FULL_PRICE } from "@/app/context/CartContext";
+import { useCart, computeBottlePromo, deriveDiscountCode, computeTwoPackDiscount, BOTTLE_HALF_PRICE, BOTTLE_FULL_PRICE } from "@/app/context/CartContext";
 import { PRODUCTS } from "@/app/data/products";
 import CartRewardsBar from "@/app/components/CartRewardsBar";
 
@@ -24,8 +24,12 @@ export default function CartDrawer() {
   const { qualifyingQty, bottleInCart, tier } = computeBottlePromo(items);
   const discountCode = deriveDiscountCode(items);
 
-  const bottleDiscountAmount = tier === "free" ? BOTTLE_FULL_PRICE : tier === "half" ? BOTTLE_FULL_PRICE - BOTTLE_HALF_PRICE : 0;
-  const estimatedTotal = subtotal - bottleDiscountAmount;
+  // Only counts if the bottle is actually in the cart contributing to the subtotal —
+  // an unlocked tier alone (before the bottle is added) must not discount the total.
+  const bottleDiscountAmount = !bottleInCart ? 0 : tier === "free" ? BOTTLE_FULL_PRICE : tier === "half" ? BOTTLE_FULL_PRICE - BOTTLE_HALF_PRICE : 0;
+  const twoPackDiscountAmount = computeTwoPackDiscount(items);
+  const totalDiscountAmount = bottleDiscountAmount + twoPackDiscountAmount;
+  const estimatedTotal = subtotal - totalDiscountAmount;
 
   return (
     <div
@@ -183,16 +187,24 @@ export default function CartDrawer() {
               {discountCode} applied
             </p>
           )}
-          {bottleInCart && bottleDiscountAmount > 0 ? (
+          {totalDiscountAmount > 0 ? (
             <>
               <div className="cart-drawer__line">
                 <span>Subtotal</span>
                 <span>${subtotal.toFixed(2)}</span>
               </div>
-              <div className="cart-drawer__line cart-drawer__line--discount">
-                <span>{tier === "free" ? "Free bottle" : "Bottle discount"}</span>
-                <span>&minus;${bottleDiscountAmount.toFixed(2)}</span>
-              </div>
+              {twoPackDiscountAmount > 0 && (
+                <div className="cart-drawer__line cart-drawer__line--discount">
+                  <span>2-Pack discount</span>
+                  <span>&minus;${twoPackDiscountAmount.toFixed(2)}</span>
+                </div>
+              )}
+              {bottleDiscountAmount > 0 && (
+                <div className="cart-drawer__line cart-drawer__line--discount">
+                  <span>{tier === "free" ? "Free bottle" : "Bottle discount"}</span>
+                  <span>&minus;${bottleDiscountAmount.toFixed(2)}</span>
+                </div>
+              )}
               <div className="cart-drawer__total">
                 <span>Total</span>
                 <span>${estimatedTotal.toFixed(2)}</span>

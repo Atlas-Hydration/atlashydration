@@ -84,6 +84,15 @@ function ProductGallery({ images }: { images: ProductImage[] }) {
   );
 }
 
+const ONE_TIME_UNIT_PRICE = 29.99;
+const SUBSCRIBE_UNIT_PRICE = 23.99;
+const ONE_TIME_PER_STICK = 1.87;
+const SUBSCRIBE_PER_STICK = 1.50;
+// Matches the real "ATLAS2PACK" Shopify discount — one-time purchases only,
+// since a subscription already carries its own 20% discount.
+const TWO_PACK_BUNDLE_DISCOUNT = 4.99;
+const STICKS_PER_POUCH = 16;
+
 export default function ProductPage({ config }: { config: ProductPageConfig }) {
   const { addToCart } = useCart();
   const [purchaseOption, setPurchaseOption] = useState<"subscribe" | "onetime">("subscribe");
@@ -91,7 +100,17 @@ export default function ProductPage({ config }: { config: ProductPageConfig }) {
   const [qty, setQty] = useState(1);
   const [openAccordion, setOpenAccordion] = useState<number | null>(null);
 
-  const bundleSavings = qty === 2 ? 4.99 : 0;
+  const isSubscribing = purchaseOption === "subscribe";
+  const unitPrice = isSubscribing ? SUBSCRIBE_UNIT_PRICE : ONE_TIME_UNIT_PRICE;
+  const perStickPrice = isSubscribing ? SUBSCRIBE_PER_STICK : ONE_TIME_PER_STICK;
+  // The 2-pack bundle discount only applies to one-time purchases.
+  const twoPackDiscount = isSubscribing ? 0 : TWO_PACK_BUNDLE_DISCOUNT;
+  const onePouchTotal = unitPrice;
+  const twoPouchTotal = unitPrice * 2 - twoPackDiscount;
+  const twoPouchPerStick = twoPouchTotal / (STICKS_PER_POUCH * 2);
+  const customQtyTotal = qty === 2 ? twoPouchTotal : qty * unitPrice;
+
+  const bundleSavings = qty === 2 ? twoPackDiscount : 0;
 
   const handleAddToCart = useCallback(() => {
     const isSubscription = purchaseOption === "subscribe";
@@ -99,7 +118,7 @@ export default function ProductPage({ config }: { config: ProductPageConfig }) {
   }, [addToCart, config.slug, qty, purchaseOption, frequency]);
 
   const buyButtonText = config.preorder ? "Pre-Order" : "Add to Cart";
-  const ctaButtonText = config.preorder ? "Pre-Order — $29.99" : "Order — $29.99";
+  const ctaButtonText = `${config.preorder ? "Pre-Order" : "Order"} — $${customQtyTotal.toFixed(2)}`;
 
   return (
     <main>
@@ -126,9 +145,13 @@ export default function ProductPage({ config }: { config: ProductPageConfig }) {
                 </Link>
               </div>
 
+              <p className="product-hero__bundle-teaser">
+                🎁 Add 2 pouches, get the Atlas Bottle 50% off — details below
+              </p>
+
               <div className="purchase-options">
                 <label className={`purchase-option purchase-option--subscribe${purchaseOption === "subscribe" ? " active" : ""}`}>
-                  <span className="purchase-option__best-value">Best Value</span>
+                  <span className="purchase-option__best-value">Most Popular</span>
                   <div className="purchase-option__header">
                     <div className="purchase-option__radio">
                       <input type="radio" name="purchase-type" value="subscribe" checked={purchaseOption === "subscribe"} onChange={() => setPurchaseOption("subscribe")} />
@@ -138,18 +161,17 @@ export default function ProductPage({ config }: { config: ProductPageConfig }) {
                     <span className="purchase-option__discount-badge">20% OFF</span>
                   </div>
                   <div className="purchase-option__price-row">
-                    <span className="purchase-option__price">$23.99</span>
-                    <span className="purchase-option__per">$1.50 / Stick</span>
-                    <span className="purchase-option__price-original">$29.99</span>
+                    <span className="purchase-option__price">${SUBSCRIBE_UNIT_PRICE.toFixed(2)}</span>
+                    <span className="purchase-option__per">${SUBSCRIBE_PER_STICK.toFixed(2)} / Stick</span>
+                    <span className="purchase-option__price-original">${ONE_TIME_UNIT_PRICE.toFixed(2)}</span>
                   </div>
                   <div className="purchase-option__savings-bar">
                     You save $6.00 every order + free shipping
                   </div>
                   <div className="purchase-option__details">
                     <div className="purchase-option__perks">
-                      <div className="purchase-option__perk"><CheckSvg /><strong>Save 20% every order</strong></div>
-                      <div className="purchase-option__perk"><CheckSvg /><strong>Free shipping on every delivery</strong></div>
                       <div className="purchase-option__perk"><CheckSvg /><strong>Edit, skip, or cancel anytime</strong></div>
+                      <div className="purchase-option__perk"><CheckSvg /><strong>Locked-in price, every delivery</strong></div>
                     </div>
                     <div className="frequency-selector">
                       {[2, 4, 6].map((f) => (
@@ -167,23 +189,29 @@ export default function ProductPage({ config }: { config: ProductPageConfig }) {
                     <span className="purchase-option__label">One-time Purchase</span>
                   </div>
                   <div className="purchase-option__price-row">
-                    <span className="purchase-option__price">$29.99</span>
-                    <span className="purchase-option__per">$1.87 / Stick</span>
+                    <span className="purchase-option__price">${ONE_TIME_UNIT_PRICE.toFixed(2)}</span>
+                    <span className="purchase-option__per">${ONE_TIME_PER_STICK.toFixed(2)} / Stick</span>
                   </div>
                 </label>
               </div>
 
+              <p className="bundle-selector__scope-label">
+                Quantity for {isSubscribing ? "Subscribe & Save" : "One-Time Purchase"}
+              </p>
+
               <div className="bundle-selector">
                 <button type="button" className={`bundle-card${qty === 1 ? " bundle-card--active" : ""}`} onClick={() => setQty(1)}>
                   <div className="bundle-card__title">1 Pouch</div>
-                  <div className="bundle-card__price">$29.99</div>
-                  <div className="bundle-card__per">$1.87 / stick</div>
+                  <div className="bundle-card__price">${onePouchTotal.toFixed(2)}</div>
+                  <div className="bundle-card__per">${perStickPrice.toFixed(2)} / stick</div>
                 </button>
                 <button type="button" className={`bundle-card${qty === 2 ? " bundle-card--active" : ""}`} onClick={() => setQty(2)}>
-                  <span className="bundle-card__badge bundle-card__badge--green">Best Value</span>
+                  {twoPackDiscount > 0 && <span className="bundle-card__badge bundle-card__badge--green">Best Value</span>}
                   <div className="bundle-card__title">2 Pouches</div>
-                  <div className="bundle-card__price">$54.99</div>
-                  <div className="bundle-card__per">$1.72 / stick · Save $5</div>
+                  <div className="bundle-card__price">${twoPouchTotal.toFixed(2)}</div>
+                  <div className="bundle-card__per">
+                    ${twoPouchPerStick.toFixed(2)} / stick{twoPackDiscount > 0 ? ` · Save $${twoPackDiscount.toFixed(2)}` : ""}
+                  </div>
                 </button>
               </div>
 
@@ -194,7 +222,7 @@ export default function ProductPage({ config }: { config: ProductPageConfig }) {
                   <span>{qty}</span>
                   <button type="button" aria-label="Increase quantity" onClick={() => setQty((q) => Math.min(20, q + 1))}>+</button>
                 </div>
-                <span className="qty-stepper__total">${(qty === 2 ? 54.99 : qty * 29.99).toFixed(2)}</span>
+                <span className="qty-stepper__total">${customQtyTotal.toFixed(2)}</span>
               </div>
               {bundleSavings > 0 && (
                 <div className="bundle-savings">You&apos;re saving ${bundleSavings.toFixed(2)} on this order</div>
