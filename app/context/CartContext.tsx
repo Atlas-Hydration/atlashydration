@@ -69,11 +69,22 @@ function loadCart(): CartItem[] {
 
 // ---------------------------------------------------------------------------
 // Bottle discount tiers, purely a function of qualifying pouch quantity:
-// 2 pouches -> bottle 50% off, 4 pouches -> bottle free. Both are meant to be
-// real Shopify "Buy X Get Y" automatic discounts (no code), so the tier here
-// only ever describes/displays the expected discount — it never overrides
-// the bottle's actual line-item price, which always stays its real $19.99.
+// 2 pouches -> bottle 50% off, 4 pouches -> bottle free. These were built to
+// rely on a real Shopify "Buy X Get Y" automatic discount that a Shopify
+// Admin needs to create — but a live checkout test (2 pouches + bottle)
+// confirmed no such discount is currently applying: the bottle rings up at
+// full price, only the ATLAS2PACK code discount shows on the order.
+//
+// BOTTLE_DISCOUNT_LIVE gates every place that would otherwise assert a
+// specific bottle discount dollar amount (cart total, item tags, bundle
+// pricing), so the site can never promise a lower checkout total than
+// Shopify will actually charge. Flip this back to true only after
+// confirming in Shopify Admin that a matching automatic discount exists,
+// is active, and is set to combine with the ATLAS2PACK code — then verify
+// with a real test checkout before relying on it again.
 // ---------------------------------------------------------------------------
+
+export const BOTTLE_DISCOUNT_LIVE = false;
 
 const QUALIFYING_POUCH_SLUGS = ["strawberry-lemonade", "grapefruit"];
 export const BOTTLE_HALF_OFF_THRESHOLD = 2;
@@ -111,7 +122,9 @@ function computeBottlePromo(items: CartItem[]) {
 // on Shopify's own automatic discounts, not a code.
 // ---------------------------------------------------------------------------
 
-export const TWO_PACK_DISCOUNT_AMOUNT = 4.99;
+// Matches the real Shopify "ATLAS2PACK" discount code exactly (confirmed via
+// live checkout: -$5.00), not the $4.99 this used to say.
+export const TWO_PACK_DISCOUNT_AMOUNT = 5.00;
 
 function findTwoPack(items: CartItem[]) {
   return items.find(

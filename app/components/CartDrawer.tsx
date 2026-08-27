@@ -1,6 +1,6 @@
 "use client";
 
-import { useCart, computeBottlePromo, deriveDiscountCode, computeTwoPackDiscount, BOTTLE_HALF_PRICE, BOTTLE_FULL_PRICE } from "@/app/context/CartContext";
+import { useCart, computeBottlePromo, deriveDiscountCode, computeTwoPackDiscount, BOTTLE_DISCOUNT_LIVE, BOTTLE_HALF_PRICE, BOTTLE_FULL_PRICE } from "@/app/context/CartContext";
 import { PRODUCTS } from "@/app/data/products";
 import CartRewardsBar from "@/app/components/CartRewardsBar";
 
@@ -25,9 +25,13 @@ export default function CartDrawer() {
   const discountCode = deriveDiscountCode(items);
   const hasSubscription = items.some((i) => i.subscriptionFrequency);
 
-  // Only counts if the bottle is actually in the cart contributing to the subtotal —
-  // an unlocked tier alone (before the bottle is added) must not discount the total.
-  const bottleDiscountAmount = !bottleInCart ? 0 : tier === "free" ? BOTTLE_FULL_PRICE : tier === "half" ? BOTTLE_FULL_PRICE - BOTTLE_HALF_PRICE : 0;
+  // Gated by BOTTLE_DISCOUNT_LIVE (see CartContext.tsx) — a live checkout
+  // test confirmed no Shopify discount currently applies to the bottle, so
+  // this must stay 0 until that's fixed and verified in Shopify Admin.
+  const bottleDiscountAmount = !BOTTLE_DISCOUNT_LIVE || !bottleInCart ? 0
+    : tier === "free" ? BOTTLE_FULL_PRICE
+    : tier === "half" ? BOTTLE_FULL_PRICE - BOTTLE_HALF_PRICE
+    : 0;
   const twoPackDiscountAmount = computeTwoPackDiscount(items);
   const totalDiscountAmount = bottleDiscountAmount + twoPackDiscountAmount;
   const estimatedTotal = subtotal - totalDiscountAmount;
@@ -90,7 +94,7 @@ export default function CartDrawer() {
                     <h4 className="cart-item__title">{item.title}</h4>
                     <p className="cart-item__price">
                       ${item.price.toFixed(2)}
-                      {item.slug === "bottle" && tier !== "none" && (
+                      {BOTTLE_DISCOUNT_LIVE && item.slug === "bottle" && tier !== "none" && (
                         <span className="cart-item__discount-tag">
                           {tier === "free" ? "FREE" : "50% OFF"}
                         </span>
@@ -147,7 +151,7 @@ export default function CartDrawer() {
               {/* Sliding-scale rewards: Free Shipping @ $40, 50% Off Bottle @ 2 pouches, Free Bottle @ 4 pouches */}
               <CartRewardsBar subtotal={subtotal} qualifyingQty={qualifyingQty} tier={tier} hasSubscription={hasSubscription} />
 
-              {tier !== "none" && !bottleInCart && (
+              {BOTTLE_DISCOUNT_LIVE && tier !== "none" && !bottleInCart && (
                 <div className="cart-promo cart-promo--unlocked">
                   <div className="cart-promo__bottle-card">
                     {bottle.images[0] && (
