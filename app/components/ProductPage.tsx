@@ -168,6 +168,11 @@ export default function ProductPage({ config }: { config: ProductPageConfig }) {
                   <div className="purchase-option__savings-bar">
                     Save $6.00 every order, plus free shipping.
                   </div>
+                  <div className="purchase-option__perks">
+                    <div className="purchase-option__perk"><CheckSvg /><span>20% off every order</span></div>
+                    <div className="purchase-option__perk"><CheckSvg /><span>Free shipping on every delivery</span></div>
+                    <div className="purchase-option__perk"><CheckSvg /><span>Skip, pause, or cancel anytime</span></div>
+                  </div>
                   <div className="frequency-selector">
                     {[2, 4, 6].map((f) => (
                       <button key={f} className={`frequency-selector__btn${frequency === f ? " active" : ""}`} onClick={() => setFrequency(f)}>Every {f} weeks</button>
