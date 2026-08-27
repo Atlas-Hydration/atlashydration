@@ -10795,7 +10795,7 @@ img {
   flex-wrap: wrap;
 }
 
-.bottle-page__cross-sell-inner h2 {
+.bottle-page__cross-sell-copy h2 {
   font-family: var(--font-serif);
   font-size: var(--heading-md);
   font-weight: 700;
@@ -10804,7 +10804,7 @@ img {
   margin-bottom: 10px;
 }
 
-.bottle-page__cross-sell-inner p {
+.bottle-page__cross-sell-copy p {
   color: rgba(255,255,255,0.7);
   font-size: var(--text-base);
   max-width: 440px;
@@ -10830,7 +10830,7 @@ img {
   .bottle-page__title { font-size: var(--heading-lg); }
   .bottle-page__features-grid { grid-template-columns: 1fr 1fr; }
   .bottle-page__cross-sell-inner { text-align: center; justify-content: center; }
-  .bottle-page__cross-sell-inner p { margin: 0 auto; }
+  .bottle-page__cross-sell-copy p { margin: 0 auto; }
 }
 
 @media (max-width: 560px) {

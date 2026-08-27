@@ -132,6 +132,8 @@ export default function BottleProductPage() {
                 <div className="bottle-page__perk"><CheckSvg /><span>Ships with every Atlas order</span></div>
               </div>
 
+              <CompleteKitBundle mixSlug="strawberry-lemonade" mixName="Strawberry Lemonade Electrolyte Mix" />
+
               <div className="product-accordions" style={{ marginTop: 28 }}>
                 {accordions.map((acc, i) => (
                   <div key={acc.title}>
@@ -174,11 +176,11 @@ export default function BottleProductPage() {
       </section>
 
       {/* Cross-sell / Bundle */}
-      <section className="bottle-page__cross-sell" aria-label="Complete your kit">
+      <section className="bottle-page__cross-sell" aria-label="The Complete Hydration System">
         <div className="container">
           <div className="bottle-page__cross-sell-inner">
-            <div>
-              <h2>Complete Your Kit</h2>
+            <div className="bottle-page__cross-sell-copy">
+              <h2>The Complete Hydration System</h2>
               <p>Fill it up with zero-sugar hydration — 1,769mg electrolytes, B vitamins, and Vitamin C per stick.</p>
               <Link href="/products/strawberry-lemonade" className="bottle-page__cross-sell-link">Or shop electrolytes on their own →</Link>
             </div>
