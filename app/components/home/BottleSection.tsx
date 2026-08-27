@@ -192,7 +192,7 @@ export default function BottleSection() {
                 className={`btn btn--primary btn--lg${adding ? " btn--added" : ""}`}
                 onClick={handleAdd}
               >
-                {adding ? "Added!" : "Add to Cart"}
+                {adding ? "Added" : `Add to Cart — $${(bottle.price * qty).toFixed(2)}`}
               </button>
             </div>
 

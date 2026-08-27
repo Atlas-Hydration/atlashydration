@@ -35,19 +35,21 @@ export default function CompleteKitBundle({
     timerRef.current = setTimeout(() => setAdding(false), 1200);
   }, [addToCart, mixSlug]);
 
+  const savings = fullPrice - combinedPrice;
+
   return (
     <div className="complete-kit">
-      <div className="complete-kit__images">
+      <div className="complete-kit__visual">
         <img className="complete-kit__img" src={mix.images[0]} alt={mixName} />
-        <span className="complete-kit__plus">+</span>
-        <img className="complete-kit__img" src={bottle.images[0]} alt="Atlas Performance Water Bottle" />
+        <img className="complete-kit__img complete-kit__img--bottle" src={bottle.images[0]} alt="Atlas Performance Water Bottle" />
       </div>
       <div className="complete-kit__info">
-        <p className="complete-kit__eyebrow">Complete Your Kit · {BOTTLE_DISCOUNT_LIVE ? "50% Off Bottle" : `Save $${TWO_PACK_DISCOUNT_AMOUNT.toFixed(2)}`}</p>
+        <p className="complete-kit__eyebrow">Complete Your Kit</p>
         <p className="complete-kit__name">{MIX_QTY}x {mixName} + Atlas Bottle</p>
         <div className="complete-kit__price-row">
           <span className="complete-kit__price">${combinedPrice.toFixed(2)}</span>
           <span className="complete-kit__price-original">${fullPrice.toFixed(2)}</span>
+          <span className="complete-kit__save-badge">Save ${savings.toFixed(2)}</span>
         </div>
       </div>
       <button
@@ -55,7 +57,7 @@ export default function CompleteKitBundle({
         className={`complete-kit__btn${adding ? " complete-kit__btn--added" : ""}`}
         onClick={handleAdd}
       >
-        {adding ? "Added!" : "Add Kit to Cart"}
+        {adding ? "Added" : "Add Kit"}
       </button>
     </div>
   );
