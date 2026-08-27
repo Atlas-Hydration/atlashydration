@@ -123,7 +123,7 @@ export default function BottleProductPage() {
                 style={{ width: "100%" }}
                 onClick={handleAdd}
               >
-                {adding ? "Added!" : "Add to Cart"}
+                {adding ? "Added" : `Add to Cart — $${(bottle.price * qty).toFixed(2)}`}
               </button>
 
               <div className="bottle-page__perks">

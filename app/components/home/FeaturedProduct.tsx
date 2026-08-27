@@ -8,7 +8,6 @@ const ONE_TIME_UNIT_PRICE = 29.99;
 const SUBSCRIBE_UNIT_PRICE = 23.99;
 const ONE_TIME_PER_STICK = 1.87;
 const SUBSCRIBE_PER_STICK = 1.50;
-const STICKS_PER_POUCH = 16;
 
 const FLAVOR_IMAGES = {
   "strawberry-lemonade": [
@@ -35,6 +34,7 @@ export default function FeaturedProduct() {
   const [frequency, setFrequency] = useState(2);
   const [adding, setAdding] = useState(false);
   const [qty, setQty] = useState(1);
+  const [customQtyOpen, setCustomQtyOpen] = useState(false);
   const { addToCart } = useCart();
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const dragStartX = useRef(0);
@@ -94,10 +94,7 @@ export default function FeaturedProduct() {
   const twoPackDiscount = isSubscribing ? 0 : TWO_PACK_DISCOUNT_AMOUNT;
   const onePouchTotal = unitPrice;
   const twoPouchTotal = unitPrice * 2 - twoPackDiscount;
-  const twoPouchPerStick = twoPouchTotal / (STICKS_PER_POUCH * 2);
   const customQtyTotal = qty === 2 ? twoPouchTotal : qty * unitPrice;
-
-  const bundleSavings = qty === 2 ? twoPackDiscount : 0;
 
   const handleAdd = async () => {
     setAdding(true);
@@ -199,118 +196,100 @@ export default function FeaturedProduct() {
               </button>
             </div>
 
-            <p className="product-hero__bundle-teaser">
-              {BOTTLE_DISCOUNT_LIVE
-                ? "🎁 Add 2 pouches, get the Atlas Bottle 50% off — details below"
-                : `🎁 Add 2 pouches, save $${TWO_PACK_DISCOUNT_AMOUNT.toFixed(2)} — details below`}
-            </p>
-
-            {/* Purchase Options */}
             <div className="purchase-options">
-              <label
-                className={`purchase-option purchase-option--subscribe${purchaseType === "subscribe" ? " active" : ""}`}
+              <button
+                type="button"
+                className={`purchase-option purchase-option--subscribe${isSubscribing ? " active" : ""}`}
                 onClick={() => setPurchaseType("subscribe")}
               >
-                <span className="purchase-option__best-value">Most Popular</span>
-                <div className="purchase-option__header">
-                  <div className="purchase-option__radio">
-                    <input type="radio" name="fp-purchase-type" value="subscribe" checked={purchaseType === "subscribe"} readOnly />
-                    <span className="purchase-option__radio-custom" />
-                  </div>
-                  <span className="purchase-option__label">Subscribe &amp; Save</span>
-                  <span className="purchase-option__discount-badge">20% OFF</span>
-                </div>
-                <div className="purchase-option__price-row">
-                  <span className="purchase-option__price">${SUBSCRIBE_UNIT_PRICE.toFixed(2)}</span>
-                  <span className="purchase-option__per">${SUBSCRIBE_PER_STICK.toFixed(2)} / Stick</span>
-                  <span className="purchase-option__price-original">${ONE_TIME_UNIT_PRICE.toFixed(2)}</span>
-                </div>
-                <div className="purchase-option__savings-bar">
-                  You save $6.00 every order + free shipping
-                </div>
-                <div className="purchase-option__details">
-                  <div className="purchase-option__perks">
-                    {["Edit, skip, or cancel anytime", "Locked-in price, every delivery"].map((perk, i) => (
-                      <div className="purchase-option__perk" key={i}>
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M20 6L9 17l-5-5" /></svg>
-                        <strong>{perk}</strong>
-                      </div>
-                    ))}
-                  </div>
-                  <div className="frequency-selector">
-                    {[2, 4, 6].map((w) => (
-                      <button
-                        key={w}
-                        className={`frequency-selector__btn${frequency === w ? " active" : ""}`}
-                        onClick={(e) => { e.preventDefault(); setFrequency(w); }}
-                      >
-                        {w} Weeks
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              </label>
-              <label
-                className={`purchase-option purchase-option--onetime${purchaseType === "onetime" ? " active" : ""}`}
+                <span className="purchase-option__label">Subscribe &amp; Save</span>
+                <span className="purchase-option__discount-badge">20% off</span>
+              </button>
+              <button
+                type="button"
+                className={`purchase-option purchase-option--onetime${!isSubscribing ? " active" : ""}`}
                 onClick={() => setPurchaseType("onetime")}
               >
-                <div className="purchase-option__header">
-                  <div className="purchase-option__radio">
-                    <input type="radio" name="fp-purchase-type" value="onetime" checked={purchaseType === "onetime"} readOnly />
-                    <span className="purchase-option__radio-custom" />
-                  </div>
-                  <span className="purchase-option__label">One-time Purchase</span>
-                </div>
-                <div className="purchase-option__price-row">
-                  <span className="purchase-option__price">${ONE_TIME_UNIT_PRICE.toFixed(2)}</span>
-                  <span className="purchase-option__per">${ONE_TIME_PER_STICK.toFixed(2)} / Stick</span>
-                </div>
-              </label>
-            </div>
-
-            <p className="bundle-selector__scope-label">
-              Quantity for {isSubscribing ? "Subscribe & Save" : "One-Time Purchase"}
-            </p>
-
-            {/* Bundle Selector */}
-            <div className="bundle-selector">
-              <button type="button" className={`bundle-card${qty === 1 ? " bundle-card--active" : ""}`} onClick={() => setQty(1)}>
-                <div className="bundle-card__title">1 Pouch</div>
-                <div className="bundle-card__price">${onePouchTotal.toFixed(2)}</div>
-                <div className="bundle-card__per">${perStickPrice.toFixed(2)} / stick</div>
-              </button>
-              <button type="button" className={`bundle-card${qty === 2 ? " bundle-card--active" : ""}`} onClick={() => setQty(2)}>
-                {twoPackDiscount > 0 && <span className="bundle-card__badge bundle-card__badge--green">Best Value</span>}
-                <div className="bundle-card__title">2 Pouches</div>
-                <div className="bundle-card__price">${twoPouchTotal.toFixed(2)}</div>
-                <div className="bundle-card__per">
-                  ${twoPouchPerStick.toFixed(2)} / stick{twoPackDiscount > 0 ? ` · Save $${twoPackDiscount.toFixed(2)}` : ""}
-                </div>
+                <span className="purchase-option__label">One-Time</span>
               </button>
             </div>
 
-            <div className="qty-stepper">
-              <span className="qty-stepper__label">Or choose your own quantity</span>
-              <div className="qty-stepper__control">
-                <button type="button" aria-label="Decrease quantity" onClick={() => setQty((q) => Math.max(1, q - 1))}>−</button>
-                <span>{qty}</span>
-                <button type="button" aria-label="Increase quantity" onClick={() => setQty((q) => Math.min(20, q + 1))}>+</button>
+            <div className="purchase-option__price-row">
+              <span className="purchase-option__price">${unitPrice.toFixed(2)}</span>
+              {isSubscribing && <span className="purchase-option__price-original">${ONE_TIME_UNIT_PRICE.toFixed(2)}</span>}
+              <span className="purchase-option__per">${perStickPrice.toFixed(2)} / stick</span>
+            </div>
+
+            {isSubscribing ? (
+              <>
+                <div className="purchase-option__savings-bar">
+                  Save $6.00 every order, plus free shipping.
+                </div>
+                <div className="frequency-selector">
+                  {[2, 4, 6].map((w) => (
+                    <button
+                      key={w}
+                      className={`frequency-selector__btn${frequency === w ? " active" : ""}`}
+                      onClick={() => setFrequency(w)}
+                    >
+                      Every {w} weeks
+                    </button>
+                  ))}
+                </div>
+              </>
+            ) : (
+              <div className="purchase-option__perks">
+                <div className="purchase-option__perk">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M20 6L9 17l-5-5" /></svg>
+                  <span>Free shipping over $40</span>
+                </div>
               </div>
-              <span className="qty-stepper__total">${customQtyTotal.toFixed(2)}</span>
-            </div>
-            {bundleSavings > 0 && (
-              <div className="bundle-savings">You&apos;re saving ${bundleSavings.toFixed(2)} on this order</div>
-            )}
-            {BOTTLE_DISCOUNT_LIVE && qty >= 4 && qty < 8 && (
-              <div className="qty-stepper__promo-hint">🎉 4+ pouches unlocks a FREE Atlas Performance Bottle in your cart!</div>
             )}
 
-            <div style={{ marginTop: 12 }}>
+            <div className="qty-select">
+              <span className="qty-select__label">Quantity</span>
+              <div className="bundle-selector">
+                <button type="button" className={`bundle-card${qty === 1 && !customQtyOpen ? " bundle-card--active" : ""}`} onClick={() => { setQty(1); setCustomQtyOpen(false); }}>
+                  <div className="bundle-card__title">1 Pouch</div>
+                  <div className="bundle-card__price">${onePouchTotal.toFixed(2)}</div>
+                </button>
+                <button type="button" className={`bundle-card${qty === 2 && !customQtyOpen ? " bundle-card--active" : ""}`} onClick={() => { setQty(2); setCustomQtyOpen(false); }}>
+                  {twoPackDiscount > 0 && <span className="bundle-card__badge bundle-card__badge--green">Best value</span>}
+                  <div className="bundle-card__title">2 Pouches</div>
+                  <div className="bundle-card__price">${twoPouchTotal.toFixed(2)}</div>
+                </button>
+              </div>
+
+              {qty === 2 && !customQtyOpen && twoPackDiscount > 0 && (
+                <p className="qty-select__hint">Includes 50% off the Atlas Bottle, plus ${twoPackDiscount.toFixed(2)} off your pouches.</p>
+              )}
+
+              {customQtyOpen ? (
+                <div className="qty-stepper">
+                  <div className="qty-stepper__control">
+                    <button type="button" aria-label="Decrease quantity" onClick={() => setQty((q) => Math.max(1, q - 1))}>−</button>
+                    <span>{qty}</span>
+                    <button type="button" aria-label="Increase quantity" onClick={() => setQty((q) => Math.min(20, q + 1))}>+</button>
+                  </div>
+                  <span className="qty-stepper__total">${customQtyTotal.toFixed(2)}</span>
+                </div>
+              ) : (
+                <button type="button" className="qty-select__custom-toggle" onClick={() => setCustomQtyOpen(true)}>
+                  Need a different amount?
+                </button>
+              )}
+
+              {BOTTLE_DISCOUNT_LIVE && qty >= 4 && (
+                <p className="qty-select__hint">Your Atlas Bottle ships free at this quantity.</p>
+              )}
+            </div>
+
+            <div style={{ marginTop: 16 }}>
               <button
                 className={`btn btn--primary btn--lg${adding ? " btn--added" : ""}`}
                 onClick={handleAdd}
               >
-                {adding ? "Added!" : isPreorder ? "Pre-Order" : "Add to Cart"}
+                {adding ? "Added" : isPreorder ? "Pre-Order" : `Add to Cart — $${customQtyTotal.toFixed(2)}`}
               </button>
             </div>
 

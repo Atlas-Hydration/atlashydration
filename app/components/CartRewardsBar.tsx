@@ -41,8 +41,8 @@ export default function CartRewardsBar({
     const statusText = !shippingUnlocked
       ? `Add $${remainingShipping.toFixed(2)} more to unlock free shipping.`
       : hasSubscription
-        ? "Your subscription ships free!"
-        : "🎉 You've unlocked free shipping!";
+        ? "Your subscription ships free."
+        : "You've unlocked free shipping.";
 
     return (
       <div className="cart-rewards">
@@ -85,9 +85,9 @@ export default function CartRewardsBar({
   } else if (tier === "none") {
     statusText = `Add ${remainingToHalf} more pouch${remainingToHalf > 1 ? "es" : ""} to unlock 50% off the Atlas Bottle.`;
   } else if (tier === "half") {
-    statusText = `Add ${remainingToFree} more pouch${remainingToFree > 1 ? "es" : ""} to make your bottle FREE.`;
+    statusText = `Add ${remainingToFree} more pouch${remainingToFree > 1 ? "es" : ""} to make your bottle free.`;
   } else {
-    statusText = "🎉 You've unlocked free shipping and a FREE bottle!";
+    statusText = "Free shipping and a free bottle — you're all set.";
   }
 
   return (
