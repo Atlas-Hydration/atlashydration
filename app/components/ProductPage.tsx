@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect, useCallback } from "react";
 import Link from "next/link";
-import { useCart } from "@/app/context/CartContext";
+import { useCart, BOTTLE_DISCOUNT_LIVE, TWO_PACK_DISCOUNT_AMOUNT } from "@/app/context/CartContext";
 import { SupplementFactsWithPanel } from "@/app/components/IngredientDetailPanel";
 import FaqSection from "@/app/components/home/FaqSection";
 import CompleteKitBundle from "@/app/components/CompleteKitBundle";
@@ -146,7 +146,9 @@ export default function ProductPage({ config }: { config: ProductPageConfig }) {
               </div>
 
               <p className="product-hero__bundle-teaser">
-                🎁 Add 2 pouches, get the Atlas Bottle 50% off — details below
+                {BOTTLE_DISCOUNT_LIVE
+                  ? "🎁 Add 2 pouches, get the Atlas Bottle 50% off — details below"
+                  : `🎁 Add 2 pouches, save $${TWO_PACK_DISCOUNT_AMOUNT.toFixed(2)} — details below`}
               </p>
 
               <div className="purchase-options">
@@ -227,7 +229,7 @@ export default function ProductPage({ config }: { config: ProductPageConfig }) {
               {bundleSavings > 0 && (
                 <div className="bundle-savings">You&apos;re saving ${bundleSavings.toFixed(2)} on this order</div>
               )}
-              {qty >= 4 && qty < 8 && (
+              {BOTTLE_DISCOUNT_LIVE && qty >= 4 && qty < 8 && (
                 <div className="qty-stepper__promo-hint">🎉 4+ pouches unlocks a FREE Atlas Performance Bottle in your cart!</div>
               )}
 

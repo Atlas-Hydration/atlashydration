@@ -1,8 +1,14 @@
 "use client";
 
 import { useState, useRef, useCallback, useEffect } from "react";
-import { useCart } from "@/app/context/CartContext";
+import { useCart, BOTTLE_DISCOUNT_LIVE, TWO_PACK_DISCOUNT_AMOUNT } from "@/app/context/CartContext";
 import CompleteKitBundle from "@/app/components/CompleteKitBundle";
+
+const ONE_TIME_UNIT_PRICE = 29.99;
+const SUBSCRIBE_UNIT_PRICE = 23.99;
+const ONE_TIME_PER_STICK = 1.87;
+const SUBSCRIBE_PER_STICK = 1.50;
+const STICKS_PER_POUCH = 16;
 
 const FLAVOR_IMAGES = {
   "strawberry-lemonade": [
@@ -80,7 +86,18 @@ export default function FeaturedProduct() {
   }, [selectedFlavor]);
 
 
-  const bundleSavings = qty === 2 ? 4.99 : 0;
+  const isSubscribing = purchaseType === "subscribe";
+  const unitPrice = isSubscribing ? SUBSCRIBE_UNIT_PRICE : ONE_TIME_UNIT_PRICE;
+  const perStickPrice = isSubscribing ? SUBSCRIBE_PER_STICK : ONE_TIME_PER_STICK;
+  // The 2-pack bundle discount only applies to one-time purchases — a
+  // subscription already carries its own 20% discount.
+  const twoPackDiscount = isSubscribing ? 0 : TWO_PACK_DISCOUNT_AMOUNT;
+  const onePouchTotal = unitPrice;
+  const twoPouchTotal = unitPrice * 2 - twoPackDiscount;
+  const twoPouchPerStick = twoPouchTotal / (STICKS_PER_POUCH * 2);
+  const customQtyTotal = qty === 2 ? twoPouchTotal : qty * unitPrice;
+
+  const bundleSavings = qty === 2 ? twoPackDiscount : 0;
 
   const handleAdd = async () => {
     setAdding(true);
@@ -182,13 +199,19 @@ export default function FeaturedProduct() {
               </button>
             </div>
 
+            <p className="product-hero__bundle-teaser">
+              {BOTTLE_DISCOUNT_LIVE
+                ? "🎁 Add 2 pouches, get the Atlas Bottle 50% off — details below"
+                : `🎁 Add 2 pouches, save $${TWO_PACK_DISCOUNT_AMOUNT.toFixed(2)} — details below`}
+            </p>
+
             {/* Purchase Options */}
             <div className="purchase-options">
               <label
                 className={`purchase-option purchase-option--subscribe${purchaseType === "subscribe" ? " active" : ""}`}
                 onClick={() => setPurchaseType("subscribe")}
               >
-                <span className="purchase-option__best-value">Best Value</span>
+                <span className="purchase-option__best-value">Most Popular</span>
                 <div className="purchase-option__header">
                   <div className="purchase-option__radio">
                     <input type="radio" name="fp-purchase-type" value="subscribe" checked={purchaseType === "subscribe"} readOnly />
@@ -198,16 +221,16 @@ export default function FeaturedProduct() {
                   <span className="purchase-option__discount-badge">20% OFF</span>
                 </div>
                 <div className="purchase-option__price-row">
-                  <span className="purchase-option__price">$23.99</span>
-                  <span className="purchase-option__per">$1.50 / Stick</span>
-                  <span className="purchase-option__price-original">$29.99</span>
+                  <span className="purchase-option__price">${SUBSCRIBE_UNIT_PRICE.toFixed(2)}</span>
+                  <span className="purchase-option__per">${SUBSCRIBE_PER_STICK.toFixed(2)} / Stick</span>
+                  <span className="purchase-option__price-original">${ONE_TIME_UNIT_PRICE.toFixed(2)}</span>
                 </div>
                 <div className="purchase-option__savings-bar">
                   You save $6.00 every order + free shipping
                 </div>
                 <div className="purchase-option__details">
                   <div className="purchase-option__perks">
-                    {["Save 20% every order", "Free shipping on every delivery", "Edit, skip, or cancel anytime"].map((perk, i) => (
+                    {["Edit, skip, or cancel anytime", "Locked-in price, every delivery"].map((perk, i) => (
                       <div className="purchase-option__perk" key={i}>
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M20 6L9 17l-5-5" /></svg>
                         <strong>{perk}</strong>
@@ -239,24 +262,30 @@ export default function FeaturedProduct() {
                   <span className="purchase-option__label">One-time Purchase</span>
                 </div>
                 <div className="purchase-option__price-row">
-                  <span className="purchase-option__price">$29.99</span>
-                  <span className="purchase-option__per">$1.87 / Stick</span>
+                  <span className="purchase-option__price">${ONE_TIME_UNIT_PRICE.toFixed(2)}</span>
+                  <span className="purchase-option__per">${ONE_TIME_PER_STICK.toFixed(2)} / Stick</span>
                 </div>
               </label>
             </div>
+
+            <p className="bundle-selector__scope-label">
+              Quantity for {isSubscribing ? "Subscribe & Save" : "One-Time Purchase"}
+            </p>
 
             {/* Bundle Selector */}
             <div className="bundle-selector">
               <button type="button" className={`bundle-card${qty === 1 ? " bundle-card--active" : ""}`} onClick={() => setQty(1)}>
                 <div className="bundle-card__title">1 Pouch</div>
-                <div className="bundle-card__price">$29.99</div>
-                <div className="bundle-card__per">$1.87 / stick</div>
+                <div className="bundle-card__price">${onePouchTotal.toFixed(2)}</div>
+                <div className="bundle-card__per">${perStickPrice.toFixed(2)} / stick</div>
               </button>
               <button type="button" className={`bundle-card${qty === 2 ? " bundle-card--active" : ""}`} onClick={() => setQty(2)}>
-                <span className="bundle-card__badge bundle-card__badge--green">Best Value</span>
+                {twoPackDiscount > 0 && <span className="bundle-card__badge bundle-card__badge--green">Best Value</span>}
                 <div className="bundle-card__title">2 Pouches</div>
-                <div className="bundle-card__price">$54.99</div>
-                <div className="bundle-card__per">$1.72 / stick · Save $5</div>
+                <div className="bundle-card__price">${twoPouchTotal.toFixed(2)}</div>
+                <div className="bundle-card__per">
+                  ${twoPouchPerStick.toFixed(2)} / stick{twoPackDiscount > 0 ? ` · Save $${twoPackDiscount.toFixed(2)}` : ""}
+                </div>
               </button>
             </div>
 
@@ -267,12 +296,12 @@ export default function FeaturedProduct() {
                 <span>{qty}</span>
                 <button type="button" aria-label="Increase quantity" onClick={() => setQty((q) => Math.min(20, q + 1))}>+</button>
               </div>
-              <span className="qty-stepper__total">${(qty === 2 ? 54.99 : qty * 29.99).toFixed(2)}</span>
+              <span className="qty-stepper__total">${customQtyTotal.toFixed(2)}</span>
             </div>
             {bundleSavings > 0 && (
               <div className="bundle-savings">You&apos;re saving ${bundleSavings.toFixed(2)} on this order</div>
             )}
-            {qty >= 4 && qty < 8 && (
+            {BOTTLE_DISCOUNT_LIVE && qty >= 4 && qty < 8 && (
               <div className="qty-stepper__promo-hint">🎉 4+ pouches unlocks a FREE Atlas Performance Bottle in your cart!</div>
             )}
 

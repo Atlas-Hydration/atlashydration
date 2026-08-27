@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useCallback } from "react";
-import { useCart, BOTTLE_HALF_OFF_THRESHOLD, BOTTLE_HALF_PRICE } from "@/app/context/CartContext";
+import { useCart, BOTTLE_HALF_OFF_THRESHOLD, BOTTLE_HALF_PRICE, BOTTLE_DISCOUNT_LIVE, TWO_PACK_DISCOUNT_AMOUNT } from "@/app/context/CartContext";
 import { PRODUCTS } from "@/app/data/products";
 
 const bottle = PRODUCTS.bottle;
@@ -19,7 +19,12 @@ export default function CompleteKitBundle({
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const mix = PRODUCTS[mixSlug];
-  const combinedPrice = mix.price * MIX_QTY + BOTTLE_HALF_PRICE;
+  // While the bottle-specific discount isn't live in Shopify (see
+  // CartContext.tsx), this kit only actually rings up with the confirmed
+  // ATLAS2PACK 2-pack discount — never assert the bottle-discounted price.
+  const combinedPrice = BOTTLE_DISCOUNT_LIVE
+    ? mix.price * MIX_QTY + BOTTLE_HALF_PRICE
+    : mix.price * MIX_QTY - TWO_PACK_DISCOUNT_AMOUNT + bottle.price;
   const fullPrice = mix.price * MIX_QTY + bottle.price;
 
   const handleAdd = useCallback(() => {
@@ -38,7 +43,7 @@ export default function CompleteKitBundle({
         <img className="complete-kit__img" src={bottle.images[0]} alt="Atlas Performance Water Bottle" />
       </div>
       <div className="complete-kit__info">
-        <p className="complete-kit__eyebrow">Complete Your Kit · 50% Off Bottle</p>
+        <p className="complete-kit__eyebrow">Complete Your Kit · {BOTTLE_DISCOUNT_LIVE ? "50% Off Bottle" : `Save $${TWO_PACK_DISCOUNT_AMOUNT.toFixed(2)}`}</p>
         <p className="complete-kit__name">{MIX_QTY}x {mixName} + Atlas Bottle</p>
         <div className="complete-kit__price-row">
           <span className="complete-kit__price">${combinedPrice.toFixed(2)}</span>
