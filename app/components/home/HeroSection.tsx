@@ -95,6 +95,11 @@ export default function HeroSection() {
             <span className="hero__review-count">(20)</span>
           </div>
         </div>
+        <Link href="/products/bottle" className="hero__new-pill">
+          <span className="hero__new-pill-tag">New</span>
+          Atlas Performance Bottle
+          <svg className="hero__new-pill-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M9 18l6-6-6-6" /></svg>
+        </Link>
         <h1 className="hero__title">All hydration.<br />No sugar.</h1>
         <div className="hero__benefits">
           {benefits.map((b) => (

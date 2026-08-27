@@ -8,6 +8,11 @@ import { usePopupTrigger } from "@/app/components/Popup";
 
 const NAV_LINKS: { label: string; href: string }[] = [];
 
+const ANNOUNCEMENTS = [
+  { text: "Unlock 10% Off", type: "popup" as const },
+  { text: "New — The Atlas Performance Bottle", type: "link" as const, href: "/products/bottle" },
+];
+
 export default function Header() {
   const { cartCount, toggleCart } = useCart();
   const { openPopup } = usePopupTrigger();
@@ -18,8 +23,16 @@ export default function Header() {
   const [headerVisible, setHeaderVisible] = useState(true);
   const [solid, setSolid] = useState(!isHome);
   const [headerTop, setHeaderTop] = useState(36);
+  const [announcementIndex, setAnnouncementIndex] = useState(0);
   const lastScrollY = useRef(0);
   const announcementRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const id = setInterval(() => {
+      setAnnouncementIndex((i) => (i + 1) % ANNOUNCEMENTS.length);
+    }, 4500);
+    return () => clearInterval(id);
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -71,9 +84,18 @@ export default function Header() {
     <>
       {/* Announcement Bar */}
       <div className="announcement-bar" role="banner" ref={announcementRef}>
-        <button className="announcement-bar__inner announcement-bar__btn" onClick={openPopup} type="button">
-          <span>UNLOCK 10% OFF</span>
-        </button>
+        {(() => {
+          const current = ANNOUNCEMENTS[announcementIndex];
+          return current.type === "popup" ? (
+            <button className="announcement-bar__inner announcement-bar__btn" onClick={openPopup} type="button">
+              <span key={announcementIndex} className="announcement-bar__text">{current.text}</span>
+            </button>
+          ) : (
+            <Link className="announcement-bar__inner announcement-bar__btn" href={current.href}>
+              <span key={announcementIndex} className="announcement-bar__text">{current.text}</span>
+            </Link>
+          );
+        })()}
       </div>
 
       {/* Header */}

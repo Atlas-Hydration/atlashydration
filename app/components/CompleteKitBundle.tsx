@@ -44,8 +44,8 @@ export default function CompleteKitBundle({
         <img className="complete-kit__img complete-kit__img--bottle" src={bottle.images[0]} alt="Atlas Performance Water Bottle" />
       </div>
       <div className="complete-kit__info">
-        <p className="complete-kit__eyebrow">Complete Your Kit</p>
-        <p className="complete-kit__name">{MIX_QTY}x {mixName} + Atlas Bottle</p>
+        <p className="complete-kit__name">The Complete Hydration System</p>
+        <p className="complete-kit__contents">{MIX_QTY}x {mixName} + Atlas Performance Bottle</p>
         <div className="complete-kit__price-row">
           <span className="complete-kit__price">${combinedPrice.toFixed(2)}</span>
           <span className="complete-kit__price-original">${fullPrice.toFixed(2)}</span>
@@ -57,7 +57,7 @@ export default function CompleteKitBundle({
         className={`complete-kit__btn${adding ? " complete-kit__btn--added" : ""}`}
         onClick={handleAdd}
       >
-        {adding ? "Added" : "Add Kit"}
+        {adding ? "Added" : "Add Bundle"}
       </button>
     </div>
   );
