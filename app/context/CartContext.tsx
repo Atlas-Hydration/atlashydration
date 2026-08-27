@@ -69,22 +69,15 @@ function loadCart(): CartItem[] {
 
 // ---------------------------------------------------------------------------
 // Bottle discount tiers, purely a function of qualifying pouch quantity:
-// 2 pouches -> bottle 50% off, 4 pouches -> bottle free. These were built to
-// rely on a real Shopify "Buy X Get Y" automatic discount that a Shopify
-// Admin needs to create — but a live checkout test (2 pouches + bottle)
-// confirmed no such discount is currently applying: the bottle rings up at
-// full price, only the ATLAS2PACK code discount shows on the order.
-//
-// BOTTLE_DISCOUNT_LIVE gates every place that would otherwise assert a
-// specific bottle discount dollar amount (cart total, item tags, bundle
-// pricing), so the site can never promise a lower checkout total than
-// Shopify will actually charge. Flip this back to true only after
-// confirming in Shopify Admin that a matching automatic discount exists,
-// is active, and is set to combine with the ATLAS2PACK code — then verify
-// with a real test checkout before relying on it again.
+// 2 pouches -> bottle 50% off, 4 pouches -> bottle free. These rely on real
+// Shopify "Buy X Get Y" automatic discounts, confirmed live in Shopify
+// Admin. BOTTLE_DISCOUNT_LIVE gates every place that asserts a specific
+// bottle discount dollar amount (cart total, item tags, bundle pricing) —
+// flip back to false immediately if a live checkout ever again shows a
+// mismatch between the site's total and what Shopify actually charges.
 // ---------------------------------------------------------------------------
 
-export const BOTTLE_DISCOUNT_LIVE = false;
+export const BOTTLE_DISCOUNT_LIVE = true;
 
 const QUALIFYING_POUCH_SLUGS = ["strawberry-lemonade", "grapefruit"];
 export const BOTTLE_HALF_OFF_THRESHOLD = 2;
