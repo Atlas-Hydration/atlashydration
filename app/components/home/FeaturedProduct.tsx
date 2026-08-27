@@ -225,6 +225,20 @@ export default function FeaturedProduct() {
                 <div className="purchase-option__savings-bar">
                   Save $6.00 every order, plus free shipping.
                 </div>
+                <div className="purchase-option__perks">
+                  <div className="purchase-option__perk">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M20 6L9 17l-5-5" /></svg>
+                    <span>20% off every order</span>
+                  </div>
+                  <div className="purchase-option__perk">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M20 6L9 17l-5-5" /></svg>
+                    <span>Free shipping on every delivery</span>
+                  </div>
+                  <div className="purchase-option__perk">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M20 6L9 17l-5-5" /></svg>
+                    <span>Skip, pause, or cancel anytime</span>
+                  </div>
+                </div>
                 <div className="frequency-selector">
                   {[2, 4, 6].map((w) => (
                     <button
