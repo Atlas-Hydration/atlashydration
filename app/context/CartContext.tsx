@@ -132,14 +132,26 @@ function findTwoPack(items: CartItem[]) {
   );
 }
 
+// Shopify can't combine a "Buy X Get Y" product discount with another
+// discount acting on specific products (like ATLAS2PACK) — that's a
+// platform rule, not a settings toggle. So once the bottle discount is
+// live, a cart that qualifies for both must skip the ATLAS2PACK code and
+// let the automatic bottle discount win instead: it's worth more ($10 vs
+// $5) and, unlike the code, doesn't get blocked by a competing discount.
+function bottleDiscountWouldWin(items: CartItem[]): boolean {
+  return BOTTLE_DISCOUNT_LIVE && items.some((i) => i.slug === "bottle" && i.quantity > 0);
+}
+
 function deriveDiscountCode(items: CartItem[]): string {
-  return findTwoPack(items) ? "ATLAS2PACK" : "";
+  if (!findTwoPack(items) || bottleDiscountWouldWin(items)) return "";
+  return "ATLAS2PACK";
 }
 
 // Real dollar amount of the 2-pack discount, so the cart total can reflect
 // it immediately rather than only after Shopify applies the code at checkout.
 function computeTwoPackDiscount(items: CartItem[]): number {
-  return findTwoPack(items) ? TWO_PACK_DISCOUNT_AMOUNT : 0;
+  if (!findTwoPack(items) || bottleDiscountWouldWin(items)) return 0;
+  return TWO_PACK_DISCOUNT_AMOUNT;
 }
 
 // ---------------------------------------------------------------------------
