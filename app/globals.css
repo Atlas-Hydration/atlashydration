@@ -456,10 +456,12 @@ img {
 .hero__content {
   position: relative;
   z-index: 2;
+  width: 100%;
   padding: 80px 56px;
   color: #ffffff;
   text-align: center;
   max-width: 800px;
+  box-sizing: border-box;
   animation: fadeInUp 1.2s cubic-bezier(0.25, 0.1, 0.25, 1);
 }
 
@@ -480,13 +482,6 @@ img {
 
 .hero__stars-manual svg {
   display: block;
-}
-
-.hero__review-count {
-  font-size: var(--text-btn);
-  color: rgba(255,255,255,0.85);
-  font-weight: 400;
-  margin-left: 6px;
 }
 
 .hero__new-pill {
@@ -560,6 +555,18 @@ img {
   align-items: center;
   justify-content: center;
   color: #ffffff;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+
+.hero__benefit:hover .hero__benefit-icon {
+  background: rgba(255, 255, 255, 0.18);
+  border-color: rgba(255, 255, 255, 0.4);
+  transform: translateY(-2px);
 }
 
 .hero__benefit span {
@@ -568,6 +575,9 @@ img {
   text-transform: uppercase;
   letter-spacing: 0.06em;
   color: rgba(255,255,255,0.85);
+  text-align: center;
+  width: 100%;
+  overflow-wrap: break-word;
 }
 
 .btn--hero {
@@ -6981,7 +6991,6 @@ img {
   }
 
   .hero__benefit span {
-    white-space: nowrap;
     font-size: 0.5rem;
   }
 
@@ -9081,19 +9090,18 @@ img {
   }
 
   .hero__benefit-icon {
-    width: 30px;
-    height: 30px;
+    width: 36px;
+    height: 36px;
   }
 
   .hero__benefit-icon svg {
-    width: 16px;
-    height: 16px;
+    width: 19px;
+    height: 19px;
   }
 
   .hero__benefit span {
-    white-space: nowrap;
-    font-size: 0.55rem;
-    letter-spacing: 0.03em;
+    font-size: 0.6rem;
+    letter-spacing: 0.02em;
   }
 
   /* Product info — prevent overflow */
