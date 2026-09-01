@@ -87,6 +87,7 @@ export const PRODUCTS: Record<string, Product> = {
     color: "#1d1d1f",
     colorRgb: "29, 29, 31",
     images: [
+      "/images/products/bottle/atlas-bottle-studio.jpg",
       "/images/products/bottle/atlas-bottle-padel.jpg",
       "/images/products/bottle/atlas-bottle-pool.jpg",
       "/images/products/bottle/atlas-bottle-padel-combo.jpg",
