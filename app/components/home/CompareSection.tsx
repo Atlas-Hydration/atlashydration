@@ -71,6 +71,12 @@ function fmtVal(val: number, unit: string) {
   return (val >= 1000 ? val.toLocaleString() : val) + (unit ? " " + unit.toUpperCase() : "");
 }
 
+const CheckIcon = () => (
+  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3.5">
+    <path d="M20 6L9 17l-5-5" />
+  </svg>
+);
+
 interface ModalState {
   catKey: string;
   rivalKey: string;
@@ -109,6 +115,12 @@ export default function CompareSection() {
     });
   }).length;
 
+  const rivalWins = (b: Brand) =>
+    CATS.filter((cat) => {
+      const val = cat.values[b.key];
+      return cat.lowerBetter ? val < cat.atlas : val > cat.atlas;
+    }).length;
+
   const modalCat = modal ? CATS.find((c) => c.key === modal.catKey) : null;
   const modalRival = modal ? BRANDS.find((b) => b.key === modal.rivalKey) : null;
 
@@ -130,10 +142,30 @@ export default function CompareSection() {
                   className={`compare__toggle${activeBrands.includes(b.key) ? " active" : ""}`}
                   onClick={() => toggleBrand(b.key)}
                 >
+                  <img src={b.logo} alt="" className="compare__toggle-logo" />
                   {b.name}
                 </button>
               ))}
             </div>
+          </div>
+
+          <div className="compare__scoreboard">
+            <div className="compare__scoreboard-main">
+              <span className="compare__scoreboard-figure">
+                {atlasWins}<span className="compare__scoreboard-figure-total">/{CATS.length}</span>
+              </span>
+              <span className="compare__scoreboard-label">Categories Won{activeBrandData.length > 0 ? `, vs. every brand shown` : ""}</span>
+            </div>
+            {activeBrandData.length > 0 && (
+              <div className="compare__scoreboard-rivals">
+                {activeBrandData.map((b) => (
+                  <div key={b.key} className="compare__scoreboard-rival">
+                    <span className="compare__scoreboard-rival-name">{b.name}</span>
+                    <span className="compare__scoreboard-rival-score">{rivalWins(b)}/{CATS.length}</span>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
 
           <div className="compare__table-wrap">
@@ -163,12 +195,16 @@ export default function CompareSection() {
                   });
 
                   return (
-                    <tr key={cat.key} onClick={() => activeBrandData.length > 0 && setModal({ catKey: cat.key, rivalKey: activeBrandData[0].key })}>
+                    <tr
+                      key={cat.key}
+                      className={isWinner ? "compare__row--winner" : ""}
+                      onClick={() => activeBrandData.length > 0 && setModal({ catKey: cat.key, rivalKey: activeBrandData[0].key })}
+                    >
                       <td className="compare__label">{cat.label}</td>
                       <td className="compare__value compare__value--atlas">
                         <div className="compare__bar" style={{ "--bar-width": "100%" } as React.CSSProperties}>
                           <strong>{fmtVal(cat.atlas, cat.unit)}</strong>
-                          {isWinner && <span className="compare__win-badge">Winner</span>}
+                          {isWinner && <span className="compare__win-badge"><CheckIcon />Winner</span>}
                         </div>
                       </td>
                       {activeBrandData.map((b) => {
@@ -201,25 +237,6 @@ export default function CompareSection() {
                     </tr>
                   );
                 })}
-                <tr className="compare__score-row">
-                  <td className="compare__label compare__label--score">
-                    Categories Won
-                  </td>
-                  <td className="compare__value compare__value--atlas">
-                    <span className="compare__score-atlas">{atlasWins}/{CATS.length}</span>
-                  </td>
-                  {activeBrandData.map((b) => {
-                    const bWins = CATS.filter((cat) => {
-                      const val = cat.values[b.key];
-                      return cat.lowerBetter ? val < cat.atlas : val > cat.atlas;
-                    }).length;
-                    return (
-                      <td key={b.key} className="compare__value">
-                        <span className="compare__score-rival">{bWins}/{CATS.length}</span>
-                      </td>
-                    );
-                  })}
-                </tr>
               </tbody>
             </table>
           </div>
@@ -313,6 +330,34 @@ function CompareModal({ cat, rival, onClose }: { cat: Category; rival: Brand; on
           <div className={`compare-modal__badge ${verdictClass}`}>{verdictBadge}</div>
           <p className="compare-modal__detail">{verdictDetail}</p>
         </div>
+
+        {cat.subs && (
+          <div className="compare-modal__subs">
+            <h4>Ingredient Breakdown</h4>
+            {Object.entries(cat.subs).map(([label, vals]) => {
+              const a = vals.atlas;
+              const r = vals[rival.key];
+              const max = Math.max(a, r, 1);
+              return (
+                <div className="compare__sub-row" key={label}>
+                  <span className="compare__sub-label">{label}</span>
+                  <div className="compare__sub-tracks">
+                    <div className="compare__sub-track">
+                      <div className="compare__sub-fill compare__sub-fill--atlas" style={{ width: animReady ? `${(a / max) * 100}%` : "0%" }} />
+                    </div>
+                    <div className="compare__sub-track">
+                      <div className="compare__sub-fill compare__sub-fill--rival" style={{ width: animReady ? `${(r / max) * 100}%` : "0%" }} />
+                    </div>
+                  </div>
+                  <div className="compare__sub-vals">
+                    <span className="compare__sub-val compare__sub-val--atlas">{a}</span>
+                    <span className="compare__sub-val compare__sub-val--rival">{r}</span>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
       </div>
     </div>
   );
