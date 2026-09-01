@@ -90,7 +90,6 @@ export const PRODUCTS: Record<string, Product> = {
       "/images/products/bottle/atlas-bottle-studio.jpg",
       "/images/products/bottle/atlas-bottle-padel.jpg",
       "/images/products/bottle/atlas-bottle-pool.jpg",
-      "/images/products/bottle/atlas-bottle-padel-combo.jpg",
       "/images/products/bottle/atlas-bottle-courtyard.jpg",
       "/images/products/bottle/atlas-bottle-gym.jpg",
     ],
