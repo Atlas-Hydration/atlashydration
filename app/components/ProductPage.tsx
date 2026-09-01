@@ -130,6 +130,14 @@ export default function ProductPage({ config }: { config: ProductPageConfig }) {
               <p className="product-hero__packs">16 Stick Packs</p>
               <p className="product-hero__desc">Clean, zero-sugar hydration with electrolytes, vitamins, and amino acids.</p>
 
+              <div className="product-hero__actives">
+                <span className="product-hero__actives-chip"><strong>1,769mg</strong> Electrolytes</span>
+                <span className="product-hero__actives-chip">Magnesium Malate</span>
+                <span className="product-hero__actives-chip">B12 (Methylcobalamin)</span>
+                <span className="product-hero__actives-chip">L-Glutamine</span>
+                <a href="#supplement-facts" className="product-hero__actives-link">Full breakdown →</a>
+              </div>
+
               <div className="flavor-selector--circles">
                 <Link href="/products/strawberry-lemonade" className={`flavor-circle flavor-circle--strawberry${config.activeFlavorClass === "strawberry" ? " active" : ""}`} title="Strawberry Lemonade">
                   <span className="flavor-circle__dot" />Strawberry Lemonade

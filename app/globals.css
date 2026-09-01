@@ -528,9 +528,17 @@ img {
   font-size: var(--heading-xl);
   font-weight: 700;
   line-height: 1.08;
-  margin-bottom: 36px;
+  margin-bottom: 14px;
   color: #ffffff;
   letter-spacing: -0.025em;
+}
+
+.hero__proof {
+  font-size: var(--text-md);
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.72);
+  letter-spacing: -0.005em;
+  margin-bottom: 36px;
 }
 
 .hero__benefits {
@@ -1639,6 +1647,44 @@ img {
   color: var(--color-text-muted);
   line-height: 1.6;
   margin-bottom: 24px;
+}
+
+.product-hero__actives {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin: -8px 0 24px;
+}
+
+.product-hero__actives-chip {
+  font-size: var(--text-xs);
+  font-weight: 600;
+  color: var(--color-text-muted);
+  padding: 6px 12px;
+  border-radius: 100px;
+  border: 1px solid var(--color-border);
+  background: #fafafa;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+}
+
+.product-hero__actives-chip strong {
+  color: var(--color-strawberry);
+  font-weight: 700;
+}
+
+.product-hero__actives-link {
+  font-size: var(--text-xs);
+  font-weight: 600;
+  color: var(--color-strawberry);
+  text-decoration: none;
+  margin-left: 2px;
+  white-space: nowrap;
+}
+
+.product-hero__actives-link:hover {
+  text-decoration: underline;
 }
 
 /* Flavor Selector */
@@ -3697,8 +3743,8 @@ img {
 .compare__toggle {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 6px 14px;
+  gap: 8px;
+  padding: 7px 16px 7px 12px;
   border-radius: 100px;
   border: 1px solid rgba(255,255,255,0.1);
   background: transparent;
@@ -3769,6 +3815,81 @@ img {
   color: #ffffff;
 }
 
+/* Scoreboard — the headline verdict, stated once and stated big */
+.compare__scoreboard {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 20px 32px;
+  padding: 26px 32px;
+  margin-bottom: 20px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, rgba(232,93,117,0.12), rgba(245,166,35,0.05));
+  border: 1px solid rgba(232,93,117,0.2);
+}
+
+.compare__scoreboard-main {
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+}
+
+.compare__scoreboard-figure {
+  font-family: var(--font-serif);
+  font-size: 3rem;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  background: linear-gradient(135deg, #e85d75, #f5a623);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.compare__scoreboard-figure-total {
+  font-size: 1.5rem;
+  opacity: 0.55;
+}
+
+.compare__scoreboard-label {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: rgba(255,255,255,0.65);
+  max-width: 20ch;
+}
+
+.compare__scoreboard-rivals {
+  display: flex;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+.compare__scoreboard-rival {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  min-width: 60px;
+}
+
+.compare__scoreboard-rival-name {
+  font-size: var(--text-xs);
+  color: rgba(255,255,255,0.35);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+}
+
+.compare__scoreboard-rival-score {
+  font-size: 1rem;
+  font-weight: 700;
+  color: rgba(255,255,255,0.5);
+  font-variant-numeric: tabular-nums;
+}
+
 /* Table */
 .compare__table-wrap {
   overflow-x: auto;
@@ -3815,7 +3936,10 @@ img {
   position: sticky;
   left: 100px;
   z-index: 3;
-  background: #0d0d0f;
+  background:
+    linear-gradient(90deg, #e85d75, #f5a623) bottom / 100% 2px no-repeat,
+    #0d0d0f;
+  border-bottom-color: transparent !important;
 }
 
 .compare__th-atlas img {
@@ -3912,6 +4036,10 @@ img {
   background: #0d0d0f;
 }
 
+.compare__table tbody tr.compare__row--winner {
+  background: rgba(232,93,117,0.04);
+}
+
 .compare__table tbody tr .compare__label,
 .compare__table tbody tr .compare__value--atlas {
   background: inherit;
@@ -3919,6 +4047,10 @@ img {
 
 .compare__table tbody tr:hover {
   background: rgba(255,255,255,0.03);
+}
+
+.compare__table tbody tr.compare__row--winner:hover {
+  background: rgba(232,93,117,0.08);
 }
 
 .compare__table tbody tr:last-child td {
@@ -3973,13 +4105,18 @@ img {
 
 /* Atlas wins badge per row */
 .compare__win-badge {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 9px 3px 7px;
+  border-radius: 100px;
+  background: linear-gradient(135deg, #e85d75, #f5a623);
   font-size: 0.6rem;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: #22c55e;
-  margin-left: 6px;
+  letter-spacing: 0.08em;
+  color: #ffffff;
+  margin-left: 8px;
   opacity: 0;
   transform: translateX(-4px);
   transition: opacity 0.5s ease 0.8s, transform 0.5s ease 0.8s;
@@ -3989,32 +4126,6 @@ img {
   opacity: 1;
   transform: translateX(0);
 }
-
-/* Score summary row */
-.compare__score-row td {
-  padding: 20px 20px !important;
-  border-bottom: none !important;
-  border-top: 1px solid rgba(255,255,255,0.08) !important;
-}
-
-.compare__score-atlas {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  background: linear-gradient(135deg, #e85d75, #f5a623);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  font-size: 1.1rem;
-  font-weight: 800;
-  letter-spacing: -0.02em;
-}
-
-.compare__score-rival {
-  font-size: var(--text-sm);
-  color: rgba(255,255,255,0.2);
-  font-weight: 600;
-}
-
 
 /* ---- Compare Modal Overlay ---- */
 .compare-modal {
@@ -4258,8 +4369,8 @@ img {
   transition: width 0.6s cubic-bezier(0.25, 0.1, 0.25, 1);
 }
 
-.compare__sub-fill--atlas { background: #0a1628; }
-.compare__sub-fill--rival { background: #60a5fa; }
+.compare__sub-fill--atlas { background: linear-gradient(90deg, #e85d75, #f5a623); }
+.compare__sub-fill--rival { background: rgba(255,255,255,0.18); }
 
 .compare__sub-vals {
   display: flex;
@@ -4273,8 +4384,8 @@ img {
   font-variant-numeric: tabular-nums;
 }
 
-.compare__sub-val--atlas { color: #0a1628; }
-.compare__sub-val--rival { color: #60a5fa; }
+.compare__sub-val--atlas { color: #ffffff; }
+.compare__sub-val--rival { color: rgba(255,255,255,0.5); }
 
 /* ========================================
    Popup Modal
@@ -6663,6 +6774,11 @@ img {
 
   .hero__title {
     font-size: 2rem;
+    margin-bottom: 10px;
+  }
+
+  .hero__proof {
+    font-size: var(--text-base);
     margin-bottom: 24px;
   }
 
@@ -6974,6 +7090,11 @@ img {
 
   .hero__title {
     font-size: 1.7rem;
+    margin-bottom: 8px;
+  }
+
+  .hero__proof {
+    font-size: 0.78rem;
     margin-bottom: 20px;
   }
 
@@ -7082,7 +7203,11 @@ img {
 
   .hero__title {
     font-size: 1.4rem;
-    margin-bottom: 16px;
+    margin-bottom: 8px;
+  }
+
+  .hero__proof {
+    display: none;
   }
 
   .hero__benefits {
@@ -9253,6 +9378,21 @@ img {
   .compare__table-wrap {
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
+  }
+
+  .compare__scoreboard {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 20px 22px;
+    gap: 16px;
+  }
+
+  .compare__scoreboard-figure {
+    font-size: 2.3rem;
+  }
+
+  .compare__scoreboard-rivals {
+    gap: 18px;
   }
 
   /* Footer tap targets */
