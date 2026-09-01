@@ -13,7 +13,7 @@ export const metadata: Metadata = {
     description:
       "Lightweight, easy-squeeze 26 oz water bottle with Purist inner-wall technology and a leak-free MoFlo 2.0 cap.",
     siteName: "Atlas Hydration",
-    images: ["https://cdn.shopify.com/s/files/1/0595/8133/3578/files/Screenshot2026-08-25at5.38.09PM.png?v=1787693894"],
+    images: ["https://atlas-hydration.com/images/products/bottle/atlas-bottle-padel.jpg"],
   },
 };
 
@@ -23,7 +23,7 @@ const productJsonLd = {
   name: "Atlas Performance Water Bottle — 26 oz",
   description:
     "Lightweight, easy-squeeze 26 oz water bottle with Purist inner-wall technology and a leak-free MoFlo 2.0 cap. BPA-free, made in the USA.",
-  image: "https://cdn.shopify.com/s/files/1/0595/8133/3578/files/Screenshot2026-08-25at5.38.09PM.png?v=1787693894",
+  image: "https://atlas-hydration.com/images/products/bottle/atlas-bottle-padel.jpg",
   brand: { "@type": "Brand", name: "Atlas Hydration" },
   offers: {
     "@type": "Offer",

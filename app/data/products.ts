@@ -87,11 +87,10 @@ export const PRODUCTS: Record<string, Product> = {
     color: "#1d1d1f",
     colorRgb: "29, 29, 31",
     images: [
-      "https://cdn.shopify.com/s/files/1/0595/8133/3578/files/Screenshot2026-08-25at5.38.09PM.png?v=1787693894",
-      "https://cdn.shopify.com/s/files/1/0595/8133/3578/files/Screenshot2026-08-25at5.28.14PM.png?v=1787693470",
-      "https://cdn.shopify.com/s/files/1/0595/8133/3578/files/atlas-bottle-02-courtside.jpg?v=1787691591",
-      "https://cdn.shopify.com/s/files/1/0595/8133/3578/files/Screenshot2026-08-25at5.37.32PM.png?v=1787693858",
-      "https://cdn.shopify.com/s/files/1/0595/8133/3578/files/Screenshot2026-08-25at5.39.00PM.png?v=1787693945",
+      "/images/products/bottle/atlas-bottle-padel.jpg",
+      "/images/products/bottle/atlas-bottle-airport.jpg",
+      "/images/products/bottle/atlas-bottle-loft.jpg",
+      "/images/products/bottle/atlas-bottle-gym.jpg",
     ],
     description:
       "Built for daily movement. The Atlas Performance Water Bottle pairs a lightweight, easy-squeeze design with a 26 oz capacity and Specialized Purist technology to help keep your water tasting clean without lingering odors or flavors. Made for everything from training and padel to travel and everyday hydration.",
