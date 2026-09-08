@@ -95,7 +95,7 @@ const faqJsonLd = {
 };
 
 const images = [
-  { src: "/images/products/grapefruit/atlas-grapefruit-cover.jpg", alt: "Atlas Grapefruit Zest pouch" },
+  { src: "/images/products/grapefruit/atlas-grapefruit-cover.jpg", alt: "Atlas Grapefruit pouch and stick pack" },
   { src: "https://cdn.shopify.com/s/files/1/0595/8133/3578/files/4_04a1c3d2-929b-4150-bf92-64f0f83445b1.jpg?v=1769181321", alt: "Atlas Grapefruit supplement facts" },
 ];
 
