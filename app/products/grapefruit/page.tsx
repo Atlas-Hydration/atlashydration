@@ -11,7 +11,7 @@ export const metadata: Metadata = {
     title: "Grapefruit Electrolytes | Atlas Hydration",
     description: "Zero-sugar grapefruit electrolyte drink mix with 1,769mg electrolytes, B vitamins, Vitamin C, and recovery amino acids.",
     siteName: "Atlas Hydration",
-    images: ["https://cdn.shopify.com/s/files/1/0595/8133/3578/files/1_1a252c57-dc62-4c7b-a6b1-0f9677ce6b6f.jpg?v=1769181320"],
+    images: ["https://atlas-hydration.com/images/products/grapefruit/atlas-grapefruit-cover.jpg"],
   },
 };
 
@@ -20,7 +20,7 @@ const productJsonLd = {
   "@type": "Product",
   name: "Atlas Hydration Grapefruit Electrolytes",
   description: "Premium zero-sugar grapefruit electrolyte drink mix with 1,769mg electrolytes, B vitamins, Vitamin C, and recovery amino acids. 16 stick packs per box.",
-  image: "https://cdn.shopify.com/s/files/1/0595/8133/3578/files/1_1a252c57-dc62-4c7b-a6b1-0f9677ce6b6f.jpg?v=1769181320",
+  image: "https://atlas-hydration.com/images/products/grapefruit/atlas-grapefruit-cover.jpg",
   brand: { "@type": "Brand", name: "Atlas Hydration" },
   offers: {
     "@type": "Offer",
@@ -95,10 +95,8 @@ const faqJsonLd = {
 };
 
 const images = [
-  { src: "https://cdn.shopify.com/s/files/1/0595/8133/3578/files/1_1a252c57-dc62-4c7b-a6b1-0f9677ce6b6f.jpg?v=1769181320", alt: "Atlas Grapefruit pouch and stick pack" },
-  { src: "https://cdn.shopify.com/s/files/1/0595/8133/3578/files/3_895d9a50-ff83-4081-a78b-7c5034614a38.jpg?v=1769181320", alt: "Atlas Grapefruit lifestyle" },
-  { src: "https://cdn.shopify.com/s/files/1/0595/8133/3578/files/6_9aa2f5c5-dc91-499b-a36e-2ddb0ba45f49.jpg?v=1769181321", alt: "Atlas Grapefruit mixing" },
-  { src: "https://cdn.shopify.com/s/files/1/0595/8133/3578/files/4_04a1c3d2-929b-4150-bf92-64f0f83445b1.jpg?v=1769181321", alt: "Atlas Grapefruit active lifestyle" },
+  { src: "/images/products/grapefruit/atlas-grapefruit-cover.jpg", alt: "Atlas Grapefruit Zest pouch" },
+  { src: "https://cdn.shopify.com/s/files/1/0595/8133/3578/files/4_04a1c3d2-929b-4150-bf92-64f0f83445b1.jpg?v=1769181321", alt: "Atlas Grapefruit supplement facts" },
 ];
 
 const accordionItems = [
