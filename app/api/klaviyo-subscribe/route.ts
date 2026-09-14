@@ -2,6 +2,33 @@ import { NextResponse } from "next/server";
 
 const LIST_ID = "XDwcHp"; // Atlas Hydration Email List
 
+// ---------------------------------------------------------------------------
+// Best-effort per-IP rate limit. This is a single-instance in-memory guard
+// (not shared across serverless instances/regions), but it's enough to stop
+// a simple scripted spammer from hammering this endpoint — real distributed
+// abuse would need a shared store (e.g. Upstash), not worth the added infra
+// for an email-capture form.
+// ---------------------------------------------------------------------------
+const RATE_LIMIT_WINDOW_MS = 10 * 60 * 1000; // 10 minutes
+const RATE_LIMIT_MAX = 5; // max submissions per IP per window
+const requestLog = new Map<string, number[]>();
+
+function isRateLimited(ip: string): boolean {
+  const now = Date.now();
+  const timestamps = (requestLog.get(ip) || []).filter((t) => now - t < RATE_LIMIT_WINDOW_MS);
+  timestamps.push(now);
+  requestLog.set(ip, timestamps);
+
+  // Prevent unbounded growth on a long-lived instance.
+  if (requestLog.size > 5000) {
+    for (const [key, times] of requestLog) {
+      if (times.every((t) => now - t >= RATE_LIMIT_WINDOW_MS)) requestLog.delete(key);
+    }
+  }
+
+  return timestamps.length > RATE_LIMIT_MAX;
+}
+
 export async function POST(request: Request) {
   const apiKey = process.env.KLAVIYO_API_KEY;
   if (!apiKey) {
@@ -9,11 +36,22 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Server config error" }, { status: 500 });
   }
 
-  let body: { email?: string; source?: string; properties?: Record<string, string> };
+  const ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown";
+  if (isRateLimited(ip)) {
+    return NextResponse.json({ error: "Too many requests" }, { status: 429 });
+  }
+
+  let body: { email?: string; source?: string; properties?: Record<string, string>; hp?: string };
   try {
     body = await request.json();
   } catch {
     return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
+  }
+
+  // Honeypot: a real visitor never fills this hidden field. Pretend success
+  // so the bot doesn't learn it was caught, without ever calling Klaviyo.
+  if (body.hp && body.hp.trim()) {
+    return NextResponse.json({ success: true });
   }
 
   const email = body.email?.trim();
