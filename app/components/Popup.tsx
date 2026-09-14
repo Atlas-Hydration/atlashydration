@@ -38,6 +38,8 @@ export function PopupProvider({ children }: { children: ReactNode }) {
   const [email, setEmail] = useState("");
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState(false);
+  // Honeypot: hidden from real visitors, only a bot filling every field would set this.
+  const [hpValue, setHpValue] = useState("");
 
   // Auto-open after 3 seconds (once per session)
   useEffect(() => {
@@ -67,6 +69,12 @@ export function PopupProvider({ children }: { children: ReactNode }) {
       }
       setError(false);
 
+      // Bot caught the honeypot field — show success without actually subscribing.
+      if (hpValue.trim()) {
+        setSubmitted(true);
+        return;
+      }
+
       // Submit to Klaviyo Email List with signup source
       await subscribeToKlaviyo({
         email: trimmed,
@@ -82,7 +90,7 @@ export function PopupProvider({ children }: { children: ReactNode }) {
         (window as any).gtag('event', 'sign_up', { method: 'email_popup' });
       }
     },
-    [email]
+    [email, hpValue]
   );
 
   return (
@@ -120,6 +128,17 @@ export function PopupProvider({ children }: { children: ReactNode }) {
                 </div>
               ) : (
                 <form className="popup__form" onSubmit={handleSubmit}>
+                  {/* Honeypot: hidden from sighted users and screen readers; only bots fill it */}
+                  <input
+                    type="text"
+                    name="company"
+                    value={hpValue}
+                    onChange={(e) => setHpValue(e.target.value)}
+                    tabIndex={-1}
+                    autoComplete="off"
+                    aria-hidden="true"
+                    style={{ position: "absolute", left: "-9999px", width: 1, height: 1, opacity: 0, pointerEvents: "none" }}
+                  />
                   <label htmlFor="popup-email" className="sr-only">Email address</label>
                   <input
                     id="popup-email"

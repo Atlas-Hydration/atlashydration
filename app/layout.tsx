@@ -7,6 +7,7 @@ import Header from "@/app/components/Header";
 import Footer from "@/app/components/Footer";
 import CartDrawer from "@/app/components/CartDrawer";
 import ScrollToTop from "@/app/components/ScrollToTop";
+import CookieConsent from "@/app/components/CookieConsent";
 
 export const viewport: Viewport = {
   width: "device-width",
@@ -33,19 +34,6 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        {/* Google Analytics 4 */}
-        <Script src="https://www.googletagmanager.com/gtag/js?id=G-J2NYD0S2BR" strategy="afterInteractive" />
-        <Script id="ga4-init" strategy="afterInteractive">{`
-          window.dataLayer = window.dataLayer || [];
-          function gtag(){dataLayer.push(arguments);}
-          gtag('js', new Date());
-          gtag('config', 'G-J2NYD0S2BR');
-        `}</Script>
-        {/* Klaviyo Onsite Tracking */}
-        <Script
-          src="https://static.klaviyo.com/onsite/js/klaviyo.js?company_id=XLatdi"
-          strategy="afterInteractive"
-        />
         <meta name="theme-color" content="#1d1d1f" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
@@ -71,6 +59,7 @@ export default function RootLayout({
             <CartDrawer />
           </PopupProvider>
         </CartProvider>
+        <CookieConsent />
         <span className="junip-store-key" data-store-key="anLwjMqeGdCvG9w79wSpfM16" />
         <Script src="https://widgets.juniphq.com/v1/junip_shopify.js" strategy="afterInteractive" />
       </body>

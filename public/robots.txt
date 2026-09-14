@@ -29,4 +29,4 @@ Allow: /
 User-agent: Bingbot
 Allow: /
 
-Sitemap: https://rwb8771.github.io/atlashydration/sitemap.xml
+Sitemap: https://atlas-hydration.com/sitemap.xml

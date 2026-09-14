@@ -70,9 +70,9 @@ export default function Footer() {
           {/* Policy Links */}
           <div className="footer__links">
             <nav aria-label="Policy links">
-              <Link href="/shipping">Shipping Policy</Link>
-              <Link href="/shipping">Refund Policy</Link>
+              <Link href="/shipping">Shipping &amp; Refunds</Link>
               <Link href="/privacy">Privacy Policy</Link>
+              <Link href="/terms">Terms &amp; Conditions</Link>
               <Link href="/contact">Contact Us</Link>
             </nav>
           </div>
