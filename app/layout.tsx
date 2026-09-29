@@ -2,7 +2,6 @@ import type { Metadata, Viewport } from "next";
 import Script from "next/script";
 import "./globals.css";
 import { CartProvider } from "@/app/context/CartContext";
-import { PopupProvider } from "@/app/components/Popup";
 import Header from "@/app/components/Header";
 import Footer from "@/app/components/Footer";
 import CartDrawer from "@/app/components/CartDrawer";
@@ -51,13 +50,11 @@ export default function RootLayout({
       </head>
       <body>
         <CartProvider>
-          <PopupProvider>
-            <ScrollToTop />
-            <Header />
-            {children}
-            <Footer />
-            <CartDrawer />
-          </PopupProvider>
+          <ScrollToTop />
+          <Header />
+          {children}
+          <Footer />
+          <CartDrawer />
         </CartProvider>
         <CookieConsent />
         <span className="junip-store-key" data-store-key="anLwjMqeGdCvG9w79wSpfM16" />

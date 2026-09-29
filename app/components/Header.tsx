@@ -5,7 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useCart, BOTTLE_DISCOUNT_LIVE, BOTTLE_HALF_OFF_THRESHOLD, BOTTLE_FREE_THRESHOLD } from "@/app/context/CartContext";
 import { FREE_SHIPPING_THRESHOLD } from "@/app/data/formula";
-import { usePopupTrigger } from "@/app/components/Popup";
+import { KLAVIYO_WELCOME_FORM_ID, openWelcomeForm } from "@/app/lib/klaviyo";
 
 const NAV_LINKS: { label: string; href: string }[] = [];
 
@@ -15,7 +15,8 @@ interface Announcement {
   /** Single-line version for phones. */
   short: string;
   href?: string;
-  popup?: boolean;
+  /** Opens the Klaviyo welcome signup form. */
+  klaviyoForm?: boolean;
 }
 
 const ANNOUNCEMENTS: Announcement[] = [
@@ -31,12 +32,16 @@ const ANNOUNCEMENTS: Announcement[] = [
     short: "Subscribe & Save 20% + free shipping",
     href: "/products/strawberry-lemonade",
   },
-  {
-    lead: "Unlock 10% off",
-    detail: "your first order when you join the Atlas list",
-    short: "Unlock 10% off your first order",
-    popup: true,
-  },
+  ...(KLAVIYO_WELCOME_FORM_ID
+    ? [
+        {
+          lead: "Unlock 10% off",
+          detail: "your first order when you join the Atlas list",
+          short: "Unlock 10% off your first order",
+          klaviyoForm: true,
+        },
+      ]
+    : []),
   ...(BOTTLE_DISCOUNT_LIVE
     ? [
         {
@@ -63,7 +68,6 @@ const ANNOUNCEMENTS: Announcement[] = [
 
 export default function Header() {
   const { cartCount, toggleCart } = useCart();
-  const { openPopup } = usePopupTrigger();
   const pathname = usePathname();
   const isHome = pathname === "/";
 
@@ -154,8 +158,8 @@ export default function Header() {
               <span className="announcement-bar__short">{current.short}</span>
             </span>
           );
-          return current.popup ? (
-            <button className="announcement-bar__inner announcement-bar__btn" onClick={openPopup} type="button">
+          return current.klaviyoForm ? (
+            <button className="announcement-bar__inner announcement-bar__btn" onClick={openWelcomeForm} type="button">
               {content}
             </button>
           ) : (

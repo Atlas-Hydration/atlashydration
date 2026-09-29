@@ -4394,10 +4394,8 @@ img {
 .compare__sub-val--rival { color: rgba(255,255,255,0.5); }
 
 /* ========================================
-   Popup Modal
+   Announcement bar button
    ======================================== */
-/* ---- Minimalist signup popup ---- */
-/* Announcement bar button */
 .announcement-bar__btn {
   background: none;
   border: none;
@@ -4407,205 +4405,6 @@ img {
   width: 100%;
   letter-spacing: inherit;
   text-transform: inherit;
-}
-
-/* ========================================
-   Fullscreen Popup — Dark Theme
-   ======================================== */
-.popup-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.92);
-  z-index: 2000;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  animation: popupFadeIn 0.4s ease forwards;
-}
-
-@keyframes popupFadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-.popup {
-  position: relative;
-  width: 100%;
-  max-width: 420px;
-  padding: 48px 36px 32px;
-  text-align: center;
-  animation: popupSlideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-
-@keyframes popupSlideUp {
-  from { opacity: 0; transform: translateY(30px) scale(0.96); }
-  to { opacity: 1; transform: translateY(0) scale(1); }
-}
-
-.popup__close {
-  position: absolute;
-  top: 8px;
-  right: 8px;
-  z-index: 2;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  border: none;
-  background: transparent;
-  color: rgba(255, 255, 255, 0.4);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: color 0.2s;
-}
-
-.popup__close:hover {
-  color: #fff;
-}
-
-.popup__inner {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 24px;
-}
-
-.popup__eagle {
-  width: 56px;
-  height: auto;
-  filter: brightness(0) invert(1);
-  opacity: 0.8;
-}
-
-.popup__title {
-  font-family: var(--font-serif, 'Playfair Display', serif);
-  line-height: 1.15;
-  margin: 0;
-}
-
-.popup__title-bold {
-  display: block;
-  font-weight: 800;
-  font-size: 2rem;
-  color: #ffffff;
-  font-style: italic;
-}
-
-.popup__title-light {
-  display: block;
-  font-weight: 400;
-  font-size: 1.5rem;
-  color: rgba(255, 255, 255, 0.85);
-}
-
-.popup__form {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  width: 100%;
-}
-
-.popup__input {
-  width: 100%;
-  padding: 16px 20px;
-  border-radius: 50px;
-  border: 1.5px solid rgba(255, 255, 255, 0.25);
-  font-size: 0.95rem;
-  font-family: var(--font-sans);
-  background: rgba(255, 255, 255, 0.12);
-  color: #fff;
-  outline: none;
-  transition: border-color 0.2s;
-  text-align: center;
-}
-
-.popup__input:focus {
-  border-color: rgba(255, 255, 255, 0.5);
-}
-
-.popup__input::placeholder {
-  color: rgba(255, 255, 255, 0.35);
-}
-
-.popup__input--error {
-  border-color: var(--color-strawberry);
-}
-
-.popup__btn {
-  width: 100%;
-  padding: 16px 24px;
-  border-radius: 50px;
-  border: none;
-  font-size: 0.85rem;
-  font-weight: 700;
-  font-family: var(--font-sans);
-  background: #fff;
-  color: #1d1d1f;
-  cursor: pointer;
-  transition: background 0.2s, transform 0.15s;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-}
-
-.popup__btn:hover {
-  background: #f0f0f0;
-  transform: translateY(-1px);
-}
-
-.popup__btn--cta {
-  background: var(--color-accent-contrast);
-  color: #fff;
-}
-
-.popup__btn--cta:hover {
-  background: #c01d3d;
-}
-
-.popup__success {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 12px;
-  width: 100%;
-}
-
-.popup__code {
-  font-size: 1.1rem;
-  color: #fff;
-  margin: 0;
-}
-
-.popup__code strong {
-  font-size: 1.3rem;
-  letter-spacing: 0.1em;
-  color: var(--color-strawberry);
-}
-
-.popup__success-note {
-  font-size: 0.8rem;
-  color: rgba(255, 255, 255, 0.5);
-  margin: 0;
-}
-
-.popup__dismiss {
-  display: block;
-  text-align: center;
-  padding: 8px 16px;
-  font-size: 0.8rem;
-  font-weight: 600;
-  color: rgba(255, 255, 255, 0.5);
-  background: none;
-  border: none;
-  cursor: pointer;
-  transition: color 0.2s;
-  letter-spacing: 0.04em;
-  text-decoration: underline;
-  text-underline-offset: 3px;
-}
-
-.popup__dismiss:hover {
-  color: #fff;
 }
 
 .sr-only {
@@ -5234,8 +5033,6 @@ img {
   pointer-events: none;
   opacity: 0.4;
 }
-
-/* Old popup overrides removed — styles now in main popup block above */
 
 /* ========================================
    Dark CTA Section
