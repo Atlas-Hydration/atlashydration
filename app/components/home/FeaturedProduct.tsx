@@ -1,13 +1,11 @@
 "use client";
 
 import { useState, useRef, useCallback, useEffect } from "react";
-import { useCart, BOTTLE_DISCOUNT_LIVE, TWO_PACK_DISCOUNT_AMOUNT } from "@/app/context/CartContext";
+import { useCart, TWO_PACK_DISCOUNT_AMOUNT } from "@/app/context/CartContext";
+import { PRODUCTS } from "@/app/data/products";
+import { FREE_SHIPPING_THRESHOLD } from "@/app/data/formula";
 import CompleteKitBundle from "@/app/components/CompleteKitBundle";
-
-const ONE_TIME_UNIT_PRICE = 29.99;
-const SUBSCRIBE_UNIT_PRICE = 23.99;
-const ONE_TIME_PER_STICK = 1.87;
-const SUBSCRIBE_PER_STICK = 1.50;
+import PurchaseOptions from "@/app/components/PurchaseOptions";
 
 const FLAVOR_IMAGES = {
   "strawberry-lemonade": [
@@ -84,15 +82,13 @@ export default function FeaturedProduct() {
   }, [selectedFlavor]);
 
 
+  const product = PRODUCTS[selectedFlavor];
   const isSubscribing = purchaseType === "subscribe";
-  const unitPrice = isSubscribing ? SUBSCRIBE_UNIT_PRICE : ONE_TIME_UNIT_PRICE;
-  const perStickPrice = isSubscribing ? SUBSCRIBE_PER_STICK : ONE_TIME_PER_STICK;
+  const unitPrice = isSubscribing ? product.subscribePrice : product.price;
   // The 2-pack bundle discount only applies to one-time purchases — a
   // subscription already carries its own 20% discount.
   const twoPackDiscount = isSubscribing ? 0 : TWO_PACK_DISCOUNT_AMOUNT;
-  const onePouchTotal = unitPrice;
-  const twoPouchTotal = unitPrice * 2 - twoPackDiscount;
-  const customQtyTotal = qty === 2 ? twoPouchTotal : qty * unitPrice;
+  const customQtyTotal = qty === 2 ? unitPrice * 2 - twoPackDiscount : qty * unitPrice;
 
   const handleAdd = async () => {
     setAdding(true);
@@ -174,8 +170,13 @@ export default function FeaturedProduct() {
           <div className="featured-product__info">
             <p className="featured-product__eyebrow">{isPreorder ? "Coming Soon" : "Best Seller"}</p>
             <h2 className="featured-product__title">{selectedFlavor === "grapefruit" ? "Grapefruit" : "Strawberry Lemonade"}<br />Electrolyte Mix</h2>
+            {!isPreorder && (
+              <div className="featured-product__rating">
+                <span className="junip-product-summary" data-product-id="7693950255178" />
+              </div>
+            )}
             <p className="featured-product__subtitle">
-              Zero-sugar hydration with 1,769mg electrolytes, B vitamins, Vitamin C, and recovery amino acids. 16 stick packs per box.
+              1,769mg electrolytes, B vitamins, vitamin C, and amino acids. Zero sugar. 16 stick packs per box.
             </p>
             <div className="featured-product__badges">
               <span className="featured-product__badge">Zero Sugar</span>
@@ -194,107 +195,17 @@ export default function FeaturedProduct() {
               </button>
             </div>
 
-            <div className="purchase-options">
-              <button
-                type="button"
-                className={`purchase-option purchase-option--subscribe${isSubscribing ? " active" : ""}`}
-                onClick={() => setPurchaseType("subscribe")}
-              >
-                <span className="purchase-option__label">Subscribe &amp; Save</span>
-                <span className="purchase-option__discount-badge">20% off</span>
-              </button>
-              <button
-                type="button"
-                className={`purchase-option purchase-option--onetime${!isSubscribing ? " active" : ""}`}
-                onClick={() => setPurchaseType("onetime")}
-              >
-                <span className="purchase-option__label">One-Time</span>
-              </button>
-            </div>
-
-            <div className="purchase-option__price-row">
-              <span className="purchase-option__price">${unitPrice.toFixed(2)}</span>
-              {isSubscribing && <span className="purchase-option__price-original">${ONE_TIME_UNIT_PRICE.toFixed(2)}</span>}
-              <span className="purchase-option__per">${perStickPrice.toFixed(2)} / stick</span>
-            </div>
-
-            {isSubscribing ? (
-              <>
-                <div className="purchase-option__savings-bar">
-                  Save $6.00 every order, plus free shipping.
-                </div>
-                <div className="purchase-option__perks">
-                  <div className="purchase-option__perk">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M20 6L9 17l-5-5" /></svg>
-                    <span>20% off every order</span>
-                  </div>
-                  <div className="purchase-option__perk">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M20 6L9 17l-5-5" /></svg>
-                    <span>Free shipping on every delivery</span>
-                  </div>
-                  <div className="purchase-option__perk">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M20 6L9 17l-5-5" /></svg>
-                    <span>Skip, pause, or cancel anytime</span>
-                  </div>
-                </div>
-                <div className="frequency-selector">
-                  {[2, 4, 6].map((w) => (
-                    <button
-                      key={w}
-                      className={`frequency-selector__btn${frequency === w ? " active" : ""}`}
-                      onClick={() => setFrequency(w)}
-                    >
-                      Every {w} weeks
-                    </button>
-                  ))}
-                </div>
-              </>
-            ) : (
-              <div className="purchase-option__perks">
-                <div className="purchase-option__perk">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M20 6L9 17l-5-5" /></svg>
-                  <span>Free shipping over $40</span>
-                </div>
-              </div>
-            )}
-
-            <div className="qty-select">
-              <span className="qty-select__label">Quantity</span>
-              <div className="bundle-selector">
-                <button type="button" className={`bundle-card${qty === 1 && !customQtyOpen ? " bundle-card--active" : ""}`} onClick={() => { setQty(1); setCustomQtyOpen(false); }}>
-                  <div className="bundle-card__title">1 Pouch</div>
-                  <div className="bundle-card__price">${onePouchTotal.toFixed(2)}</div>
-                </button>
-                <button type="button" className={`bundle-card${qty === 2 && !customQtyOpen ? " bundle-card--active" : ""}`} onClick={() => { setQty(2); setCustomQtyOpen(false); }}>
-                  {twoPackDiscount > 0 && <span className="bundle-card__badge bundle-card__badge--green">Best value</span>}
-                  <div className="bundle-card__title">2 Pouches</div>
-                  <div className="bundle-card__price">${twoPouchTotal.toFixed(2)}</div>
-                </button>
-              </div>
-
-              {qty === 2 && !customQtyOpen && twoPackDiscount > 0 && (
-                <p className="qty-select__hint">Includes 50% off the Atlas Bottle, plus ${twoPackDiscount.toFixed(2)} off your pouches.</p>
-              )}
-
-              {customQtyOpen ? (
-                <div className="qty-stepper">
-                  <div className="qty-stepper__control">
-                    <button type="button" aria-label="Decrease quantity" onClick={() => setQty((q) => Math.max(1, q - 1))}>−</button>
-                    <span>{qty}</span>
-                    <button type="button" aria-label="Increase quantity" onClick={() => setQty((q) => Math.min(20, q + 1))}>+</button>
-                  </div>
-                  <span className="qty-stepper__total">${customQtyTotal.toFixed(2)}</span>
-                </div>
-              ) : (
-                <button type="button" className="qty-select__custom-toggle" onClick={() => setCustomQtyOpen(true)}>
-                  Need a different amount?
-                </button>
-              )}
-
-              {BOTTLE_DISCOUNT_LIVE && qty >= 4 && (
-                <p className="qty-select__hint">Your Atlas Bottle ships free at this quantity.</p>
-              )}
-            </div>
+            <PurchaseOptions
+              slug={selectedFlavor}
+              purchaseType={purchaseType}
+              onPurchaseTypeChange={setPurchaseType}
+              qty={qty}
+              onQtyChange={setQty}
+              customQtyOpen={customQtyOpen}
+              onCustomQtyOpenChange={setCustomQtyOpen}
+              frequency={frequency}
+              onFrequencyChange={setFrequency}
+            />
 
             <div style={{ marginTop: 16 }}>
               <button
@@ -304,6 +215,13 @@ export default function FeaturedProduct() {
                 {adding ? "Added" : isPreorder ? "Pre-Order" : `Add to Cart — $${customQtyTotal.toFixed(2)}`}
               </button>
             </div>
+
+            <ul className="trust-row" aria-label="Why customers feel good buying Atlas">
+              <li>Third-party tested</li>
+              <li>Made in USA</li>
+              <li>Free shipping over ${FREE_SHIPPING_THRESHOLD}</li>
+              <li>Skip or cancel subscriptions anytime</li>
+            </ul>
 
             <CompleteKitBundle
               mixSlug={selectedFlavor}

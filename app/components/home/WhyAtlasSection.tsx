@@ -5,26 +5,28 @@ import React, { useState } from "react";
 const cards = [
   {
     number: "01",
-    title: "More Electrolytes Than Anyone",
+    title: "Clear Electrolyte Dosing",
     statNumber: "1,769",
     statUnit: "mg electrolytes",
     reveal: (
       <>
-        <p>Sodium, potassium, magnesium, and chloride in ratios backed by exercise science. More per serving than LMNT, Liquid I.V., and WaterBoy — combined.</p>
-        <div className="why-atlas__card-bar"><div className="why-atlas__card-bar-fill" style={{ "--bar-width": "100%" } as React.CSSProperties} /><span>Atlas 1,769mg</span></div>
-        <div className="why-atlas__card-bar why-atlas__card-bar--muted"><div className="why-atlas__card-bar-fill" style={{ "--bar-width": "71%" } as React.CSSProperties} /><span>LMNT 1,260mg</span></div>
-        <div className="why-atlas__card-bar why-atlas__card-bar--muted"><div className="why-atlas__card-bar-fill" style={{ "--bar-width": "28%" } as React.CSSProperties} /><span>Liquid I.V. 500mg</span></div>
+        <p>510mg sodium, 380mg magnesium, and potassium in every stick, with the full breakdown printed on the label. Sodium is the electrolyte you lose most in sweat.</p>
+        <div className="why-atlas__card-pills">
+          {["510mg Sodium", "380mg Magnesium", "Potassium"].map((p) => (
+            <span className="why-atlas__pill" key={p}>{p}</span>
+          ))}
+        </div>
       </>
     ),
   },
   {
     number: "02",
-    title: "Full-Spectrum Recovery",
-    statNumber: "6",
-    statUnit: "recovery nutrients",
+    title: "Vitamins & Amino Acids",
+    statNumber: "7",
+    statUnit: "added nutrients",
     reveal: (
       <>
-        <p>B3, B5, B6, B12, Vitamin C, plus 1,200mg amino acids (L-Glutamine &amp; L-Alanine). No other electrolyte brand includes this full recovery stack.</p>
+        <p>Vitamin C and B vitamins (niacin, pantothenic acid, B6, B12), plus L-Glutamine and L-Alanine amino acids, for the days you train hard and travel harder.</p>
       </>
     ),
   },
@@ -92,9 +94,9 @@ export default function WhyAtlasSection() {
       <div className="container">
         <div className="why-atlas__header">
           <p className="section-eyebrow" style={{ color: "rgba(255,255,255,0.5)" }}>Why Atlas</p>
-          <h2 className="why-atlas__title">Engineered for<br />Those Who Demand More</h2>
+          <h2 className="why-atlas__title">Built for<br />How You Actually Live</h2>
           <p className="why-atlas__subtitle">
-            Most electrolyte brands cut corners — low doses, added sugar, missing nutrients. Atlas was built by an athlete who demanded more from his hydration. Every ingredient is dosed to perform.
+            Atlas was built by a pilot and athlete who needed hydration that keeps up with travel, training, and heat. Every ingredient is listed on the label, with zero added sugar.
           </p>
         </div>
 

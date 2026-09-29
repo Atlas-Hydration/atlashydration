@@ -8,7 +8,7 @@ const cards = [
     imageAlt: "Athlete training for performance",
     overlayLabel: "1,769mg electrolytes per serving",
     title: "Physical Performance",
-    text: "Sodium and potassium are critical for muscle contraction, nerve signaling, and thermoregulation. Even a 2% drop in hydration reduces strength and endurance.",
+    text: "Sodium and potassium play a role in muscle contraction and nerve signaling, and sweat is how you lose them. Atlas helps you replace electrolytes around training.",
     svg: (
       <svg className="hb__card-svg" viewBox="0 0 200 200" aria-hidden="true">
         <path className="hb__svg-pulse" d="M20 100 L50 100 L60 60 L80 140 L100 80 L120 120 L140 90 L160 100 L180 100" fill="none" stroke="#ffffff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
@@ -19,9 +19,9 @@ const cards = [
   {
     image: "/images/benefits-cognitive.jpg",
     imageAlt: "Focus and cognitive performance",
-    overlayLabel: "75% of your brain is water",
+    overlayLabel: "380mg magnesium per stick",
     title: "Cognitive Function",
-    text: "Your brain is 75% water. Dehydration impairs memory, focus, and mood. Magnesium supports nerve signaling. B vitamins fuel neurotransmitter production.",
+    text: "Magnesium supports normal nerve function, and B vitamins play a role in energy metabolism. Stay on top of hydration through long workdays and flights.",
     svg: (
       <svg className="hb__card-svg" viewBox="0 0 200 200" aria-hidden="true">
         <ellipse className="hb__svg-brain-outer" cx="100" cy="95" rx="55" ry="50" fill="none" stroke="#ffffff" strokeWidth="1.5" />
@@ -34,9 +34,9 @@ const cards = [
   {
     image: "/images/benefits-recovery.jpg",
     imageAlt: "Post-workout recovery",
-    overlayLabel: "1,200mg recovery amino acids",
+    overlayLabel: "1,200mg amino acids",
     title: "Muscular Recovery",
-    text: "L-Glutamine accelerates repair and supports immune function. Magnesium reduces soreness. Recover faster. Train harder.",
+    text: "L-Glutamine and L-Alanine amino acids, plus magnesium, to round out your post-training routine.",
     svg: (
       <svg className="hb__card-svg" viewBox="0 0 200 200" aria-hidden="true">
         <rect className="hb__svg-fiber" x="85" y="50" width="6" height="100" rx="3" fill="none" stroke="rgba(255,255,255,0.3)" strokeWidth="1" />
@@ -91,9 +91,9 @@ export default function HydrationBenefits() {
       <div className="container">
         <div className="section-header">
           <p className="section-eyebrow">The Benefits</p>
-          <h2 className="section-title">Why You Need Electrolytes</h2>
+          <h2 className="section-title">Why Electrolytes Matter</h2>
           <p className="section-subtitle">
-            Your body loses electrolytes every hour through sweat, breath, and daily activity. Replacing them isn&apos;t optional — it&apos;s essential.
+            You lose electrolytes through sweat, especially when you train, travel, or spend time in the heat. Replacing them is part of staying hydrated.
           </p>
         </div>
         <div className="hb__grid">

@@ -46,7 +46,7 @@ export default function DarkCta() {
             <span className="wave-text">Strawberry&nbsp;Lemonade?</span>
           </h2>
           <p className="cta-dark__text">
-            16 stick packs of clean, science-backed hydration. Zero sugar. 25 calories. Full performance.
+            16 stick packs. 1,769mg electrolytes. Zero sugar. 25 calories.
           </p>
           <button
             className="cta-dark__btn"
