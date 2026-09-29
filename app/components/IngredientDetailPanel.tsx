@@ -159,6 +159,11 @@ const ELECTROLYTE_ROWS: RowDef[] = [
   { key: "chloride", label: <><strong>Chloride</strong> (as Pink Himalayan Salt) 469mg</>, dv: "20%" },
 ];
 
+const CURRENT_AMINO_ROWS: RowDef[] = [
+  { key: "glutamine", label: <><strong>L-Glutamine</strong> 1000mg</>, dv: "†" },
+  { key: "alanine", label: <><strong>L-Alanine</strong> 200mg</>, dv: "†" },
+];
+
 const VITAMIN_ROWS: RowDef[] = [
   { key: "vitaminb3", label: <><strong>Vitamin B3</strong> (as Niacin) 24mg</>, dv: "150%" },
   { key: "vitaminb5", label: <><strong>Vitamin B5</strong> (as Pantothenic acid) 5mg</>, dv: "100%" },
@@ -171,6 +176,34 @@ const AMINO_ROWS: RowDef[] = [
   { key: "glutamine", label: <><strong>L-Glutamine</strong> 1000mg</>, dv: "+" },
   { key: "alanine", label: <><strong>L-Alanine</strong> 200mg</>, dv: "+" },
 ];
+
+// Strawberry Lemonade: matches the printed label (no chloride, pantethine B5,
+// 12g serving, 6g carbs). DV% for sodium/magnesium use the standard 2,300mg /
+// 420mg reference values.
+const CURRENT_ELECTROLYTE_ROWS: RowDef[] = [
+  { key: "sodium", label: <><strong>Sodium</strong> {FORMULA.sodiumMg}mg</>, dv: "26%" },
+  { key: "magnesium", label: <><strong>Magnesium</strong> {FORMULA.magnesiumMg}mg</>, dv: "48%" },
+  { key: "potassium", label: <><strong>Potassium</strong> {FORMULA.potassiumMg}mg</>, dv: "11%" },
+];
+
+const CURRENT_VITAMIN_ROWS: RowDef[] = [
+  { key: "vitaminb3", label: <><strong>Vitamin B3</strong> (as Niacin) 24mg</>, dv: "240%" },
+  { key: "vitaminb5", label: <><strong>Vitamin B5</strong> (as Pantethine) 12mg</>, dv: "150%" },
+  { key: "vitaminb6", label: <><strong>Vitamin B6</strong> (as Pyridoxal-5-phosphate) 2mg</>, dv: "118%" },
+  { key: "vitaminb12", label: <><strong>Vitamin B12</strong> (as Methylcobalamin) 8mcg</>, dv: "333%" },
+  { key: "vitaminc", label: <><strong>Vitamin C</strong> 90mg</>, dv: "100%" },
+];
+
+const CURRENT_INGREDIENT_OVERRIDES: Record<string, Partial<IngredientInfo>> = {
+  sodium: { dose: "600mg — 26% DV", desc: "Sodium is the primary electrolyte lost in sweat and is central to fluid balance." },
+  magnesium: { dose: "200mg — 48% DV", desc: "Magnesium is involved in over 300 enzymatic reactions in the body." },
+  potassium: { dose: "500mg — 11% DV", desc: "Potassium works alongside sodium to maintain your body's electrical gradient." },
+  vitaminb3: { dose: "24mg — 240% DV" },
+  vitaminb5: { name: "Vitamin B5 (Pantethine)", dose: "12mg — 150% DV" },
+};
+
+const CURRENT_OTHER_INGREDIENTS =
+  "Allulose, Citric Acid, Inulin, Natural Flavors, Malic Acid, Silicon Dioxide, Rebaudioside A (from Stevia Leaf Extract)";
 
 function DetailPanelContent({ data, ingredientKey }: { data: IngredientInfo; ingredientKey: string }) {
   return (
@@ -286,8 +319,10 @@ export function SupplementFactsWithPanel({
   const isCurrent = formula === "current";
   const [activeIngredient, setActiveIngredient] = useState<string | null>(null);
   const [mobileSheet, setMobileSheet] = useState<string | null>(null);
-  const data = activeIngredient ? INGREDIENT_DATA[activeIngredient] : null;
-  const sheetData = mobileSheet ? INGREDIENT_DATA[mobileSheet] : null;
+  const ingredientData = (key: string): IngredientInfo =>
+    isCurrent ? { ...INGREDIENT_DATA[key], ...CURRENT_INGREDIENT_OVERRIDES[key] } : INGREDIENT_DATA[key];
+  const data = activeIngredient ? ingredientData(activeIngredient) : null;
+  const sheetData = mobileSheet ? ingredientData(mobileSheet) : null;
 
   const handleHover = (key: string) => setActiveIngredient(key);
   const handleLeave = () => setActiveIngredient(null);
@@ -313,7 +348,7 @@ export function SupplementFactsWithPanel({
       </div>
     ));
 
-  const other = otherIngredients || "Citric Acid, Natural Strawberry & Lemon Flavors, Bamboo Extract, Annatto Seed Extract (color)";
+  const other = otherIngredients || (isCurrent ? CURRENT_OTHER_INGREDIENTS : "Citric Acid, Natural Strawberry & Lemon Flavors, Bamboo Extract, Annatto Seed Extract (color)");
 
   return (
     <>
@@ -321,23 +356,24 @@ export function SupplementFactsWithPanel({
         <div className="supplement-facts__table" role="table" aria-label="Supplement Facts">
           <h3>Supplement Facts</h3>
           <p className="sf-meta">16 servings per container</p>
-          <p className="sf-meta">Serving Size <strong>1 Stick (8g)</strong></p>
+          <p className="sf-meta">Serving Size <strong>1 Stick ({isCurrent ? FORMULA.servingG : 8}g)</strong></p>
           <div className="sf-divider" />
           <p className="sf-meta" style={{ fontSize: "var(--text-xs)" }}>Amount per serving</p>
           <div className="sf-row sf-row--calories"><span>Calories</span><span>{isCurrent ? FORMULA.calories : 5}</span></div>
           <div className="sf-row sf-row--header"><span>% Daily Value*</span></div>
-          <div className="sf-row"><span><strong>Total Carbohydrate</strong> 1g</span><span>&lt;1%*</span></div>
+          <div className="sf-row"><span><strong>Total Carbohydrate</strong> {isCurrent ? FORMULA.carbsG : 1}g</span><span>{isCurrent ? "2%*" : "<1%*"}</span></div>
           <div className="sf-row"><span><strong>Total Sugar</strong> 0g</span><span>0%</span></div>
           <div className="sf-row"><span><strong>Protein</strong> 0g</span><span>0%</span></div>
           <div className="sf-section-divider" />
-          {renderRows(ELECTROLYTE_ROWS)}
+          {renderRows(isCurrent ? CURRENT_ELECTROLYTE_ROWS : ELECTROLYTE_ROWS)}
           <div className="sf-section-divider" />
-          {renderRows(VITAMIN_ROWS)}
+          {renderRows(isCurrent ? CURRENT_VITAMIN_ROWS : VITAMIN_ROWS)}
           <div className="sf-section-divider" />
-          {renderRows(AMINO_ROWS)}
+          {renderRows(isCurrent ? CURRENT_AMINO_ROWS : AMINO_ROWS)}
           <div className="sf-divider" />
           <p className="sf-other"><strong>Other Ingredients:</strong> {other}</p>
           <p className="sf-other">*Percent Daily Values Are Based on a 2000 Calorie Diet</p>
+          {isCurrent && <p className="sf-other">†Daily Value not established.</p>}
         </div>
 
         <div className="sf-detail-panel">

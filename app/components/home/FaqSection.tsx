@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { FORMULA, FORMULA_TOTAL, FORMULA_ELECTROLYTE_BREAKDOWN } from "@/app/data/formula";
 
-const ELECTROLYTE_ANSWER = `Each stick pack contains <strong>${FORMULA_TOTAL}mg of total electrolytes</strong>: ${FORMULA_ELECTROLYTE_BREAKDOWN}. Sodium comes from sodium citrate and pink Himalayan salt, potassium from potassium citrate, and magnesium from magnesium malate.`;
+const ELECTROLYTE_ANSWER = `Each Strawberry Lemonade stick pack contains ${FORMULA_ELECTROLYTE_BREAKDOWN}. See the Supplement Facts on the product page for every ingredient and daily value.`;
 
 function buildFaqItems() {
   return [
@@ -22,7 +22,7 @@ function buildFaqItems() {
     {
       question: "What vitamins and amino acids are included?",
       answer:
-        '<strong>Vitamin C</strong> (90mg), <strong>B3</strong> (24mg), <strong>B5</strong> (5mg), <strong>B6</strong> (2mg), and <strong>B12</strong> (8mcg). For recovery support: <strong>1,000mg L-Glutamine</strong> and <strong>200mg L-Alanine</strong>.',
+        '<strong>Vitamin C</strong> (90mg), <strong>B3</strong> (24mg), <strong>B5</strong> (12mg), <strong>B6</strong> (2mg), and <strong>B12</strong> (8mcg). For recovery support: <strong>1,000mg L-Glutamine</strong> and <strong>200mg L-Alanine</strong>.',
     },
     {
       question: "How do I use Atlas?",

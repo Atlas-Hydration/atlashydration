@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import HeroSection from "@/app/components/home/HeroSection";
-import VitaminStrip from "@/app/components/home/VitaminStrip";
+import ProofStrip from "@/app/components/home/ProofStrip";
 import FeaturedProduct from "@/app/components/home/FeaturedProduct";
 import BottleSection from "@/app/components/home/BottleSection";
 import ScienceSection from "@/app/components/home/ScienceSection";
@@ -61,7 +61,7 @@ export default function Home() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }} />
       <HeroSection />
-      <VitaminStrip />
+      <ProofStrip />
       <FeaturedProduct />
       <ReviewsSection />
       <BottleSection />
