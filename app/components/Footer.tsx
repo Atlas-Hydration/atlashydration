@@ -1,4 +1,5 @@
 import Link from "next/link";
+import FooterSignup from "@/app/components/FooterSignup";
 
 function FooterYear() {
   return <>{new Date().getFullYear()}</>;
@@ -8,6 +9,7 @@ export default function Footer() {
   return (
     <footer className="footer" role="contentinfo">
       <div className="container">
+        <FooterSignup />
         <div className="footer__grid">
           {/* Brand */}
           <div className="footer__brand">
