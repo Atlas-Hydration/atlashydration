@@ -92,57 +92,49 @@ export type SubscribeResult = "ok" | "rate_limited" | "error";
 
 /**
  * Subscribes an email to the Email List via Klaviyo's public client API.
- * Resolves "ok" only when Klaviyo accepts it (HTTP 202), never before.
+ * Sends only what a signup needs (email, consent, list) so nothing optional
+ * can make Klaviyo reject it. Resolves "ok" only when Klaviyo accepts it
+ * (HTTP 202), never before.
  */
 export async function subscribeToKlaviyoPublic({
   email,
   source,
-  properties = {},
 }: {
   email: string;
   source: string;
-  properties?: Record<string, string>;
 }): Promise<SubscribeResult> {
-  const payload = (withProperties: boolean) => ({
-    data: {
-      type: "subscription",
-      attributes: {
-        custom_source: source,
-        profile: {
+  try {
+    const res = await fetch(
+      `https://a.klaviyo.com/client/subscriptions/?company_id=${KLAVIYO_COMPANY_ID}`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/vnd.api+json", revision: "2025-07-15" },
+        body: JSON.stringify({
           data: {
-            type: "profile",
+            type: "subscription",
             attributes: {
-              email,
-              subscriptions: { email: { marketing: { consent: "SUBSCRIBED" } } },
-              ...(withProperties ? { properties: { "Signup Source": source, ...properties } } : {}),
+              custom_source: source,
+              profile: {
+                data: {
+                  type: "profile",
+                  attributes: {
+                    email,
+                    subscriptions: { email: { marketing: { consent: "SUBSCRIBED" } } },
+                  },
+                },
+              },
             },
+            relationships: { list: { data: { type: "list", id: KLAVIYO_LIST_ID } } },
           },
-        },
-      },
-      relationships: { list: { data: { type: "list", id: KLAVIYO_LIST_ID } } },
-    },
-  });
-
-  // If Klaviyo rejects the custom properties, retry with email + consent only
-  // so the subscription (and the Welcome Flow) still goes through.
-  for (const withProperties of [true, false]) {
-    try {
-      const res = await fetch(
-        `https://a.klaviyo.com/client/subscriptions/?company_id=${KLAVIYO_COMPANY_ID}`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json", revision: "2024-10-15" },
-          body: JSON.stringify(payload(withProperties)),
-        }
-      );
-      if (res.ok) return "ok";
-      if (res.status === 429) return "rate_limited";
-      console.error("[Klaviyo] subscribe failed:", res.status, await res.text().catch(() => ""));
-      if (res.status !== 400) return "error";
-    } catch (err) {
-      console.error("[Klaviyo] subscribe exception:", err);
-      return "error";
-    }
+        }),
+      }
+    );
+    if (res.ok) return "ok";
+    if (res.status === 429) return "rate_limited";
+    console.error("[Klaviyo] subscribe failed:", res.status, await res.text().catch(() => ""));
+    return "error";
+  } catch (err) {
+    console.error("[Klaviyo] subscribe exception (network/CORS/CSP):", err);
+    return "error";
   }
-  return "error";
 }
