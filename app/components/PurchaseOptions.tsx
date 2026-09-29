@@ -3,7 +3,7 @@
 import { useCallback } from "react";
 import { BOTTLE_DISCOUNT_LIVE, TWO_PACK_DISCOUNT_AMOUNT } from "@/app/context/CartContext";
 import { PRODUCTS } from "@/app/data/products";
-import { FREE_SHIPPING_THRESHOLD } from "@/app/data/formula";
+import { FREE_SHIPPING_THRESHOLD, SHIPPING_RATE } from "@/app/data/formula";
 
 export type PurchaseType = "subscribe" | "onetime";
 
@@ -52,6 +52,8 @@ export default function PurchaseOptions({
   const singlePrice = product.price;
   const subscribePrice = product.subscribePrice;
   const twoPackTotal = singlePrice * 2 - TWO_PACK_DISCOUNT_AMOUNT;
+  const singleShipsFree = singlePrice >= FREE_SHIPPING_THRESHOLD;
+  const oneTimeTotal = qty === 2 ? twoPackTotal : qty * singlePrice;
 
   const tryActive = !isSubscribing && qty === 1 && !customQtyOpen;
   const stockActive = !isSubscribing && qty === 2 && !customQtyOpen;
@@ -94,7 +96,10 @@ export default function PurchaseOptions({
           <span className="po-option__body">
             <span className="po-option__step">Try</span>
             <span className="po-option__title">1 pouch</span>
-            <span className="po-option__sub">One-time purchase · {money(singlePrice / 16)} / stick</span>
+            <span className="po-option__sub">
+              {money(singlePrice / 16)} / stick ·{" "}
+              {singleShipsFree ? <strong className="po-option__ship">free shipping</strong> : `${money(SHIPPING_RATE)} shipping`}
+            </span>
           </span>
           <span className="po-option__price">{money(singlePrice)}</span>
         </button>
@@ -111,9 +116,14 @@ export default function PurchaseOptions({
           <span className="po-option__body">
             <span className="po-option__step">Stock up</span>
             <span className="po-option__title">2 pouches</span>
-            <span className="po-option__sub">One-time purchase · save {money(TWO_PACK_DISCOUNT_AMOUNT)}</span>
+            <span className="po-option__sub">
+              <strong className="po-option__ship">Free shipping</strong> · save {money(TWO_PACK_DISCOUNT_AMOUNT)}
+            </span>
           </span>
-          <span className="po-option__price">{money(twoPackTotal)}</span>
+          <span className="po-option__price">
+            {money(twoPackTotal)}
+            <span className="po-option__was">{money(singlePrice * 2)}</span>
+          </span>
         </button>
 
         <button
@@ -127,7 +137,7 @@ export default function PurchaseOptions({
           <span className="po-option__body">
             <span className="po-option__step">Subscribe</span>
             <span className="po-option__title">Subscribe &amp; Save 20%</span>
-            <span className="po-option__sub">{money(subscribePrice)} per pouch · free shipping</span>
+            <span className="po-option__sub">{money(subscribePrice)} per pouch · <strong className="po-option__ship">free shipping</strong></span>
           </span>
           <span className="po-option__price">
             {money(subscribePrice)}
@@ -158,7 +168,14 @@ export default function PurchaseOptions({
       ) : (
         <div className="po__detail">
           <div className="purchase-option__perks">
-            <div className="purchase-option__perk"><CheckSvg /><span>Free shipping on orders over ${FREE_SHIPPING_THRESHOLD}</span></div>
+            <div className="purchase-option__perk">
+              <CheckSvg />
+              <span>
+                {oneTimeTotal >= FREE_SHIPPING_THRESHOLD
+                  ? "Free shipping included"
+                  : `Add another pouch for free shipping (orders over $${FREE_SHIPPING_THRESHOLD})`}
+              </span>
+            </div>
           </div>
         </div>
       )}

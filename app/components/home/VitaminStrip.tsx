@@ -1,17 +1,12 @@
 const items = [
-  "1,769mg Electrolytes",
-  "510mg Sodium",
-  "380mg Magnesium",
+  "Sodium",
   "Potassium",
-  "Vitamin C 90mg",
-  "Vitamin B3 24mg",
-  "Vitamin B5 5mg",
-  "Vitamin B6 2mg",
-  "Vitamin B12 8mcg",
-  "L-Glutamine 1,000mg",
-  "L-Alanine 200mg",
-  "Zero Sugar",
-  "25 Calories",
+  "Magnesium",
+  "Chloride",
+  "Vitamin C",
+  "B Vitamins",
+  "L-Glutamine",
+  "L-Alanine",
 ];
 
 function StripItems() {

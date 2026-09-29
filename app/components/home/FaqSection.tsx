@@ -3,16 +3,13 @@
 import { useState } from "react";
 import { FORMULA, FORMULA_TOTAL, FORMULA_ELECTROLYTE_BREAKDOWN } from "@/app/data/formula";
 
-const LEGACY_ELECTROLYTE_ANSWER =
-  'Each stick pack contains <strong>1,769mg of total electrolytes</strong>: 600mg Sodium (from Sodium Citrate and Pink Himalayan Salt), 500mg Potassium (from Potassium Citrate), 200mg Magnesium (from Magnesium Malate), and 469mg Chloride (from Pink Himalayan Salt).';
+const ELECTROLYTE_ANSWER = `Each stick pack contains <strong>${FORMULA_TOTAL}mg of total electrolytes</strong>: ${FORMULA_ELECTROLYTE_BREAKDOWN}. Sodium comes from sodium citrate and pink Himalayan salt, potassium from potassium citrate, and magnesium from magnesium malate.`;
 
-const CURRENT_ELECTROLYTE_ANSWER = `Each Strawberry Lemonade stick pack contains <strong>${FORMULA_TOTAL}mg of total electrolytes</strong>, including ${FORMULA_ELECTROLYTE_BREAKDOWN}. Sodium comes from sodium citrate and pink Himalayan salt, magnesium from magnesium malate, and potassium from potassium citrate.`;
-
-function buildFaqItems(formula: "current" | "legacy") {
+function buildFaqItems() {
   return [
     {
       question: "What electrolytes does Atlas contain?",
-      answer: formula === "current" ? CURRENT_ELECTROLYTE_ANSWER : LEGACY_ELECTROLYTE_ANSWER,
+      answer: ELECTROLYTE_ANSWER,
     },
     {
       question: "Is Atlas sugar-free?",
@@ -40,9 +37,9 @@ function buildFaqItems(formula: "current" | "legacy") {
   ];
 }
 
-export default function FaqSection({ formula = "current" }: { formula?: "current" | "legacy" }) {
+export default function FaqSection() {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
-  const faqItems = buildFaqItems(formula);
+  const faqItems = buildFaqItems();
 
   return (
     <section className="product-faq product-faq--dark" id="faq" aria-label="Frequently Asked Questions about Atlas Hydration">

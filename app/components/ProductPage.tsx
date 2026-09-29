@@ -243,7 +243,7 @@ export default function ProductPage({ config }: { config: ProductPageConfig }) {
         </div>
       </section>
 
-      <FaqSection formula={config.supplementFactsProps?.formula ?? "legacy"} />
+      <FaqSection />
 
       <section className="cta-section" aria-label="Buy now">
         <div className="cta-section__video-wrap">

@@ -103,7 +103,7 @@ const accordionItems = [
     content: (
       <>
         <p><strong>Atlas Hydration Strawberry Lemonade</strong> is a premium zero-sugar electrolyte drink mix built for daily performance hydration: training, travel, heat, recovery, and long workdays. Each box contains 16 individually wrapped stick packs — perfect for the gym, office, or travel.</p>
-        <p><strong>Electrolytes:</strong> {FORMULA_TOTAL}mg total per stick, including sodium {FORMULA.sodiumMg}mg, magnesium {FORMULA.magnesiumMg}mg, and potassium. <strong>Vitamins:</strong> Vitamin C 90mg, Niacin (B3) 24mg, Pantothenic Acid (B5) 5mg, Vitamin B6 2mg, Vitamin B12 8mcg. <strong>Amino Acids:</strong> L-Glutamine 1,000mg, L-Alanine 200mg.</p>
+        <p><strong>Key Electrolytes:</strong> Sodium {FORMULA.sodiumMg}mg, Potassium {FORMULA.potassiumMg}mg, Magnesium {FORMULA.magnesiumMg}mg, Chloride {FORMULA.chlorideMg}mg ({FORMULA_TOTAL}mg total). <strong>Vitamins:</strong> Vitamin C 90mg, Niacin (B3) 24mg, Pantothenic Acid (B5) 5mg, Vitamin B6 2mg, Vitamin B12 8mcg. <strong>Amino Acids:</strong> L-Glutamine 1,000mg, L-Alanine 200mg.</p>
         <p><strong>Other Ingredients:</strong> Citric Acid, Natural Strawberry &amp; Lemon Flavors, Bamboo Extract, Annatto Seed Extract (color), Stevia Leaf Extract, Allulose.</p>
       </>
     ),
