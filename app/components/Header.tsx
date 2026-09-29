@@ -5,7 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useCart, BOTTLE_DISCOUNT_LIVE, BOTTLE_HALF_OFF_THRESHOLD, BOTTLE_FREE_THRESHOLD } from "@/app/context/CartContext";
 import { FREE_SHIPPING_THRESHOLD } from "@/app/data/formula";
-import { usePopupTrigger } from "@/app/components/Popup";
+import { KLAVIYO_WELCOME_FORM_ID, openWelcomeForm } from "@/app/lib/klaviyo";
 
 const NAV_LINKS: { label: string; href: string }[] = [];
 
@@ -15,7 +15,8 @@ interface Announcement {
   /** Single-line version for phones. */
   short: string;
   href?: string;
-  popup?: boolean;
+  /** Opens the Klaviyo welcome signup form. */
+  klaviyoForm?: boolean;
 }
 
 const ANNOUNCEMENTS: Announcement[] = [
@@ -31,12 +32,16 @@ const ANNOUNCEMENTS: Announcement[] = [
     short: "Subscribe & Save 20% + free shipping",
     href: "/products/strawberry-lemonade",
   },
-  {
-    lead: "Unlock 10% off",
-    detail: "your first order when you join the Atlas list",
-    short: "Unlock 10% off your first order",
-    popup: true,
-  },
+  ...(KLAVIYO_WELCOME_FORM_ID
+    ? [
+        {
+          lead: "Unlock 10% off",
+          detail: "your first order when you join the Atlas list",
+          short: "Unlock 10% off your first order",
+          klaviyoForm: true,
+        },
+      ]
+    : []),
   ...(BOTTLE_DISCOUNT_LIVE
     ? [
         {
@@ -54,6 +59,24 @@ const ANNOUNCEMENTS: Announcement[] = [
     href: "/#science",
   },
   {
+    lead: "Inside every stick",
+    detail: "1,769mg electrolytes · B vitamins + vitamin C · L-Glutamine + L-Alanine",
+    short: "Electrolytes, vitamins + amino acids",
+    href: "/products/strawberry-lemonade#supplement-facts",
+  },
+  {
+    lead: "30-day guarantee",
+    detail: "Not happy? Contact us within 30 days for a full refund or exchange",
+    short: "30-day satisfaction guarantee",
+    href: "/shipping",
+  },
+  {
+    lead: "New flavor",
+    detail: "Grapefruit Zest is available to pre-order",
+    short: "Grapefruit Zest: pre-order now",
+    href: "/products/grapefruit",
+  },
+  {
     lead: "New",
     detail: "The Atlas Performance Bottle · 26 oz, leak-free, BPA-free",
     short: "New: the Atlas Performance Bottle",
@@ -63,7 +86,6 @@ const ANNOUNCEMENTS: Announcement[] = [
 
 export default function Header() {
   const { cartCount, toggleCart } = useCart();
-  const { openPopup } = usePopupTrigger();
   const pathname = usePathname();
   const isHome = pathname === "/";
 
@@ -154,8 +176,8 @@ export default function Header() {
               <span className="announcement-bar__short">{current.short}</span>
             </span>
           );
-          return current.popup ? (
-            <button className="announcement-bar__inner announcement-bar__btn" onClick={openPopup} type="button">
+          return current.klaviyoForm ? (
+            <button className="announcement-bar__inner announcement-bar__btn" onClick={openWelcomeForm} type="button">
               {content}
             </button>
           ) : (

@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import Script from "next/script";
+import { loadKlaviyo } from "@/app/lib/klaviyo";
 
 const CONSENT_KEY = "atlas_cookie_consent";
 
@@ -22,6 +23,10 @@ export default function CookieConsent() {
       setShowBanner(true);
     }
   }, []);
+
+  useEffect(() => {
+    if (consent === "accepted") loadKlaviyo();
+  }, [consent]);
 
   const choose = (value: "accepted" | "declined") => {
     setConsent(value);
@@ -45,11 +50,6 @@ export default function CookieConsent() {
             gtag('js', new Date());
             gtag('config', 'G-J2NYD0S2BR');
           `}</Script>
-          {/* Klaviyo Onsite Tracking */}
-          <Script
-            src="https://static.klaviyo.com/onsite/js/klaviyo.js?company_id=XLatdi"
-            strategy="afterInteractive"
-          />
         </>
       )}
 
