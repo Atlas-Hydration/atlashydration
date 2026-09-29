@@ -172,20 +172,6 @@ const AMINO_ROWS: RowDef[] = [
   { key: "alanine", label: <><strong>L-Alanine</strong> 200mg</>, dv: "+" },
 ];
 
-// Strawberry Lemonade's current formula. Potassium's amount isn't published
-// here (only its inclusion is confirmed), and chloride isn't listed.
-const CURRENT_DOSE_OVERRIDES: Record<string, string> = {
-  sodium: `${FORMULA.sodiumMg}mg — 22% DV`,
-  magnesium: `${FORMULA.magnesiumMg}mg — 90% DV`,
-  potassium: "Included in the 1,769mg total",
-};
-
-const CURRENT_ELECTROLYTE_ROWS: RowDef[] = [
-  { key: "sodium", label: <><strong>Sodium</strong> (as Sodium Citrate and Pink Himalayan Salt) {FORMULA.sodiumMg}mg</>, dv: "22%" },
-  { key: "magnesium", label: <><strong>Magnesium</strong> (as Magnesium Malate) {FORMULA.magnesiumMg}mg</>, dv: "90%" },
-  { key: "potassium", label: <><strong>Potassium</strong> (as Potassium Citrate)</>, dv: "Included" },
-];
-
 function DetailPanelContent({ data, ingredientKey }: { data: IngredientInfo; ingredientKey: string }) {
   return (
     <div className="sf-detail-panel__content" key={ingredientKey}>
@@ -298,14 +284,10 @@ export function SupplementFactsWithPanel({
   formula?: "current" | "legacy";
 }) {
   const isCurrent = formula === "current";
-  const ingredientData = (key: string): IngredientInfo => {
-    const base = INGREDIENT_DATA[key];
-    return isCurrent && CURRENT_DOSE_OVERRIDES[key] ? { ...base, dose: CURRENT_DOSE_OVERRIDES[key] } : base;
-  };
   const [activeIngredient, setActiveIngredient] = useState<string | null>(null);
   const [mobileSheet, setMobileSheet] = useState<string | null>(null);
-  const data = activeIngredient ? ingredientData(activeIngredient) : null;
-  const sheetData = mobileSheet ? ingredientData(mobileSheet) : null;
+  const data = activeIngredient ? INGREDIENT_DATA[activeIngredient] : null;
+  const sheetData = mobileSheet ? INGREDIENT_DATA[mobileSheet] : null;
 
   const handleHover = (key: string) => setActiveIngredient(key);
   const handleLeave = () => setActiveIngredient(null);
@@ -348,15 +330,12 @@ export function SupplementFactsWithPanel({
           <div className="sf-row"><span><strong>Total Sugar</strong> 0g</span><span>0%</span></div>
           <div className="sf-row"><span><strong>Protein</strong> 0g</span><span>0%</span></div>
           <div className="sf-section-divider" />
-          {renderRows(isCurrent ? CURRENT_ELECTROLYTE_ROWS : ELECTROLYTE_ROWS)}
+          {renderRows(ELECTROLYTE_ROWS)}
           <div className="sf-section-divider" />
           {renderRows(VITAMIN_ROWS)}
           <div className="sf-section-divider" />
           {renderRows(AMINO_ROWS)}
           <div className="sf-divider" />
-          {isCurrent && (
-            <p className="sf-other">Sodium, magnesium, and potassium make up the {FORMULA.totalElectrolytesMg.toLocaleString("en-US")}mg total electrolytes per serving.</p>
-          )}
           <p className="sf-other"><strong>Other Ingredients:</strong> {other}</p>
           <p className="sf-other">*Percent Daily Values Are Based on a 2000 Calorie Diet</p>
         </div>

@@ -10,9 +10,9 @@ const cards = [
     statUnit: "mg electrolytes",
     reveal: (
       <>
-        <p>510mg sodium, 380mg magnesium, and potassium in every stick, with the full breakdown printed on the label. Sodium is the electrolyte you lose most in sweat.</p>
+        <p>Sodium, potassium, magnesium, and chloride in every stick, with the full breakdown printed on the label. Sodium is the electrolyte you lose most in sweat.</p>
         <div className="why-atlas__card-pills">
-          {["510mg Sodium", "380mg Magnesium", "Potassium"].map((p) => (
+          {["Sodium", "Potassium", "Magnesium", "Chloride"].map((p) => (
             <span className="why-atlas__pill" key={p}>{p}</span>
           ))}
         </div>

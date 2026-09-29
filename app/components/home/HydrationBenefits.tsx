@@ -19,7 +19,7 @@ const cards = [
   {
     image: "/images/benefits-cognitive.jpg",
     imageAlt: "Focus and cognitive performance",
-    overlayLabel: "380mg magnesium per stick",
+    overlayLabel: "Magnesium + B vitamins",
     title: "Cognitive Function",
     text: "Magnesium supports normal nerve function, and B vitamins play a role in energy metabolism. Stay on top of hydration through long workdays and flights.",
     svg: (

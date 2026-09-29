@@ -41,9 +41,10 @@ const groups: IngredientGroup[] = [
     dose: "1,769mg",
     icon: <ElectrolyteIcon />,
     items: [
-      { name: "Sodium", amount: "510mg", dv: "22%", note: "From Sodium Citrate & Pink Himalayan Salt" },
-      { name: "Magnesium", amount: "380mg", dv: "90%", note: "From Magnesium Malate" },
-      { name: "Potassium", amount: "Included", note: "From Potassium Citrate" },
+      { name: "Sodium", amount: "600mg", dv: "26%", note: "From Sodium Citrate & Pink Himalayan Salt" },
+      { name: "Potassium", amount: "500mg", dv: "11%", note: "From Potassium Citrate" },
+      { name: "Magnesium", amount: "200mg", dv: "48%", note: "From Magnesium Malate" },
+      { name: "Chloride", amount: "469mg", dv: "20%", note: "From Pink Himalayan Salt" },
     ],
   },
   {

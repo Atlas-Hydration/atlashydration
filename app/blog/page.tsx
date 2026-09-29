@@ -14,7 +14,7 @@ const episodes = [
     episode: "Episode 1",
     tag: "Electrolytes",
     title: "Why Sodium Matters More Than You Think",
-    excerpt: "Sodium is the primary electrolyte lost in sweat, and levels can drop quickly during exercise, travel, or time in the heat. Each Atlas Strawberry Lemonade stick provides 510mg of sodium as part of its 1,769mg of total electrolytes.",
+    excerpt: "Sodium is the primary electrolyte lost in sweat, and levels can drop quickly during exercise, travel, or time in the heat. Each Atlas Strawberry Lemonade stick includes sodium as part of its 1,769mg of total electrolytes.",
     readTime: "5 min read",
   },
   {
