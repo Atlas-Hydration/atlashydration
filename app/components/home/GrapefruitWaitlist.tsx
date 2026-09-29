@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { subscribeToKlaviyo } from "@/app/lib/klaviyo";
 
 export default function GrapefruitWaitlist() {
   const [email, setEmail] = useState("");
@@ -13,11 +12,15 @@ export default function GrapefruitWaitlist() {
     const trimmed = email.trim();
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed)) { setError(true); return; }
     setError(false);
-    await subscribeToKlaviyo({
-      email: trimmed,
-      source: "Homepage — New Flavor Notifications",
-      properties: { "Interested In": "New Flavors" },
-    });
+    await fetch("/api/klaviyo-subscribe", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        email: trimmed,
+        source: "Homepage — New Flavor Notifications",
+        properties: { "Interested In": "New Flavors" },
+      }),
+    }).catch(() => {});
     setSubmitted(true);
   };
 

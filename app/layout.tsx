@@ -7,7 +7,6 @@ import Footer from "@/app/components/Footer";
 import CartDrawer from "@/app/components/CartDrawer";
 import ScrollToTop from "@/app/components/ScrollToTop";
 import CookieConsent from "@/app/components/CookieConsent";
-import { SignupPopupProvider } from "@/app/components/SignupPopup";
 
 export const viewport: Viewport = {
   width: "device-width",
@@ -51,13 +50,11 @@ export default function RootLayout({
       </head>
       <body>
         <CartProvider>
-          <SignupPopupProvider>
-            <ScrollToTop />
-            <Header />
-            {children}
-            <Footer />
-            <CartDrawer />
-          </SignupPopupProvider>
+          <ScrollToTop />
+          <Header />
+          {children}
+          <Footer />
+          <CartDrawer />
         </CartProvider>
         <CookieConsent />
         <span className="junip-store-key" data-store-key="anLwjMqeGdCvG9w79wSpfM16" />
