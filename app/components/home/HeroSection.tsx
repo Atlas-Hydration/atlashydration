@@ -1,7 +1,5 @@
 import Link from "next/link";
-import { PRODUCTS } from "@/app/data/products";
-
-const product = PRODUCTS["strawberry-lemonade"];
+import { FREE_SHIPPING_THRESHOLD } from "@/app/data/formula";
 
 const CF_BASE = "https://customer-1sijhr9xl3yqixxu.cloudflarestream.com";
 const DESKTOP_ID = "a82a07f888cfed6727a183cab0322ee4";
@@ -47,7 +45,11 @@ export default function HeroSection() {
         <Link href="/products/strawberry-lemonade" className="btn btn--hero">
           Shop Strawberry Lemonade
         </Link>
-        <p className="hero__offer">{`16 sticks · $${product.price.toFixed(2)} one-time · Subscribe & Save 20%`}</p>
+        <ul className="hero__trust" aria-label="Atlas at a glance">
+          <li>Made in USA</li>
+          <li>Third-party tested</li>
+          <li>{`Free shipping over $${FREE_SHIPPING_THRESHOLD}`}</li>
+        </ul>
       </div>
     </section>
   );

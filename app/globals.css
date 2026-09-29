@@ -11420,15 +11420,6 @@ img {
   }
 }
 
-/* Hero purchase context: one understated line under the CTA */
-.hero__offer {
-  margin-top: 18px;
-  font-size: var(--text-sm);
-  font-weight: 500;
-  letter-spacing: 0.04em;
-  color: rgba(255, 255, 255, 0.72);
-}
-
 /* Proof strip under the hero (replaces the scrolling ingredient marquee) */
 .proof-strip {
   background: var(--color-bg);
@@ -11471,10 +11462,6 @@ img {
     min-height: max(520px, calc(100svh - 230px));
   }
 
-  .hero__offer {
-    margin-top: 14px;
-  }
-
   .proof-strip__list {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -11489,5 +11476,198 @@ img {
 
   .proof-strip__item + .proof-strip__item::before {
     display: none;
+  }
+}
+
+/* ========================================
+   Premium polish — announcement bar, hero, buy-box spacing
+   ======================================== */
+
+/* Announcement bar: rotating, informative */
+.announcement-bar {
+  background: #111113;
+}
+
+.announcement-bar__text {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.announcement-bar__full strong {
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: 0.12em;
+}
+
+.announcement-bar__detail {
+  margin-left: 6px;
+  font-size: var(--text-sm);
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  text-transform: none;
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.announcement-bar__short {
+  display: none;
+}
+
+.announcement-bar__dots {
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  display: flex;
+  transform: translateY(-50%);
+}
+
+.announcement-bar__dot {
+  width: 13px;
+  height: 13px;
+  padding: 4px;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.28);
+  background-clip: content-box;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.announcement-bar__dot.active {
+  background-color: rgba(255, 255, 255, 0.92);
+}
+
+@media (max-width: 1023px) {
+  .announcement-bar__dots {
+    display: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .announcement-bar__full {
+    display: none;
+  }
+  .announcement-bar__short {
+    display: inline;
+  }
+}
+
+/* Hero: quieter type, editorial accent rule, restrained CTA, trust line */
+.hero__video-overlay {
+  background: linear-gradient(180deg, rgba(10, 10, 12, 0.55) 0%, rgba(10, 10, 12, 0.38) 45%, rgba(10, 10, 12, 0.72) 100%);
+}
+
+.hero__title {
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  line-height: 1.06;
+  margin-bottom: 26px;
+  text-wrap: balance;
+}
+
+.hero__stat {
+  position: relative;
+  padding-top: 26px;
+  font-weight: 500;
+  letter-spacing: 0.03em;
+  color: rgba(255, 255, 255, 0.9);
+  margin-bottom: 44px;
+}
+
+.hero__stat::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 44px;
+  height: 1px;
+  background: var(--color-strawberry);
+  transform: translateX(-50%);
+}
+
+.btn--hero {
+  padding: 18px 52px;
+  font-size: 0.78rem;
+  letter-spacing: 0.16em;
+}
+
+.hero__trust {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  list-style: none;
+  margin: 38px 0 0;
+  padding: 0;
+  font-size: 0.68rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.74);
+}
+
+.hero__trust li {
+  position: relative;
+  padding: 0 20px;
+}
+
+.hero__trust li + li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 1px;
+  height: 10px;
+  background: rgba(255, 255, 255, 0.3);
+  transform: translateY(-50%);
+}
+
+@media (max-width: 768px) {
+  .btn--hero {
+    padding: 17px 20px;
+  }
+
+  .hero__stat {
+    margin-bottom: 34px;
+  }
+
+  .hero__trust {
+    gap: 8px 22px;
+    margin-top: 28px;
+    font-size: 0.62rem;
+    letter-spacing: 0.14em;
+  }
+
+  .hero__trust li {
+    padding: 0;
+  }
+
+  .hero__trust li + li::before {
+    display: none;
+  }
+}
+
+/* Proof strip: a touch more air */
+.proof-strip__list {
+  padding-top: 26px;
+  padding-bottom: 26px;
+}
+
+/* Buy box: top-align so the gallery sits beside the title (no dead space above
+   it), tighter section padding, and a sticky gallery on desktop. */
+.featured-product__grid {
+  align-items: start;
+}
+
+@media (min-width: 769px) {
+  .featured-product {
+    padding: 80px 0 72px;
+  }
+}
+
+@media (min-width: 901px) {
+  .featured-product__image {
+    position: sticky;
+    top: 96px;
+    align-self: start;
   }
 }
