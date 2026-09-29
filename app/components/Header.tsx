@@ -3,14 +3,62 @@
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useCart } from "@/app/context/CartContext";
+import { useCart, BOTTLE_DISCOUNT_LIVE, BOTTLE_HALF_OFF_THRESHOLD, BOTTLE_FREE_THRESHOLD } from "@/app/context/CartContext";
+import { FREE_SHIPPING_THRESHOLD } from "@/app/data/formula";
 import { usePopupTrigger } from "@/app/components/Popup";
 
 const NAV_LINKS: { label: string; href: string }[] = [];
 
-const ANNOUNCEMENTS = [
-  { text: "Unlock 10% Off", type: "popup" as const },
-  { text: "New — The Atlas Performance Bottle", type: "link" as const, href: "/products/bottle" },
+interface Announcement {
+  lead: string;
+  detail: string;
+  /** Single-line version for phones. */
+  short: string;
+  href?: string;
+  popup?: boolean;
+}
+
+const ANNOUNCEMENTS: Announcement[] = [
+  {
+    lead: "Free shipping",
+    detail: `on orders over $${FREE_SHIPPING_THRESHOLD}, and always free with Subscribe & Save`,
+    short: `Free shipping over $${FREE_SHIPPING_THRESHOLD}`,
+    href: "/shipping",
+  },
+  {
+    lead: "Subscribe & Save 20%",
+    detail: "Free shipping on every delivery · skip, pause, or cancel anytime",
+    short: "Subscribe & Save 20% + free shipping",
+    href: "/products/strawberry-lemonade",
+  },
+  {
+    lead: "Unlock 10% off",
+    detail: "your first order when you join the Atlas list",
+    short: "Unlock 10% off your first order",
+    popup: true,
+  },
+  ...(BOTTLE_DISCOUNT_LIVE
+    ? [
+        {
+          lead: "Build your kit",
+          detail: `${BOTTLE_HALF_OFF_THRESHOLD} pouches for 50% off the Atlas Bottle, ${BOTTLE_FREE_THRESHOLD} pouches and it's free`,
+          short: `${BOTTLE_HALF_OFF_THRESHOLD} pouches = 50% off the bottle`,
+          href: "/products/bottle",
+        },
+      ]
+    : []),
+  {
+    lead: "Made in USA",
+    detail: "Third-party tested · zero sugar · 25 calories per stick",
+    short: "Made in USA · Third-party tested",
+    href: "/#science",
+  },
+  {
+    lead: "New",
+    detail: "The Atlas Performance Bottle · 26 oz, leak-free, BPA-free",
+    short: "New: the Atlas Performance Bottle",
+    href: "/products/bottle",
+  },
 ];
 
 export default function Header() {
@@ -24,15 +72,17 @@ export default function Header() {
   const [solid, setSolid] = useState(!isHome);
   const [headerTop, setHeaderTop] = useState(36);
   const [announcementIndex, setAnnouncementIndex] = useState(0);
+  const [announcementPaused, setAnnouncementPaused] = useState(false);
   const lastScrollY = useRef(0);
   const announcementRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    if (announcementPaused) return;
     const id = setInterval(() => {
       setAnnouncementIndex((i) => (i + 1) % ANNOUNCEMENTS.length);
-    }, 4500);
+    }, 5000);
     return () => clearInterval(id);
-  }, []);
+  }, [announcementPaused]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -83,19 +133,48 @@ export default function Header() {
   return (
     <>
       {/* Announcement Bar */}
-      <div className="announcement-bar" role="banner" ref={announcementRef}>
+      <div
+        className="announcement-bar"
+        role="region"
+        aria-label="Announcements"
+        aria-live="off"
+        ref={announcementRef}
+        onMouseEnter={() => setAnnouncementPaused(true)}
+        onMouseLeave={() => setAnnouncementPaused(false)}
+        onFocus={() => setAnnouncementPaused(true)}
+        onBlur={() => setAnnouncementPaused(false)}
+      >
         {(() => {
           const current = ANNOUNCEMENTS[announcementIndex];
-          return current.type === "popup" ? (
+          const content = (
+            <span key={announcementIndex} className="announcement-bar__text">
+              <span className="announcement-bar__full">
+                <strong>{current.lead}</strong> <span className="announcement-bar__detail">{current.detail}</span>
+              </span>
+              <span className="announcement-bar__short">{current.short}</span>
+            </span>
+          );
+          return current.popup ? (
             <button className="announcement-bar__inner announcement-bar__btn" onClick={openPopup} type="button">
-              <span key={announcementIndex} className="announcement-bar__text">{current.text}</span>
+              {content}
             </button>
           ) : (
-            <Link className="announcement-bar__inner announcement-bar__btn" href={current.href}>
-              <span key={announcementIndex} className="announcement-bar__text">{current.text}</span>
+            <Link className="announcement-bar__inner announcement-bar__btn" href={current.href ?? "/"}>
+              {content}
             </Link>
           );
         })()}
+        <div className="announcement-bar__dots">
+          {ANNOUNCEMENTS.map((a, i) => (
+            <button
+              key={a.lead}
+              type="button"
+              className={`announcement-bar__dot${i === announcementIndex ? " active" : ""}`}
+              aria-label={`Show announcement ${i + 1}: ${a.lead}`}
+              onClick={() => setAnnouncementIndex(i)}
+            />
+          ))}
+        </div>
       </div>
 
       {/* Header */}
