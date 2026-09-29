@@ -59,6 +59,24 @@ const ANNOUNCEMENTS: Announcement[] = [
     href: "/#science",
   },
   {
+    lead: "Inside every stick",
+    detail: "1,769mg electrolytes · B vitamins + vitamin C · L-Glutamine + L-Alanine",
+    short: "Electrolytes, vitamins + amino acids",
+    href: "/products/strawberry-lemonade#supplement-facts",
+  },
+  {
+    lead: "30-day guarantee",
+    detail: "Not happy? Contact us within 30 days for a full refund or exchange",
+    short: "30-day satisfaction guarantee",
+    href: "/shipping",
+  },
+  {
+    lead: "New flavor",
+    detail: "Grapefruit Zest is available to pre-order",
+    short: "Grapefruit Zest: pre-order now",
+    href: "/products/grapefruit",
+  },
+  {
     lead: "New",
     detail: "The Atlas Performance Bottle · 26 oz, leak-free, BPA-free",
     short: "New: the Atlas Performance Bottle",
