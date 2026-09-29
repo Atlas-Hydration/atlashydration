@@ -52,7 +52,9 @@ export async function subscribeToKlaviyoWithStatus({
       body: JSON.stringify({ email, source, properties }),
     });
     if (res.ok) return "ok";
-    console.error("[Klaviyo] ✗ Subscribe failed:", res.status);
+    // The route returns only the failing stage names + HTTP statuses (no secrets).
+    const detail = await res.json().catch(() => ({}));
+    console.error("[Klaviyo] ✗ Subscribe failed:", res.status, detail);
     return res.status === 429 ? "rate_limited" : "error";
   } catch (err) {
     console.error("[Klaviyo] ✗ Subscribe exception:", err);

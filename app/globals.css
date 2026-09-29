@@ -11579,11 +11579,13 @@ img {
   color: rgba(255, 255, 255, 0.82);
 }
 
-.wp__brand-foot {
-  font-size: var(--text-xs);
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.5);
+.wp__perk {
+  max-width: 260px;
+  padding-top: 18px;
+  border-top: 1px solid rgba(255, 255, 255, 0.16);
+  font-size: var(--text-base);
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.82);
 }
 
 /* Form side */
@@ -11833,9 +11835,21 @@ img {
     padding: 22px 24px;
   }
 
-  .wp__brand-foot,
   .wp__offer-eyebrow {
     display: none;
+  }
+
+  .wp__brand {
+    flex-wrap: wrap;
+    row-gap: 12px;
+  }
+
+  .wp__perk {
+    order: 3;
+    flex-basis: 100%;
+    max-width: none;
+    padding-top: 12px;
+    font-size: var(--text-sm);
   }
 
   .wp__offer {
