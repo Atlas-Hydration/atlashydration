@@ -10,9 +10,9 @@ const cards = [
     statUnit: "mg electrolytes",
     reveal: (
       <>
-        <p>Sodium, potassium, magnesium, and chloride in every stick, with the full breakdown printed on the label. Sodium is the electrolyte you lose most in sweat.</p>
+        <p>Sodium, potassium, and magnesium in every stick, with the full breakdown printed on the label. Sodium is the electrolyte you lose most in sweat.</p>
         <div className="why-atlas__card-pills">
-          {["Sodium", "Potassium", "Magnesium", "Chloride"].map((p) => (
+          {["Sodium", "Potassium", "Magnesium"].map((p) => (
             <span className="why-atlas__pill" key={p}>{p}</span>
           ))}
         </div>
@@ -26,7 +26,7 @@ const cards = [
     statUnit: "added nutrients",
     reveal: (
       <>
-        <p>Vitamin C and B vitamins (niacin, pantothenic acid, B6, B12), plus L-Glutamine and L-Alanine amino acids, for the days you train hard and travel harder.</p>
+        <p>Vitamin C and B vitamins (niacin, pantethine, B6, B12), plus L-Glutamine and L-Alanine amino acids, for the days you train hard and travel harder.</p>
       </>
     ),
   },
