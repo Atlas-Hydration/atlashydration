@@ -5,7 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useCart, BOTTLE_DISCOUNT_LIVE, BOTTLE_HALF_OFF_THRESHOLD, BOTTLE_FREE_THRESHOLD } from "@/app/context/CartContext";
 import { FREE_SHIPPING_THRESHOLD } from "@/app/data/formula";
-import { openWelcomeForm } from "@/app/lib/klaviyo";
+import { useSignupPopup } from "@/app/components/SignupPopup";
 
 const NAV_LINKS: { label: string; href: string }[] = [];
 
@@ -15,7 +15,7 @@ interface Announcement {
   /** Single-line version for phones. */
   short: string;
   href?: string;
-  /** Opens the native Klaviyo 10% signup form. */
+  /** Opens the 10% signup popup. */
   signup?: boolean;
 }
 
@@ -82,6 +82,7 @@ const ANNOUNCEMENTS: Announcement[] = [
 
 export default function Header() {
   const { cartCount, toggleCart } = useCart();
+  const { openSignup } = useSignupPopup();
   const pathname = usePathname();
   const isHome = pathname === "/";
 
@@ -173,7 +174,7 @@ export default function Header() {
             </span>
           );
           return current.signup ? (
-            <button className="announcement-bar__inner announcement-bar__btn" onClick={openWelcomeForm} type="button">
+            <button className="announcement-bar__inner announcement-bar__btn" onClick={openSignup} type="button">
               {content}
             </button>
           ) : (

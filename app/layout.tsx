@@ -6,7 +6,7 @@ import Header from "@/app/components/Header";
 import Footer from "@/app/components/Footer";
 import CartDrawer from "@/app/components/CartDrawer";
 import ScrollToTop from "@/app/components/ScrollToTop";
-import KlaviyoOnsite from "@/app/components/KlaviyoOnsite";
+import { SignupPopupProvider } from "@/app/components/SignupPopup";
 import CookieConsent from "@/app/components/CookieConsent";
 
 export const viewport: Viewport = {
@@ -51,13 +51,14 @@ export default function RootLayout({
       </head>
       <body>
         <CartProvider>
-          <ScrollToTop />
-          <Header />
-          {children}
-          <Footer />
-          <CartDrawer />
+          <SignupPopupProvider>
+            <ScrollToTop />
+            <Header />
+            {children}
+            <Footer />
+            <CartDrawer />
+          </SignupPopupProvider>
         </CartProvider>
-        <KlaviyoOnsite />
         <CookieConsent />
         <span className="junip-store-key" data-store-key="anLwjMqeGdCvG9w79wSpfM16" />
         <Script src="https://widgets.juniphq.com/v1/junip_shopify.js" strategy="afterInteractive" />
