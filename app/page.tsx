@@ -4,11 +4,9 @@ import VitaminStrip from "@/app/components/home/VitaminStrip";
 import FeaturedProduct from "@/app/components/home/FeaturedProduct";
 import BottleSection from "@/app/components/home/BottleSection";
 import ScienceSection from "@/app/components/home/ScienceSection";
-import CompareSection from "@/app/components/home/CompareSection";
 import ReviewsSection from "@/app/components/home/ReviewsSection";
 import WhyAtlasSection from "@/app/components/home/WhyAtlasSection";
 import HydrationBenefits from "@/app/components/home/HydrationBenefits";
-import DailyElectrolytes from "@/app/components/home/DailyElectrolytes";
 import BlogSection from "@/app/components/home/BlogSection";
 import FounderSection from "@/app/components/home/FounderSection";
 import GrapefruitWaitlist from "@/app/components/home/GrapefruitWaitlist";
@@ -21,7 +19,7 @@ import StickyBuyBar from "@/app/components/home/StickyBuyBar";
 export const metadata: Metadata = {
   title: "Atlas Hydration | Zero-Sugar Electrolyte Mixes",
   description:
-    "Shop premium zero-sugar electrolyte drink mixes with 1,769mg electrolytes, B vitamins, and amino acids. Subscribe and save 20%. Free shipping over $50.",
+    "Shop premium zero-sugar electrolyte drink mixes with 1,769mg electrolytes, B vitamins, and amino acids. Subscribe and save 20%. Free shipping over $40.",
   keywords:
     "electrolyte drink mix, zero sugar electrolytes, sports hydration, Atlas Hydration, electrolyte powder, sugar free hydration, recovery drink",
   alternates: { canonical: "https://atlas-hydration.com/" },
@@ -65,15 +63,13 @@ export default function Home() {
       <HeroSection />
       <VitaminStrip />
       <FeaturedProduct />
+      <ReviewsSection />
       <BottleSection />
       <ScienceSection />
-      <CompareSection />
-      <ReviewsSection />
       <WhyAtlasSection />
-      <HydrationBenefits />
-      <DailyElectrolytes />
-      <BlogSection />
       <FounderSection />
+      <HydrationBenefits />
+      <BlogSection />
       <GrapefruitWaitlist />
       <FaqSection />
       <CtaSection />

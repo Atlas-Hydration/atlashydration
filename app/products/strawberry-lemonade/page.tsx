@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import ProductPage from "@/app/components/ProductPage";
+import { FORMULA, FORMULA_TOTAL, FORMULA_ELECTROLYTE_BREAKDOWN, FREE_SHIPPING_THRESHOLD } from "@/app/data/formula";
 
 export const metadata: Metadata = {
   title: "Strawberry Lemonade Electrolytes | Atlas Hydration",
@@ -32,8 +33,8 @@ const productJsonLd = {
   aggregateRating: { "@type": "AggregateRating", ratingValue: "4.9", reviewCount: "20" },
   nutrition: {
     "@type": "NutritionInformation",
-    sodiumContent: "500mg",
-    potassiumContent: "400mg",
+    calories: `${FORMULA.calories} calories`,
+    sodiumContent: `${FORMULA.sodiumMg}mg`,
     sugarContent: "0g",
     servingSize: "1 stick pack (7g)",
   },
@@ -48,7 +49,7 @@ const faqJsonLd = {
       name: "What electrolytes does Atlas contain?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "Each stick pack contains 1,769mg of total electrolytes: 600mg Sodium (from Sodium Citrate and Pink Himalayan Salt), 500mg Potassium (from Potassium Citrate), 200mg Magnesium (from Magnesium Malate), and 469mg Chloride (from Pink Himalayan Salt). More per serving than LMNT, Liquid I.V., or WaterBoy.",
+        text: `Each stick pack contains ${FORMULA_TOTAL}mg of total electrolytes, including ${FORMULA_ELECTROLYTE_BREAKDOWN}. See the full Supplement Facts panel on this page for every ingredient.`,
       },
     },
     {
@@ -56,23 +57,7 @@ const faqJsonLd = {
       name: "Is Atlas sugar-free?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "100% sugar-free with zero grams of sugar per serving. Only 25 calories per stick pack, naturally sweetened with stevia leaf extract and allulose — a rare sugar with near-zero glycemic impact.",
-      },
-    },
-    {
-      "@type": "Question",
-      name: "How does Atlas compare to LMNT?",
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: "1,769mg electrolytes vs LMNT's 1,260mg. Atlas also includes B vitamins (B3, B5, B6, B12), 90mg Vitamin C, and 1,200mg recovery amino acids — none of which LMNT offers. More affordable too: $1.87/stick ($1.50 with subscription) vs $2.00/packet.",
-      },
-    },
-    {
-      "@type": "Question",
-      name: "How does Atlas compare to Liquid IV?",
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: "1,769mg electrolytes, zero sugar, 25 calories vs Liquid I.V.'s ~500mg electrolytes with 11g sugar and 425 calories. Atlas also includes B vitamins, Vitamin C, and recovery amino acids.",
+        text: `Yes. Atlas has zero grams of sugar and ${FORMULA.calories} calories per stick pack. It is sweetened with stevia leaf extract and allulose.`,
       },
     },
     {
@@ -80,15 +65,23 @@ const faqJsonLd = {
       name: "What vitamins and amino acids are included?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "Vitamin C (90mg, 100% DV), B3 (24mg, 150% DV), B5 (5mg, 100% DV), B6 (2mg, 118% DV), B12 (8mcg, 333% DV). For recovery: 1,000mg L-Glutamine and 200mg L-Alanine.",
+        text: "Vitamin C (90mg), niacin/B3 (24mg), pantothenic acid/B5 (5mg), vitamin B6 (2mg), and vitamin B12 (8mcg). For recovery support: 1,000mg L-Glutamine and 200mg L-Alanine.",
       },
     },
     {
       "@type": "Question",
-      name: "How many electrolytes per serving?",
+      name: "How do I use Atlas?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "1,769mg per serving from four key electrolytes: 600mg Sodium, 500mg Potassium, 200mg Magnesium, and 469mg Chloride.",
+        text: "Mix one stick pack with 12-16 oz of cold water, then shake or stir until dissolved. Use it around training, travel, time in the heat, or any time you want to replace electrolytes.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "How does Atlas compare to other electrolyte mixes?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: `Every brand formulates differently, so compare the labels. Atlas provides ${FORMULA_TOTAL}mg total electrolytes with zero sugar and ${FORMULA.calories} calories per stick, plus B vitamins, vitamin C, L-Glutamine, and L-Alanine.`,
       },
     },
   ],
@@ -109,8 +102,8 @@ const accordionItems = [
     title: "Description & Ingredients",
     content: (
       <>
-        <p><strong>Atlas Hydration Strawberry Lemonade</strong> is a premium zero-sugar electrolyte drink mix engineered for superior hydration, recovery, and everyday performance. Each box contains 16 individually wrapped stick packs — perfect for the gym, office, or travel.</p>
-        <p><strong>Key Electrolytes:</strong> Sodium 600mg, Potassium 500mg, Magnesium 200mg, Chloride 469mg. <strong>Vitamins:</strong> Vitamin C 90mg, Niacin (B3) 24mg, Pantothenic Acid (B5) 5mg, Vitamin B6 2mg, Vitamin B12 8mcg. <strong>Amino Acids:</strong> L-Glutamine 1,000mg, L-Alanine 200mg.</p>
+        <p><strong>Atlas Hydration Strawberry Lemonade</strong> is a premium zero-sugar electrolyte drink mix built for daily performance hydration: training, travel, heat, recovery, and long workdays. Each box contains 16 individually wrapped stick packs — perfect for the gym, office, or travel.</p>
+        <p><strong>Electrolytes:</strong> {FORMULA_TOTAL}mg total per stick, including sodium {FORMULA.sodiumMg}mg, magnesium {FORMULA.magnesiumMg}mg, and potassium. <strong>Vitamins:</strong> Vitamin C 90mg, Niacin (B3) 24mg, Pantothenic Acid (B5) 5mg, Vitamin B6 2mg, Vitamin B12 8mcg. <strong>Amino Acids:</strong> L-Glutamine 1,000mg, L-Alanine 200mg.</p>
         <p><strong>Other Ingredients:</strong> Citric Acid, Natural Strawberry &amp; Lemon Flavors, Bamboo Extract, Annatto Seed Extract (color), Stevia Leaf Extract, Allulose.</p>
       </>
     ),
@@ -131,7 +124,7 @@ const accordionItems = [
     title: "Shipping & Returns",
     content: (
       <>
-        <p><strong>Free shipping</strong> on all U.S. orders over $50. Standard shipping (3–5 business days) is $4.99. Expedited options available at checkout.</p>
+        <p><strong>Free shipping</strong> on U.S. orders over ${FREE_SHIPPING_THRESHOLD}. Orders under ${FREE_SHIPPING_THRESHOLD} ship for $4.99 (4–6 business days). Subscriptions always ship free.</p>
         <p><strong>Satisfaction guaranteed:</strong> If you&apos;re not completely happy with your order, contact us within 30 days for a full refund or exchange — no questions asked.</p>
         <p>We currently ship within the United States. International shipping coming soon.</p>
       </>
@@ -152,8 +145,9 @@ export default function StrawberryLemonade() {
         images,
         accordionItems,
         activeFlavorClass: "strawberry",
+        supplementFactsProps: { formula: "current" },
         ctaTitle: <>Ready to Try <span className="wave-text">Strawberry Lemonade?</span></>,
-        ctaText: "16 stick packs of clean, science-backed hydration. Zero sugar. Five calories. Full performance.",
+        ctaText: `16 stick packs. ${FORMULA_TOTAL}mg electrolytes. Zero sugar. ${FORMULA.calories} calories.`,
       }}
     />
     </>

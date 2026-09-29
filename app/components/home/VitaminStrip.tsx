@@ -1,6 +1,8 @@
 const items = [
   "1,769mg Electrolytes",
-  "469mg Chloride",
+  "510mg Sodium",
+  "380mg Magnesium",
+  "Potassium",
   "Vitamin C 90mg",
   "Vitamin B3 24mg",
   "Vitamin B5 5mg",

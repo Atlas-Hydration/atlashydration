@@ -8,10 +8,10 @@ export default function FounderSection() {
             <h2 className="founder__heading">Built by a Pilot.<br />For People Who Move.</h2>
             <div className="founder__text">
               <p>
-                Flying across the country at 40,000 feet, pressurized cabins pull moisture out of your body faster than you realize. I&apos;d land dehydrated and reaching for products loaded with sugar and artificial garbage. Nothing on the market was built for how I actually live: high output, always moving, zero tolerance for junk ingredients.
+                Atlas was founded by Garrett Ray, a 787 pilot who travels internationally and still makes time to train, run, and play padel. Between long-haul flights, early workouts, summer heat, and full workdays, he wanted one hydration product that held up everywhere, without sugar or filler.
               </p>
               <p>
-                So I built Atlas. 1,769mg of real electrolytes, B vitamins, Vitamin C, and recovery amino acids. Zero sugar, clean ingredients, no compromises. It&apos;s what I wish existed when I was cutting weight in high school or recovering between back-to-back flights across the Pacific.
+                So he built Atlas: 1,769mg of electrolytes, B vitamins, vitamin C, and amino acids in a stick pack that fits a carry-on, a gym bag, or a desk drawer. Zero sugar. 25 calories. Nothing to hide.
               </p>
             </div>
             <div className="founder__signature">
@@ -23,7 +23,7 @@ export default function FounderSection() {
                 >GR</div>
                 <div className="founder__sig-info">
                   <span className="founder__sig-name">Garrett Ray</span>
-                  <span className="founder__sig-role">Founder, Atlas Hydration</span>
+                  <span className="founder__sig-role">Founder, Atlas Hydration · 787 Pilot</span>
                 </div>
               </div>
               <a href="https://www.instagram.com/flywithgarrett/" target="_blank" rel="noopener noreferrer" className="founder__instagram">

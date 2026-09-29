@@ -27,8 +27,12 @@ export default function StickyBuyBar() {
   const flavor = flavors[activeFlavor];
 
   useEffect(() => {
+    // Hide while the full buy box is on screen; it's redundant there.
     const handleScroll = () => {
-      setVisible(window.scrollY > 600);
+      const box = document.getElementById("products")?.getBoundingClientRect();
+      const vh = window.innerHeight;
+      const buyBoxInView = !!box && box.top < vh * 0.85 && box.bottom > vh * 0.15;
+      setVisible(window.scrollY > 600 && !buyBoxInView);
     };
     window.addEventListener("scroll", handleScroll, { passive: true });
     handleScroll();

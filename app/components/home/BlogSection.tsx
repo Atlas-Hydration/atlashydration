@@ -5,7 +5,7 @@ const posts = [
     episode: "Episode 1",
     tag: "Electrolytes",
     title: "Why Sodium Matters More Than You Think",
-    excerpt: "At 600mg per serving, Atlas replaces what sweat takes — preventing fatigue, cramps, and cognitive decline.",
+    excerpt: "Sodium is the main electrolyte lost in sweat. Here's why it matters when you train, travel, or spend time in the heat.",
   },
   {
     image: "https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?w=600&h=400&fit=crop&crop=center",

@@ -41,15 +41,14 @@ const groups: IngredientGroup[] = [
     dose: "1,769mg",
     icon: <ElectrolyteIcon />,
     items: [
-      { name: "Sodium", amount: "600mg", dv: "26%", note: "From Sodium Citrate & Pink Himalayan Salt" },
-      { name: "Potassium", amount: "500mg", dv: "11%", note: "From Potassium Citrate" },
-      { name: "Magnesium", amount: "200mg", dv: "48%", note: "From Magnesium Malate" },
-      { name: "Chloride", amount: "469mg", dv: "20%", note: "From Pink Himalayan Salt" },
+      { name: "Sodium", amount: "510mg", dv: "22%", note: "From Sodium Citrate & Pink Himalayan Salt" },
+      { name: "Magnesium", amount: "380mg", dv: "90%", note: "From Magnesium Malate" },
+      { name: "Potassium", amount: "Included", note: "From Potassium Citrate" },
     ],
   },
   {
     title: "Vitamins",
-    dose: "116mg",
+    dose: "121mg",
     icon: <VitaminIcon />,
     items: [
       { name: "Vitamin C", amount: "90mg", dv: "100%", note: "Immune support & antioxidant" },
@@ -114,9 +113,9 @@ export default function ScienceSection() {
         <div className="container">
           <div className="science__layout">
             <div className="science__left">
-              <h2 className="science__heading">Superior Hydration<br />Designed with Purpose</h2>
+              <h2 className="science__heading">Hydration,<br />Designed with Purpose</h2>
               <p className="science__desc">
-                Atlas is a cleaner, modern upgrade with higher electrolytes plus vitamins and recovery support, all zero sugar.
+                Zero-sugar electrolytes with B vitamins, vitamin C, and amino acids. Every ingredient is listed, with no proprietary blends.
               </p>
               <div className="science__badges">
                 <div className="science__badge">
