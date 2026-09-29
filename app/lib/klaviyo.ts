@@ -37,27 +37,36 @@ export async function subscribeToKlaviyo({
   }
 }
 
+export type SubscribeResult = "ok" | "rate_limited" | "error";
+
+/** Same call as subscribeToKlaviyo, but tells the UI why it failed. */
+export async function subscribeToKlaviyoWithStatus({
+  email,
+  source = "Website",
+  properties = {},
+}: SubscribeOptions): Promise<SubscribeResult> {
+  try {
+    const res = await fetch("/api/klaviyo-subscribe", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, source, properties }),
+    });
+    if (res.ok) return "ok";
+    console.error("[Klaviyo] ✗ Subscribe failed:", res.status);
+    return res.status === 429 ? "rate_limited" : "error";
+  } catch (err) {
+    console.error("[Klaviyo] ✗ Subscribe exception:", err);
+    return "error";
+  }
+}
+
 // ---------------------------------------------------------------------------
-// Klaviyo onsite script + signup form
+// Klaviyo onsite script (tracking + any forms configured in Klaviyo)
 // ---------------------------------------------------------------------------
 
 export const KLAVIYO_COMPANY_ID = "XLatdi";
 
-/**
- * ID of the Klaviyo form "Atlas - 10% Welcome Capture v1" (Klaviyo > Sign-up
- * forms > the form > its ID). Set NEXT_PUBLIC_KLAVIYO_WELCOME_FORM_ID, or
- * paste the ID here. While empty, the top-bar "Unlock 10% Off" message is
- * hidden so it never points at nothing.
- */
-export const KLAVIYO_WELCOME_FORM_ID = process.env.NEXT_PUBLIC_KLAVIYO_WELCOME_FORM_ID ?? "";
-
 const KLAVIYO_SCRIPT_ID = "klaviyo-onsite";
-
-declare global {
-  interface Window {
-    _klOnsite?: unknown[];
-  }
-}
 
 /** Loads klaviyo.js once, no matter how many callers ask. */
 export function loadKlaviyo(): void {
@@ -68,17 +77,4 @@ export function loadKlaviyo(): void {
   script.async = true;
   script.src = `https://static.klaviyo.com/onsite/js/klaviyo.js?company_id=${KLAVIYO_COMPANY_ID}`;
   document.head.appendChild(script);
-}
-
-/**
- * Opens the Klaviyo welcome form. Loading the script here is intentional: the
- * visitor asked for the signup, so it isn't gated on the cookie banner.
- * Klaviyo processes queued _klOnsite commands once its script has loaded.
- */
-export function openWelcomeForm(): boolean {
-  if (!KLAVIYO_WELCOME_FORM_ID) return false;
-  loadKlaviyo();
-  window._klOnsite = window._klOnsite || [];
-  window._klOnsite.push(["openForm", KLAVIYO_WELCOME_FORM_ID]);
-  return true;
 }

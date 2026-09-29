@@ -5,7 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useCart, BOTTLE_DISCOUNT_LIVE, BOTTLE_HALF_OFF_THRESHOLD, BOTTLE_FREE_THRESHOLD } from "@/app/context/CartContext";
 import { FREE_SHIPPING_THRESHOLD } from "@/app/data/formula";
-import { KLAVIYO_WELCOME_FORM_ID, openWelcomeForm } from "@/app/lib/klaviyo";
+import { useSignupPopup } from "@/app/components/SignupPopup";
 
 const NAV_LINKS: { label: string; href: string }[] = [];
 
@@ -15,8 +15,8 @@ interface Announcement {
   /** Single-line version for phones. */
   short: string;
   href?: string;
-  /** Opens the Klaviyo welcome signup form. */
-  klaviyoForm?: boolean;
+  /** Opens the 10% signup popup. */
+  signup?: boolean;
 }
 
 const ANNOUNCEMENTS: Announcement[] = [
@@ -32,16 +32,12 @@ const ANNOUNCEMENTS: Announcement[] = [
     short: "Subscribe & Save 20% + free shipping",
     href: "/products/strawberry-lemonade",
   },
-  ...(KLAVIYO_WELCOME_FORM_ID
-    ? [
-        {
-          lead: "Unlock 10% off",
-          detail: "your first order when you join the Atlas list",
-          short: "Unlock 10% off your first order",
-          klaviyoForm: true,
-        },
-      ]
-    : []),
+  {
+    lead: "Unlock 10% off",
+    detail: "your first order when you join the Atlas list",
+    short: "Unlock 10% off your first order",
+    signup: true,
+  },
   ...(BOTTLE_DISCOUNT_LIVE
     ? [
         {
@@ -86,6 +82,7 @@ const ANNOUNCEMENTS: Announcement[] = [
 
 export default function Header() {
   const { cartCount, toggleCart } = useCart();
+  const { openSignup } = useSignupPopup();
   const pathname = usePathname();
   const isHome = pathname === "/";
 
@@ -176,8 +173,8 @@ export default function Header() {
               <span className="announcement-bar__short">{current.short}</span>
             </span>
           );
-          return current.klaviyoForm ? (
-            <button className="announcement-bar__inner announcement-bar__btn" onClick={openWelcomeForm} type="button">
+          return current.signup ? (
+            <button className="announcement-bar__inner announcement-bar__btn" onClick={openSignup} type="button">
               {content}
             </button>
           ) : (
