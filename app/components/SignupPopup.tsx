@@ -152,7 +152,7 @@ function SignupModal({ onClose }: { onClose: () => void }) {
             <span className="wp__offer-number">10<small>%</small></span>
             <span className="wp__offer-caption">off your first order</span>
           </div>
-          <span className="wp__brand-foot">Daily performance hydration</span>
+          <p className="wp__perk">Plus priority access to launches, events &amp; more.</p>
         </aside>
 
         <div className="wp__panel">
@@ -166,9 +166,7 @@ function SignupModal({ onClose }: { onClose: () => void }) {
             <div className="wp__content" key="success">
               <p className="wp__eyebrow">{alreadyIn ? "Welcome back" : "You're in"}</p>
               <h2 id="wp-title" className="wp__title">Here&apos;s your 10% off.</h2>
-              <p className="wp__lede">
-                Paste this code into the discount box at checkout.
-              </p>
+              <p className="wp__lede">Paste it at checkout.</p>
 
               <div className="wp__code">
                 <span className="wp__code-value" aria-label={`Your code is ${WELCOME_CODE}`}>{WELCOME_CODE}</span>
@@ -177,7 +175,7 @@ function SignupModal({ onClose }: { onClose: () => void }) {
                 </button>
               </div>
               <p className="wp__status" role="status" aria-live="polite">
-                {copied ? "Code copied to your clipboard." : " "}
+                {copied ? "Copied to your clipboard." : " "}
               </p>
 
               <Link href="/products/strawberry-lemonade" className="wp__cta" onClick={onClose}>
@@ -188,9 +186,7 @@ function SignupModal({ onClose }: { onClose: () => void }) {
             <div className="wp__content" key="form">
               <p className="wp__eyebrow">Join the Atlas list</p>
               <h2 id="wp-title" className="wp__title">Unlock 10% off your order.</h2>
-              <p className="wp__lede">
-                Enter your email and we&apos;ll reveal your welcome code instantly.
-              </p>
+              <p className="wp__lede">Enter your email to reveal your code.</p>
 
               <form className="wp__form" onSubmit={submit} noValidate>
                 <input
@@ -229,7 +225,7 @@ function SignupModal({ onClose }: { onClose: () => void }) {
               </form>
 
               <p className="wp__fine">
-                By signing up you agree to receive marketing emails from Atlas. Unsubscribe anytime.{" "}
+                By joining, you agree to receive marketing emails. Unsubscribe anytime.{" "}
                 <Link href="/privacy" onClick={onClose}>Privacy Policy</Link>
               </p>
               <button type="button" className="wp__skip" onClick={onClose}>
