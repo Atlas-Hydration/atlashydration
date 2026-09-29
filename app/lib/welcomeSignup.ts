@@ -77,10 +77,6 @@ export function useWelcomeSignup(source: string, onFallback?: () => void) {
       const result = await subscribeToKlaviyoPublic({
         email: trimmed,
         source,
-        properties: {
-          "Discount Offered": WELCOME_CODE,
-          discount_code: WELCOME_CODE,
-        },
       });
 
       if (result === "ok") {
