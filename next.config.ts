@@ -17,7 +17,7 @@ const securityHeaders = [
       "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.shopify.com https://widgets.juniphq.com https://www.googletagmanager.com https://www.google-analytics.com https://static.klaviyo.com https://static-tracking.klaviyo.com https://static-forms.klaviyo.com blob:",
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://*.juniphq.com https://api.mapbox.com https://static-forms.klaviyo.com",
       "font-src 'self' https://fonts.gstatic.com https://static-forms.klaviyo.com",
-      "img-src 'self' data: blob: https://cdn.shopify.com https://images.unsplash.com https://*.shopifycdn.com https://*.juniphq.com https://*.gravatar.com https://customer-1sijhr9xl3yqixxu.cloudflarestream.com https://*.klaviyo.com",
+      "img-src 'self' data: blob: https://cdn.shopify.com https://images.unsplash.com https://*.shopifycdn.com https://*.juniphq.com https://*.gravatar.com https://customer-1sijhr9xl3yqixxu.cloudflarestream.com https://*.klaviyo.com https://d3k81ch9hvuctc.cloudfront.net",
       "frame-src https://www.youtube.com https://customer-1sijhr9xl3yqixxu.cloudflarestream.com",
       "connect-src 'self' https://*.myshopify.com https://*.shopify.com https://*.juniphq.com https://www.google-analytics.com https://analytics.google.com https://*.google-analytics.com https://api.mapbox.com https://*.tiles.mapbox.com https://events.mapbox.com https://a.klaviyo.com https://*.klaviyo.com",
       "worker-src blob:",
