@@ -1,4 +1,4 @@
-import { POUCH_PRICES } from "@/app/data/pricing";
+import { POUCH_PRICES, BOTTLE_RETAIL } from "@/app/data/pricing";
 
 export interface Product {
   name: string;
@@ -81,10 +81,10 @@ export const PRODUCTS: Record<string, Product> = {
   bottle: {
     name: "Atlas Performance Water Bottle",
     slug: "bottle",
-    price: 19.99,
-    subscribePrice: 19.99,
-    perStick: 19.99,
-    subscribePerStick: 19.99,
+    price: BOTTLE_RETAIL,
+    subscribePrice: BOTTLE_RETAIL,
+    perStick: BOTTLE_RETAIL,
+    subscribePerStick: BOTTLE_RETAIL,
     variantId: "gid://shopify/ProductVariant/44103798358090",
     color: "#1d1d1f",
     colorRgb: "29, 29, 31",

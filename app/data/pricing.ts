@@ -1,81 +1,73 @@
 /**
- * Single source of truth for pouch pricing shown on the storefront.
+ * Atlas Hydration pricing: the ONE place storefront prices are defined.
+ * Full offer table and checkout QA matrix: docs/PRICING.md.
  *
- * WHAT CHECKOUT ACTUALLY CHARGES COMES FROM SHOPIFY, NOT THIS FILE:
- *   - one-time price  = the Shopify variant price (per flavor)
- *   - 2-pouch price   = variant price x 2 minus the Shopify "ATLAS2PACK" code
- *   - subscription    = the Appstle selling plan's 20% discount on the variant
- * The storefront only *displays* those numbers, so the new prices must never go
- * live here until Shopify matches (see PRICING_V2_LIVE below).
+ * SHOPIFY CHECKOUT IS THE SOURCE OF TRUTH. This file only mirrors what Shopify
+ * is actually configured to do so the storefront can show expected totals. Never
+ * add a discount here that does not exist in Shopify.
  *
- * Switching to the new prices (in this order, so every intermediate state is at
- * worst in the customer's favor):
- *   1. Shopify discount ATLAS2PACK: change $5.00 off to $9.00 off
- *      (2 x $31.99 = $63.98, minus $9.00 = $54.98).
- *   2. Shopify variant price: $29.99 -> $31.99 for Strawberry Lemonade
- *      (42739482067018) and Grapefruit (41850457817162).
- *   3. Appstle selling plans (2/4/6 weeks): confirm they are "20% off" so the
- *      subscription charges $25.59 (31.99 x 0.80).
- *   4. Set PRICING_V2_LIVE = true below.
+ * What exists in Shopify today:
+ *   - Variant prices: pouch $31.99 (both flavors), bottle $19.99.
+ *   - ATLAS2PACK: AUTOMATIC product discount, fixed $2.50 off EACH pouch,
+ *     minimum 2 items, both flavors, one-time purchases only. Shopify applies
+ *     it on its own, so the storefront sends NO discount code.
+ *   - Subscription: Appstle selling plans (2/4/6 weeks), "Save 20% from first
+ *     order onward". Not combined with ATLAS2PACK.
+ *   - Free shipping: a Shopify shipping-rate threshold (orders over $40) and
+ *     free on subscriptions. The storefront only messages it.
+ *   - Welcome code ATLASWELCOME10: typed by the customer at checkout. The
+ *     storefront never applies or stacks it.
  *
- * Status: switched ON after the Shopify variant prices were raised to $31.99 and
- * the Appstle plans were confirmed as "Save 20% from first order onward"
- * (percentage-based, so it yields $25.59). ATLAS2PACK must be $9.00 off.
+ * What does NOT exist in Shopify: a bottle discount (50% off / free). See
+ * BOTTLE_DISCOUNT_LIVE in app/context/CartContext.tsx, which stays false until
+ * one is created and verified in a real checkout.
  */
-export const PRICING_V2_LIVE = true;
 
 const round2 = (n: number) => Math.round(n * 100) / 100;
 
-const SINGLE_PRICE = PRICING_V2_LIVE ? 31.99 : 29.99;
+// ---------------------------------------------------------------------------
+// Pouches
+// ---------------------------------------------------------------------------
 
-/** The Stock Up (2 pouch) selling price. Unchanged by the price increase. */
-export const TWO_POUCH_PRICE = 54.98;
-
-export const SUBSCRIBE_DISCOUNT_PERCENT = 20;
+/** Retail price of one 16-stick pouch (either flavor). */
+export const POUCH_RETAIL = 31.99;
 export const STICKS_PER_POUCH = 16;
 
+/** ATLAS2PACK: dollars off EACH one-time pouch once the cart has 2+. */
+export const MULTI_POUCH_DISCOUNT_PER_POUCH = 2.5;
+export const MULTI_POUCH_MIN_QTY = 2;
+
+export const SUBSCRIBE_DISCOUNT_PERCENT = 20;
+
 export const POUCH_PRICES = {
-  single: SINGLE_PRICE,
-  /** 20% off the retail price, rounded to the cent. */
-  subscribe: round2(SINGLE_PRICE * (1 - SUBSCRIBE_DISCOUNT_PERCENT / 100)),
-  perStick: round2(SINGLE_PRICE / STICKS_PER_POUCH),
-  subscribePerStick: round2((SINGLE_PRICE * (1 - SUBSCRIBE_DISCOUNT_PERCENT / 100)) / STICKS_PER_POUCH),
+  single: POUCH_RETAIL,
+  /** 20% off retail, rounded to the cent ($25.59). Appstle computes the real charge. */
+  subscribe: round2(POUCH_RETAIL * (1 - SUBSCRIBE_DISCOUNT_PERCENT / 100)),
+  perStick: round2(POUCH_RETAIL / STICKS_PER_POUCH),
+  subscribePerStick: round2((POUCH_RETAIL * (1 - SUBSCRIBE_DISCOUNT_PERCENT / 100)) / STICKS_PER_POUCH),
 } as const;
 
-/**
- * What the 2-pouch code must take off so that two pouches cost TWO_POUCH_PRICE.
- * This is the value the Shopify ATLAS2PACK discount has to match.
- * ($5.00 at $29.99, $9.00 at $31.99.)
- */
-export const TWO_POUCH_DISCOUNT = round2(SINGLE_PRICE * 2 - TWO_POUCH_PRICE);
-
-/**
- * Does the multi-pouch discount keep growing past 2 pouches?
- *
- * false (status quo): the ATLAS2PACK code only applies at exactly 2 pouches,
- *   so the discount vanishes at 3+.
- * true: with 2+ one-time pouches in the cart (any flavors), EVERY pouch is
- *   TWO_POUCH_DISCOUNT_PER_POUCH off ($4.50). 2 -> $54.98, 3 -> $82.47,
- *   4 -> $109.96. Subscriptions are excluded (they already get 20% off).
- *
- * Shopify must match BEFORE this is switched on. Discount code ATLAS2PACK:
- *   - Amount off products, fixed amount $4.50 (not $9.00)
- *   - applies to EACH eligible item (leave "only apply once per order" OFF)
- *   - products: Atlas Zero-Sugar Electrolytes (both flavors)
- *   - minimum purchase: 2 items
- *   - purchase type: one-time only (not subscriptions)
- */
-export const TWO_POUCH_DISCOUNT_SCALES = false;
-
-export const TWO_POUCH_DISCOUNT_PER_POUCH = round2(TWO_POUCH_DISCOUNT / 2);
-
-/** Total discount for `qty` one-time pouches. */
-export function twoPouchDiscountFor(qty: number): number {
-  if (TWO_POUCH_DISCOUNT_SCALES) return qty >= 2 ? round2(TWO_POUCH_DISCOUNT_PER_POUCH * qty) : 0;
-  return qty === 2 ? TWO_POUCH_DISCOUNT : 0;
+/** ATLAS2PACK discount for `qty` one-time pouches ($0 below the minimum). */
+export function multiPouchDiscount(qty: number): number {
+  return qty >= MULTI_POUCH_MIN_QTY ? round2(MULTI_POUCH_DISCOUNT_PER_POUCH * qty) : 0;
 }
 
-/** What `qty` one-time pouches cost, discount included. */
+/** What `qty` one-time pouches cost after ATLAS2PACK. */
 export function oneTimePouchTotal(qty: number): number {
-  return round2(qty * POUCH_PRICES.single - twoPouchDiscountFor(qty));
+  return round2(qty * POUCH_RETAIL - multiPouchDiscount(qty));
 }
+
+// ---------------------------------------------------------------------------
+// Bottle
+// ---------------------------------------------------------------------------
+
+/** Retail price of the Atlas Performance Bottle (Shopify variant price). */
+export const BOTTLE_RETAIL = 19.99;
+
+/**
+ * Bottle prices if a 50%-off discount is ever created in Shopify (none exists
+ * today; see header). Shopify rounds a discount half up to the cent, which gives
+ * $10.00 off $19.99 (bottle $9.99), matching the old confirmed checkout result.
+ */
+export const BOTTLE_HALF_DISCOUNT = Math.round(Math.round(BOTTLE_RETAIL * 100) * 0.5) / 100;
+export const BOTTLE_HALF_PRICE = round2(BOTTLE_RETAIL - BOTTLE_HALF_DISCOUNT);

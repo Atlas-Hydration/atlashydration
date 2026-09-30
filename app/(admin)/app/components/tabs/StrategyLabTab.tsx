@@ -16,7 +16,7 @@ const TOOLS: ToolDef[] = [
   {
     num: '01', name: 'Market Breakdown', desc: 'Analyze your target market segments, demographics, and buying behaviors.', enabled: true,
     system: 'You are a senior market analyst. Analyze markets using only specific, data-backed insights. No generic statements. Output clean structured sections with bold headers and concise bullet points. Total output under 600 words.',
-    prompt: `Analyze the market for zero-sugar electrolyte drink mixes targeting health-conscious adults, athletes, travelers, and pilots. Atlas Hydration is a clean zero-sugar electrolyte brand with 1,769mg electrolytes per serving, B vitamins, Vitamin C, and recovery amino acids, priced at $29.99.
+    prompt: `Analyze the market for zero-sugar electrolyte drink mixes targeting health-conscious adults, athletes, travelers, and pilots. Atlas Hydration is a clean zero-sugar electrolyte brand with 1,769mg electrolytes per serving, B vitamins, Vitamin C, and recovery amino acids, priced at $31.99 per 16-stick pouch ($29.49 each when buying 2 or more, $25.59 with Subscribe & Save).
 
 Deliver exactly four structured sections:
 1. Market sizing: TAM, SAM, and SOM with estimated dollar values and assumptions
@@ -45,7 +45,7 @@ Sort by combined Urgency + WTP score, highest first. Output ONLY the table with 
   { num: '03', name: 'Offer Creation', desc: 'Generate high-converting offer structures with pricing and positioning.', enabled: true,
     system: 'You are a direct response copywriter and offer strategist. Write tight, zero-filler copy that could go directly onto a real landing page.',
     prompt: `Create a high-converting offer for: Atlas Hydration zero-sugar electrolyte stick packs targeting health-conscious adults, frequent travelers, athletes, and people who want clean hydration without artificial ingredients or sugar.
-Current product: 30-count box at $29.99, 1,769mg electrolytes per stick, B vitamins, Vitamin C, recovery amino acids, two flavors (Strawberry Lemonade and Grapefruit).
+Current product: 16-stick pouch at $31.99 ($29.49 each when buying 2 or more, $25.59 with Subscribe & Save), 1,769mg electrolytes per stick, B vitamins, Vitamin C, recovery amino acids, two flavors (Strawberry Lemonade and Grapefruit).
 
 Structure the output exactly like a landing page with these labeled sections:
 1. Headline: one bold benefit-driven statement
@@ -60,7 +60,7 @@ Keep each section tight. No filler. Write it as if going directly onto a real la
   },
   { num: '04', name: 'Distribution Plan', desc: 'Map optimal channels, partnerships, and go-to-market sequencing.', enabled: true,
     system: 'You are a senior growth strategist. Be specific and realistic. Skip tactics that require a large team or $50k+ budget.',
-    prompt: `Act as a senior growth strategist. Build a realistic 30-day distribution plan for Atlas Hydration: a zero-sugar electrolyte brand selling 30-count stick packs at $29.99, targeting health-conscious adults, athletes, pilots, and frequent travelers. Current team: 1-2 founders. Budget: under $5,000/month. Selling direct-to-consumer via Shopify.
+    prompt: `Act as a senior growth strategist. Build a realistic 30-day distribution plan for Atlas Hydration: a zero-sugar electrolyte brand selling 16-stick pouches at $31.99 ($29.49 each when buying 2 or more, $25.59 with Subscribe & Save), targeting health-conscious adults, athletes, pilots, and frequent travelers. Current team: 1-2 founders. Budget: under $5,000/month. Selling direct-to-consumer via Shopify.
 
 Deliverables:
 1. Top 5 acquisition channels: ranked by cost-efficiency for this specific audience
@@ -115,7 +115,7 @@ Output competitor table first, then gap analysis and recommendations as prose wi
     system: 'You are a business scaling advisor who has helped CPG brands go from $0 to $1M+. Be specific, phase-by-phase, and metrics-driven. Output as a structured roadmap with phase headers, not a generic list.',
     prompt: `Give me a plan to scale Atlas Hydration to $1M annual revenue within 18 months.
 
-Business description: Atlas Hydration sells zero-sugar electrolyte stick packs direct-to-consumer via Shopify at $29.99 for a 30-count box. Founded by a Boeing 787 commercial airline pilot (@flywithgarrett) with a large social media following. Currently pre-revenue/early revenue stage. Two flavors: Strawberry Lemonade and Grapefruit. Team size: 1-2 people. Biggest bottleneck: converting social media audience into customers and building repeatable acquisition beyond the founder's personal brand.
+Business description: Atlas Hydration sells zero-sugar electrolyte stick packs direct-to-consumer via Shopify at $31.99 for a 16-stick pouch ($29.49 each when buying 2 or more, $25.59 with Subscribe & Save). Founded by a Boeing 787 commercial airline pilot (@flywithgarrett) with a large social media following. Currently pre-revenue/early revenue stage. Two flavors: Strawberry Lemonade and Grapefruit. Team size: 1-2 people. Biggest bottleneck: converting social media audience into customers and building repeatable acquisition beyond the founder's personal brand.
 
 Structure the output as a phased execution roadmap with these four phases:
 

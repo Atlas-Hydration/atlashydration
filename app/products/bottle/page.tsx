@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { PRODUCTS } from "@/app/data/products";
 import BottleProductPage from "@/app/components/BottleProductPage";
 
 export const metadata: Metadata = {
@@ -27,7 +28,7 @@ const productJsonLd = {
   brand: { "@type": "Brand", name: "Atlas Hydration" },
   offers: {
     "@type": "Offer",
-    price: "19.99",
+    price: PRODUCTS.bottle.price.toFixed(2),
     priceCurrency: "USD",
     availability: "https://schema.org/InStock",
     url: "https://atlas-hydration.com/products/bottle",

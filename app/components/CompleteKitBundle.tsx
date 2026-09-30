@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useRef, useCallback } from "react";
-import { useCart, BOTTLE_HALF_OFF_THRESHOLD, BOTTLE_HALF_PRICE, BOTTLE_DISCOUNT_LIVE, TWO_PACK_DISCOUNT_AMOUNT } from "@/app/context/CartContext";
+import { useCart, BOTTLE_HALF_OFF_THRESHOLD, BOTTLE_HALF_PRICE, BOTTLE_DISCOUNT_LIVE } from "@/app/context/CartContext";
+import { oneTimePouchTotal } from "@/app/data/pricing";
 import { PRODUCTS } from "@/app/data/products";
 
 const bottle = PRODUCTS.bottle;
@@ -19,12 +20,11 @@ export default function CompleteKitBundle({
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const mix = PRODUCTS[mixSlug];
-  // While the bottle-specific discount isn't live in Shopify (see
-  // CartContext.tsx), this kit only actually rings up with the confirmed
-  // ATLAS2PACK 2-pack discount — never assert the bottle-discounted price.
-  const combinedPrice = BOTTLE_DISCOUNT_LIVE
-    ? mix.price * MIX_QTY + BOTTLE_HALF_PRICE
-    : mix.price * MIX_QTY - TWO_PACK_DISCOUNT_AMOUNT + bottle.price;
+  // Built from real discounts only: the pouches get ATLAS2PACK (automatic in
+  // Shopify); the bottle is discounted ONLY while BOTTLE_DISCOUNT_LIVE (off
+  // until a real Shopify bottle discount exists and is verified).
+  const pouchTotal = oneTimePouchTotal(MIX_QTY);
+  const combinedPrice = BOTTLE_DISCOUNT_LIVE ? pouchTotal + BOTTLE_HALF_PRICE : pouchTotal + bottle.price;
   const fullPrice = mix.price * MIX_QTY + bottle.price;
 
   const handleAdd = useCallback(() => {

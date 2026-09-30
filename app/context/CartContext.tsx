@@ -9,7 +9,7 @@ import {
   type ReactNode,
 } from "react";
 import { PRODUCTS } from "@/app/data/products";
-import { TWO_POUCH_DISCOUNT, TWO_POUCH_DISCOUNT_SCALES, twoPouchDiscountFor } from "@/app/data/pricing";
+import { BOTTLE_RETAIL, BOTTLE_HALF_PRICE as BOTTLE_HALF_PRICE_CALC, multiPouchDiscount } from "@/app/data/pricing";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -77,21 +77,23 @@ function loadCart(): CartItem[] {
 
 // ---------------------------------------------------------------------------
 // Bottle discount tiers, purely a function of qualifying pouch quantity:
-// 2 pouches -> bottle 50% off, 4 pouches -> bottle free. These rely on real
-// Shopify "Buy X Get Y" automatic discounts, confirmed live in Shopify
-// Admin. BOTTLE_DISCOUNT_LIVE gates every place that asserts a specific
-// bottle discount dollar amount (cart total, item tags, bundle pricing) —
-// flip back to false immediately if a live checkout ever again shows a
-// mismatch between the site's total and what Shopify actually charges.
+// 2 pouches -> bottle 50% off, 4 pouches -> bottle free.
+//
+// NO SUCH DISCOUNT EXISTS IN SHOPIFY. A live checkout (2026-08-27, #134)
+// proved the bottle rang up at full price, and the Shopify admin currently
+// shows no bottle discount. BOTTLE_DISCOUNT_LIVE gates every place that asserts
+// a bottle discount (cart total, item tags, promo card, rewards bar, bundle
+// price, announcement bar, hints). Keep it false until a real discount is
+// created in Shopify AND verified in a real checkout (docs/PRICING.md rows 9-10).
 // ---------------------------------------------------------------------------
 
-export const BOTTLE_DISCOUNT_LIVE = true;
+export const BOTTLE_DISCOUNT_LIVE = false;
 
 const QUALIFYING_POUCH_SLUGS = ["strawberry-lemonade", "grapefruit"];
 export const BOTTLE_HALF_OFF_THRESHOLD = 2;
 export const BOTTLE_FREE_THRESHOLD = 4;
-export const BOTTLE_FULL_PRICE = 19.99;
-export const BOTTLE_HALF_PRICE = 9.99;
+export const BOTTLE_FULL_PRICE = BOTTLE_RETAIL;
+export const BOTTLE_HALF_PRICE = BOTTLE_HALF_PRICE_CALC;
 
 export type BottleTier = "none" | "half" | "free";
 
@@ -116,56 +118,32 @@ function computeBottlePromo(items: CartItem[]) {
 }
 
 // ---------------------------------------------------------------------------
-// Discount code — derived fresh from actual cart contents every time, rather
-// than tracked as click-state, so it can never go stale or get silently
-// wiped by an unrelated "Add to Cart" click elsewhere. Only the 2-pouch
-// same-flavor bundle still uses a coupon code; the bottle tiers above rely
-// on Shopify's own automatic discounts, not a code.
+// Expected cart totals. Shopify checkout is authoritative; this only mirrors
+// the discounts that really exist so the drawer shows what checkout will charge:
+//   - ATLAS2PACK (automatic in Shopify): $2.50 off each one-time pouch, 2+.
+//     No discount code is sent, Shopify applies it by itself.
+//   - Subscription pouches are already priced at 20% off and never count toward
+//     ATLAS2PACK.
+//   - Bottle discount: only while BOTTLE_DISCOUNT_LIVE (currently off).
 // ---------------------------------------------------------------------------
 
-// Must match the real Shopify "ATLAS2PACK" discount code exactly (-$5.00 at the
-// $29.99 price, confirmed via live checkout; -$9.00 once the price is $31.99).
-// Derived in app/data/pricing.ts so it moves together with the pouch price.
-export const TWO_PACK_DISCOUNT_AMOUNT = TWO_POUCH_DISCOUNT;
-
-function findTwoPack(items: CartItem[]) {
-  return items.find(
-    (i) => QUALIFYING_POUCH_SLUGS.includes(i.slug) && i.quantity === 2 && !i.subscriptionFrequency
+function computeCartPricing(items: CartItem[]) {
+  const subtotal = items.reduce((sum, i) => sum + i.price * i.quantity, 0);
+  const oneTimePouchQty = items.reduce(
+    (sum, i) => (QUALIFYING_POUCH_SLUGS.includes(i.slug) && !i.subscriptionFrequency ? sum + i.quantity : sum),
+    0
   );
-}
+  const pouchDiscount = multiPouchDiscount(oneTimePouchQty);
 
-/** One-time pouches the multi-pouch discount applies to. */
-function discountedPouchQty(items: CartItem[]): number {
-  if (TWO_POUCH_DISCOUNT_SCALES) {
-    // Scaling mode: all one-time pouches count, across flavors.
-    return items.reduce(
-      (sum, i) => (QUALIFYING_POUCH_SLUGS.includes(i.slug) && !i.subscriptionFrequency ? sum + i.quantity : sum),
-      0
-    );
-  }
-  return findTwoPack(items) ? 2 : 0;
-}
+  const { bottleInCart, tier } = computeBottlePromo(items);
+  const bottleDiscount =
+    !BOTTLE_DISCOUNT_LIVE || !bottleInCart ? 0
+    : tier === "free" ? BOTTLE_FULL_PRICE
+    : tier === "half" ? BOTTLE_FULL_PRICE - BOTTLE_HALF_PRICE
+    : 0;
 
-// Shopify can't combine a "Buy X Get Y" product discount with another
-// discount acting on specific products (like ATLAS2PACK) — that's a
-// platform rule, not a settings toggle. So once the bottle discount is
-// live, a cart that qualifies for both must skip the ATLAS2PACK code and
-// let the automatic bottle discount win instead: it's worth more ($10 vs
-// $5) and, unlike the code, doesn't get blocked by a competing discount.
-function bottleDiscountWouldWin(items: CartItem[]): boolean {
-  return BOTTLE_DISCOUNT_LIVE && items.some((i) => i.slug === "bottle" && i.quantity > 0);
-}
-
-function deriveDiscountCode(items: CartItem[]): string {
-  if (twoPouchDiscountFor(discountedPouchQty(items)) === 0 || bottleDiscountWouldWin(items)) return "";
-  return "ATLAS2PACK";
-}
-
-// Real dollar amount of the 2-pack discount, so the cart total can reflect
-// it immediately rather than only after Shopify applies the code at checkout.
-function computeTwoPackDiscount(items: CartItem[]): number {
-  if (bottleDiscountWouldWin(items)) return 0;
-  return twoPouchDiscountFor(discountedPouchQty(items));
+  const total = Math.round((subtotal - pouchDiscount - bottleDiscount) * 100) / 100;
+  return { subtotal, oneTimePouchQty, pouchDiscount, bottleDiscount, total };
 }
 
 // ---------------------------------------------------------------------------
@@ -321,15 +299,8 @@ export function CartProvider({ children }: { children: ReactNode }) {
     returnField.value = '/checkout';
     form.appendChild(returnField);
 
-    // Apply discount code, derived fresh from what's actually in the cart
-    const discountCode = deriveDiscountCode(items);
-    if (discountCode) {
-      const discountField = document.createElement('input');
-      discountField.type = 'hidden';
-      discountField.name = 'discount';
-      discountField.value = discountCode;
-      form.appendChild(discountField);
-    }
+    // No discount code is sent: ATLAS2PACK is an automatic Shopify discount, and
+    // any customer code (e.g. the welcome code) is entered by the customer at checkout.
 
     console.log('[Atlas Checkout] Submitting form to /cart/add with return_to=/checkout');
     document.body.appendChild(form);
@@ -378,4 +349,4 @@ export function useCart() {
   return ctx;
 }
 
-export { computeBottlePromo, deriveDiscountCode, computeTwoPackDiscount };
+export { computeBottlePromo, computeCartPricing };
