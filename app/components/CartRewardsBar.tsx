@@ -77,15 +77,18 @@ export default function CartRewardsBar({
   const remainingToHalf = Math.max(0, BOTTLE_HALF_OFF_THRESHOLD - qualifyingQty);
   const remainingToFree = Math.max(0, BOTTLE_FREE_THRESHOLD - qualifyingQty);
 
+  // Shopify's bottle discounts only count one-time pouches, so say so when a
+  // subscription is in the cart.
+  const noun = hasSubscription ? "one-time pouch" : "pouch";
+  const plural = (n: number) => `${n} more ${noun}${n > 1 ? "es" : ""}`;
+
   let statusText: string;
   if (!shippingUnlocked) {
     statusText = `Add $${remainingShipping.toFixed(2)} more to unlock free shipping.`;
-  } else if (hasSubscription && tier === "none" && subtotal < FREE_SHIPPING_THRESHOLD) {
-    statusText = `Your subscription ships free — add ${remainingToHalf} more pouch${remainingToHalf > 1 ? "es" : ""} to unlock 50% off the Atlas Bottle.`;
   } else if (tier === "none") {
-    statusText = `Add ${remainingToHalf} more pouch${remainingToHalf > 1 ? "es" : ""} to unlock 50% off the Atlas Bottle.`;
+    statusText = `${hasSubscription ? "Your subscription ships free. " : ""}Add ${plural(remainingToHalf)} to unlock 50% off the Atlas Bottle.`;
   } else if (tier === "half") {
-    statusText = `Add ${remainingToFree} more pouch${remainingToFree > 1 ? "es" : ""} to make your bottle free.`;
+    statusText = `Add ${plural(remainingToFree)} to make your bottle free.`;
   } else {
     statusText = "Free shipping and a free bottle — you're all set.";
   }

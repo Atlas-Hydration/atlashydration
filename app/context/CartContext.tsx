@@ -100,8 +100,10 @@ export const BOTTLE_HALF_PRICE = BOTTLE_HALF_PRICE_CALC;
 export type BottleTier = "none" | "half" | "free";
 
 function computeBottlePromo(items: CartItem[]) {
+  // Both Shopify bottle discounts are set to "One-time purchase", so only
+  // one-time pouches count toward the tiers (subscription pouches do not).
   const qualifyingQty = items.reduce(
-    (sum, i) => (QUALIFYING_POUCH_SLUGS.includes(i.slug) ? sum + i.quantity : sum),
+    (sum, i) => (QUALIFYING_POUCH_SLUGS.includes(i.slug) && !i.subscriptionFrequency ? sum + i.quantity : sum),
     0
   );
   const bottleInCart = items.some((i) => i.slug === "bottle" && i.quantity > 0);

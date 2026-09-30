@@ -204,7 +204,7 @@ export default function PurchaseOptions({
         </button>
       )}
 
-      {BOTTLE_DISCOUNT_LIVE && qty >= 4 && (
+      {BOTTLE_DISCOUNT_LIVE && !isSubscribing && qty >= 4 && (
         <p className="qty-select__hint">Your Atlas Bottle ships free at this quantity.</p>
       )}
     </div>
