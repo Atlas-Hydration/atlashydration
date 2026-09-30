@@ -17,8 +17,12 @@
  *   3. Appstle selling plans (2/4/6 weeks): confirm they are "20% off" so the
  *      subscription charges $25.59 (31.99 x 0.80).
  *   4. Set PRICING_V2_LIVE = true below.
+ *
+ * Status: switched ON after the Shopify variant prices were raised to $31.99 and
+ * the Appstle plans were confirmed as "Save 20% from first order onward"
+ * (percentage-based, so it yields $25.59). ATLAS2PACK must be $9.00 off.
  */
-export const PRICING_V2_LIVE = false;
+export const PRICING_V2_LIVE = true;
 
 const round2 = (n: number) => Math.round(n * 100) / 100;
 
