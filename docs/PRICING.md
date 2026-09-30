@@ -14,7 +14,7 @@ bottle switch). If a rule here stops matching Shopify, fix the code. Never add a
 | 4 | Free shipping | Shopify shipping rate (threshold) | Whole order | Orders over $40, and all subscriptions. Storefront only *messages* it | n/a | "Free shipping over $40"; 1 pouch pays $4.99 |
 | 5 | Welcome code `ATLASWELCOME10` | Shopify discount code, typed by the customer | Order | Shown by the signup popup; the storefront never applies or stacks it | Per Shopify combination settings | Code revealed after signup |
 | 6 | Bottle retail | Shopify variant price | Atlas Performance Bottle | $19.99 | n/a | `$19.99` |
-| 7 | Bottle 50% off / free | **Must exist in Shopify as an automatic discount** (storefront shows it while `BOTTLE_DISCOUNT_LIVE = true`) | The bottle | 2+ pouches (any mix, subscription included): bottle 50% off (Shopify takes $9.99 off, bottle $10.00). 4+ pouches: bottle free. Must combine with product discounts so it coexists with ATLAS2PACK | With ATLAS2PACK (different products) | Slider (Free Shipping / 50% Off / Free Bottle), "Add Bottle 50% off $9.99" card, bundle = `$68.98 ~~$83.97~~ Save $14.99` |
+| 7 | Bottle 50% off / free | **Must exist in Shopify as an automatic discount** (storefront shows it while `BOTTLE_DISCOUNT_LIVE = true`) | The bottle | 2+ **one-time** pouches (any mix; subscription pouches do not count): bottle 50% off (Shopify takes $9.99 off, bottle $10.00). 4+ one-time pouches: bottle free. Both Shopify discounts ("Buy 2 Pack Get 50% off Bottle", "Buy 4 Pouches Get Free Bottle") must combine with **Product** and Shipping discounts so they coexist with ATLAS2PACK | With ATLAS2PACK (different products) | Slider (Free Shipping / 50% Off / Free Bottle), "Add Bottle 50% off $9.99" card, bundle = `$68.98 ~~$83.97~~ Save $14.99` |
 
 Storefront sends **no discount code** at checkout. The hidden `discount=` field was removed because ATLAS2PACK is
 automatic. The old `ATLAS2PACK-OLD` order discount is not referenced anywhere.
@@ -44,7 +44,7 @@ step, no need to pay). They must match.
 | 10 | 3 pouches + bottle | n/a | $98.47 | ATLAS2PACK −$7.50 and bottle 50% (−$9.99) | free | | | |
 | 10b | 4 pouches + bottle | n/a | $117.96 | ATLAS2PACK −$10.00 and bottle free (−$19.99) | free | | | |
 | 11 | Subscription only | $25.59 | $25.59 | Appstle 20% | free | | | |
-| 12 | Subscription + 1 one-time pouch | n/a | $57.58 | Appstle 20% on the sub; **ATLAS2PACK should NOT apply** | free | | | |
+| 12 | Subscription + 1 one-time pouch (subscription does not count toward bottle tiers) | n/a | $57.58 | Appstle 20% on the sub; **ATLAS2PACK should NOT apply** | free | | | |
 | 13 | 2+ pouch cart, free shipping | see rows 2-4, 6-8 | | | free | | | |
 | 14 | Bundle, free shipping | $68.98 | $68.98 | as row 9 | free | | | |
 | 15 | Welcome code typed on 1 pouch | n/a | $31.99 | per Shopify code settings | $4.99 | | | |
