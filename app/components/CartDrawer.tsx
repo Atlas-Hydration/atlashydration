@@ -86,7 +86,7 @@ export default function CartDrawer() {
                     <h4 className="cart-item__title">{item.title}</h4>
                     <p className="cart-item__price">
                       ${item.price.toFixed(2)}
-                      {BOTTLE_DISCOUNT_LIVE && item.slug === "bottle" && tier !== "none" && (
+                      {BOTTLE_DISCOUNT_LIVE && item.slug === "bottle" && tier !== "none" && bottleDiscountAmount > 0 && (
                         <span className="cart-item__discount-tag">
                           {tier === "free" ? "FREE" : "50% OFF"}
                         </span>
