@@ -2,7 +2,8 @@
 
 import { useState, useRef, useEffect, useCallback } from "react";
 import Link from "next/link";
-import { useCart, TWO_PACK_DISCOUNT_AMOUNT } from "@/app/context/CartContext";
+import { useCart } from "@/app/context/CartContext";
+import { oneTimePouchTotal } from "@/app/data/pricing";
 import { PRODUCTS } from "@/app/data/products";
 import { FREE_SHIPPING_THRESHOLD } from "@/app/data/formula";
 import PurchaseOptions from "@/app/components/PurchaseOptions";
@@ -94,9 +95,8 @@ export default function ProductPage({ config }: { config: ProductPageConfig }) {
   const product = PRODUCTS[config.slug];
   const isSubscribing = purchaseOption === "subscribe";
   const unitPrice = isSubscribing ? product.subscribePrice : product.price;
-  // The 2-pack bundle discount only applies to one-time purchases.
-  const twoPackDiscount = isSubscribing ? 0 : TWO_PACK_DISCOUNT_AMOUNT;
-  const customQtyTotal = qty === 2 ? unitPrice * 2 - twoPackDiscount : qty * unitPrice;
+  // The multi-pouch discount only applies to one-time purchases.
+  const customQtyTotal = isSubscribing ? qty * unitPrice : oneTimePouchTotal(qty);
 
   const handleAddToCart = useCallback(() => {
     const isSubscription = purchaseOption === "subscribe";

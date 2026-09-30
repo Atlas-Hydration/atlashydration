@@ -3,6 +3,7 @@
 import { useCallback } from "react";
 import { BOTTLE_DISCOUNT_LIVE, TWO_PACK_DISCOUNT_AMOUNT } from "@/app/context/CartContext";
 import { PRODUCTS } from "@/app/data/products";
+import { TWO_POUCH_DISCOUNT_SCALES, twoPouchDiscountFor, oneTimePouchTotal } from "@/app/data/pricing";
 import { FREE_SHIPPING_THRESHOLD, SHIPPING_RATE } from "@/app/data/formula";
 
 export type PurchaseType = "subscribe" | "onetime";
@@ -55,7 +56,7 @@ export default function PurchaseOptions({
   const subscribePrice = product.subscribePrice;
   const twoPackTotal = singlePrice * 2 - TWO_PACK_DISCOUNT_AMOUNT;
   const singleShipsFree = singlePrice >= FREE_SHIPPING_THRESHOLD;
-  const oneTimeTotal = qty === 2 ? twoPackTotal : qty * singlePrice;
+  const oneTimeTotal = oneTimePouchTotal(qty);
 
   const tryActive = !isSubscribing && qty === 1 && !customQtyOpen;
   const stockActive = !isSubscribing && qty === 2 && !customQtyOpen;
@@ -82,7 +83,8 @@ export default function PurchaseOptions({
 
   const unitPrice = isSubscribing ? subscribePrice : singlePrice;
   const twoPackDiscount = isSubscribing ? 0 : TWO_PACK_DISCOUNT_AMOUNT;
-  const stepperTotal = qty === 2 ? unitPrice * 2 - twoPackDiscount : qty * unitPrice;
+  const stepperTotal = isSubscribing ? qty * unitPrice : oneTimePouchTotal(qty);
+  const multiDiscount = isSubscribing ? 0 : twoPouchDiscountFor(qty);
 
   return (
     <div className="po">
@@ -199,6 +201,10 @@ export default function PurchaseOptions({
         <button type="button" className="qty-select__custom-toggle" onClick={() => onCustomQtyOpenChange(true)}>
           Need a different amount?
         </button>
+      )}
+
+      {TWO_POUCH_DISCOUNT_SCALES && qty > 2 && multiDiscount > 0 && (
+        <p className="qty-select__hint">You save {money(multiDiscount)} on your pouches.</p>
       )}
 
       {BOTTLE_DISCOUNT_LIVE && qty >= 4 && (
