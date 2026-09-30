@@ -1,129 +1,74 @@
-"use client";
+import Link from "next/link";
 
-import React, { useState } from "react";
-
-const cards = [
+const specs = [
   {
-    number: "01",
-    title: "Clear Electrolyte Dosing",
-    statNumber: "1,769",
-    statUnit: "mg electrolytes",
-    reveal: (
-      <>
-        <p>Sodium, potassium, and magnesium in every stick, with the full breakdown printed on the label. Sodium is the electrolyte you lose most in sweat.</p>
-        <div className="why-atlas__card-pills">
-          {["Sodium", "Potassium", "Magnesium"].map((p) => (
-            <span className="why-atlas__pill" key={p}>{p}</span>
-          ))}
-        </div>
-      </>
-    ),
+    stat: "1,769",
+    unit: "mg electrolytes",
+    title: "Clear electrolyte dosing",
+    text: "Sodium, potassium, and magnesium in every stick, with the full breakdown printed on the label. Sodium is the electrolyte you lose most in sweat.",
   },
   {
-    number: "02",
-    title: "Vitamins & Amino Acids",
-    statNumber: "7",
-    statUnit: "added nutrients",
-    reveal: (
-      <>
-        <p>Vitamin C and B vitamins (niacin, pantethine, B6, B12), plus L-Glutamine and L-Alanine amino acids, for the days you train hard and travel harder.</p>
-      </>
-    ),
+    stat: "7",
+    unit: "added nutrients",
+    title: "Vitamins and amino acids",
+    text: "Vitamin C and B vitamins (niacin, pantethine, B6, B12), plus L-Glutamine and L-Alanine, for the days you train hard and travel harder.",
   },
   {
-    number: "03",
-    title: "Zero Sugar. Zero Compromise.",
-    statNumber: "0",
-    statUnit: "grams sugar",
-    reveal: (
-      <>
-        <p>Naturally sweetened with stevia and allulose. Only 25 calories per stick. No artificial flavors, no synthetic dyes, no junk.</p>
-        <div className="why-atlas__card-pills">
-          {["Stevia Leaf", "Allulose", "No Artificial Colors", "No Artificial Flavors"].map((p) => (
-            <span className="why-atlas__pill why-atlas__pill--green" key={p}>{p}</span>
-          ))}
-        </div>
-      </>
-    ),
+    stat: "0",
+    unit: "g sugar",
+    title: "Zero sugar, 25 calories",
+    text: "Sweetened with stevia and allulose. No artificial flavors and no synthetic dyes.",
   },
   {
-    number: "04",
-    title: "Built for Real Life",
-    statNumber: "1",
-    statUnit: "stick. anytime.",
-    reveal: (
-      <>
-        <p>Individually wrapped stick packs that go anywhere. Gym bag, carry-on, desk drawer. Mix with cold water in seconds — no blender, no mess.</p>
-        <div className="why-atlas__card-pills">
-          {["Travel-Ready", "Gym Bag", "Office", "On-the-Go"].map((p) => (
-            <span className="why-atlas__pill" key={p}>{p}</span>
-          ))}
-        </div>
-      </>
-    ),
+    stat: "1",
+    unit: "stick",
+    title: "Made to travel",
+    text: "Individually wrapped sticks for the gym bag, carry-on, or desk drawer. Mix with cold water in seconds. No blender, no mess.",
   },
 ];
 
-function WhyAtlasCard({ card }: { card: typeof cards[0] }) {
-  const [expanded, setExpanded] = useState(false);
-
-  return (
-    <div
-      className={`why-atlas__card why-atlas__card--feature${expanded ? " why-atlas__card--expanded" : ""}`}
-      onClick={() => setExpanded((prev) => !prev)}
-    >
-      <div className="why-atlas__card-front">
-        <div className="why-atlas__card-number">{card.number}</div>
-        <h3 className="why-atlas__card-title">{card.title}</h3>
-        <div className="why-atlas__card-stat">
-          <span className="why-atlas__card-stat-number">{card.statNumber}</span>
-          <span className="why-atlas__card-stat-unit">{card.statUnit}</span>
-        </div>
-      </div>
-      <div className="why-atlas__card-reveal">
-        {card.reveal}
-      </div>
-    </div>
-  );
-}
+const proof = [
+  { big: "USA", label: "Made & sourced" },
+  { big: "3rd", label: "Party tested" },
+  { big: "1%", label: "For the Planet" },
+];
 
 export default function WhyAtlasSection() {
   return (
-    <section className="why-atlas" id="why-atlas" aria-label="Why Choose Atlas">
-      <div className="why-atlas__bg" />
+    <section className="built" id="why-atlas" aria-labelledby="built-title">
       <div className="container">
-        <div className="why-atlas__header">
-          <p className="section-eyebrow" style={{ color: "rgba(255,255,255,0.5)" }}>Why Atlas</p>
-          <h2 className="why-atlas__title">Built for<br />How You Actually Live</h2>
-          <p className="why-atlas__subtitle">
-            Atlas was built by a pilot and athlete who needed hydration that keeps up with travel, training, and heat. Every ingredient is listed on the label, with zero added sugar.
-          </p>
-        </div>
-
-        <div className="why-atlas__grid">
-          {cards.map((card) => (
-            <WhyAtlasCard key={card.number} card={card} />
-          ))}
-        </div>
-
-        <div className="why-atlas__bottom">
-          <div className="why-atlas__proof">
-            <div className="why-atlas__proof-item">
-              <span className="why-atlas__proof-number">1%</span>
-              <span className="why-atlas__proof-label">for the Planet member</span>
-            </div>
-            <div className="why-atlas__proof-divider" />
-            <div className="why-atlas__proof-item">
-              <span className="why-atlas__proof-number">3rd</span>
-              <span className="why-atlas__proof-label">party tested</span>
-            </div>
-            <div className="why-atlas__proof-divider" />
-            <div className="why-atlas__proof-item">
-              <span className="why-atlas__proof-number">USA</span>
-              <span className="why-atlas__proof-label">made &amp; sourced</span>
-            </div>
+        <div className="built__layout">
+          <div className="built__intro">
+            <p className="section-eyebrow">Why Atlas</p>
+            <h2 className="built__title" id="built-title">Built for how you actually live.</h2>
+            <p className="built__sub">
+              Atlas was built by a pilot and athlete who needed hydration that keeps up with travel, training, and heat. Every ingredient is on the label.
+            </p>
+            <ul className="built__proof" aria-label="Quality commitments">
+              {proof.map((p) => (
+                <li key={p.big}>
+                  <strong>{p.big}</strong>
+                  <span>{p.label}</span>
+                </li>
+              ))}
+            </ul>
+            <Link href="/products/strawberry-lemonade" className="btn btn--dark btn--lg">Shop Strawberry Lemonade</Link>
           </div>
-          <a href="/products/strawberry-lemonade" className="btn btn--white btn--lg">Shop Now</a>
+
+          <ul className="built__list">
+            {specs.map((s) => (
+              <li className="built__row" key={s.title}>
+                <div className="built__stat">
+                  {s.stat}
+                  <small>{s.unit}</small>
+                </div>
+                <div>
+                  <h3 className="built__row-title">{s.title}</h3>
+                  <p className="built__row-text">{s.text}</p>
+                </div>
+              </li>
+            ))}
+          </ul>
         </div>
       </div>
     </section>
