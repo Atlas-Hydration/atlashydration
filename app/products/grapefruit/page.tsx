@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { PRODUCTS } from "@/app/data/products";
+import { FREE_SHIPPING_THRESHOLD, SHIPPING_RATE } from "@/app/data/formula";
 import ProductPage from "@/app/components/ProductPage";
 
 export const metadata: Metadata = {
@@ -128,7 +129,7 @@ const accordionItems = [
     title: "Shipping & Returns",
     content: (
       <>
-        <p><strong>Free shipping</strong> on all U.S. orders over $50. Standard shipping (3–5 business days) is $4.99. Expedited options available at checkout.</p>
+        <p><strong>Free shipping</strong> on U.S. orders over ${FREE_SHIPPING_THRESHOLD}. Standard shipping (3–5 business days) is ${SHIPPING_RATE}. Expedited options available at checkout.</p>
         <p><strong>Satisfaction guaranteed:</strong> If you&apos;re not completely happy with your order, contact us within 30 days for a full refund or exchange — no questions asked.</p>
         <p>We currently ship within the United States. International shipping coming soon.</p>
       </>

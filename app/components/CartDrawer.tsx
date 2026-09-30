@@ -1,6 +1,7 @@
 "use client";
 
-import { useCart, computeBottlePromo, deriveDiscountCode, computeTwoPackDiscount, BOTTLE_DISCOUNT_LIVE, BOTTLE_HALF_PRICE, BOTTLE_FULL_PRICE } from "@/app/context/CartContext";
+import { useCart, computeBottlePromo, computeCartPricing, BOTTLE_DISCOUNT_LIVE, BOTTLE_HALF_PRICE, BOTTLE_FULL_PRICE } from "@/app/context/CartContext";
+import { MULTI_POUCH_DISCOUNT_PER_POUCH } from "@/app/data/pricing";
 import { PRODUCTS } from "@/app/data/products";
 import CartRewardsBar from "@/app/components/CartRewardsBar";
 
@@ -17,24 +18,15 @@ export default function CartDrawer() {
     addToCart,
   } = useCart();
 
-  const subtotal = items.reduce(
-    (sum, item) => sum + item.price * item.quantity,
-    0
-  );
   const { qualifyingQty, bottleInCart, tier } = computeBottlePromo(items);
-  const discountCode = deriveDiscountCode(items);
+  const {
+    subtotal,
+    pouchDiscount: twoPackDiscountAmount,
+    bottleDiscount: bottleDiscountAmount,
+    total: estimatedTotal,
+  } = computeCartPricing(items);
   const hasSubscription = items.some((i) => i.subscriptionFrequency);
-
-  // Gated by BOTTLE_DISCOUNT_LIVE (see CartContext.tsx) — a live checkout
-  // test confirmed no Shopify discount currently applies to the bottle, so
-  // this must stay 0 until that's fixed and verified in Shopify Admin.
-  const bottleDiscountAmount = !BOTTLE_DISCOUNT_LIVE || !bottleInCart ? 0
-    : tier === "free" ? BOTTLE_FULL_PRICE
-    : tier === "half" ? BOTTLE_FULL_PRICE - BOTTLE_HALF_PRICE
-    : 0;
-  const twoPackDiscountAmount = computeTwoPackDiscount(items);
-  const totalDiscountAmount = bottleDiscountAmount + twoPackDiscountAmount;
-  const estimatedTotal = subtotal - totalDiscountAmount;
+  const totalDiscountAmount = twoPackDiscountAmount + bottleDiscountAmount;
 
   return (
     <div
@@ -149,7 +141,7 @@ export default function CartDrawer() {
               ))}
 
               {/* Sliding-scale rewards: Free Shipping @ $40, 50% Off Bottle @ 2 pouches, Free Bottle @ 4 pouches */}
-              <CartRewardsBar subtotal={subtotal} qualifyingQty={qualifyingQty} tier={tier} hasSubscription={hasSubscription} />
+              <CartRewardsBar subtotal={estimatedTotal} qualifyingQty={qualifyingQty} tier={tier} hasSubscription={hasSubscription} />
 
               {BOTTLE_DISCOUNT_LIVE && tier !== "none" && !bottleInCart && (
                 <div className="cart-promo cart-promo--unlocked">
@@ -186,12 +178,6 @@ export default function CartDrawer() {
           className="cart-drawer__footer"
           style={{ display: items.length === 0 ? "none" : "block" }}
         >
-          {discountCode && (
-            <p className="cart-drawer__promo-line">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><path d="M20 6L9 17l-5-5" /></svg>
-              {discountCode} applied
-            </p>
-          )}
           {totalDiscountAmount > 0 ? (
             <>
               <div className="cart-drawer__line">
@@ -200,7 +186,7 @@ export default function CartDrawer() {
               </div>
               {twoPackDiscountAmount > 0 && (
                 <div className="cart-drawer__line cart-drawer__line--discount">
-                  <span>2-Pack discount</span>
+                  <span>Pouch savings (${MULTI_POUCH_DISCOUNT_PER_POUCH.toFixed(2)} each)</span>
                   <span>&minus;${twoPackDiscountAmount.toFixed(2)}</span>
                 </div>
               )}
@@ -228,7 +214,7 @@ export default function CartDrawer() {
             Checkout
           </button>
           <p className="cart-drawer__note">
-            Shipping &amp; taxes calculated at checkout
+            Shipping, taxes &amp; final discounts calculated at checkout
           </p>
         </div>
       </div>

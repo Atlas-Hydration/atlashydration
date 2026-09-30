@@ -3,8 +3,8 @@
 import type { BottleTier } from "@/app/context/CartContext";
 import { BOTTLE_HALF_OFF_THRESHOLD, BOTTLE_FREE_THRESHOLD, BOTTLE_DISCOUNT_LIVE } from "@/app/context/CartContext";
 import { PRODUCTS } from "@/app/data/products";
+import { FREE_SHIPPING_THRESHOLD } from "@/app/data/formula";
 
-const FREE_SHIPPING_THRESHOLD = 40;
 const bottle = PRODUCTS.bottle;
 
 const ShippingIcon = () => (

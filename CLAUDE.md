@@ -58,6 +58,11 @@ Premium zero-sugar electrolyte drink mix brand website. Next.js app with Shopify
 - **Cart:** Shopify Buy SDK with localStorage fallback
 - **State:** React Context API (CartContext)
 
+## Pricing
+
+All pricing rules, the active-offer table, and the checkout QA matrix live in `docs/PRICING.md`.
+Shopify checkout is the source of truth; code mirrors it from `app/data/pricing.ts`.
+
 ## Shopify Integration
 
 - **Shop domain:** `7fa7b7-42.myshopify.com`

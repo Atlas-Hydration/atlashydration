@@ -1,9 +1,9 @@
 "use client";
 
 import { useCallback } from "react";
-import { BOTTLE_DISCOUNT_LIVE, TWO_PACK_DISCOUNT_AMOUNT } from "@/app/context/CartContext";
+import { BOTTLE_DISCOUNT_LIVE } from "@/app/context/CartContext";
 import { PRODUCTS } from "@/app/data/products";
-import { TWO_POUCH_DISCOUNT_SCALES, twoPouchDiscountFor, oneTimePouchTotal } from "@/app/data/pricing";
+import { MULTI_POUCH_DISCOUNT_PER_POUCH, multiPouchDiscount, oneTimePouchTotal } from "@/app/data/pricing";
 import { FREE_SHIPPING_THRESHOLD, SHIPPING_RATE } from "@/app/data/formula";
 
 export type PurchaseType = "subscribe" | "onetime";
@@ -35,7 +35,7 @@ const CheckSvg = () => (
  * used (purchaseType + qty), so the cart, discount code, and Shopify selling
  * plans are untouched:
  *   Try      -> one-time, qty 1
- *   Stock up -> one-time, qty 2 (existing 2-pack discount)
+ *   Stock up -> one-time, qty 2 (ATLAS2PACK, applied automatically by Shopify)
  *   Subscribe -> subscribe (existing selling plans)
  */
 export default function PurchaseOptions({
@@ -54,7 +54,7 @@ export default function PurchaseOptions({
 
   const singlePrice = product.price;
   const subscribePrice = product.subscribePrice;
-  const twoPackTotal = singlePrice * 2 - TWO_PACK_DISCOUNT_AMOUNT;
+  const twoPackTotal = oneTimePouchTotal(2);
   const singleShipsFree = singlePrice >= FREE_SHIPPING_THRESHOLD;
   const oneTimeTotal = oneTimePouchTotal(qty);
 
@@ -82,9 +82,8 @@ export default function PurchaseOptions({
   }, [isSubscribing, onPurchaseTypeChange, onQtyChange, onCustomQtyOpenChange]);
 
   const unitPrice = isSubscribing ? subscribePrice : singlePrice;
-  const twoPackDiscount = isSubscribing ? 0 : TWO_PACK_DISCOUNT_AMOUNT;
   const stepperTotal = isSubscribing ? qty * unitPrice : oneTimePouchTotal(qty);
-  const multiDiscount = isSubscribing ? 0 : twoPouchDiscountFor(qty);
+  const multiDiscount = isSubscribing ? 0 : multiPouchDiscount(qty);
 
   return (
     <div className="po">
@@ -121,7 +120,7 @@ export default function PurchaseOptions({
             <span className="po-option__step">Stock up</span>
             <span className="po-option__title">2 pouches</span>
             <span className="po-option__sub">
-              Save {savings(TWO_PACK_DISCOUNT_AMOUNT)} + <strong className="po-option__ship">free shipping</strong>
+              Save {savings(multiPouchDiscount(2))} + <strong className="po-option__ship">free shipping</strong>
             </span>
           </span>
           <span className="po-option__price">
@@ -184,8 +183,10 @@ export default function PurchaseOptions({
         </div>
       )}
 
-      {qty === 2 && !customQtyOpen && twoPackDiscount > 0 && (
-        <p className="qty-select__hint">Includes 50% off the Atlas Bottle, plus {money(twoPackDiscount)} off your pouches.</p>
+      {multiDiscount > 0 && (
+        <p className="qty-select__hint">
+          {money(MULTI_POUCH_DISCOUNT_PER_POUCH)} off every pouch when you buy 2 or more. You save {money(multiDiscount)}.
+        </p>
       )}
 
       {customQtyOpen ? (
@@ -201,10 +202,6 @@ export default function PurchaseOptions({
         <button type="button" className="qty-select__custom-toggle" onClick={() => onCustomQtyOpenChange(true)}>
           Need a different amount?
         </button>
-      )}
-
-      {TWO_POUCH_DISCOUNT_SCALES && qty > 2 && multiDiscount > 0 && (
-        <p className="qty-select__hint">You save {money(multiDiscount)} on your pouches.</p>
       )}
 
       {BOTTLE_DISCOUNT_LIVE && qty >= 4 && (
