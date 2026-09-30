@@ -20,6 +20,8 @@ interface PurchaseOptionsProps {
 }
 
 const money = (n: number) => `$${n.toFixed(2)}`;
+/** "$9" for whole dollars, "$9.50" otherwise. */
+const savings = (n: number) => (Number.isInteger(n) ? `$${n}` : money(n));
 
 const CheckSvg = () => (
   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden="true">
@@ -97,7 +99,7 @@ export default function PurchaseOptions({
             <span className="po-option__step">Try</span>
             <span className="po-option__title">1 pouch</span>
             <span className="po-option__sub">
-              {money(singlePrice / 16)} / stick ·{" "}
+              {money(product.perStick)} / stick ·{" "}
               {singleShipsFree ? <strong className="po-option__ship">free shipping</strong> : `${money(SHIPPING_RATE)} shipping`}
             </span>
           </span>
@@ -117,7 +119,7 @@ export default function PurchaseOptions({
             <span className="po-option__step">Stock up</span>
             <span className="po-option__title">2 pouches</span>
             <span className="po-option__sub">
-              <strong className="po-option__ship">Free shipping</strong> · save {money(TWO_PACK_DISCOUNT_AMOUNT)}
+              Save {savings(TWO_PACK_DISCOUNT_AMOUNT)} + <strong className="po-option__ship">free shipping</strong>
             </span>
           </span>
           <span className="po-option__price">

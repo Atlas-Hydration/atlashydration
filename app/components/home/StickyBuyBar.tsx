@@ -2,20 +2,21 @@
 
 import { useState, useEffect } from "react";
 import { useCart } from "@/app/context/CartContext";
+import { PRODUCTS } from "@/app/data/products";
 
 const flavors = [
   {
     key: "strawberry",
     product: "strawberry-lemonade" as const,
     name: "Strawberry Lemonade",
-    price: "$29.99",
+    price: `$${PRODUCTS["strawberry-lemonade"].price.toFixed(2)}`,
     thumb: "https://cdn.shopify.com/s/files/1/0595/8133/3578/files/1_e4b7eae7-01d9-430c-9655-7949d910deb6.jpg?v=1771507844",
   },
   {
     key: "grapefruit",
     product: "grapefruit" as const,
     name: "Grapefruit",
-    price: "$29.99",
+    price: `$${PRODUCTS.grapefruit.price.toFixed(2)}`,
     thumb: "https://cdn.shopify.com/s/files/1/0595/8133/3578/files/1_1a252c57-dc62-4c7b-a6b1-0f9677ce6b6f.jpg?v=1769181320",
   },
 ];

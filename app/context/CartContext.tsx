@@ -9,6 +9,7 @@ import {
   type ReactNode,
 } from "react";
 import { PRODUCTS } from "@/app/data/products";
+import { TWO_POUCH_DISCOUNT } from "@/app/data/pricing";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -63,7 +64,14 @@ function saveCart(items: CartItem[]) {
 function loadCart(): CartItem[] {
   try {
     const raw = localStorage.getItem(STORAGE_CART_KEY);
-    return raw ? JSON.parse(raw) : [];
+    const saved: CartItem[] = raw ? JSON.parse(raw) : [];
+    // A cart saved before a price change must not keep showing the old price:
+    // re-price every line from the current catalog.
+    return saved.map((item) => {
+      const product = PRODUCTS[item.slug];
+      if (!product) return item;
+      return { ...item, price: item.subscriptionFrequency ? product.subscribePrice : product.price };
+    });
   } catch { return []; }
 }
 
@@ -115,9 +123,10 @@ function computeBottlePromo(items: CartItem[]) {
 // on Shopify's own automatic discounts, not a code.
 // ---------------------------------------------------------------------------
 
-// Matches the real Shopify "ATLAS2PACK" discount code exactly (confirmed via
-// live checkout: -$5.00), not the $4.99 this used to say.
-export const TWO_PACK_DISCOUNT_AMOUNT = 5.00;
+// Must match the real Shopify "ATLAS2PACK" discount code exactly (-$5.00 at the
+// $29.99 price, confirmed via live checkout; -$9.00 once the price is $31.99).
+// Derived in app/data/pricing.ts so it moves together with the pouch price.
+export const TWO_PACK_DISCOUNT_AMOUNT = TWO_POUCH_DISCOUNT;
 
 function findTwoPack(items: CartItem[]) {
   return items.find(
