@@ -1,70 +1,41 @@
-const posts = [
-  {
-    image: "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=600&h=400&fit=crop&crop=center",
-    imageAlt: "Athlete training with intensity",
-    episode: "Episode 1",
-    tag: "Electrolytes",
-    title: "Why Sodium Matters More Than You Think",
-    excerpt: "Sodium is the main electrolyte lost in sweat. Here's why it matters when you train, travel, or spend time in the heat.",
-  },
-  {
-    image: "https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?w=600&h=400&fit=crop&crop=center",
-    imageAlt: "Athlete recovering post-workout",
-    episode: "Episode 2",
-    tag: "Recovery",
-    title: "L-Glutamine: Your Muscles' Secret Weapon",
-    excerpt: "Critical for gut integrity and immune function — especially after intense training when stores are depleted.",
-  },
-  {
-    image: "https://images.unsplash.com/photo-1552674605-db6ffd4facb5?w=600&h=400&fit=crop&crop=center",
-    imageAlt: "Runner pushing through training",
-    episode: "Episode 3",
-    tag: "Performance",
-    title: "Allulose: Zero-Sugar Sweetener That Works",
-    excerpt: "Near-zero glycemic impact keeps energy stable. No spikes, no crashes — just clean fuel for performance.",
-  },
-  {
-    image: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=600&h=400&fit=crop&crop=center",
-    imageAlt: "Hydration during outdoor activity",
-    episode: "Episode 4",
-    tag: "Hydration",
-    title: "The Dehydration Crisis Nobody Talks About",
-    excerpt: "75% of Americans are chronically dehydrated. The science behind why water alone isn't enough.",
-    comingSoon: true,
-  },
-];
+import Link from "next/link";
+import { ARTICLES } from "@/app/data/articles";
+import ArticleCover from "@/app/components/ArticleCover";
+
+const FEATURED = ARTICLES.slice(0, 3);
 
 export default function BlogSection() {
   return (
-    <section className="blog" id="blog" aria-label="Hydration Science">
+    <section className="jn" id="blog" aria-labelledby="jn-title">
       <div className="container">
-        <div className="section-header">
+        <div className="jn__head">
           <p className="section-eyebrow">The Science</p>
-          <h2 className="section-title">Hydration Explained</h2>
-          <p className="section-subtitle">
-            The science behind proper hydration — what your body needs, and why most drinks fall short.
+          <h2 className="jn__title" id="jn-title">Hydration Explained</h2>
+          <p className="jn__sub">
+            Plain-language articles on electrolytes, ingredients, and how hydration really works, with the sources to back them up.
           </p>
         </div>
-        <div className="blog__grid blog__grid--4">
-          {posts.map((post) => (
-            <div className={`blog__card${post.comingSoon ? " blog__card--coming-soon" : ""}`} key={post.title} style={{ cursor: "default" }}>
-              {post.comingSoon && <span className="blog__coming-soon-badge">Coming Soon</span>}
-              <div className="blog__card-image">
-                <img src={post.image} alt={post.imageAlt} loading="lazy" />
+
+        <div className="jn__grid">
+          {FEATURED.map((a) => (
+            <Link href={`/blog/${a.slug}`} className="jn__card" key={a.slug}>
+              <ArticleCover article={a} />
+              <div className="jn__meta">
+                <span>{a.tag}</span>
+                <span aria-hidden="true">·</span>
+                <span>{a.readTime}</span>
               </div>
-              <div className="blog__card-content">
-                <span className="blog__card-episode">{post.episode}</span>
-                <span className="blog__card-tag">{post.tag}</span>
-                <h3 className="blog__card-title">{post.title}</h3>
-                <p className="blog__card-excerpt">{post.excerpt}</p>
-              </div>
-            </div>
+              <h3 className="jn__card-title">{a.title}</h3>
+              <p className="jn__dek">{a.dek}</p>
+              <span className="jn__read">Read article</span>
+            </Link>
           ))}
         </div>
-        <div className="blog__cta">
-          <span style={{ fontSize: "var(--text-sm)", color: "var(--color-text-muted)" }}>
-            More episodes coming soon
-          </span>
+
+        <div className="jn__all">
+          <Link href="/blog" className="btn btn--outline">
+            All {ARTICLES.length} articles
+          </Link>
         </div>
       </div>
     </section>
