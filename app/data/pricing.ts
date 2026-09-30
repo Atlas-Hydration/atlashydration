@@ -66,8 +66,9 @@ export function oneTimePouchTotal(qty: number): number {
 export const BOTTLE_RETAIL = 19.99;
 
 /**
- * Bottle price with the 50%-off promotion. Shopify rounds a discount half up to the cent, which gives
- * $10.00 off $19.99 (bottle $9.99), matching the old confirmed checkout result.
+ * Bottle price with the 50%-off promotion. Shopify takes the half off rounded
+ * DOWN to the cent: a live checkout (2026-09-30) showed "BUY 2 PACK GET 50% OFF
+ * BOTTLE (-$9.99)" on the $19.99 bottle, so the bottle costs $10.00.
  */
-export const BOTTLE_HALF_DISCOUNT = Math.round(Math.round(BOTTLE_RETAIL * 100) * 0.5) / 100;
+export const BOTTLE_HALF_DISCOUNT = Math.floor(Math.round(BOTTLE_RETAIL * 100) * 0.5) / 100;
 export const BOTTLE_HALF_PRICE = round2(BOTTLE_RETAIL - BOTTLE_HALF_DISCOUNT);
