@@ -14,16 +14,17 @@ bottle switch). If a rule here stops matching Shopify, fix the code. Never add a
 | 4 | Free shipping | Shopify shipping rate (threshold) | Whole order | Orders over $40, and all subscriptions. Storefront only *messages* it | n/a | "Free shipping over $40"; 1 pouch pays $4.99 |
 | 5 | Welcome code `ATLASWELCOME10` | Shopify discount code, typed by the customer | Order | Shown by the signup popup; the storefront never applies or stacks it | Per Shopify combination settings | Code revealed after signup |
 | 6 | Bottle retail | Shopify variant price | Atlas Performance Bottle | $19.99 | n/a | `$19.99` |
-| 7 | Bottle 50% off / free | **Does not exist in Shopify** | none | Display code is switched **off** (`BOTTLE_DISCOUNT_LIVE = false`) | n/a | No bottle promise anywhere. Bundle = `$78.97 ~~$83.97~~ Save $5.00` (2 pouches after ATLAS2PACK + bottle at retail) |
+| 7 | Bottle 50% off / free | **Must exist in Shopify as an automatic discount** (storefront shows it while `BOTTLE_DISCOUNT_LIVE = true`) | The bottle | 2+ pouches (any mix, subscription included): bottle 50% off ($10.00 off, bottle $9.99). 4+ pouches: bottle free. Must combine with product discounts so it coexists with ATLAS2PACK | With ATLAS2PACK (different products) | Slider (Free Shipping / 50% Off / Free Bottle), "Add Bottle 50% off $9.99" card, bundle = `$68.97 ~~$83.97~~ Save $15.00` |
 
 Storefront sends **no discount code** at checkout. The hidden `discount=` field was removed because ATLAS2PACK is
 automatic. The old `ATLAS2PACK-OLD` order discount is not referenced anywhere.
 
-## Re-enabling the bottle promotion (later)
-1. Create the discount in Shopify and set it to combine with product discounts (so it coexists with ATLAS2PACK).
-2. Verify rows 9 and 10 below in real checkouts. Confirm the exact rounded bottle price Shopify returns
-   (code assumes 50% of $19.99 rounds to $9.99, i.e. $10.00 off).
-3. Only then set `BOTTLE_DISCOUNT_LIVE = true` in `CartContext.tsx`.
+## The bottle promotion depends on Shopify
+The storefront shows the bottle slider and prices while `BOTTLE_DISCOUNT_LIVE = true` in `CartContext.tsx`.
+Shopify must have matching **automatic** discounts (2 pouches = bottle 50% off, 4 pouches = bottle free) that are set
+to combine with product discounts. If a real checkout shows the bottle at full price, set the switch to `false`
+and the slider, bottle prices and bundle discount disappear. Verify rows 9, 10 and 10b. Also confirm the exact
+rounded bottle price Shopify returns (code assumes 50% of $19.99 is $9.99, i.e. $10.00 off).
 
 ## Checkout QA matrix
 "Site" columns are verified automatically. **Fill in the Shopify columns from a real checkout** (stop at the payment
@@ -39,12 +40,13 @@ step, no need to pay). They must match.
 | 6 | 2 Grapefruit | $58.98 | $58.98 | ATLAS2PACK −$5.00 | free | | | |
 | 7 | 1 Strawberry + 1 Grapefruit | n/a (two pages) | $58.98 | ATLAS2PACK −$5.00 | free | | | |
 | 8 | 2 Strawberry + 1 Grapefruit | n/a | $88.47 | ATLAS2PACK −$7.50 | free | | | |
-| 9 | 2 pouches + bottle (Add Bundle) | $78.97 | $78.97 | ATLAS2PACK −$5.00, no bottle discount | free | | | |
-| 10 | 3 pouches + bottle | n/a | $108.46 | ATLAS2PACK −$7.50, no bottle discount | free | | | |
+| 9 | 2 pouches + bottle (Add Bundle) | $68.97 | $68.97 | ATLAS2PACK −$5.00 **and** bottle 50% (−$10.00) | free | | | |
+| 10 | 3 pouches + bottle | n/a | $98.46 | ATLAS2PACK −$7.50 and bottle 50% (−$10.00) | free | | | |
+| 10b | 4 pouches + bottle | n/a | $117.96 | ATLAS2PACK −$10.00 and bottle free (−$19.99) | free | | | |
 | 11 | Subscription only | $25.59 | $25.59 | Appstle 20% | free | | | |
 | 12 | Subscription + 1 one-time pouch | n/a | $57.58 | Appstle 20% on the sub; **ATLAS2PACK should NOT apply** | free | | | |
 | 13 | 2+ pouch cart, free shipping | see rows 2-4, 6-8 | | | free | | | |
-| 14 | Bundle, free shipping | $78.97 | $78.97 | as row 9 | free | | | |
+| 14 | Bundle, free shipping | $68.97 | $68.97 | as row 9 | free | | | |
 | 15 | Welcome code typed on 1 pouch | n/a | $31.99 | per Shopify code settings | $4.99 | | | |
 | 16 | Welcome code typed on 2+ pouch cart | n/a | $58.98 | depends on combination settings (ATLAS2PACK does not combine with order discounts) | free | | | |
 

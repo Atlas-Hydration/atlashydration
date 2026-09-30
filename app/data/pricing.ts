@@ -18,9 +18,10 @@
  *   - Welcome code ATLASWELCOME10: typed by the customer at checkout. The
  *     storefront never applies or stacks it.
  *
- * What does NOT exist in Shopify: a bottle discount (50% off / free). See
- * BOTTLE_DISCOUNT_LIVE in app/context/CartContext.tsx, which stays false until
- * one is created and verified in a real checkout.
+ * Bottle promotion (50% off at 2 pouches, free at 4): shown on the storefront
+ * while BOTTLE_DISCOUNT_LIVE is true (app/context/CartContext.tsx). It only
+ * matches checkout if Shopify has a matching automatic discount that combines
+ * with ATLAS2PACK. Verify in a real checkout (docs/PRICING.md rows 9, 10, 10b).
  */
 
 const round2 = (n: number) => Math.round(n * 100) / 100;
@@ -65,8 +66,7 @@ export function oneTimePouchTotal(qty: number): number {
 export const BOTTLE_RETAIL = 19.99;
 
 /**
- * Bottle prices if a 50%-off discount is ever created in Shopify (none exists
- * today; see header). Shopify rounds a discount half up to the cent, which gives
+ * Bottle price with the 50%-off promotion. Shopify rounds a discount half up to the cent, which gives
  * $10.00 off $19.99 (bottle $9.99), matching the old confirmed checkout result.
  */
 export const BOTTLE_HALF_DISCOUNT = Math.round(Math.round(BOTTLE_RETAIL * 100) * 0.5) / 100;
