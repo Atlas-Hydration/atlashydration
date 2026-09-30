@@ -11685,3 +11685,116 @@ img {
 
   .acover--wide { aspect-ratio: 4 / 3; padding: 26px 28px; }
 }
+
+
+/* ========================================
+   Bottle add-on under the 2-pouch option
+   ======================================== */
+.po-addon {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: -2px;
+  padding: 10px 14px;
+  background: #ffffff;
+  border: 1.5px dashed rgba(0, 0, 0, 0.26);
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.po-addon:hover { border-color: rgba(0, 0, 0, 0.45); }
+
+.po-addon--on {
+  border-style: solid;
+  border-color: var(--color-primary);
+  background: #f7f8f6;
+}
+
+.po-addon:has(.po-addon__input:focus-visible) {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.po-addon__input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.po-addon__box {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  color: var(--color-text);
+  background: #ffffff;
+  border: 1.5px solid rgba(0, 0, 0, 0.35);
+  border-radius: 6px;
+}
+
+.po-addon--on .po-addon__box {
+  color: #ffffff;
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+.po-addon__plus {
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.po-addon__img {
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  object-fit: cover;
+  background: #f2f2f2;
+  border-radius: 8px;
+}
+
+.po-addon__body {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.po-addon__title {
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.po-addon__price {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 8px;
+  font-size: 0.9rem;
+  color: var(--color-text);
+}
+
+.po-addon__price strong { font-weight: 700; }
+
+.po-addon__price s { color: var(--color-text-muted); }
+
+.po-addon__price em {
+  padding: 2px 7px;
+  font-size: 0.68rem;
+  font-style: normal;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #15803d;
+  background: #e7f5ec;
+  border-radius: 999px;
+}
+
+.po-addon__note {
+  font-size: var(--text-xs);
+  line-height: 1.4;
+  color: var(--color-text-muted);
+}
