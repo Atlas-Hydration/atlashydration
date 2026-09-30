@@ -6,6 +6,7 @@ import { oneTimePouchTotal } from "@/app/data/pricing";
 import { PRODUCTS } from "@/app/data/products";
 import { FREE_SHIPPING_THRESHOLD } from "@/app/data/formula";
 import PurchaseOptions from "@/app/components/PurchaseOptions";
+import { resizeShopify, shopifySrcSet } from "@/app/lib/images";
 
 const FLAVOR_IMAGES = {
   "strawberry-lemonade": [
@@ -136,9 +137,12 @@ export default function FeaturedProduct() {
                     <div className="fp-gallery__slide-wrap" key={i}>
                       <img
                         className="fp-gallery__slide-img"
-                        src={img.src}
+                        src={resizeShopify(img.src, 800)}
+                        srcSet={shopifySrcSet(img.src)}
+                        sizes="(max-width: 900px) 100vw, 560px"
                         alt={img.alt}
                         loading={i === 0 ? "eager" : "lazy"}
+                        decoding="async"
                         draggable={false}
                       />
                     </div>
@@ -169,7 +173,7 @@ export default function FeaturedProduct() {
                     onClick={() => goTo(i)}
                     aria-label={`Image ${i + 1}`}
                   >
-                    <img src={img.src} alt={img.alt} loading="lazy" />
+                    <img src={resizeShopify(img.src, 160)} alt={img.alt} loading="lazy" decoding="async" />
                   </button>
                 ))}
               </div>

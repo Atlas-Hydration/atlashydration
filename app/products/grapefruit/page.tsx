@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { PRODUCTS } from "@/app/data/products";
+import { buildOffer, reviewJsonLd, breadcrumbJsonLd, twitterCard } from "@/app/data/seo";
 import { FREE_SHIPPING_THRESHOLD, SHIPPING_RATE } from "@/app/data/formula";
 import ProductPage from "@/app/components/ProductPage";
 
@@ -7,6 +8,7 @@ export const metadata: Metadata = {
   title: "Grapefruit Electrolytes | Atlas Hydration",
   description: "Zero-sugar grapefruit electrolyte drink mix with 1,769mg electrolytes, B vitamins, Vitamin C, and recovery amino acids. 16 stick packs per box.",
   alternates: { canonical: "https://atlas-hydration.com/products/grapefruit" },
+  twitter: twitterCard({ title: "Grapefruit Electrolytes | Atlas Hydration", description: "Zero-sugar electrolyte drink mix with B vitamins, vitamin C, and amino acids. 16 stick packs.", image: PRODUCTS.grapefruit.images[0] }),
   openGraph: {
     type: "website",
     url: "https://atlas-hydration.com/products/grapefruit",
@@ -24,14 +26,9 @@ const productJsonLd = {
   description: "Premium zero-sugar grapefruit electrolyte drink mix with 1,769mg electrolytes, B vitamins, Vitamin C, and recovery amino acids. 16 stick packs per box.",
   image: "https://atlas-hydration.com/images/products/grapefruit/atlas-grapefruit-cover.jpg",
   brand: { "@type": "Brand", name: "Atlas Hydration" },
-  offers: {
-    "@type": "Offer",
-    price: PRODUCTS.grapefruit.price.toFixed(2),
-    priceCurrency: "USD",
-    availability: "https://schema.org/InStock",
-    url: "https://atlas-hydration.com/products/grapefruit",
-  },
-  aggregateRating: { "@type": "AggregateRating", ratingValue: "4.9", reviewCount: "20" },
+  sku: PRODUCTS.grapefruit.variantId.replace("gid://shopify/ProductVariant/", ""),
+  offers: buildOffer({ url: "https://atlas-hydration.com/products/grapefruit", price: PRODUCTS.grapefruit.price.toFixed(2), preorder: true }),
+  ...reviewJsonLd(),
   nutrition: {
     "@type": "NutritionInformation",
     sodiumContent: "500mg",
@@ -129,7 +126,7 @@ const accordionItems = [
     title: "Shipping & Returns",
     content: (
       <>
-        <p><strong>Free shipping</strong> on U.S. orders over ${FREE_SHIPPING_THRESHOLD}. Standard shipping (3–5 business days) is ${SHIPPING_RATE}. Expedited options available at checkout.</p>
+        <p><strong>Free shipping</strong> on U.S. orders over ${FREE_SHIPPING_THRESHOLD}. Orders under ${FREE_SHIPPING_THRESHOLD} ship for ${SHIPPING_RATE} (4–6 business days). Subscriptions always ship free.</p>
         <p><strong>Satisfaction guaranteed:</strong> If you&apos;re not completely happy with your order, contact us within 30 days for a full refund or exchange — no questions asked.</p>
         <p>We currently ship within the United States. International shipping coming soon.</p>
       </>
@@ -140,6 +137,7 @@ const accordionItems = [
 export default function Grapefruit() {
   return (
     <>
+    <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd([{ name: "Home", path: "/" }, { name: "Grapefruit Electrolytes", path: "/products/grapefruit" }])) }} />
     <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(productJsonLd) }} />
     <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }} />
     <ProductPage

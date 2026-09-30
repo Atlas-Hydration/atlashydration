@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { PRODUCTS } from "@/app/data/products";
+import { buildOffer, reviewJsonLd, breadcrumbJsonLd, twitterCard } from "@/app/data/seo";
 import ProductPage from "@/app/components/ProductPage";
 import { FORMULA, FORMULA_TOTAL, FORMULA_ELECTROLYTE_BREAKDOWN, FREE_SHIPPING_THRESHOLD } from "@/app/data/formula";
 
@@ -7,6 +8,7 @@ export const metadata: Metadata = {
   title: "Strawberry Lemonade Electrolytes | Atlas Hydration",
   description: "Zero-sugar electrolyte drink mix with 1,769mg electrolytes, B vitamins, Vitamin C, and recovery amino acids. 16 stick packs per box.",
   alternates: { canonical: "https://atlas-hydration.com/products/strawberry-lemonade" },
+  twitter: twitterCard({ title: "Strawberry Lemonade Electrolytes | Atlas Hydration", description: "Zero-sugar electrolyte drink mix with B vitamins, vitamin C, and amino acids. 16 stick packs.", image: PRODUCTS["strawberry-lemonade"].images[0] }),
   openGraph: {
     type: "website",
     url: "https://atlas-hydration.com/products/strawberry-lemonade",
@@ -24,14 +26,9 @@ const productJsonLd = {
   description: "Premium zero-sugar electrolyte drink mix with 1,769mg electrolytes, B vitamins, Vitamin C, and recovery amino acids. 16 stick packs per box.",
   image: "https://cdn.shopify.com/s/files/1/0595/8133/3578/files/1_e4b7eae7-01d9-430c-9655-7949d910deb6.jpg?v=1771507844",
   brand: { "@type": "Brand", name: "Atlas Hydration" },
-  offers: {
-    "@type": "Offer",
-    price: PRODUCTS["strawberry-lemonade"].price.toFixed(2),
-    priceCurrency: "USD",
-    availability: "https://schema.org/InStock",
-    url: "https://atlas-hydration.com/products/strawberry-lemonade",
-  },
-  aggregateRating: { "@type": "AggregateRating", ratingValue: "4.9", reviewCount: "20" },
+  sku: PRODUCTS["strawberry-lemonade"].variantId.replace("gid://shopify/ProductVariant/", ""),
+  offers: buildOffer({ url: "https://atlas-hydration.com/products/strawberry-lemonade", price: PRODUCTS["strawberry-lemonade"].price.toFixed(2), preorder: false }),
+  ...reviewJsonLd(),
   nutrition: {
     "@type": "NutritionInformation",
     calories: `${FORMULA.calories} calories`,
@@ -136,6 +133,7 @@ const accordionItems = [
 export default function StrawberryLemonade() {
   return (
     <>
+    <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd([{ name: "Home", path: "/" }, { name: "Strawberry Lemonade Electrolytes", path: "/products/strawberry-lemonade" }])) }} />
     <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(productJsonLd) }} />
     <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }} />
     <ProductPage

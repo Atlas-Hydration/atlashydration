@@ -25,6 +25,7 @@ export default function DarkCta() {
           />
         </picture>
         <iframe
+          loading="lazy"
           className="cta-dark__video-cf cta-dark__video-cf--desktop"
           src={streamParams(DESKTOP_ID)}
           allow="autoplay; encrypted-media"
@@ -32,6 +33,7 @@ export default function DarkCta() {
           title="Background video"
         />
         <iframe
+          loading="lazy"
           className="cta-dark__video-cf cta-dark__video-cf--mobile"
           src={streamParams(MOBILE_ID)}
           allow="autoplay; encrypted-media"

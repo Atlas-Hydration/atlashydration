@@ -8,6 +8,7 @@ import CartDrawer from "@/app/components/CartDrawer";
 import ScrollToTop from "@/app/components/ScrollToTop";
 import { SignupPopupProvider } from "@/app/components/SignupPopup";
 import CookieConsent from "@/app/components/CookieConsent";
+import { SITE_URL, SITE_NAME, DEFAULT_OG_IMAGE } from "@/app/data/seo";
 
 export const viewport: Viewport = {
   width: "device-width",
@@ -17,9 +18,16 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
   title: "Atlas Hydration | Premium Electrolyte Drink Mix",
   description:
     "Zero sugar, 1,769mg electrolytes, B vitamins, and amino acids. Premium hydration for peak performance.",
+  openGraph: {
+    type: "website",
+    siteName: SITE_NAME,
+    images: [DEFAULT_OG_IMAGE],
+  },
+  twitter: { card: "summary_large_image", images: [DEFAULT_OG_IMAGE] },
   icons: {
     icon: "/favicon.svg",
   },
@@ -38,6 +46,7 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
         <link rel="preconnect" href="https://customer-1sijhr9xl3yqixxu.cloudflarestream.com" />
+        <link rel="preconnect" href="https://cdn.shopify.com" crossOrigin="anonymous" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link
           rel="preconnect"

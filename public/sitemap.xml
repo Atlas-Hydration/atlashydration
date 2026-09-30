@@ -26,7 +26,7 @@
   </url>
   <url>
     <loc>https://atlas-hydration.com/blog</loc>
-    <lastmod>2026-09-30</lastmod>
+    <lastmod>2026-10-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -63,6 +63,24 @@
   <url>
     <loc>https://atlas-hydration.com/blog/cabin-air-and-hydration</loc>
     <lastmod>2026-09-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://atlas-hydration.com/blog/what-are-electrolytes</loc>
+    <lastmod>2026-10-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://atlas-hydration.com/blog/zero-sugar-electrolyte-label-guide</loc>
+    <lastmod>2026-10-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://atlas-hydration.com/blog/electrolytes-for-racquet-sports</loc>
+    <lastmod>2026-10-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { DEFAULT_OG_IMAGE } from "@/app/data/seo";
 import Link from "next/link";
 
 export const metadata: Metadata = {
@@ -12,7 +13,9 @@ export const metadata: Metadata = {
     title: "Terms & Conditions | Atlas Hydration",
     description: "Atlas Hydration terms and conditions. Please read these terms carefully before using our site or placing an order.",
     siteName: "Atlas Hydration",
+    images: [DEFAULT_OG_IMAGE],
   },
+  twitter: { card: "summary_large_image", images: [DEFAULT_OG_IMAGE] },
 };
 
 const webPageJsonLd = {
