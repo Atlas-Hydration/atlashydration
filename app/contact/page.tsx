@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { DEFAULT_OG_IMAGE } from "@/app/data/seo";
 
 export const metadata: Metadata = {
   title: "Contact Us | Atlas Hydration",
@@ -10,7 +11,9 @@ export const metadata: Metadata = {
     title: "Contact Us | Atlas Hydration",
     description: "Get in touch with Atlas Hydration. We're here to help with orders, subscriptions, and any questions.",
     siteName: "Atlas Hydration",
+    images: [DEFAULT_OG_IMAGE],
   },
+  twitter: { card: "summary_large_image", images: [DEFAULT_OG_IMAGE] },
 };
 
 const contactJsonLd = {

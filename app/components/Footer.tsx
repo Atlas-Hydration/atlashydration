@@ -66,6 +66,7 @@ export default function Footer() {
                 Supplement Facts
               </Link>
               <Link href="/#science">Science</Link>
+              <Link href="/blog">Hydration Explained</Link>
             </nav>
           </div>
 

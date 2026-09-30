@@ -7,6 +7,8 @@ import { oneTimePouchTotal } from "@/app/data/pricing";
 import { PRODUCTS } from "@/app/data/products";
 import { FREE_SHIPPING_THRESHOLD } from "@/app/data/formula";
 import PurchaseOptions from "@/app/components/PurchaseOptions";
+import ProductArticles from "@/app/components/ProductArticles";
+import { resizeShopify, shopifySrcSet } from "@/app/lib/images";
 import { SupplementFactsWithPanel } from "@/app/components/IngredientDetailPanel";
 import FaqSection from "@/app/components/home/FaqSection";
 
@@ -55,7 +57,7 @@ function ProductGallery({ images }: { images: ProductImage[] }) {
       <div className="product-gallery__stacked-images" ref={galleryRef}>
         {images.map((img, i) => (
           <div className="product-gallery__stacked-img" key={i}>
-            <img src={img.src} alt={img.alt} loading={i === 0 ? "eager" : "lazy"} />
+            <img src={resizeShopify(img.src, 800)} srcSet={shopifySrcSet(img.src)} sizes="(max-width: 900px) 100vw, 560px" alt={img.alt} loading={i === 0 ? "eager" : "lazy"} fetchPriority={i === 0 ? "high" : undefined} decoding="async" />
           </div>
         ))}
       </div>
@@ -73,7 +75,7 @@ function ProductGallery({ images }: { images: ProductImage[] }) {
       <div className="product-gallery__thumbs">
         {images.map((img, i) => (
           <button key={i} className={`product-gallery__thumb${i === currentImage ? " active" : ""}`} onClick={() => setCurrentImage(i)} aria-label={`Thumbnail ${i + 1}`}>
-            <img src={img.src} alt={img.alt} loading="lazy" />
+            <img src={resizeShopify(img.src, 160)} alt={img.alt} loading="lazy" decoding="async" />
           </button>
         ))}
       </div>
@@ -252,6 +254,8 @@ export default function ProductPage({ config }: { config: ProductPageConfig }) {
           <SupplementFactsWithPanel {...(config.supplementFactsProps || {})} />
         </div>
       </section>
+
+      <ProductArticles />
 
       <FaqSection />
 

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { FREE_SHIPPING_THRESHOLD } from "@/app/data/formula";
+import HeroVideo from "@/app/components/home/HeroVideo";
 
 const CF_BASE = "https://customer-1sijhr9xl3yqixxu.cloudflarestream.com";
 const DESKTOP_ID = "a82a07f888cfed6727a183cab0322ee4";
@@ -11,6 +12,9 @@ const streamParams = (id: string) =>
 export default function HeroSection() {
   return (
     <section className="hero" aria-label="Hero">
+      {/* Start fetching the poster (the largest thing on screen) immediately. */}
+      <link rel="preload" as="image" href={`${CF_BASE}/${MOBILE_ID}/thumbnails/thumbnail.jpg?width=720&height=1280&fit=crop`} media="(max-width: 768px)" />
+      <link rel="preload" as="image" href={`${CF_BASE}/${DESKTOP_ID}/thumbnails/thumbnail.jpg?width=1920&height=1080&fit=crop`} media="(min-width: 769px)" />
       <div className="hero__video-wrap">
         {/* Instant thumbnails while iframes load */}
         <picture className="hero__video-poster">
@@ -19,24 +23,11 @@ export default function HeroSection() {
             src={`${CF_BASE}/${DESKTOP_ID}/thumbnails/thumbnail.jpg?width=1920&height=1080&fit=crop`}
             alt=""
             className="hero__video-poster-img"
+            fetchPriority="high"
+            decoding="async"
           />
         </picture>
-        {/* Desktop — horizontal video */}
-        <iframe
-          className="hero__video-cf hero__video-cf--desktop"
-          src={streamParams(DESKTOP_ID)}
-          allow="autoplay; encrypted-media"
-          allowFullScreen
-          title="Atlas Hydration hero video background"
-        />
-        {/* Mobile — vertical video */}
-        <iframe
-          className="hero__video-cf hero__video-cf--mobile"
-          src={streamParams(MOBILE_ID)}
-          allow="autoplay; encrypted-media"
-          allowFullScreen
-          title="Atlas Hydration hero video background mobile"
-        />
+        <HeroVideo desktopSrc={streamParams(DESKTOP_ID)} mobileSrc={streamParams(MOBILE_ID)} />
         <div className="hero__video-overlay" />
       </div>
       <div className="hero__content">

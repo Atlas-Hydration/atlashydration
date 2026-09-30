@@ -14,6 +14,7 @@ import FaqSection from "@/app/components/home/FaqSection";
 import CtaSection from "@/app/components/home/CtaSection";
 import DarkCta from "@/app/components/home/DarkCta";
 import StickyBuyBar from "@/app/components/home/StickyBuyBar";
+import { twitterCard } from "@/app/data/seo";
 
 
 export const metadata: Metadata = {
@@ -23,6 +24,7 @@ export const metadata: Metadata = {
   keywords:
     "electrolyte drink mix, zero sugar electrolytes, sports hydration, Atlas Hydration, electrolyte powder, sugar free hydration, recovery drink",
   alternates: { canonical: "https://atlas-hydration.com/" },
+  twitter: twitterCard({ title: "Atlas Hydration | Zero-Sugar Electrolyte Mixes", description: "Premium zero-sugar electrolyte drink mixes with B vitamins and amino acids.", image: "https://atlas-hydration.com/og/default.png" }),
   openGraph: {
     type: "website",
     url: "https://atlas-hydration.com/",

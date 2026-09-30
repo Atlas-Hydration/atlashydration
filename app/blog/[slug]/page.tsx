@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ARTICLES, formatArticleDate, getArticle } from "@/app/data/articles";
 import ArticleCover from "@/app/components/ArticleCover";
+import { SITE_URL, breadcrumbJsonLd, twitterCard } from "@/app/data/seo";
 
 export const dynamicParams = false;
 
@@ -15,11 +16,13 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const article = getArticle(slug);
   if (!article) return {};
   const url = `https://atlas-hydration.com/blog/${article.slug}`;
+  const image = `${SITE_URL}/og/articles/${article.slug}.png`;
   return {
     title: `${article.title} | Atlas Hydration`,
     description: article.dek,
     alternates: { canonical: url },
-    openGraph: { type: "article", url, title: article.title, description: article.dek, siteName: "Atlas Hydration", publishedTime: article.published },
+    openGraph: { type: "article", url, title: article.title, description: article.dek, siteName: "Atlas Hydration", publishedTime: article.published, images: [{ url: image, width: 1200, height: 630, alt: article.title }] },
+    twitter: twitterCard({ title: article.title, description: article.dek, image }),
   };
 }
 
@@ -36,6 +39,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
     description: article.dek,
     datePublished: article.published,
     dateModified: article.published,
+    image: `${SITE_URL}/og/articles/${article.slug}.png`,
     author: { "@type": "Organization", name: "Atlas Hydration" },
     publisher: { "@type": "Organization", name: "Atlas Hydration", logo: { "@type": "ImageObject", url: "https://atlas-hydration.com/logo.svg" } },
     mainEntityOfPage: `https://atlas-hydration.com/blog/${article.slug}`,
@@ -44,6 +48,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
   return (
     <main className="art">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd([{ name: "Home", path: "/" }, { name: "Hydration Explained", path: "/blog" }, { name: article.title, path: `/blog/${article.slug}` }])) }} />
       <article className="art__wrap">
         <Link href="/blog" className="art__crumb">← Hydration Explained</Link>
         <div className="art__meta">
