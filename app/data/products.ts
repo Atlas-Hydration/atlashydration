@@ -1,3 +1,5 @@
+import { POUCH_PRICES } from "@/app/data/pricing";
+
 export interface Product {
   name: string;
   slug: string;
@@ -23,10 +25,10 @@ export const PRODUCTS: Record<string, Product> = {
   "strawberry-lemonade": {
     name: "Strawberry Lemonade",
     slug: "strawberry-lemonade",
-    price: 29.99,
-    subscribePrice: 23.99,
-    perStick: 1.87,
-    subscribePerStick: 1.50,
+    price: POUCH_PRICES.single,
+    subscribePrice: POUCH_PRICES.subscribe,
+    perStick: POUCH_PRICES.perStick,
+    subscribePerStick: POUCH_PRICES.subscribePerStick,
     variantId: "gid://shopify/ProductVariant/42739482067018",
     color: "#e85d75",
     colorRgb: "232, 93, 117",
@@ -51,10 +53,10 @@ export const PRODUCTS: Record<string, Product> = {
   grapefruit: {
     name: "Grapefruit",
     slug: "grapefruit",
-    price: 29.99,
-    subscribePrice: 23.99,
-    perStick: 1.87,
-    subscribePerStick: 1.50,
+    price: POUCH_PRICES.single,
+    subscribePrice: POUCH_PRICES.subscribe,
+    perStick: POUCH_PRICES.perStick,
+    subscribePerStick: POUCH_PRICES.subscribePerStick,
     variantId: "gid://shopify/ProductVariant/41850457817162",
     color: "#f5a623",
     colorRgb: "245, 166, 35",

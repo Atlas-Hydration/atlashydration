@@ -1,6 +1,7 @@
 "use client";
 
 import { useCart } from "@/app/context/CartContext";
+import { PRODUCTS } from "@/app/data/products";
 
 const CF_BASE = "https://customer-1sijhr9xl3yqixxu.cloudflarestream.com";
 const DESKTOP_ID = "a82a07f888cfed6727a183cab0322ee4";
@@ -52,7 +53,7 @@ export default function DarkCta() {
             className="cta-dark__btn"
             onClick={() => addToCart("strawberry-lemonade", 1)}
           >
-            Order &mdash; $29.99
+            Order &mdash; ${PRODUCTS["strawberry-lemonade"].price.toFixed(2)}
           </button>
         </div>
       </div>

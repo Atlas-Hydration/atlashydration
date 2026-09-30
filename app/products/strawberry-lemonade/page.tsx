@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { PRODUCTS } from "@/app/data/products";
 import ProductPage from "@/app/components/ProductPage";
 import { FORMULA, FORMULA_TOTAL, FORMULA_ELECTROLYTE_BREAKDOWN, FREE_SHIPPING_THRESHOLD } from "@/app/data/formula";
 
@@ -25,7 +26,7 @@ const productJsonLd = {
   brand: { "@type": "Brand", name: "Atlas Hydration" },
   offers: {
     "@type": "Offer",
-    price: "29.99",
+    price: PRODUCTS["strawberry-lemonade"].price.toFixed(2),
     priceCurrency: "USD",
     availability: "https://schema.org/InStock",
     url: "https://atlas-hydration.com/products/strawberry-lemonade",
