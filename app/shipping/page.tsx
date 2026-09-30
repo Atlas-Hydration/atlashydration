@@ -49,13 +49,13 @@ export default function Shipping() {
         <div className="policy-page__content">
           <h2>Returns</h2>
           <p>
-            All sales are final, unless the product is defective! However, we
-            stand by our formula. If you are unhappy with your purchase or
-            experience issues with your order, please contact us at{" "}
+            We offer a 30-day satisfaction guarantee. If you&apos;re not
+            completely happy with your order, contact us within 30 days at{" "}
             <a href="mailto:support@atlas-hydration.com">
               support@atlas-hydration.com
-            </a>
-            .
+            </a>{" "}
+            for a full refund or exchange. If your order arrives damaged or
+            defective, we&apos;ll make it right.
           </p>
 
           <h2>Shipping</h2>
