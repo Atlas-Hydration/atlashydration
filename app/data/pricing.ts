@@ -20,8 +20,9 @@
  *
  * Bottle promotion (50% off at 2 pouches, free at 4): shown on the storefront
  * while BOTTLE_DISCOUNT_LIVE is true (app/context/CartContext.tsx). It only
- * matches checkout if Shopify has a matching automatic discount that combines
- * with ATLAS2PACK. Verify in a real checkout (docs/PRICING.md rows 9, 10, 10b).
+ * matches checkout because Shopify has matching automatic discounts. Shopify does
+ * NOT apply ATLAS2PACK together with a bottle discount; it gives the larger one
+ * (docs/PRICING.md, "Platform rule"). The cart mirrors that in computeCartPricing.
  */
 
 const round2 = (n: number) => Math.round(n * 100) / 100;

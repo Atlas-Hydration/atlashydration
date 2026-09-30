@@ -1,8 +1,7 @@
 "use client";
 
 import { useState, useRef, useCallback } from "react";
-import { useCart, BOTTLE_HALF_OFF_THRESHOLD, BOTTLE_HALF_PRICE, BOTTLE_DISCOUNT_LIVE } from "@/app/context/CartContext";
-import { oneTimePouchTotal } from "@/app/data/pricing";
+import { useCart, BOTTLE_HALF_OFF_THRESHOLD, computeCartPricing } from "@/app/context/CartContext";
 import { PRODUCTS } from "@/app/data/products";
 
 const bottle = PRODUCTS.bottle;
@@ -20,12 +19,12 @@ export default function CompleteKitBundle({
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const mix = PRODUCTS[mixSlug];
-  // Built from real discounts only: the pouches get ATLAS2PACK (automatic in
-  // Shopify); the bottle is discounted ONLY while BOTTLE_DISCOUNT_LIVE (off
-  // until a real Shopify bottle discount exists and is verified).
-  const pouchTotal = oneTimePouchTotal(MIX_QTY);
-  const combinedPrice = BOTTLE_DISCOUNT_LIVE ? pouchTotal + BOTTLE_HALF_PRICE : pouchTotal + bottle.price;
-  const fullPrice = mix.price * MIX_QTY + bottle.price;
+  // Priced by the same function the cart uses, so the card always equals what the
+  // cart (and Shopify) will show after Add Bundle.
+  const { subtotal: fullPrice, total: combinedPrice } = computeCartPricing([
+    { slug: mixSlug, title: mixName, price: mix.price, quantity: MIX_QTY, image: null },
+    { slug: "bottle", title: bottle.name, price: bottle.price, quantity: 1, image: null },
+  ]);
 
   const handleAdd = useCallback(() => {
     setAdding(true);

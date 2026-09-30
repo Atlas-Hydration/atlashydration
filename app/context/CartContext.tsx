@@ -123,12 +123,16 @@ function computeBottlePromo(items: CartItem[]) {
 
 // ---------------------------------------------------------------------------
 // Expected cart totals. Shopify checkout is authoritative; this only mirrors
-// the discounts that really exist so the drawer shows what checkout will charge:
-//   - ATLAS2PACK (automatic in Shopify): $2.50 off each one-time pouch, 2+.
-//     No discount code is sent, Shopify applies it by itself.
+// what it really charges:
+//   - ATLAS2PACK (automatic): $2.50 off each one-time pouch, 2+ pouches.
+//   - Bottle tiers (automatic Buy X Get Y): 50% off at 2 one-time pouches,
+//     free at 4. Only while BOTTLE_DISCOUNT_LIVE.
+//   - Shopify will NOT apply ATLAS2PACK and a bottle discount on the same
+//     order (live checkout 2026-09-30: 2 pouches alone got ATLAS2PACK -$5.00,
+//     2 pouches + bottle got only the bottle -$9.99). It gives the customer the
+//     larger one, so the cart shows only the larger one too.
 //   - Subscription pouches are already priced at 20% off and never count toward
-//     ATLAS2PACK.
-//   - Bottle discount: only while BOTTLE_DISCOUNT_LIVE (currently off).
+//     ATLAS2PACK or the bottle tiers.
 // ---------------------------------------------------------------------------
 
 function computeCartPricing(items: CartItem[]) {
@@ -137,14 +141,19 @@ function computeCartPricing(items: CartItem[]) {
     (sum, i) => (QUALIFYING_POUCH_SLUGS.includes(i.slug) && !i.subscriptionFrequency ? sum + i.quantity : sum),
     0
   );
-  const pouchDiscount = multiPouchDiscount(oneTimePouchQty);
+  const pouchOffer = multiPouchDiscount(oneTimePouchQty);
 
   const { bottleInCart, tier } = computeBottlePromo(items);
-  const bottleDiscount =
+  const bottleOffer =
     !BOTTLE_DISCOUNT_LIVE || !bottleInCart ? 0
     : tier === "free" ? BOTTLE_FULL_PRICE
-    : tier === "half" ? BOTTLE_FULL_PRICE - BOTTLE_HALF_PRICE
+    : tier === "half" ? Math.round((BOTTLE_FULL_PRICE - BOTTLE_HALF_PRICE) * 100) / 100
     : 0;
+
+  // One discount wins, never both.
+  const bottleWins = bottleOffer > 0 && bottleOffer >= pouchOffer;
+  const bottleDiscount = bottleWins ? bottleOffer : 0;
+  const pouchDiscount = bottleWins ? 0 : pouchOffer;
 
   const total = Math.round((subtotal - pouchDiscount - bottleDiscount) * 100) / 100;
   return { subtotal, oneTimePouchQty, pouchDiscount, bottleDiscount, total };
