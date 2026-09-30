@@ -1,11 +1,10 @@
 "use client";
 
 import { useState, useRef, useCallback, useEffect } from "react";
-import { useCart } from "@/app/context/CartContext";
+import { useCart, BOTTLE_DISCOUNT_LIVE, computeCartPricing } from "@/app/context/CartContext";
 import { oneTimePouchTotal } from "@/app/data/pricing";
 import { PRODUCTS } from "@/app/data/products";
 import { FREE_SHIPPING_THRESHOLD } from "@/app/data/formula";
-import CompleteKitBundle from "@/app/components/CompleteKitBundle";
 import PurchaseOptions from "@/app/components/PurchaseOptions";
 
 const FLAVOR_IMAGES = {
@@ -32,6 +31,7 @@ export default function FeaturedProduct() {
   const [adding, setAdding] = useState(false);
   const [qty, setQty] = useState(1);
   const [customQtyOpen, setCustomQtyOpen] = useState(false);
+  const [addBottle, setAddBottle] = useState(false);
   const { addToCart } = useCart();
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const dragStartX = useRef(0);
@@ -90,10 +90,20 @@ export default function FeaturedProduct() {
   // subscription already carries its own 20% discount.
   const customQtyTotal = isSubscribing ? qty * unitPrice : oneTimePouchTotal(qty);
 
+  // Optional Atlas Bottle add-on, only offered with the 2-pouch one-time option.
+  const bottleIncluded = BOTTLE_DISCOUNT_LIVE && addBottle && !isSubscribing && qty === 2 && !customQtyOpen;
+  const addTotal = bottleIncluded
+    ? computeCartPricing([
+        { slug: selectedFlavor, title: product.name, price: product.price, quantity: 2, image: null },
+        { slug: "bottle", title: PRODUCTS.bottle.name, price: PRODUCTS.bottle.price, quantity: 1, image: null },
+      ]).total
+    : customQtyTotal;
+
   const handleAdd = async () => {
     setAdding(true);
     const subFreq = purchaseType === "subscribe" ? frequency : undefined;
     await addToCart(selectedFlavor, qty, subFreq);
+    if (bottleIncluded) await addToCart("bottle", 1);
     if (timerRef.current) clearTimeout(timerRef.current);
     timerRef.current = setTimeout(() => setAdding(false), 1200);
   };
@@ -205,6 +215,8 @@ export default function FeaturedProduct() {
               onCustomQtyOpenChange={setCustomQtyOpen}
               frequency={frequency}
               onFrequencyChange={setFrequency}
+              addBottle={addBottle}
+              onAddBottleChange={setAddBottle}
             />
 
             <div style={{ marginTop: 16 }}>
@@ -212,7 +224,7 @@ export default function FeaturedProduct() {
                 className={`btn btn--primary btn--lg${adding ? " btn--added" : ""}`}
                 onClick={handleAdd}
               >
-                {adding ? "Added" : isPreorder ? "Pre-Order" : `Add to Cart — $${customQtyTotal.toFixed(2)}`}
+                {adding ? "Added" : isPreorder ? "Pre-Order" : `Add to Cart — $${addTotal.toFixed(2)}`}
               </button>
             </div>
 
@@ -222,11 +234,6 @@ export default function FeaturedProduct() {
               <li>Free shipping over ${FREE_SHIPPING_THRESHOLD}</li>
               <li>Skip or cancel subscriptions anytime</li>
             </ul>
-
-            <CompleteKitBundle
-              mixSlug={selectedFlavor}
-              mixName={selectedFlavor === "grapefruit" ? "Grapefruit Electrolyte Mix" : "Strawberry Lemonade Electrolyte Mix"}
-            />
           </div>
         </div>
       </div>
