@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useRef, useCallback, useEffect } from "react";
-import { useCart, TWO_PACK_DISCOUNT_AMOUNT } from "@/app/context/CartContext";
+import { useCart } from "@/app/context/CartContext";
+import { oneTimePouchTotal } from "@/app/data/pricing";
 import { PRODUCTS } from "@/app/data/products";
 import { FREE_SHIPPING_THRESHOLD } from "@/app/data/formula";
 import CompleteKitBundle from "@/app/components/CompleteKitBundle";
@@ -85,10 +86,9 @@ export default function FeaturedProduct() {
   const product = PRODUCTS[selectedFlavor];
   const isSubscribing = purchaseType === "subscribe";
   const unitPrice = isSubscribing ? product.subscribePrice : product.price;
-  // The 2-pack bundle discount only applies to one-time purchases — a
+  // The multi-pouch discount only applies to one-time purchases — a
   // subscription already carries its own 20% discount.
-  const twoPackDiscount = isSubscribing ? 0 : TWO_PACK_DISCOUNT_AMOUNT;
-  const customQtyTotal = qty === 2 ? unitPrice * 2 - twoPackDiscount : qty * unitPrice;
+  const customQtyTotal = isSubscribing ? qty * unitPrice : oneTimePouchTotal(qty);
 
   const handleAdd = async () => {
     setAdding(true);

@@ -48,3 +48,34 @@ export const POUCH_PRICES = {
  * ($5.00 at $29.99, $9.00 at $31.99.)
  */
 export const TWO_POUCH_DISCOUNT = round2(SINGLE_PRICE * 2 - TWO_POUCH_PRICE);
+
+/**
+ * Does the multi-pouch discount keep growing past 2 pouches?
+ *
+ * false (status quo): the ATLAS2PACK code only applies at exactly 2 pouches,
+ *   so the discount vanishes at 3+.
+ * true: with 2+ one-time pouches in the cart (any flavors), EVERY pouch is
+ *   TWO_POUCH_DISCOUNT_PER_POUCH off ($4.50). 2 -> $54.98, 3 -> $82.47,
+ *   4 -> $109.96. Subscriptions are excluded (they already get 20% off).
+ *
+ * Shopify must match BEFORE this is switched on. Discount code ATLAS2PACK:
+ *   - Amount off products, fixed amount $4.50 (not $9.00)
+ *   - applies to EACH eligible item (leave "only apply once per order" OFF)
+ *   - products: Atlas Zero-Sugar Electrolytes (both flavors)
+ *   - minimum purchase: 2 items
+ *   - purchase type: one-time only (not subscriptions)
+ */
+export const TWO_POUCH_DISCOUNT_SCALES = false;
+
+export const TWO_POUCH_DISCOUNT_PER_POUCH = round2(TWO_POUCH_DISCOUNT / 2);
+
+/** Total discount for `qty` one-time pouches. */
+export function twoPouchDiscountFor(qty: number): number {
+  if (TWO_POUCH_DISCOUNT_SCALES) return qty >= 2 ? round2(TWO_POUCH_DISCOUNT_PER_POUCH * qty) : 0;
+  return qty === 2 ? TWO_POUCH_DISCOUNT : 0;
+}
+
+/** What `qty` one-time pouches cost, discount included. */
+export function oneTimePouchTotal(qty: number): number {
+  return round2(qty * POUCH_PRICES.single - twoPouchDiscountFor(qty));
+}

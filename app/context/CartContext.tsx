@@ -9,7 +9,7 @@ import {
   type ReactNode,
 } from "react";
 import { PRODUCTS } from "@/app/data/products";
-import { TWO_POUCH_DISCOUNT } from "@/app/data/pricing";
+import { TWO_POUCH_DISCOUNT, TWO_POUCH_DISCOUNT_SCALES, twoPouchDiscountFor } from "@/app/data/pricing";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -134,6 +134,18 @@ function findTwoPack(items: CartItem[]) {
   );
 }
 
+/** One-time pouches the multi-pouch discount applies to. */
+function discountedPouchQty(items: CartItem[]): number {
+  if (TWO_POUCH_DISCOUNT_SCALES) {
+    // Scaling mode: all one-time pouches count, across flavors.
+    return items.reduce(
+      (sum, i) => (QUALIFYING_POUCH_SLUGS.includes(i.slug) && !i.subscriptionFrequency ? sum + i.quantity : sum),
+      0
+    );
+  }
+  return findTwoPack(items) ? 2 : 0;
+}
+
 // Shopify can't combine a "Buy X Get Y" product discount with another
 // discount acting on specific products (like ATLAS2PACK) — that's a
 // platform rule, not a settings toggle. So once the bottle discount is
@@ -145,15 +157,15 @@ function bottleDiscountWouldWin(items: CartItem[]): boolean {
 }
 
 function deriveDiscountCode(items: CartItem[]): string {
-  if (!findTwoPack(items) || bottleDiscountWouldWin(items)) return "";
+  if (twoPouchDiscountFor(discountedPouchQty(items)) === 0 || bottleDiscountWouldWin(items)) return "";
   return "ATLAS2PACK";
 }
 
 // Real dollar amount of the 2-pack discount, so the cart total can reflect
 // it immediately rather than only after Shopify applies the code at checkout.
 function computeTwoPackDiscount(items: CartItem[]): number {
-  if (!findTwoPack(items) || bottleDiscountWouldWin(items)) return 0;
-  return TWO_PACK_DISCOUNT_AMOUNT;
+  if (bottleDiscountWouldWin(items)) return 0;
+  return twoPouchDiscountFor(discountedPouchQty(items));
 }
 
 // ---------------------------------------------------------------------------
