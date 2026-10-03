@@ -1,9 +1,7 @@
 "use client";
 
 import { useState, useRef, useCallback, useEffect } from "react";
-import { useCart, BOTTLE_DISCOUNT_LIVE, computeCartPricing } from "@/app/context/CartContext";
-import { oneTimePouchTotal } from "@/app/data/pricing";
-import { PRODUCTS } from "@/app/data/products";
+import { usePurchaseSelection } from "@/app/context/PurchaseSelectionContext";
 import { FREE_SHIPPING_THRESHOLD } from "@/app/data/formula";
 import PurchaseOptions from "@/app/components/PurchaseOptions";
 import { resizeShopify, shopifySrcSet } from "@/app/lib/images";
@@ -27,13 +25,18 @@ export default function FeaturedProduct() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [dragOffset, setDragOffset] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
-  const [purchaseType, setPurchaseType] = useState<"subscribe" | "onetime">("subscribe");
-  const [frequency, setFrequency] = useState(2);
   const [adding, setAdding] = useState(false);
-  const [qty, setQty] = useState(1);
-  const [customQtyOpen, setCustomQtyOpen] = useState(false);
-  const [addBottle, setAddBottle] = useState(false);
-  const { addToCart } = useCart();
+  // The selection lives in PurchaseSelectionContext so the sticky bar and the
+  // bottom Order button add exactly what is selected here.
+  const {
+    flavor: selectedFlavor, setFlavor: setSelectedFlavor,
+    purchaseType, setPurchaseType,
+    frequency, setFrequency,
+    qty, setQty,
+    customQtyOpen, setCustomQtyOpen,
+    addBottle, setAddBottle,
+    isPreorder, total: addTotal, addSelectionToCart,
+  } = usePurchaseSelection();
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const dragStartX = useRef(0);
   const galleryRef = useRef<HTMLDivElement>(null);
@@ -73,9 +76,7 @@ export default function FeaturedProduct() {
     }
   }, [isDragging, dragOffset, next, prev]);
 
-  const [selectedFlavor, setSelectedFlavor] = useState<"strawberry-lemonade" | "grapefruit">("strawberry-lemonade");
   const images = FLAVOR_IMAGES[selectedFlavor];
-  const isPreorder = selectedFlavor === "grapefruit";
 
   // Reset slide to 0 when flavor changes
   useEffect(() => {
@@ -84,27 +85,9 @@ export default function FeaturedProduct() {
   }, [selectedFlavor]);
 
 
-  const product = PRODUCTS[selectedFlavor];
-  const isSubscribing = purchaseType === "subscribe";
-  const unitPrice = isSubscribing ? product.subscribePrice : product.price;
-  // The multi-pouch discount only applies to one-time purchases — a
-  // subscription already carries its own 20% discount.
-  const customQtyTotal = isSubscribing ? qty * unitPrice : oneTimePouchTotal(qty);
-
-  // Optional Atlas Bottle add-on, only offered with the 2-pouch one-time option.
-  const bottleIncluded = BOTTLE_DISCOUNT_LIVE && addBottle && !isSubscribing && qty === 2 && !customQtyOpen;
-  const addTotal = bottleIncluded
-    ? computeCartPricing([
-        { slug: selectedFlavor, title: product.name, price: product.price, quantity: 2, image: null },
-        { slug: "bottle", title: PRODUCTS.bottle.name, price: PRODUCTS.bottle.price, quantity: 1, image: null },
-      ]).total
-    : customQtyTotal;
-
   const handleAdd = async () => {
     setAdding(true);
-    const subFreq = purchaseType === "subscribe" ? frequency : undefined;
-    await addToCart(selectedFlavor, qty, subFreq);
-    if (bottleIncluded) await addToCart("bottle", 1);
+    await addSelectionToCart();
     if (timerRef.current) clearTimeout(timerRef.current);
     timerRef.current = setTimeout(() => setAdding(false), 1200);
   };

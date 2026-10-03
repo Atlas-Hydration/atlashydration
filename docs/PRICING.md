@@ -66,3 +66,9 @@ both. It gives the customer the larger one. The storefront (`computeCartPricing`
 the drawer, the bundle card and the tags show only the larger discount. Rows 10 and 10b assume the same "larger wins"
 behavior and still need a real checkout to confirm. Stacking both would need a Shopify-side change (for example a
 custom discount function), which the storefront cannot do.
+
+## Homepage buy buttons share one selection
+
+The homepage has three buttons that add pouches to the cart: the main **Add to Cart** in the buy box, the **sticky bar**, and the bottom **Order** button. They all read the same selection (flavor, offer, quantity, subscription frequency, bottle add-on) from `app/context/PurchaseSelectionContext.tsx` and add it with the same `addSelectionToCart()`. Do not give a button its own hard-coded product or quantity: it will drift from what the buy box shows (this happened once; the sticky and bottom buttons always added one pouch). Product pages have a single `handleAddToCart` used by both their buy box and sticky bar.
+
+When changing an offer, check all three buttons add the same cart lines (slug, quantity, selling plan) and show the same price.

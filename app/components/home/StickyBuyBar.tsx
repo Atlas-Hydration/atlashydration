@@ -1,30 +1,29 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useCart } from "@/app/context/CartContext";
-import { PRODUCTS } from "@/app/data/products";
+import { usePurchaseSelection } from "@/app/context/PurchaseSelectionContext";
 
 const flavors = [
   {
     key: "strawberry",
     product: "strawberry-lemonade" as const,
     name: "Strawberry Lemonade",
-    price: `$${PRODUCTS["strawberry-lemonade"].price.toFixed(2)}`,
     thumb: "https://cdn.shopify.com/s/files/1/0595/8133/3578/files/1_e4b7eae7-01d9-430c-9655-7949d910deb6.jpg?v=1771507844",
   },
   {
     key: "grapefruit",
     product: "grapefruit" as const,
     name: "Grapefruit",
-    price: `$${PRODUCTS.grapefruit.price.toFixed(2)}`,
     thumb: "https://cdn.shopify.com/s/files/1/0595/8133/3578/files/1_1a252c57-dc62-4c7b-a6b1-0f9677ce6b6f.jpg?v=1769181320",
   },
 ];
 
 export default function StickyBuyBar() {
-  const [activeFlavor, setActiveFlavor] = useState(0);
   const [visible, setVisible] = useState(false);
-  const { addToCart } = useCart();
+  // Flavor, offer, quantity, plan and bottle all come from the main buy box, so
+  // this bar adds exactly what is selected there.
+  const { flavor: selectedFlavor, setFlavor, total, offerLabel, isPreorder, addSelectionToCart } = usePurchaseSelection();
+  const activeFlavor = Math.max(0, flavors.findIndex((f) => f.product === selectedFlavor));
   const flavor = flavors[activeFlavor];
 
   useEffect(() => {
@@ -64,14 +63,14 @@ export default function StickyBuyBar() {
           />
           <div className="sticky-buy__info">
             <span className="sticky-buy__name">{flavor.name}</span>
-            <span className="sticky-buy__price">{flavor.price}</span>
+            <span className="sticky-buy__price">${total.toFixed(2)} · {offerLabel}</span>
           </div>
           <div className="sticky-buy__flavors">
             {flavors.map((f, i) => (
               <button
                 key={f.key}
                 className={`sticky-buy__flavor-dot sticky-buy__flavor-dot--${f.key}${i === activeFlavor ? " active" : ""}`}
-                onClick={() => setActiveFlavor(i)}
+                onClick={() => setFlavor(f.product)}
                 aria-label={f.name}
               />
             ))}
@@ -79,9 +78,9 @@ export default function StickyBuyBar() {
         </div>
         <button
           className="sticky-buy__btn"
-          onClick={() => addToCart(flavor.product, 1)}
+          onClick={() => addSelectionToCart()}
         >
-          <span className="sticky-buy__btn-text">{flavor.key === "grapefruit" ? "Pre-Order" : "Add to Cart"}</span>
+          <span className="sticky-buy__btn-text">{isPreorder ? "Pre-Order" : "Add to Cart"}</span>
         </button>
       </div>
     </div>
