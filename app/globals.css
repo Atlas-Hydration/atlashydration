@@ -7272,6 +7272,14 @@ img {
     font-size: 0.75rem;
   }
 
+  /* Price line carries the selected offer ("$73.98 · 2 pouches + bottle"), so it
+     sits under the name and gets the full width. */
+  .sticky-buy__info {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+  }
+
   .sticky-buy__flavors {
     display: none;
   }

@@ -15,6 +15,7 @@ import CtaSection from "@/app/components/home/CtaSection";
 import DarkCta from "@/app/components/home/DarkCta";
 import StickyBuyBar from "@/app/components/home/StickyBuyBar";
 import { twitterCard } from "@/app/data/seo";
+import { PurchaseSelectionProvider } from "@/app/context/PurchaseSelectionContext";
 
 
 export const metadata: Metadata = {
@@ -62,6 +63,7 @@ export default function Home() {
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }} />
+      <PurchaseSelectionProvider>
       <HeroSection />
       <ProofStrip />
       <FeaturedProduct />
@@ -77,6 +79,7 @@ export default function Home() {
       <CtaSection />
       <DarkCta />
       <StickyBuyBar />
+      </PurchaseSelectionProvider>
     </>
   );
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { useCart } from "@/app/context/CartContext";
+import { usePurchaseSelection } from "@/app/context/PurchaseSelectionContext";
 import { PRODUCTS } from "@/app/data/products";
 
 const CF_BASE = "https://customer-1sijhr9xl3yqixxu.cloudflarestream.com";
@@ -11,7 +11,8 @@ const streamParams = (id: string) =>
   `${CF_BASE}/${id}/iframe?${new URLSearchParams({ autoplay: "true", muted: "true", loop: "true", controls: "false", preload: "auto", startTime: "0", letterboxColor: "transparent" })}`;
 
 export default function DarkCta() {
-  const { addToCart } = useCart();
+  // Same selection (flavor, offer, quantity, plan, bottle) as the main buy box.
+  const { flavor, total, isPreorder, addSelectionToCart } = usePurchaseSelection();
 
   return (
     <section className="cta-dark cta-dark--video" aria-label="Buy now">
@@ -46,16 +47,16 @@ export default function DarkCta() {
         <div className="cta-dark__inner">
           <h2 className="cta-dark__title">
             Ready to Try<br />
-            <span className="wave-text">Strawberry&nbsp;Lemonade?</span>
+            <span className="wave-text">{PRODUCTS[flavor].name.replace(" ", "\u00a0")}?</span>
           </h2>
           <p className="cta-dark__text">
             16 stick packs. 1,769mg electrolytes. Zero sugar. 25 calories.
           </p>
           <button
             className="cta-dark__btn"
-            onClick={() => addToCart("strawberry-lemonade", 1)}
+            onClick={() => addSelectionToCart()}
           >
-            Order &mdash; ${PRODUCTS["strawberry-lemonade"].price.toFixed(2)}
+            {isPreorder ? "Pre-Order" : "Order"} &mdash; ${total.toFixed(2)}
           </button>
         </div>
       </div>
