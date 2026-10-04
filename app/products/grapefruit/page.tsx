@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { PRODUCTS } from "@/app/data/products";
 import { buildOffer, reviewJsonLd, breadcrumbJsonLd, twitterCard } from "@/app/data/seo";
 import { FREE_SHIPPING_THRESHOLD, SHIPPING_RATE } from "@/app/data/formula";
+import { POUCH_PRICES } from "@/app/data/pricing";
 import ProductPage from "@/app/components/ProductPage";
 
 export const metadata: Metadata = {
@@ -63,7 +64,7 @@ const faqJsonLd = {
       name: "How does Atlas compare to LMNT?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "1,769mg electrolytes vs LMNT's 1,260mg. Atlas also includes B vitamins (B3, B5, B6, B12), 90mg Vitamin C, and 1,200mg recovery amino acids — none of which LMNT offers. More affordable too: $1.87/stick ($1.50 with subscription) vs $2.00/packet.",
+        text: `1,769mg electrolytes vs LMNT's 1,260mg. Atlas also includes B vitamins (B3, B5, B6, B12), 90mg Vitamin C, and 1,200mg recovery amino acids — none of which LMNT offers. Atlas is $${POUCH_PRICES.perStick.toFixed(2)} per stick, or $${POUCH_PRICES.subscribePerStick.toFixed(2)} with a subscription.`,
       },
     },
     {

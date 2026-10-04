@@ -11,17 +11,17 @@ import BlogSection from "@/app/components/home/BlogSection";
 import FounderSection from "@/app/components/home/FounderSection";
 import GrapefruitWaitlist from "@/app/components/home/GrapefruitWaitlist";
 import FaqSection from "@/app/components/home/FaqSection";
-import CtaSection from "@/app/components/home/CtaSection";
 import DarkCta from "@/app/components/home/DarkCta";
 import StickyBuyBar from "@/app/components/home/StickyBuyBar";
 import { twitterCard } from "@/app/data/seo";
+import { FREE_SHIPPING_THRESHOLD } from "@/app/data/formula";
 import { PurchaseSelectionProvider } from "@/app/context/PurchaseSelectionContext";
 
 
 export const metadata: Metadata = {
   title: "Atlas Hydration | Zero-Sugar Electrolyte Mixes",
   description:
-    "Shop premium zero-sugar electrolyte drink mixes with 1,769mg electrolytes, B vitamins, and amino acids. Subscribe and save 20%. Free shipping over $40.",
+    `Shop premium zero-sugar electrolyte drink mixes with 1,769mg electrolytes, B vitamins, and amino acids. Subscribe and save 20%. Free shipping over $${FREE_SHIPPING_THRESHOLD}.`,
   keywords:
     "electrolyte drink mix, zero sugar electrolytes, sports hydration, Atlas Hydration, electrolyte powder, sugar free hydration, recovery drink",
   alternates: { canonical: "https://atlas-hydration.com/" },
@@ -76,7 +76,6 @@ export default function Home() {
       <BlogSection />
       <GrapefruitWaitlist />
       <FaqSection />
-      <CtaSection />
       <DarkCta />
       <StickyBuyBar />
       </PurchaseSelectionProvider>

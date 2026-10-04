@@ -11072,7 +11072,7 @@ img {
 
 .built__proof {
   display: grid;
-  grid-template-columns: repeat(3, auto);
+  grid-template-columns: repeat(2, auto);
   justify-content: start;
   gap: 12px 28px;
   margin: 0 0 36px;

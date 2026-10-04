@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { FORMULA, FORMULA_TOTAL, FORMULA_ELECTROLYTE_BREAKDOWN } from "@/app/data/formula";
+import { POUCH_PRICES } from "@/app/data/pricing";
 
 const ELECTROLYTE_ANSWER = `Each Strawberry Lemonade stick pack contains ${FORMULA_ELECTROLYTE_BREAKDOWN}. See the Supplement Facts on the product page for every ingredient and daily value.`;
 
@@ -17,7 +18,7 @@ function buildFaqItems() {
     },
     {
       question: "How does Atlas compare to other electrolyte mixes?",
-      answer: `Every brand formulates differently, so we suggest comparing labels side by side. Atlas provides <strong>${FORMULA_TOTAL}mg total electrolytes</strong>, zero sugar, and ${FORMULA.calories} calories per stick, plus B vitamins, vitamin C, L-Glutamine, and L-Alanine. That works out to $1.87 per stick, or $1.50 with a subscription.`,
+      answer: `Every brand formulates differently, so we suggest comparing labels side by side. Atlas provides <strong>${FORMULA_TOTAL}mg total electrolytes</strong>, zero sugar, and ${FORMULA.calories} calories per stick, plus B vitamins, vitamin C, L-Glutamine, and L-Alanine. That works out to $${POUCH_PRICES.perStick.toFixed(2)} per stick, or $${POUCH_PRICES.subscribePerStick.toFixed(2)} with a subscription.`,
     },
     {
       question: "What vitamins and amino acids are included?",
@@ -32,7 +33,7 @@ function buildFaqItems() {
     {
       question: "Who founded Atlas and why?",
       answer:
-        'Atlas was founded by <strong>Garrett Ray</strong>, a 787 pilot who travels internationally and also trains, runs, and plays padel. He wanted a hydration product that worked across travel, training, heat, recovery, and long workdays, with clean ingredients and no sugar. Atlas is a 1% for the Planet member and donates 1% of every sale to clean-water organizations.',
+        'Atlas was founded by <strong>Garrett Ray</strong>, a 787 pilot who travels internationally and also trains, runs, and plays padel. He wanted a hydration product that worked across travel, training, heat, recovery, and long workdays, with clean ingredients and no sugar.',
     },
   ];
 }
