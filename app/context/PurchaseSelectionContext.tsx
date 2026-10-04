@@ -1,18 +1,37 @@
 "use client";
 
-import { createContext, useContext, useState, useCallback, type ReactNode } from "react";
+import {
+  createContext,
+  useContext,
+  useState,
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  type ReactNode,
+} from "react";
 import { useCart, BOTTLE_DISCOUNT_LIVE, computeCartPricing } from "@/app/context/CartContext";
 import { oneTimePouchTotal } from "@/app/data/pricing";
 import { PRODUCTS } from "@/app/data/products";
-import type { PurchaseType } from "@/app/components/PurchaseOptions";
+import {
+  offerState,
+  purchaseLines,
+  bottleIncluded as isBottleIncluded,
+  DEFAULT_OFFER,
+  type OfferId,
+  type PurchaseFlavor,
+  type PurchaseState,
+  type PurchaseType,
+} from "@/app/data/purchase";
+import { readSelection, shouldRestoreSelection, writeSelection } from "@/app/lib/selectionMemory";
 
-export type PurchaseFlavor = "strawberry-lemonade" | "grapefruit";
+export type { PurchaseFlavor, PurchaseType, OfferId } from "@/app/data/purchase";
 
 /**
- * The homepage offer the shopper has picked (flavor, how to buy, quantity,
- * subscription frequency, bottle add-on) and the ONE routine that adds it to the
- * cart. The main buy box, the sticky bar and the bottom Order button all read
- * from here, so they can never add something different from what is selected.
+ * The offer the shopper has picked (flavor, how to buy, quantity, subscription
+ * frequency, bottle add-on) and the ONE routine that adds it to the cart. Every
+ * add-to-cart button on the page (buy box, sticky bar, bottom Order button) reads
+ * from here, so none can add something different from what is selected.
  */
 interface PurchaseSelection {
   flavor: PurchaseFlavor;
@@ -36,30 +55,72 @@ interface PurchaseSelection {
   total: number;
   /** Short description of the selection, e.g. "2 pouches + bottle". */
   offerLabel: string;
-  addSelectionToCart: () => Promise<void>;
+  /** True for a moment after an add, while repeat clicks are ignored. */
+  adding: boolean;
+  /** Adds the selection. Resolves false when ignored as an accidental repeat click. */
+  addSelectionToCart: () => Promise<boolean>;
 }
 
 const PurchaseSelectionContext = createContext<PurchaseSelection | null>(null);
 
-export function PurchaseSelectionProvider({ children }: { children: ReactNode }) {
-  const { addToCart } = useCart();
-  const [flavor, setFlavor] = useState<PurchaseFlavor>("strawberry-lemonade");
-  const [purchaseType, setPurchaseType] = useState<PurchaseType>("subscribe");
-  const [frequency, setFrequency] = useState(2);
-  const [qty, setQty] = useState(1);
-  const [customQtyOpen, setCustomQtyOpen] = useState(false);
-  const [addBottle, setAddBottle] = useState(false);
+/** Identical repeat adds inside this window are ignored (double-clicks). */
+const REPEAT_ADD_WINDOW_MS = 1200;
 
+const useIsomorphicLayoutEffect = typeof window !== "undefined" ? useLayoutEffect : useEffect;
+
+export function PurchaseSelectionProvider({
+  children,
+  initialFlavor = "strawberry-lemonade",
+  initialOffer = DEFAULT_OFFER,
+  lockFlavor = false,
+}: {
+  children: ReactNode;
+  initialFlavor?: PurchaseFlavor;
+  /** The offer selected on first render (and on every fresh visit). */
+  initialOffer?: OfferId;
+  /** Single-flavor product pages: a remembered selection can never change the flavor. */
+  lockFlavor?: boolean;
+}) {
+  const { addLines } = useCart();
+  const [state, setState] = useState<PurchaseState>(() => offerState(initialOffer, initialFlavor));
+  const [adding, setAdding] = useState(false);
+  const restoredRef = useRef(false);
+  const lastAdd = useRef<{ sig: string; at: number } | null>(null);
+  const addingTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // After a reload or a Back/Forward move, bring back what the shopper had picked.
+  // Fresh visits keep the offer named by the page (see selectionMemory.ts).
+  useIsomorphicLayoutEffect(() => {
+    if (restoredRef.current) return;
+    restoredRef.current = true;
+    if (!shouldRestoreSelection()) return;
+    const saved = readSelection(window.location.pathname, lockFlavor ? initialFlavor : undefined);
+    if (saved) setState(saved);
+  }, [initialFlavor, lockFlavor]);
+
+  useEffect(() => {
+    if (restoredRef.current) writeSelection(window.location.pathname, state);
+  }, [state]);
+
+  useEffect(() => () => { if (addingTimer.current) clearTimeout(addingTimer.current); }, []);
+
+  const patch = useCallback((p: Partial<PurchaseState>) => setState((s) => ({ ...s, ...p })), []);
+  const setFlavor = useCallback((flavor: PurchaseFlavor) => patch({ flavor }), [patch]);
+  const setPurchaseType = useCallback((purchaseType: PurchaseType) => patch({ purchaseType }), [patch]);
+  const setFrequency = useCallback((frequency: number) => patch({ frequency }), [patch]);
+  const setQty = useCallback((qty: number) => patch({ qty }), [patch]);
+  const setCustomQtyOpen = useCallback((customQtyOpen: boolean) => patch({ customQtyOpen }), [patch]);
+  const setAddBottle = useCallback((addBottle: boolean) => patch({ addBottle }), [patch]);
+
+  const { flavor, purchaseType, frequency, qty, customQtyOpen, addBottle } = state;
   const product = PRODUCTS[flavor];
   const isPreorder = flavor === "grapefruit";
   const isSubscribing = purchaseType === "subscribe";
+  const bottleIncluded = isBottleIncluded(state, BOTTLE_DISCOUNT_LIVE);
 
   // The multi-pouch discount only applies to one-time purchases; a subscription
   // already carries its own 20% discount.
   const pouchTotal = isSubscribing ? qty * product.subscribePrice : oneTimePouchTotal(qty);
-
-  // Optional Atlas Bottle add-on, only offered with the 2-pouch one-time option.
-  const bottleIncluded = BOTTLE_DISCOUNT_LIVE && addBottle && !isSubscribing && qty === 2 && !customQtyOpen;
   const total = bottleIncluded
     ? computeCartPricing([
         { slug: flavor, title: product.name, price: product.price, quantity: 2, image: null },
@@ -73,9 +134,20 @@ export function PurchaseSelectionProvider({ children }: { children: ReactNode })
     : `${pouches}${bottleIncluded ? " + bottle" : ""}`;
 
   const addSelectionToCart = useCallback(async () => {
-    await addToCart(flavor, qty, isSubscribing ? frequency : undefined);
-    if (bottleIncluded) await addToCart("bottle", 1);
-  }, [addToCart, flavor, qty, isSubscribing, frequency, bottleIncluded]);
+    const lines = purchaseLines(state, BOTTLE_DISCOUNT_LIVE);
+    const sig = JSON.stringify(lines);
+    const now = Date.now();
+    // A double-click (or key repeat) must not add the same selection twice. A
+    // different selection, or the same one after the window, is a real choice.
+    if (lastAdd.current && lastAdd.current.sig === sig && now - lastAdd.current.at < REPEAT_ADD_WINDOW_MS) return false;
+    lastAdd.current = { sig, at: now };
+
+    addLines(lines);
+    setAdding(true);
+    if (addingTimer.current) clearTimeout(addingTimer.current);
+    addingTimer.current = setTimeout(() => setAdding(false), REPEAT_ADD_WINDOW_MS);
+    return true;
+  }, [state, addLines]);
 
   return (
     <PurchaseSelectionContext.Provider
@@ -87,7 +159,7 @@ export function PurchaseSelectionProvider({ children }: { children: ReactNode })
         customQtyOpen, setCustomQtyOpen,
         addBottle, setAddBottle,
         isPreorder, isSubscribing, bottleIncluded, total, offerLabel,
-        addSelectionToCart,
+        adding, addSelectionToCart,
       }}
     >
       {children}

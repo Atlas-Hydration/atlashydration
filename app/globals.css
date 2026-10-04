@@ -3167,6 +3167,14 @@ img {
   right: 0;
 }
 
+/* Phone widths: "50% Off" and "Free Bottle" ran into each other. */
+@media (max-width: 430px) {
+  .cart-rewards__labels {
+    font-size: 0.58rem;
+    letter-spacing: 0.01em;
+  }
+}
+
 .cart-promo__bottle-card {
   display: flex;
   align-items: center;
@@ -10105,6 +10113,19 @@ img {
 
 .po__detail {
   margin-bottom: 6px;
+}
+
+/* Plain-words summary of the current selection, under the offer rows */
+.po__summary {
+  margin: 10px 0 8px;
+  font-size: var(--text-xs);
+  line-height: 1.5;
+  color: var(--color-text-muted);
+}
+
+.po__summary span {
+  font-weight: 700;
+  color: var(--color-text);
 }
 
 /* Trust cues near purchase area */

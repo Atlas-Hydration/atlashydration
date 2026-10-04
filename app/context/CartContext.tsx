@@ -6,6 +6,7 @@ import {
   useState,
   useEffect,
   useCallback,
+  useRef,
   type ReactNode,
 } from "react";
 import { PRODUCTS } from "@/app/data/products";
@@ -29,6 +30,8 @@ interface CartContextValue {
   cartCount: number;
   isCartOpen: boolean;
   addToCart: (productSlug: string, qty?: number, subscriptionFrequency?: number) => void;
+  /** Adds several lines in one update (e.g. pouches + bottle), so they land together or not at all. */
+  addLines: (lines: { slug: string; quantity: number; subscriptionFrequency?: number }[]) => void;
   removeFromCart: (index: number) => void;
   updateQuantity: (index: number, qty: number) => void;
   openCart: () => void;
@@ -159,6 +162,30 @@ function computeCartPricing(items: CartItem[]) {
   return { subtotal, oneTimePouchQty, pouchDiscount, bottleDiscount, total };
 }
 
+/**
+ * Adds a line to a cart. Lines merge only when the product AND the purchase type
+ * match: a one-time line (no subscriptionFrequency) never merges into a
+ * subscription line, so a one-time line can never pick up a selling plan.
+ */
+function mergeLine(prev: CartItem[], productSlug: string, qty: number, subscriptionFrequency?: number): CartItem[] {
+  const product = PRODUCTS[productSlug];
+  const existing = prev.findIndex((i) => i.slug === productSlug && i.subscriptionFrequency === subscriptionFrequency);
+  if (existing >= 0) {
+    return prev.map((item, idx) => (idx === existing ? { ...item, quantity: item.quantity + qty } : item));
+  }
+  return [
+    ...prev,
+    {
+      slug: productSlug,
+      title: product.packLabel ? `${product.name} — ${product.packLabel}` : product.name,
+      price: subscriptionFrequency ? product.subscribePrice : product.price,
+      quantity: qty,
+      image: product.images[0] ?? null,
+      subscriptionFrequency,
+    },
+  ];
+}
+
 // ---------------------------------------------------------------------------
 // Provider
 // ---------------------------------------------------------------------------
@@ -177,52 +204,42 @@ export function CartProvider({ children }: { children: ReactNode }) {
   // -----------------------------------------------------------------------
   // addToCart
   // -----------------------------------------------------------------------
-  const addToCart = useCallback(
-    (productSlug: string, qty = 1, subscriptionFrequency?: number) => {
-      const product = PRODUCTS[productSlug];
-      if (!product) return;
+  const addLines = useCallback(
+    (lines: { slug: string; quantity: number; subscriptionFrequency?: number }[]) => {
+      const valid = lines.filter((l) => PRODUCTS[l.slug] && l.quantity > 0);
+      if (valid.length === 0) return;
 
-      const price = subscriptionFrequency ? product.subscribePrice : product.price;
-
-      // GA4 tracking
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      if (typeof window !== 'undefined' && typeof (window as any).gtag === 'function') {
+      // GA4 tracking (one event per line, unchanged event shape)
+      for (const l of valid) {
+        const product = PRODUCTS[l.slug];
+        const price = l.subscriptionFrequency ? product.subscribePrice : product.price;
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (window as any).gtag('event', 'add_to_cart', {
-          currency: 'USD',
-          value: price * qty,
-          items: [{ item_id: productSlug, item_name: product.name, quantity: qty, price }],
-        });
+        if (typeof window !== 'undefined' && typeof (window as any).gtag === 'function') {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          (window as any).gtag('event', 'add_to_cart', {
+            currency: 'USD',
+            value: price * l.quantity,
+            items: [{ item_id: l.slug, item_name: product.name, quantity: l.quantity, price }],
+          });
+        }
       }
 
       setItems((prev) => {
-        const existing = prev.findIndex((i) => i.slug === productSlug && i.subscriptionFrequency === subscriptionFrequency);
-        let next: CartItem[];
-
-        if (existing >= 0) {
-          next = prev.map((item, idx) =>
-            idx === existing ? { ...item, quantity: item.quantity + qty } : item
-          );
-        } else {
-          next = [
-            ...prev,
-            {
-              slug: productSlug,
-              title: product.packLabel ? `${product.name} — ${product.packLabel}` : product.name,
-              price,
-              quantity: qty,
-              image: product.images[0] ?? null,
-              subscriptionFrequency,
-            },
-          ];
-        }
-
+        let next = prev;
+        for (const l of valid) next = mergeLine(next, l.slug, l.quantity, l.subscriptionFrequency);
         saveCart(next);
         return next;
       });
       setIsCartOpen(true);
     },
     []
+  );
+
+  const addToCart = useCallback(
+    (productSlug: string, qty = 1, subscriptionFrequency?: number) => {
+      addLines([{ slug: productSlug, quantity: qty, subscriptionFrequency }]);
+    },
+    [addLines]
   );
 
   // -----------------------------------------------------------------------
@@ -256,8 +273,13 @@ export function CartProvider({ children }: { children: ReactNode }) {
   // This creates a real Shopify cart session with selling_plan attached,
   // then sends the user to standard Shopify checkout (not Shop Pay).
   // -----------------------------------------------------------------------
+  const lastCheckoutAt = useRef(0);
   const checkout = useCallback(() => {
     if (items.length === 0) return;
+    // A double-click must not submit the cart to Shopify twice.
+    const now = Date.now();
+    if (now - lastCheckoutAt.current < 4000) return;
+    lastCheckoutAt.current = now;
 
     // GA4 tracking
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -277,6 +299,9 @@ export function CartProvider({ children }: { children: ReactNode }) {
     form.method = 'POST';
     form.action = `https://${SHOPIFY_DOMAIN}/cart/add`;
     form.style.display = 'none';
+    form.setAttribute('data-atlas-checkout', '');
+    // Drop any form left from an earlier attempt (e.g. after the Back button).
+    document.querySelectorAll('form[data-atlas-checkout]').forEach((f) => f.remove());
 
     // Add each cart item as form fields
     // Shopify /cart/add accepts: id, quantity, selling_plan
@@ -343,6 +368,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
         cartCount,
         isCartOpen,
         addToCart,
+        addLines,
         removeFromCart,
         updateQuantity,
         openCart,

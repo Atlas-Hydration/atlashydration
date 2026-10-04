@@ -3,8 +3,8 @@
 import { useCallback } from "react";
 import { BOTTLE_DISCOUNT_LIVE, BOTTLE_FULL_PRICE, BOTTLE_HALF_PRICE, computeCartPricing } from "@/app/context/CartContext";
 import { PRODUCTS } from "@/app/data/products";
-import { MULTI_POUCH_DISCOUNT_PER_POUCH, multiPouchDiscount, oneTimePouchTotal } from "@/app/data/pricing";
-import { FREE_SHIPPING_THRESHOLD, SHIPPING_RATE } from "@/app/data/formula";
+import { MULTI_POUCH_DISCOUNT_PER_POUCH, STICKS_PER_POUCH, multiPouchDiscount, oneTimePouchTotal } from "@/app/data/pricing";
+import { FREE_SHIPPING_THRESHOLD, SHIPPING_RATE, qualifiesForFreeShipping } from "@/app/data/formula";
 
 export type PurchaseType = "subscribe" | "onetime";
 
@@ -60,7 +60,7 @@ export default function PurchaseOptions({
   const singlePrice = product.price;
   const subscribePrice = product.subscribePrice;
   const twoPackTotal = oneTimePouchTotal(2);
-  const singleShipsFree = singlePrice >= FREE_SHIPPING_THRESHOLD;
+  const singleShipsFree = qualifiesForFreeShipping(singlePrice);
   const oneTimeTotal = oneTimePouchTotal(qty);
 
   // The add-on is priced by the same function as the cart, so the total shown
@@ -189,6 +189,12 @@ export default function PurchaseOptions({
         </button>
       </div>
 
+      <p className="po__summary" aria-live="polite" data-testid="offer-summary">
+        <span>Selected:</span> {qty} {qty === 1 ? "pouch" : "pouches"} ({qty * STICKS_PER_POUCH} sticks) ·{" "}
+        {isSubscribing ? `subscription, every ${frequency} weeks` : "one-time purchase"}
+        {showBottleAddon && addBottle ? " + Atlas Performance Bottle" : ""}
+      </p>
+
       {isSubscribing ? (
         <div className="po__detail">
           <div className="purchase-option__perks">
@@ -214,7 +220,7 @@ export default function PurchaseOptions({
             <div className="purchase-option__perk">
               <CheckSvg />
               <span>
-                {oneTimeTotal >= FREE_SHIPPING_THRESHOLD
+                {qualifiesForFreeShipping(oneTimeTotal)
                   ? "Free shipping included"
                   : `Add another pouch for free shipping (orders over $${FREE_SHIPPING_THRESHOLD})`}
               </span>

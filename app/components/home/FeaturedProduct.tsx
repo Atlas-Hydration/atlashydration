@@ -25,7 +25,6 @@ export default function FeaturedProduct() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [dragOffset, setDragOffset] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
-  const [adding, setAdding] = useState(false);
   // The selection lives in PurchaseSelectionContext so the sticky bar and the
   // bottom Order button add exactly what is selected here.
   const {
@@ -35,9 +34,8 @@ export default function FeaturedProduct() {
     qty, setQty,
     customQtyOpen, setCustomQtyOpen,
     addBottle, setAddBottle,
-    isPreorder, total: addTotal, addSelectionToCart,
+    isPreorder, total: addTotal, adding, addSelectionToCart,
   } = usePurchaseSelection();
-  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const dragStartX = useRef(0);
   const galleryRef = useRef<HTMLDivElement>(null);
 
@@ -84,13 +82,6 @@ export default function FeaturedProduct() {
     setDragOffset(0);
   }, [selectedFlavor]);
 
-
-  const handleAdd = async () => {
-    setAdding(true);
-    await addSelectionToCart();
-    if (timerRef.current) clearTimeout(timerRef.current);
-    timerRef.current = setTimeout(() => setAdding(false), 1200);
-  };
 
   const translateX = -currentSlide * 100 + (isDragging ? (dragOffset / (galleryRef.current?.offsetWidth || 375)) * 100 : 0);
 
@@ -209,7 +200,8 @@ export default function FeaturedProduct() {
             <div style={{ marginTop: 16 }}>
               <button
                 className={`btn btn--primary btn--lg${adding ? " btn--added" : ""}`}
-                onClick={handleAdd}
+                onClick={() => addSelectionToCart()}
+                aria-busy={adding}
               >
                 {adding ? "Added" : isPreorder ? "Pre-Order" : `Add to Cart — $${addTotal.toFixed(2)}`}
               </button>

@@ -12,7 +12,7 @@ const streamParams = (id: string) =>
 
 export default function DarkCta() {
   // Same selection (flavor, offer, quantity, plan, bottle) as the main buy box.
-  const { flavor, total, isPreorder, addSelectionToCart } = usePurchaseSelection();
+  const { flavor, total, isPreorder, adding, addSelectionToCart } = usePurchaseSelection();
 
   return (
     <section className="cta-dark cta-dark--video" aria-label="Buy now">
@@ -55,6 +55,7 @@ export default function DarkCta() {
           <button
             className="cta-dark__btn"
             onClick={() => addSelectionToCart()}
+            aria-busy={adding}
           >
             {isPreorder ? "Pre-Order" : "Order"} &mdash; ${total.toFixed(2)}
           </button>

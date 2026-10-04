@@ -22,7 +22,7 @@ export default function StickyBuyBar() {
   const [visible, setVisible] = useState(false);
   // Flavor, offer, quantity, plan and bottle all come from the main buy box, so
   // this bar adds exactly what is selected there.
-  const { flavor: selectedFlavor, setFlavor, total, offerLabel, isPreorder, addSelectionToCart } = usePurchaseSelection();
+  const { flavor: selectedFlavor, setFlavor, total, offerLabel, isPreorder, adding, addSelectionToCart } = usePurchaseSelection();
   const activeFlavor = Math.max(0, flavors.findIndex((f) => f.product === selectedFlavor));
   const flavor = flavors[activeFlavor];
 
@@ -79,6 +79,7 @@ export default function StickyBuyBar() {
         <button
           className="sticky-buy__btn"
           onClick={() => addSelectionToCart()}
+          aria-busy={adding}
         >
           <span className="sticky-buy__btn-text">{isPreorder ? "Pre-Order" : "Add to Cart"}</span>
         </button>

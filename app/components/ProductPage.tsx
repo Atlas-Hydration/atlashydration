@@ -2,8 +2,8 @@
 
 import { useState, useRef, useEffect, useCallback } from "react";
 import Link from "next/link";
-import { useCart, BOTTLE_DISCOUNT_LIVE, computeCartPricing } from "@/app/context/CartContext";
-import { oneTimePouchTotal } from "@/app/data/pricing";
+import { PurchaseSelectionProvider, usePurchaseSelection } from "@/app/context/PurchaseSelectionContext";
+import type { OfferId, PurchaseFlavor } from "@/app/data/purchase";
 import { PRODUCTS } from "@/app/data/products";
 import { FREE_SHIPPING_THRESHOLD } from "@/app/data/formula";
 import PurchaseOptions from "@/app/components/PurchaseOptions";
@@ -83,37 +83,31 @@ function ProductGallery({ images }: { images: ProductImage[] }) {
   );
 }
 
-export default function ProductPage({ config }: { config: ProductPageConfig }) {
-  const { addToCart } = useCart();
-  const [purchaseOption, setPurchaseOption] = useState<"subscribe" | "onetime">("subscribe");
-  const [frequency, setFrequency] = useState(2);
-  const [qty, setQty] = useState(1);
-  const [customQtyOpen, setCustomQtyOpen] = useState(false);
-  const [addBottle, setAddBottle] = useState(false);
+export default function ProductPage({ config, initialOffer }: { config: ProductPageConfig; initialOffer?: OfferId }) {
+  return (
+    <PurchaseSelectionProvider initialFlavor={config.slug as PurchaseFlavor} initialOffer={initialOffer} lockFlavor>
+      <ProductPageContent config={config} />
+    </PurchaseSelectionProvider>
+  );
+}
+
+function ProductPageContent({ config }: { config: ProductPageConfig }) {
+  // One selection feeds the buy box, the closing "Order" button and the mobile
+  // sticky bar; all three add it through the same addSelectionToCart.
+  const {
+    purchaseType, setPurchaseType,
+    frequency, setFrequency,
+    qty, setQty,
+    customQtyOpen, setCustomQtyOpen,
+    addBottle, setAddBottle,
+    isSubscribing, bottleIncluded, total: addTotal, adding, addSelectionToCart,
+  } = usePurchaseSelection();
   const [openAccordion, setOpenAccordion] = useState<number | null>(null);
   const buyRef = useRef<HTMLDivElement>(null);
   const [showSticky, setShowSticky] = useState(false);
 
   const product = PRODUCTS[config.slug];
-  const isSubscribing = purchaseOption === "subscribe";
-  const unitPrice = isSubscribing ? product.subscribePrice : product.price;
-  // The multi-pouch discount only applies to one-time purchases.
-  const customQtyTotal = isSubscribing ? qty * unitPrice : oneTimePouchTotal(qty);
-
-  // Optional Atlas Bottle add-on, only offered with the 2-pouch one-time option.
-  const bottleIncluded = BOTTLE_DISCOUNT_LIVE && addBottle && !isSubscribing && qty === 2 && !customQtyOpen;
-  const addTotal = bottleIncluded
-    ? computeCartPricing([
-        { slug: config.slug, title: product.name, price: product.price, quantity: 2, image: null },
-        { slug: "bottle", title: PRODUCTS.bottle.name, price: PRODUCTS.bottle.price, quantity: 1, image: null },
-      ]).total
-    : customQtyTotal;
-
-  const handleAddToCart = useCallback(() => {
-    const isSubscription = purchaseOption === "subscribe";
-    addToCart(config.slug, qty, isSubscription ? frequency : undefined);
-    if (bottleIncluded) addToCart("bottle", 1);
-  }, [addToCart, config.slug, qty, purchaseOption, frequency, bottleIncluded]);
+  const handleAddToCart = useCallback(() => { addSelectionToCart(); }, [addSelectionToCart]);
 
   // Mobile sticky Add to Cart: only while the main buy button is off-screen and
   // the closing CTA hasn't been reached. Reuses handleAddToCart unchanged.
@@ -179,8 +173,8 @@ export default function ProductPage({ config }: { config: ProductPageConfig }) {
 
               <PurchaseOptions
                 slug={config.slug}
-                purchaseType={purchaseOption}
-                onPurchaseTypeChange={setPurchaseOption}
+                purchaseType={purchaseType}
+                onPurchaseTypeChange={setPurchaseType}
                 qty={qty}
                 onQtyChange={setQty}
                 customQtyOpen={customQtyOpen}
@@ -192,7 +186,7 @@ export default function ProductPage({ config }: { config: ProductPageConfig }) {
               />
 
               <div className="product-hero__buy" ref={buyRef}>
-                <button className="btn btn--primary btn--lg" onClick={handleAddToCart}>{buyButtonText} — ${addTotal.toFixed(2)}</button>
+                <button className="btn btn--primary btn--lg" onClick={handleAddToCart} aria-busy={adding}>{buyButtonText} — ${addTotal.toFixed(2)}</button>
               </div>
 
               <ul className="trust-row" aria-label="Why customers feel good buying Atlas">
@@ -268,7 +262,7 @@ export default function ProductPage({ config }: { config: ProductPageConfig }) {
           <div className="cta-section__inner">
             <h2 className="cta-section__title">{config.ctaTitle}</h2>
             <p className="cta-section__text">{config.ctaText}</p>
-            <button className="btn btn--white btn--lg" onClick={handleAddToCart}>{ctaButtonText}</button>
+            <button className="btn btn--white btn--lg" onClick={handleAddToCart} aria-busy={adding}>{ctaButtonText}</button>
           </div>
         </div>
       </section>
@@ -277,7 +271,7 @@ export default function ProductPage({ config }: { config: ProductPageConfig }) {
           <span className="pdp-sticky__name">{config.flavorName}</span>
           <span className="pdp-sticky__meta">{stickyMeta}</span>
         </div>
-        <button type="button" className="btn btn--primary" tabIndex={showSticky ? 0 : -1} onClick={handleAddToCart}>
+        <button type="button" className="btn btn--primary" tabIndex={showSticky ? 0 : -1} onClick={handleAddToCart} aria-busy={adding}>
           {buyButtonText} — ${addTotal.toFixed(2)}
         </button>
       </div>

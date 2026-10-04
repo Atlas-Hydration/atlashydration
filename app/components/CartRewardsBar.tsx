@@ -3,7 +3,7 @@
 import type { BottleTier } from "@/app/context/CartContext";
 import { BOTTLE_HALF_OFF_THRESHOLD, BOTTLE_FREE_THRESHOLD, BOTTLE_DISCOUNT_LIVE } from "@/app/context/CartContext";
 import { PRODUCTS } from "@/app/data/products";
-import { FREE_SHIPPING_THRESHOLD } from "@/app/data/formula";
+import { FREE_SHIPPING_THRESHOLD, qualifiesForFreeShipping } from "@/app/data/formula";
 
 const bottle = PRODUCTS.bottle;
 
@@ -29,7 +29,7 @@ export default function CartRewardsBar({
   hasSubscription: boolean;
 }) {
   // Subscriptions always ship free, regardless of order value.
-  const shippingUnlocked = hasSubscription || subtotal >= FREE_SHIPPING_THRESHOLD;
+  const shippingUnlocked = hasSubscription || qualifiesForFreeShipping(subtotal);
 
   // The bottle discount tiers aren't confirmed live in Shopify yet (see
   // BOTTLE_DISCOUNT_LIVE in CartContext.tsx — a live checkout test showed no
