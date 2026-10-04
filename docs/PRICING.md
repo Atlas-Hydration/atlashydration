@@ -67,8 +67,28 @@ the drawer, the bundle card and the tags show only the larger discount. Rows 10 
 behavior and still need a real checkout to confirm. Stacking both would need a Shopify-side change (for example a
 custom discount function), which the storefront cannot do.
 
-## Homepage buy buttons share one selection
+## Every buy button shares one selection
 
-The homepage has three buttons that add pouches to the cart: the main **Add to Cart** in the buy box, the **sticky bar**, and the bottom **Order** button. They all read the same selection (flavor, offer, quantity, subscription frequency, bottle add-on) from `app/context/PurchaseSelectionContext.tsx` and add it with the same `addSelectionToCart()`. Do not give a button its own hard-coded product or quantity: it will drift from what the buy box shows (this happened once; the sticky and bottom buttons always added one pouch). Product pages have a single `handleAddToCart` used by both their buy box and sticky bar.
+All add-to-cart buttons read one selection (flavor, offer, quantity, subscription frequency, bottle add-on) from `app/context/PurchaseSelectionContext.tsx`, and submit the lines from `purchaseLines()` in `app/data/purchase.ts`:
 
-When changing an offer, check all three buttons add the same cart lines (slug, quantity, selling plan) and show the same price.
+- **Home page:** main Add to Cart, sticky bar, bottom Order button.
+- **Product pages:** main Add to Cart, bottom Order button, mobile sticky bar (768px and below only).
+
+Do not give a button its own hard-coded product or quantity; it will drift from what the buy box shows (this happened once: the home sticky and bottom buttons always added one pouch).
+
+Rules the shared code enforces:
+- Purchase type is carried only by `subscriptionFrequency`. A line with it gets an Appstle selling plan at checkout; a one-time line never carries one.
+- Repeating the identical add within 1.2 seconds is ignored (double-click). A different selection, or the same one later, is a real choice and adds.
+- Checkout ignores a second click within 4 seconds, so the cart is not posted to Shopify twice.
+- Reload and Back/Forward restore the shopper's choices for that tab (sessionStorage, per page). A fresh visit (link, ad, typed URL) always starts from the page's own offer.
+
+### 2-pouch landing URL
+
+`/products/strawberry-lemonade/2-pack` opens the product page prerendered with **Strawberry Lemonade, 2 pouches (32 sticks), one-time purchase** selected: $58.98 expected total ($63.98 minus ATLAS2PACK $5.00), free shipping. Opening it adds nothing to the cart and never selects a subscription. Query strings (`utm_*`, `fbclid`, ...) are left alone. Its canonical URL is the main product page, and it is not in the sitemap. Shopify decides the real discount and shipping at checkout.
+
+## Free shipping: what is and is not verified
+
+- Configured threshold: `FREE_SHIPPING_THRESHOLD` = $40 in `app/data/formula.ts` (one number; `public/llms.txt` is static text and must be edited by hand). Subscriptions always ship free.
+- **Not verified against Shopify admin.** This repo cannot see the shipping rate. The earlier copy said "over $50" (April to Sep 29, 2026); it became $40 in the pricing passes of Sep 29-30. The Shopify rate must be checked: Settings, Shipping and delivery, the U.S. rate's price condition, plus any automatic free-shipping discount. Note whether it is "$40 and over" or "over $40", and whether it uses the price before or after discounts.
+- An earlier real 2-pouch checkout showed **$5.00 shipping** (see the QA notes above). If the rate were $40 or $50 that checkout would have been free, so either the rate was different then or it has since been fixed. Confirm with a fresh checkout of the 2-pack landing offer up to the shipping step (no order needed): shipping must read $0.00.
+- `node scripts/check-shipping-boundary.mjs` shows that at current prices no one-time cart totals exactly $40.00, and no cart's free-shipping answer differs between a $40 and a $50 threshold (carts are either under $40: 1 pouch $31.99, 1 or 2 bottles; or $51.98 and up). So ">=" vs "over", and price before vs after discounts, do not change any outcome today. The unexplained $5.00 checkout above is the open question, not the boundary.

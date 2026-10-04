@@ -44,6 +44,7 @@ Premium zero-sugar electrolyte drink mix brand website. Next.js app with Shopify
 |-------|-------------|
 | `/` | Home — hero, vitamin strip, featured product, science, compare, reviews, why atlas, benefits, daily electrolytes, blog, founder, FAQ, CTA, sticky buy bar |
 | `/products/strawberry-lemonade` | Strawberry Lemonade product detail page |
+| `/products/strawberry-lemonade/2-pack` | Landing URL for ads/email: same page with Strawberry Lemonade, 2 pouches, one-time preselected (adds nothing to the cart; keeps `utm_*`/`fbclid`; canonical is the main product page) |
 | `/products/grapefruit` | Grapefruit product detail page |
 | `/privacy` | Privacy policy |
 | `/shipping` | Shipping & returns policy |
@@ -62,6 +63,7 @@ Premium zero-sugar electrolyte drink mix brand website. Next.js app with Shopify
 
 All pricing rules, the active-offer table, and the checkout QA matrix live in `docs/PRICING.md`.
 Shopify checkout is the source of truth; code mirrors it from `app/data/pricing.ts`.
+All add-to-cart buttons share one selection (`app/context/PurchaseSelectionContext.tsx`, `app/data/purchase.ts`); see "Every buy button shares one selection" in that doc. Tracking facts and the Meta verification checklist live in `docs/MEASUREMENT.md` (do not add a second Pixel/CAPI pipeline).
 
 ## Shopify Integration
 
