@@ -3,6 +3,8 @@
 import { useEffect, useRef } from "react";
 import { usePathname } from "next/navigation";
 import { PRODUCTS } from "@/app/data/products";
+import { computeCartPricing } from "@/app/context/CartContext";
+import { ensureFourPouchBundle } from "@/app/lib/fourPouchBundle";
 import { setMetaConsent, trackMeta } from "@/app/lib/metaPixel";
 
 export default function MetaPixel({ accepted }: { accepted: boolean }) {
@@ -21,6 +23,14 @@ export default function MetaPixel({ accepted }: { accepted: boolean }) {
       content_ids: [product.variantId.replace("gid://shopify/ProductVariant/", "")],
       content_type: "product", currency: "USD", value: product.price,
     });
+    if (pathname === "/bundles/four-pouch-free-bottle") {
+      const lines = ensureFourPouchBundle([]);
+      trackMeta("ViewContent", {
+        content_ids: lines.map((line) => PRODUCTS[line.slug].variantId.replace("gid://shopify/ProductVariant/", "")),
+        contents: lines.map((line) => ({ id: PRODUCTS[line.slug].variantId.replace("gid://shopify/ProductVariant/", ""), quantity: line.quantity })),
+        content_type: "product", currency: "USD", value: computeCartPricing(lines).total,
+      });
+    }
   }, [accepted, pathname]);
   return null;
 }
