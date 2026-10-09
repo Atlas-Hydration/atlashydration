@@ -1,7 +1,7 @@
-// Browser events only. Shopify remains responsible for Purchase/CAPI.
+// Browser events only. Shopify remains responsible for InitiateCheckout and Purchase/CAPI.
 export const META_PIXEL_ID = "1949506255832708";
 export const CONSENT_KEY = "atlas_cookie_consent";
-type EventName = "PageView" | "ViewContent" | "AddToCart" | "InitiateCheckout";
+type EventName = "PageView" | "ViewContent" | "AddToCart";
 type Pixel = ((...args: unknown[]) => void) & {
   callMethod?: (...args: unknown[]) => void;
   queue: unknown[][];

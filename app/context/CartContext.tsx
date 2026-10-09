@@ -303,11 +303,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
       });
     }
 
-    trackMeta("InitiateCheckout", {
-      content_ids: items.filter((item) => PRODUCTS[item.slug]).map((item) => PRODUCTS[item.slug].variantId.replace("gid://shopify/ProductVariant/", "")),
-      content_type: "product", currency: "USD", value: computeCartPricing(items).total,
-      num_items: items.reduce((sum, item) => sum + item.quantity, 0),
-    });
+    // Shopify owns InitiateCheckout and Purchase; do not double-count the handoff.
 
     // Build a hidden form that POSTs to Shopify's /cart endpoint
     // This is the standard way headless stores add items with selling plans
