@@ -5,23 +5,35 @@ import Link from "next/link";
 import Script from "next/script";
 import { loadKlaviyo } from "@/app/lib/klaviyo";
 
-const CONSENT_KEY = "atlas_cookie_consent";
+import { CONSENT_KEY } from "@/app/lib/metaPixel";
+import MetaPixel from "@/app/components/MetaPixel";
 
 export default function CookieConsent() {
   const [consent, setConsent] = useState<"accepted" | "declined" | null>(null);
   const [showBanner, setShowBanner] = useState(false);
 
   useEffect(() => {
-    try {
-      const stored = localStorage.getItem(CONSENT_KEY);
-      if (stored === "accepted" || stored === "declined") {
-        setConsent(stored);
-      } else {
+    const syncConsent = () => {
+      try {
+        const stored = localStorage.getItem(CONSENT_KEY);
+        if (stored === "accepted" || stored === "declined") {
+          setConsent(stored);
+          setShowBanner(false);
+        } else {
+          setConsent(null);
+          setShowBanner(true);
+        }
+      } catch {
+        setConsent(null);
         setShowBanner(true);
       }
-    } catch {
-      setShowBanner(true);
-    }
+    };
+    syncConsent();
+    const onStorage = (event: StorageEvent) => {
+      if (event.key === CONSENT_KEY || event.key === null) syncConsent();
+    };
+    window.addEventListener("storage", onStorage);
+    return () => window.removeEventListener("storage", onStorage);
   }, []);
 
   useEffect(() => {
@@ -40,6 +52,7 @@ export default function CookieConsent() {
 
   return (
     <>
+      <MetaPixel accepted={consent === "accepted"} />
       {consent === "accepted" && (
         <>
           {/* Google Analytics 4 */}
