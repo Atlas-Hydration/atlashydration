@@ -9,7 +9,6 @@ import {
   type ReactNode,
 } from "react";
 import { trackMeta } from "@/app/lib/metaPixel";
-import { ensureFourPouchBundle } from "@/app/lib/fourPouchBundle";
 import { PRODUCTS } from "@/app/data/products";
 import { BOTTLE_RETAIL, BOTTLE_HALF_PRICE as BOTTLE_HALF_PRICE_CALC, multiPouchDiscount } from "@/app/data/pricing";
 
@@ -31,7 +30,6 @@ interface CartContextValue {
   cartCount: number;
   isCartOpen: boolean;
   addToCart: (productSlug: string, qty?: number, subscriptionFrequency?: number) => void;
-  addFourPouchBundle: () => void;
   removeFromCart: (index: number) => void;
   updateQuantity: (index: number, qty: number) => void;
   openCart: () => void;
@@ -234,29 +232,6 @@ export function CartProvider({ children }: { children: ReactNode }) {
     []
   );
 
-  const addFourPouchBundle = useCallback(() => {
-    if (!BOTTLE_DISCOUNT_LIVE) return;
-    const next = ensureFourPouchBundle(items);
-    const additions = next.map((line) => ({
-      ...line,
-      quantity: line.quantity - (items.find((item) => item.slug === line.slug && item.subscriptionFrequency === line.subscriptionFrequency)?.quantity ?? 0),
-    })).filter((line) => line.quantity > 0);
-    if (additions.length) {
-      trackMeta("AddToCart", {
-        content_ids: additions.map((line) => PRODUCTS[line.slug].variantId.replace("gid://shopify/ProductVariant/", "")),
-        content_type: "product", currency: "USD",
-        value: Math.max(0, computeCartPricing(next).total - computeCartPricing(items).total),
-        contents: additions.map((line) => ({ id: PRODUCTS[line.slug].variantId.replace("gid://shopify/ProductVariant/", ""), quantity: line.quantity })),
-      });
-      setItems((previous) => {
-        const updated = ensureFourPouchBundle(previous);
-        saveCart(updated);
-        return updated;
-      });
-    }
-    setIsCartOpen(true);
-  }, [items]);
-
   // -----------------------------------------------------------------------
   // removeFromCart
   // -----------------------------------------------------------------------
@@ -377,7 +352,6 @@ export function CartProvider({ children }: { children: ReactNode }) {
         cartCount,
         isCartOpen,
         addToCart,
-        addFourPouchBundle,
         removeFromCart,
         updateQuantity,
         openCart,
