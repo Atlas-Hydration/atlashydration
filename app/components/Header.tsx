@@ -3,9 +3,11 @@
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useCart, BOTTLE_DISCOUNT_LIVE, BOTTLE_HALF_OFF_THRESHOLD, BOTTLE_FREE_THRESHOLD } from "@/app/context/CartContext";
+import { useCart } from "@/app/context/CartContext";
 import { FREE_SHIPPING_THRESHOLD } from "@/app/data/formula";
 import { useSignupPopup } from "@/app/components/SignupPopup";
+
+import { STARTER_OFFER_LIVE } from "@/app/data/starterOffer";
 
 const NAV_LINKS: { label: string; href: string }[] = [];
 
@@ -22,8 +24,8 @@ interface Announcement {
 const ANNOUNCEMENTS: Announcement[] = [
   {
     lead: "Free shipping",
-    detail: `on orders over $${FREE_SHIPPING_THRESHOLD}, and always free with Subscribe & Save`,
-    short: `Free shipping over $${FREE_SHIPPING_THRESHOLD}`,
+    detail: `on orders $${FREE_SHIPPING_THRESHOLD} and up, and always free with Subscribe & Save`,
+    short: `Free shipping $${FREE_SHIPPING_THRESHOLD}+`,
     href: "/shipping",
   },
   {
@@ -34,17 +36,17 @@ const ANNOUNCEMENTS: Announcement[] = [
   },
   {
     lead: "Unlock 10% off",
-    detail: "your first order when you join the Atlas list",
-    short: "Unlock 10% off your first order",
+    detail: "your first eligible order when you join the Atlas list · starter kit excluded",
+    short: "Unlock 10% off your first eligible order",
     signup: true,
   },
-  ...(BOTTLE_DISCOUNT_LIVE
+  ...(STARTER_OFFER_LIVE
     ? [
         {
-          lead: "Build your kit",
-          detail: `${BOTTLE_HALF_OFF_THRESHOLD} pouches for 50% off the Atlas Bottle, ${BOTTLE_FREE_THRESHOLD} pouches and it's free`,
-          short: `${BOTTLE_HALF_OFF_THRESHOLD} pouches = 50% off the bottle`,
-          href: "/products/bottle",
+          lead: "Atlas starter offer",
+          detail: "2 Strawberry Lemonade pouches + Atlas bottle · $50 · free standard U.S. shipping",
+          short: "2 pouches + Atlas bottle — $50",
+          href: "/products/strawberry-lemonade",
         },
       ]
     : []),

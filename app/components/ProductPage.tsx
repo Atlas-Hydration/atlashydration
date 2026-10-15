@@ -7,6 +7,8 @@ import { oneTimePouchTotal } from "@/app/data/pricing";
 import { PRODUCTS } from "@/app/data/products";
 import { FREE_SHIPPING_THRESHOLD } from "@/app/data/formula";
 import PurchaseOptions from "@/app/components/PurchaseOptions";
+import StarterOffer from "@/app/components/StarterOffer";
+import { STARTER_OFFER_LIVE } from "@/app/data/starterOffer";
 import ProductArticles from "@/app/components/ProductArticles";
 import { resizeShopify, shopifySrcSet } from "@/app/lib/images";
 import { SupplementFactsWithPanel } from "@/app/components/IngredientDetailPanel";
@@ -120,11 +122,13 @@ export default function ProductPage({ config }: { config: ProductPageConfig }) {
   useEffect(() => {
     const onScroll = () => {
       const buy = buyRef.current?.getBoundingClientRect();
+      const starter = document.querySelector('[aria-label="Atlas starter offer"]')?.getBoundingClientRect();
+      const starterInView = !!starter && starter.top < window.innerHeight && starter.bottom > 0;
       const cta = document.querySelector(".cta-section")?.getBoundingClientRect();
       const vh = window.innerHeight;
       const buyInView = !!buy && buy.top < vh && buy.bottom > 0;
       const ctaInView = !!cta && cta.top < vh;
-      setShowSticky(window.scrollY > 240 && !buyInView && !ctaInView);
+      setShowSticky(window.scrollY > 240 && !buyInView && !ctaInView && !starterInView);
     };
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
@@ -176,6 +180,8 @@ export default function ProductPage({ config }: { config: ProductPageConfig }) {
                   <span className="flavor-circle__dot" />Grapefruit
                 </Link>
               </div>
+
+              {STARTER_OFFER_LIVE && config.slug === "strawberry-lemonade" && <StarterOffer />}
 
               <PurchaseOptions
                 slug={config.slug}

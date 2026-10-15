@@ -13,16 +13,16 @@
  *     it on its own, so the storefront sends NO discount code.
  *   - Subscription: Appstle selling plans (2/4/6 weeks), "Save 20% from first
  *     order onward". Not combined with ATLAS2PACK.
- *   - Free shipping: a Shopify shipping-rate threshold (orders over $40) and
+ *   - Free shipping: a Shopify shipping-rate threshold (orders $50 and up) and
  *     free on subscriptions. The storefront only messages it.
  *   - Welcome code ATLASWELCOME10: typed by the customer at checkout. The
  *     storefront never applies or stacks it.
  *
- * Bottle promotion (50% off at 2 pouches, free at 4): shown on the storefront
- * while BOTTLE_DISCOUNT_LIVE is true (app/context/CartContext.tsx). It only
- * matches checkout because Shopify has matching automatic discounts. Shopify does
- * NOT apply ATLAS2PACK together with a bottle discount; it gives the larger one
- * (docs/PRICING.md, "Platform rule"). The cart mirrors that in computeCartPricing.
+ * Starter kit: component value $83.97 less the non-combinable $33.97
+ * automatic kit discount = $50. General standard U.S. rate is free at $50+.
+ * The previous two-pouch/half-off-bottle offer is retired. The four-pouch/free
+ * bottle offer remains; Shopify selects the best eligible automatic discount.
+ * See docs/STARTER-OFFER-2026-10.md for live IDs and rollback information.
  */
 
 const round2 = (n: number) => Math.round(n * 100) / 100;

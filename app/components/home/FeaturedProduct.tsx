@@ -4,6 +4,8 @@ import { useState, useRef, useCallback, useEffect } from "react";
 import { usePurchaseSelection } from "@/app/context/PurchaseSelectionContext";
 import { FREE_SHIPPING_THRESHOLD } from "@/app/data/formula";
 import PurchaseOptions from "@/app/components/PurchaseOptions";
+import StarterOffer from "@/app/components/StarterOffer";
+import { STARTER_OFFER_LIVE } from "@/app/data/starterOffer";
 import { resizeShopify, shopifySrcSet } from "@/app/lib/images";
 
 const FLAVOR_IMAGES = {
@@ -191,6 +193,8 @@ export default function FeaturedProduct() {
                 <span className="flavor-circle__dot" />Grapefruit
               </button>
             </div>
+
+            {STARTER_OFFER_LIVE && selectedFlavor === "strawberry-lemonade" && <StarterOffer />}
 
             <PurchaseOptions
               slug={selectedFlavor}

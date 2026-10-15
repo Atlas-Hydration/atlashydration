@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback } from "react";
-import { BOTTLE_DISCOUNT_LIVE, BOTTLE_FULL_PRICE, BOTTLE_HALF_PRICE, computeCartPricing } from "@/app/context/CartContext";
+import { BOTTLE_DISCOUNT_LIVE } from "@/app/context/CartContext";
 import { PRODUCTS } from "@/app/data/products";
 import { MULTI_POUCH_DISCOUNT_PER_POUCH, multiPouchDiscount, oneTimePouchTotal } from "@/app/data/pricing";
 import { FREE_SHIPPING_THRESHOLD, SHIPPING_RATE } from "@/app/data/formula";
@@ -62,15 +62,6 @@ export default function PurchaseOptions({
   const twoPackTotal = oneTimePouchTotal(2);
   const singleShipsFree = singlePrice >= FREE_SHIPPING_THRESHOLD;
   const oneTimeTotal = oneTimePouchTotal(qty);
-
-  // The add-on is priced by the same function as the cart, so the total shown
-  // here is exactly what the cart and Shopify charge.
-  const bottle = PRODUCTS.bottle;
-  const showBottleAddon = BOTTLE_DISCOUNT_LIVE && !isSubscribing && qty === 2 && !customQtyOpen;
-  const withBottleTotal = computeCartPricing([
-    { slug, title: product.name, price: singlePrice, quantity: 2, image: null },
-    { slug: "bottle", title: bottle.name, price: bottle.price, quantity: 1, image: null },
-  ]).total;
 
   const tryActive = !isSubscribing && qty === 1 && !customQtyOpen;
   const stockActive = !isSubscribing && qty === 2 && !customQtyOpen;
@@ -143,31 +134,6 @@ export default function PurchaseOptions({
           </span>
         </button>
 
-        {showBottleAddon && (
-          <label className={`po-addon${addBottle ? " po-addon--on" : ""}`}>
-            <input
-              type="checkbox"
-              className="po-addon__input"
-              checked={addBottle}
-              onChange={(e) => onAddBottleChange(e.target.checked)}
-            />
-            <span className="po-addon__box" aria-hidden="true">
-              {addBottle ? <CheckSvg /> : <span className="po-addon__plus">+</span>}
-            </span>
-            {bottle.images[0] && <img className="po-addon__img" src={bottle.images[0]} alt="" width={44} height={44} />}
-            <span className="po-addon__body">
-              <span className="po-addon__title">Add the Atlas Performance Bottle</span>
-              <span className="po-addon__price">
-                <strong>{money(BOTTLE_HALF_PRICE)}</strong>
-                <s>{money(BOTTLE_FULL_PRICE)}</s>
-                <em>50% off</em>
-              </span>
-              <span className="po-addon__note">
-                Replaces the {savings(multiPouchDiscount(2))} pouch savings. Total with bottle: {money(withBottleTotal)}.
-              </span>
-            </span>
-          </label>
-        )}
 
         <button
           type="button"
@@ -223,7 +189,7 @@ export default function PurchaseOptions({
         </div>
       )}
 
-      {multiDiscount > 0 && !(showBottleAddon && addBottle) && (
+      {multiDiscount > 0 && (
         <p className="qty-select__hint">
           {money(MULTI_POUCH_DISCOUNT_PER_POUCH)} off every pouch when you buy 2 or more. You save {money(multiDiscount)}.
         </p>

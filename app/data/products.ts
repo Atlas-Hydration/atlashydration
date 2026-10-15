@@ -15,6 +15,7 @@ export interface Product {
   tags: string[];
   /** Cart line-item label, e.g. "16 Pack". Omit for single-unit products. */
   packLabel?: string;
+  oneTimeOnly?: boolean;
   /** Bullet list of product details, shown on the dedicated product page. */
   details?: string[];
   /** Care/cleaning instructions, shown on the dedicated product page. */
@@ -22,6 +23,20 @@ export interface Product {
 }
 
 export const PRODUCTS: Record<string, Product> = {
+  "atlas-starter-kit": {
+    name: "Atlas Starter Kit",
+    slug: "atlas-starter-kit",
+    price: 83.97, // Component value; Shopify automatically takes $33.97 off each kit.
+    subscribePrice: 83.97,
+    perStick: 50 / 32,
+    subscribePerStick: 50 / 32,
+    oneTimeOnly: true,
+    variantId: "gid://shopify/ProductVariant/67691017732170",
+    color: "#e85d75", colorRgb: "232, 93, 117",
+    images: ["https://cdn.shopify.com/s/files/1/0595/8133/3578/files/1_e4b7eae7-01d9-430c-9655-7949d910deb6.jpg?v=1771507844"],
+    description: "2 Strawberry Lemonade pouches (32 sticks) + 1 Atlas 26 oz bottle. One-time purchase. Free standard U.S. shipping.",
+    tags: ["32 sticks", "Atlas bottle", "One-time purchase"],
+  },
   "strawberry-lemonade": {
     name: "Strawberry Lemonade",
     slug: "strawberry-lemonade",

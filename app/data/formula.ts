@@ -21,7 +21,7 @@ export const FORMULA_TOTAL = FORMULA.totalElectrolytesMg.toLocaleString("en-US")
 export const FORMULA_ELECTROLYTE_BREAKDOWN = `${FORMULA.sodiumMg}mg sodium, ${FORMULA.potassiumMg}mg potassium, and ${FORMULA.magnesiumMg}mg magnesium`;
 
 /** Shipping threshold used by the cart, buy boxes, and shipping policy page. */
-export const FREE_SHIPPING_THRESHOLD = 40;
+export const FREE_SHIPPING_THRESHOLD = 50;
 
 /** Standard shipping rate under the free-shipping threshold (see /shipping). */
-export const SHIPPING_RATE = 4.99;
+export const SHIPPING_RATE = 5;

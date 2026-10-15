@@ -21,7 +21,7 @@ import { PurchaseSelectionProvider } from "@/app/context/PurchaseSelectionContex
 export const metadata: Metadata = {
   title: "Atlas Hydration | Zero-Sugar Electrolyte Mixes",
   description:
-    "Shop premium zero-sugar electrolyte drink mixes with 1,769mg electrolytes, B vitamins, and amino acids. Subscribe and save 20%. Free shipping over $40.",
+    "Shop premium zero-sugar electrolyte drink mixes with 1,769mg electrolytes, B vitamins, and amino acids. Subscribe and save 20%. Free shipping $50 and up.",
   keywords:
     "electrolyte drink mix, zero sugar electrolytes, sports hydration, Atlas Hydration, electrolyte powder, sugar free hydration, recovery drink",
   alternates: { canonical: "https://atlas-hydration.com/" },
