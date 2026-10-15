@@ -34,15 +34,17 @@ export default function StarterOffer() {
           <p className="complete-kit__contents">2 pouches · 32 sticks · 1 Atlas bottle</p>
           <div className="complete-kit__price-row">
             <strong className="complete-kit__price">${STARTER_OFFER.price}</strong>
-            <span className="complete-kit__save-badge">Free U.S. shipping</span>
+            <s className="complete-kit__price-original">${STARTER_OFFER.separateValue.toFixed(2)}</s>
+            <span className="complete-kit__save-badge">Save ${(STARTER_OFFER.separateValue - STARTER_OFFER.price).toFixed(2)}</span>
           </div>
+          <p className={styles.value}>Value when purchased separately</p>
         </div>
         <button type="button" className={`complete-kit__btn ${styles.button}`} onClick={handleAdd} disabled={adding}>
           {adding ? "Added" : "Add starter kit"}
         </button>
       </div>
       <div className={styles.footer}>
-        <span>Strawberry Lemonade · One-time purchase</span>
+        <span>Free standard U.S. shipping · One-time purchase</span>
         <details className={styles.terms}>
           <summary>Offer details</summary>
           <p>$83.97 value when purchased separately. Save $33.97. Includes two 16-stick Strawberry Lemonade pouches and one 26 oz Atlas bottle. Free standard U.S. shipping. New and existing customers. No subscription required. Cannot be combined with discounts. Applicable tax calculated at checkout.</p>
