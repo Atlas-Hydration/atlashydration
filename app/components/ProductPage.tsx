@@ -7,7 +7,6 @@ import { oneTimePouchTotal } from "@/app/data/pricing";
 import { PRODUCTS } from "@/app/data/products";
 import { FREE_SHIPPING_THRESHOLD } from "@/app/data/formula";
 import PurchaseOptions from "@/app/components/PurchaseOptions";
-import StarterOffer from "@/app/components/StarterOffer";
 import { STARTER_OFFER_LIVE } from "@/app/data/starterOffer";
 import ProductArticles from "@/app/components/ProductArticles";
 import { resizeShopify, shopifySrcSet } from "@/app/lib/images";
@@ -87,7 +86,7 @@ function ProductGallery({ images }: { images: ProductImage[] }) {
 
 export default function ProductPage({ config }: { config: ProductPageConfig }) {
   const { addToCart } = useCart();
-  const [purchaseOption, setPurchaseOption] = useState<"subscribe" | "onetime">("subscribe");
+  const [purchaseOption, setPurchaseOption] = useState<"subscribe" | "onetime" | "starter">(config.slug === "strawberry-lemonade" && STARTER_OFFER_LIVE ? "starter" : "subscribe");
   const [frequency, setFrequency] = useState(2);
   const [qty, setQty] = useState(1);
   const [customQtyOpen, setCustomQtyOpen] = useState(false);
@@ -104,7 +103,8 @@ export default function ProductPage({ config }: { config: ProductPageConfig }) {
 
   // Optional Atlas Bottle add-on, only offered with the 2-pouch one-time option.
   const bottleIncluded = BOTTLE_DISCOUNT_LIVE && addBottle && !isSubscribing && qty === 2 && !customQtyOpen;
-  const addTotal = bottleIncluded
+  const isStarter = purchaseOption === "starter" && config.slug === "strawberry-lemonade";
+  const addTotal = isStarter ? 50 : bottleIncluded
     ? computeCartPricing([
         { slug: config.slug, title: product.name, price: product.price, quantity: 2, image: null },
         { slug: "bottle", title: PRODUCTS.bottle.name, price: PRODUCTS.bottle.price, quantity: 1, image: null },
@@ -112,10 +112,11 @@ export default function ProductPage({ config }: { config: ProductPageConfig }) {
     : customQtyTotal;
 
   const handleAddToCart = useCallback(() => {
+    if (isStarter) { addToCart("atlas-starter-kit", 1); return; }
     const isSubscription = purchaseOption === "subscribe";
     addToCart(config.slug, qty, isSubscription ? frequency : undefined);
     if (bottleIncluded) addToCart("bottle", 1);
-  }, [addToCart, config.slug, qty, purchaseOption, frequency, bottleIncluded]);
+  }, [addToCart, config.slug, qty, purchaseOption, frequency, bottleIncluded, isStarter]);
 
   // Mobile sticky Add to Cart: only while the main buy button is off-screen and
   // the closing CTA hasn't been reached. Reuses handleAddToCart unchanged.
@@ -139,9 +140,9 @@ export default function ProductPage({ config }: { config: ProductPageConfig }) {
     };
   }, []);
 
-  const buyButtonText = config.preorder ? "Pre-Order" : "Add to Cart";
+  const buyButtonText = isStarter ? "Add starter kit" : config.preorder ? "Pre-Order" : "Add to Cart";
   const pouchLabel = `${qty} pouch${qty === 1 ? "" : "es"}`;
-  const stickyMeta = isSubscribing ? `Subscribe & Save · ${pouchLabel}` : `One-time · ${pouchLabel}${bottleIncluded ? " + bottle" : ""}`;
+  const stickyMeta = isStarter ? "Starter kit · 2 pouches + free bottle" : isSubscribing ? `Subscribe & Save · ${pouchLabel}` : `One-time · ${pouchLabel}${bottleIncluded ? " + bottle" : ""}`;
   const ctaButtonText = `${config.preorder ? "Pre-Order" : "Order"} — $${addTotal.toFixed(2)}`;
 
   return (
@@ -181,7 +182,6 @@ export default function ProductPage({ config }: { config: ProductPageConfig }) {
                 </Link>
               </div>
 
-              {STARTER_OFFER_LIVE && config.slug === "strawberry-lemonade" && <StarterOffer />}
 
               <PurchaseOptions
                 slug={config.slug}

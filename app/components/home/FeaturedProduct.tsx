@@ -4,8 +4,6 @@ import { useState, useRef, useCallback, useEffect } from "react";
 import { usePurchaseSelection } from "@/app/context/PurchaseSelectionContext";
 import { FREE_SHIPPING_THRESHOLD } from "@/app/data/formula";
 import PurchaseOptions from "@/app/components/PurchaseOptions";
-import StarterOffer from "@/app/components/StarterOffer";
-import { STARTER_OFFER_LIVE } from "@/app/data/starterOffer";
 import { resizeShopify, shopifySrcSet } from "@/app/lib/images";
 
 const FLAVOR_IMAGES = {
@@ -194,7 +192,6 @@ export default function FeaturedProduct() {
               </button>
             </div>
 
-            {STARTER_OFFER_LIVE && selectedFlavor === "strawberry-lemonade" && <StarterOffer />}
 
             <PurchaseOptions
               slug={selectedFlavor}
@@ -215,7 +212,7 @@ export default function FeaturedProduct() {
                 className={`btn btn--primary btn--lg${adding ? " btn--added" : ""}`}
                 onClick={handleAdd}
               >
-                {adding ? "Added" : isPreorder ? "Pre-Order" : `Add to Cart — $${addTotal.toFixed(2)}`}
+                {adding ? "Added" : isPreorder ? "Pre-Order" : `${purchaseType === "starter" ? "Add starter kit" : "Add to Cart"} — $${addTotal.toFixed(2)}`}
               </button>
             </div>
 

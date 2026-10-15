@@ -1,12 +1,14 @@
 "use client";
 
+import StarterOffer from "./StarterOffer";
+import { STARTER_OFFER_LIVE } from "@/app/data/starterOffer";
 import { useCallback } from "react";
 import { BOTTLE_DISCOUNT_LIVE } from "@/app/context/CartContext";
 import { PRODUCTS } from "@/app/data/products";
 import { MULTI_POUCH_DISCOUNT_PER_POUCH, multiPouchDiscount, oneTimePouchTotal } from "@/app/data/pricing";
 import { FREE_SHIPPING_THRESHOLD, SHIPPING_RATE } from "@/app/data/formula";
 
-export type PurchaseType = "subscribe" | "onetime";
+export type PurchaseType = "subscribe" | "onetime" | "starter";
 
 interface PurchaseOptionsProps {
   slug: string;
@@ -24,8 +26,6 @@ interface PurchaseOptionsProps {
 }
 
 const money = (n: number) => `$${n.toFixed(2)}`;
-/** "$9" for whole dollars, "$9.50" otherwise. */
-const savings = (n: number) => (Number.isInteger(n) ? `$${n}` : money(n));
 
 const CheckSvg = () => (
   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden="true">
@@ -33,14 +33,7 @@ const CheckSvg = () => (
   </svg>
 );
 
-/**
- * Presentation only. Selections map onto the same state the buy boxes always
- * used (purchaseType + qty), so the cart, discount code, and Shopify selling
- * plans are untouched:
- *   Try      -> one-time, qty 1
- *   Stock up -> one-time, qty 2 (ATLAS2PACK, applied automatically by Shopify)
- *   Subscribe -> subscribe (existing selling plans)
- */
+/** Starter selection adds the inventory-managed kit; singles and selling plans remain independent. */
 export default function PurchaseOptions({
   slug,
   purchaseType,
@@ -59,22 +52,16 @@ export default function PurchaseOptions({
 
   const singlePrice = product.price;
   const subscribePrice = product.subscribePrice;
-  const twoPackTotal = oneTimePouchTotal(2);
+
   const singleShipsFree = singlePrice >= FREE_SHIPPING_THRESHOLD;
   const oneTimeTotal = oneTimePouchTotal(qty);
 
-  const tryActive = !isSubscribing && qty === 1 && !customQtyOpen;
-  const stockActive = !isSubscribing && qty === 2 && !customQtyOpen;
+  const tryActive = purchaseType === "onetime" && qty === 1 && !customQtyOpen;
+
 
   const chooseTry = useCallback(() => {
     onPurchaseTypeChange("onetime");
     onQtyChange(1);
-    onCustomQtyOpenChange(false);
-  }, [onPurchaseTypeChange, onQtyChange, onCustomQtyOpenChange]);
-
-  const chooseStock = useCallback(() => {
-    onPurchaseTypeChange("onetime");
-    onQtyChange(2);
     onCustomQtyOpenChange(false);
   }, [onPurchaseTypeChange, onQtyChange, onCustomQtyOpenChange]);
 
@@ -93,6 +80,7 @@ export default function PurchaseOptions({
   return (
     <div className="po">
       <div className="po__list" role="radiogroup" aria-label="Choose how to buy">
+        {STARTER_OFFER_LIVE && slug === "strawberry-lemonade" && <StarterOffer selected={purchaseType === "starter"} onSelect={() => { onPurchaseTypeChange("starter"); onQtyChange(1); onCustomQtyOpenChange(false); }} />}
         <button
           type="button"
           role="radio"
@@ -115,29 +103,6 @@ export default function PurchaseOptions({
         <button
           type="button"
           role="radio"
-          aria-checked={stockActive}
-          className={`po-option po-option--featured${stockActive ? " po-option--active" : ""}`}
-          onClick={chooseStock}
-        >
-          <span className="po-badge">Most Popular</span>
-          <span className="po-option__radio" aria-hidden="true" />
-          <span className="po-option__body">
-            <span className="po-option__step">Stock up</span>
-            <span className="po-option__title">2 pouches</span>
-            <span className="po-option__sub">
-              Save {savings(multiPouchDiscount(2))} + <strong className="po-option__ship">free shipping</strong>
-            </span>
-          </span>
-          <span className="po-option__price">
-            {money(twoPackTotal)}
-            <span className="po-option__was">{money(singlePrice * 2)}</span>
-          </span>
-        </button>
-
-
-        <button
-          type="button"
-          role="radio"
           aria-checked={isSubscribing}
           className={`po-option${isSubscribing ? " po-option--active" : ""}`}
           onClick={chooseSubscribe}
@@ -155,7 +120,7 @@ export default function PurchaseOptions({
         </button>
       </div>
 
-      {isSubscribing ? (
+      {purchaseType === "starter" ? null : isSubscribing ? (
         <div className="po__detail">
           <div className="purchase-option__perks">
             <div className="purchase-option__perk"><CheckSvg /><span>20% off every order, plus free shipping</span></div>
@@ -182,20 +147,20 @@ export default function PurchaseOptions({
               <span>
                 {oneTimeTotal >= FREE_SHIPPING_THRESHOLD
                   ? "Free shipping included"
-                  : `Add another pouch for free shipping (orders over $${FREE_SHIPPING_THRESHOLD})`}
+                  : `Free standard shipping with the $50 starter kit`}
               </span>
             </div>
           </div>
         </div>
       )}
 
-      {multiDiscount > 0 && (
+      {purchaseType === "onetime" && multiDiscount > 0 && (
         <p className="qty-select__hint">
           {money(MULTI_POUCH_DISCOUNT_PER_POUCH)} off every pouch when you buy 2 or more. You save {money(multiDiscount)}.
         </p>
       )}
 
-      {customQtyOpen ? (
+      {purchaseType === "starter" ? null : customQtyOpen ? (
         <div className="qty-stepper">
           <div className="qty-stepper__control">
             <button type="button" aria-label="Decrease quantity" onClick={() => onQtyChange(Math.max(1, qty - 1))}>−</button>
@@ -210,7 +175,7 @@ export default function PurchaseOptions({
         </button>
       )}
 
-      {BOTTLE_DISCOUNT_LIVE && !isSubscribing && qty >= 4 && (
+      {BOTTLE_DISCOUNT_LIVE && purchaseType === "onetime" && qty >= 4 && (
         <p className="qty-select__hint">Your Atlas Bottle ships free at this quantity.</p>
       )}
     </div>
