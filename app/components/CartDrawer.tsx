@@ -2,6 +2,7 @@
 
 import { useCart, computeBottlePromo, computeCartPricing, BOTTLE_DISCOUNT_LIVE, BOTTLE_HALF_PRICE, BOTTLE_FULL_PRICE } from "@/app/context/CartContext";
 import { MULTI_POUCH_DISCOUNT_PER_POUCH } from "@/app/data/pricing";
+import { STARTER_OFFER } from "@/app/data/starterOffer";
 import { PRODUCTS } from "@/app/data/products";
 import CartRewardsBar from "@/app/components/CartRewardsBar";
 
@@ -88,12 +89,19 @@ export default function CartDrawer() {
                     <h4 className="cart-item__title">{item.title}</h4>
                     <p className="cart-item__price">
                       ${(item.price - (item.slug === "atlas-starter-kit" ? starterUnitDiscount : 0)).toFixed(2)}
+                      {item.slug === "atlas-starter-kit" && starterUnitDiscount > 0 && (
+                        <>
+                          <s className="cart-item__separate-value">${STARTER_OFFER.separateValue.toFixed(2)}</s>
+                          <span className="cart-item__saving">Save ${starterUnitDiscount.toFixed(2)}</span>
+                        </>
+                      )}
                       {BOTTLE_DISCOUNT_LIVE && item.slug === "bottle" && tier !== "none" && bottleDiscountAmount > 0 && (
                         <span className="cart-item__discount-tag">
                           {tier === "free" ? "FREE" : "50% OFF"}
                         </span>
                       )}
                     </p>
+                    {item.slug === "atlas-starter-kit" && starterUnitDiscount > 0 && <p className="cart-item__value-caption">Value when purchased separately · per kit</p>}
                     {item.slug === "atlas-starter-kit" && <p className="cart-item__bundle">2 × 16-stick Strawberry Lemonade pouches + 1 Atlas bottle</p>}
                     {item.subscriptionFrequency && (
                       <p className="cart-item__subscription">

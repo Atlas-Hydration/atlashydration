@@ -10,3 +10,7 @@
 .terms[open] { flex-basis: 100%; }
 .terms p { margin: 7px 0 0; max-width: 70ch; }
 @media (max-width: 560px) { .button { flex: 1 1 100%; } }
+
+.row .value { margin: 3px 0 0; font-size: 9px; line-height: 1.35; color: var(--color-text-muted); }
+.row :global(.complete-kit__price-row) { gap: 6px; }
+.row :global(.complete-kit__save-badge) { padding: 3px 6px; font-size: 10px; }
