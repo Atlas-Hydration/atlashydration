@@ -28,4 +28,9 @@ assert.equal(computeBottlePromo([item('strawberry-lemonade',31.99,2)]).tier,'non
 assert.equal(computeCartPricing([item('strawberry-lemonade',31.99,4),item('bottle',19.99,1)]).total,127.96);
 assert.equal(computeCartPricing([item('strawberry-lemonade',25.59,1,2)]).total,25.59);
 assert.equal(computeCartPricing([kit(1),item('strawberry-lemonade',31.99,20)]).total,673.77); // best eligible discount wins
-console.log('9 starter/legacy/subscription pricing cases passed');
+assert.equal(computeCartPricing([kit(1)]).displaySubtotal,50);
+assert.equal(83.97-computeCartPricing([kit(1)]).starterUnitDiscount,50);
+assert.equal(computeCartPricing([kit(2)]).displaySubtotal,100);
+assert.equal(computeCartPricing([kit(1),item('strawberry-lemonade',31.99,2)]).displaySubtotal,113.98);
+assert.equal(computeCartPricing([kit(1),item('strawberry-lemonade',31.99,20)]).starterUnitDiscount,0);
+console.log('14 starter/legacy/subscription and displayed-price cases passed');
