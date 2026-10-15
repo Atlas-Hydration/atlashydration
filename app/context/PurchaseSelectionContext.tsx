@@ -4,6 +4,7 @@ import { createContext, useContext, useState, useCallback, type ReactNode } from
 import { useCart, BOTTLE_DISCOUNT_LIVE, computeCartPricing } from "@/app/context/CartContext";
 import { oneTimePouchTotal } from "@/app/data/pricing";
 import { PRODUCTS } from "@/app/data/products";
+import { STARTER_OFFER_LIVE } from "@/app/data/starterOffer";
 import type { PurchaseType } from "@/app/components/PurchaseOptions";
 
 export type PurchaseFlavor = "strawberry-lemonade" | "grapefruit";
@@ -43,13 +44,21 @@ const PurchaseSelectionContext = createContext<PurchaseSelection | null>(null);
 
 export function PurchaseSelectionProvider({ children }: { children: ReactNode }) {
   const { addToCart } = useCart();
-  const [flavor, setFlavor] = useState<PurchaseFlavor>("strawberry-lemonade");
-  const [purchaseType, setPurchaseType] = useState<PurchaseType>("subscribe");
+  const [flavor, updateFlavor] = useState<PurchaseFlavor>("strawberry-lemonade");
+  const [purchaseType, setPurchaseType] = useState<PurchaseType>(STARTER_OFFER_LIVE ? "starter" : "subscribe");
   const [frequency, setFrequency] = useState(2);
   const [qty, setQty] = useState(1);
   const [customQtyOpen, setCustomQtyOpen] = useState(false);
   const [addBottle, setAddBottle] = useState(false);
 
+  const setFlavor = useCallback((next: PurchaseFlavor) => {
+    updateFlavor(next);
+    setPurchaseType(next === "strawberry-lemonade" && STARTER_OFFER_LIVE ? "starter" : "subscribe");
+    setQty(1);
+    setCustomQtyOpen(false);
+    setAddBottle(false);
+  }, []);
+  const isStarter = flavor === "strawberry-lemonade" && purchaseType === "starter";
   const product = PRODUCTS[flavor];
   const isPreorder = flavor === "grapefruit";
   const isSubscribing = purchaseType === "subscribe";
@@ -60,7 +69,7 @@ export function PurchaseSelectionProvider({ children }: { children: ReactNode })
 
   // Optional Atlas Bottle add-on, only offered with the 2-pouch one-time option.
   const bottleIncluded = BOTTLE_DISCOUNT_LIVE && addBottle && !isSubscribing && qty === 2 && !customQtyOpen;
-  const total = bottleIncluded
+  const total = isStarter ? 50 : bottleIncluded
     ? computeCartPricing([
         { slug: flavor, title: product.name, price: product.price, quantity: 2, image: null },
         { slug: "bottle", title: PRODUCTS.bottle.name, price: PRODUCTS.bottle.price, quantity: 1, image: null },
@@ -68,14 +77,15 @@ export function PurchaseSelectionProvider({ children }: { children: ReactNode })
     : pouchTotal;
 
   const pouches = qty === 1 ? "1 pouch" : `${qty} pouches`;
-  const offerLabel = isSubscribing
+  const offerLabel = isStarter ? "Starter kit · 2 pouches + free bottle" : isSubscribing
     ? qty === 1 ? "Subscribe & Save" : `Subscribe · ${pouches}`
     : `${pouches}${bottleIncluded ? " + bottle" : ""}`;
 
   const addSelectionToCart = useCallback(async () => {
+    if (isStarter) { addToCart("atlas-starter-kit", 1); return; }
     await addToCart(flavor, qty, isSubscribing ? frequency : undefined);
     if (bottleIncluded) await addToCart("bottle", 1);
-  }, [addToCart, flavor, qty, isSubscribing, frequency, bottleIncluded]);
+  }, [addToCart, flavor, qty, isSubscribing, frequency, bottleIncluded, isStarter]);
 
   return (
     <PurchaseSelectionContext.Provider
