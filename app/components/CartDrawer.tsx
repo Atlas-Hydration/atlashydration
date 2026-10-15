@@ -20,14 +20,14 @@ export default function CartDrawer() {
 
   const { qualifyingQty, bottleInCart, tier } = computeBottlePromo(items);
   const {
-    subtotal,
-    starterDiscount,
+    displaySubtotal,
+    starterUnitDiscount,
     pouchDiscount: twoPackDiscountAmount,
     bottleDiscount: bottleDiscountAmount,
     total: estimatedTotal,
   } = computeCartPricing(items);
   const hasSubscription = items.some((i) => i.subscriptionFrequency);
-  const totalDiscountAmount = twoPackDiscountAmount + bottleDiscountAmount + starterDiscount;
+  const totalDiscountAmount = twoPackDiscountAmount + bottleDiscountAmount;
   const hasStarter = items.some(i => i.slug === "atlas-starter-kit");
 
   return (
@@ -87,14 +87,14 @@ export default function CartDrawer() {
                   <div className="cart-item__info">
                     <h4 className="cart-item__title">{item.title}</h4>
                     <p className="cart-item__price">
-                      ${item.price.toFixed(2)}
+                      ${(item.price - (item.slug === "atlas-starter-kit" ? starterUnitDiscount : 0)).toFixed(2)}
                       {BOTTLE_DISCOUNT_LIVE && item.slug === "bottle" && tier !== "none" && bottleDiscountAmount > 0 && (
                         <span className="cart-item__discount-tag">
                           {tier === "free" ? "FREE" : "50% OFF"}
                         </span>
                       )}
                     </p>
-                    {item.slug === "atlas-starter-kit" && <p className="cart-item__subscription">2 × 16-stick Strawberry Lemonade pouches + 1 Atlas bottle. Component value shown; kit savings below.</p>}
+                    {item.slug === "atlas-starter-kit" && <p className="cart-item__bundle">2 × 16-stick Strawberry Lemonade pouches + 1 Atlas bottle</p>}
                     {item.subscriptionFrequency && (
                       <p className="cart-item__subscription">
                         Subscription · Every {item.subscriptionFrequency} weeks
@@ -185,9 +185,8 @@ export default function CartDrawer() {
             <>
               <div className="cart-drawer__line">
                 <span>Subtotal</span>
-                <span>${subtotal.toFixed(2)}</span>
+                <span>${displaySubtotal.toFixed(2)}</span>
               </div>
-              {starterDiscount > 0 && <div className="cart-drawer__line cart-drawer__line--discount"><span>Atlas starter savings</span><span>&minus;${starterDiscount.toFixed(2)}</span></div>}
               {twoPackDiscountAmount > 0 && (
                 <div className="cart-drawer__line cart-drawer__line--discount">
                   <span>Pouch savings (${MULTI_POUCH_DISCOUNT_PER_POUCH.toFixed(2)} each)</span>
@@ -208,7 +207,7 @@ export default function CartDrawer() {
           ) : (
             <div className="cart-drawer__total">
               <span>Total</span>
-              <span>${subtotal.toFixed(2)}</span>
+              <span>${displaySubtotal.toFixed(2)}</span>
             </div>
           )}
           <button

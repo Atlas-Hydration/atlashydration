@@ -1,42 +1,52 @@
 "use client";
 
+import { useEffect, useRef, useState } from "react";
 import { PRODUCTS } from "@/app/data/products";
 import { STARTER_OFFER } from "@/app/data/starterOffer";
 import { useCart } from "@/app/context/CartContext";
 import styles from "./StarterOffer.module.css";
 
-/** Shopify owns component inventory, price allocation, and discount eligibility. */
+/** Compact cross-sell; Shopify owns bundle inventory and the automatic offer. */
 export default function StarterOffer() {
   const { addToCart } = useCart();
-  const pouch = PRODUCTS["strawberry-lemonade"];
-  const bottle = PRODUCTS.bottle;
+  const [adding, setAdding] = useState(false);
+  const addingRef = useRef(false);
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  useEffect(() => () => { if (timerRef.current) clearTimeout(timerRef.current); }, []);
+
+  function handleAdd() {
+    if (addingRef.current) return;
+    addingRef.current = true;
+    setAdding(true);
+    addToCart("atlas-starter-kit");
+    timerRef.current = setTimeout(() => { addingRef.current = false; setAdding(false); }, 1000);
+  }
 
   return (
     <section className={styles.offer} aria-label="Atlas starter offer">
-      <div className={styles.visual}>
-        <div className={styles.product}>
-          <img src={pouch.images[0]} alt="Atlas Strawberry Lemonade pouch" loading="lazy" />
-          <span>2 × 16-stick pouches</span>
+      <div className={`complete-kit ${styles.row}`}>
+        <div className="complete-kit__visual">
+          <img className="complete-kit__img" src={PRODUCTS["strawberry-lemonade"].images[0]} alt="Strawberry Lemonade pouch" loading="lazy" />
+          <img className="complete-kit__img complete-kit__img--bottle" src={PRODUCTS.bottle.images[0]} alt="Atlas 26 oz bottle" loading="lazy" />
         </div>
-        <span className={styles.plus} aria-hidden="true">+</span>
-        <div className={styles.product}>
-          <img src={bottle.images[0]} alt="Atlas Performance Water Bottle, 26 oz" loading="lazy" />
-          <span>1 × Atlas bottle</span>
+        <div className="complete-kit__info">
+          <h3 className="complete-kit__name">The Atlas Starter Kit</h3>
+          <p className="complete-kit__contents">2 pouches · 32 sticks · 1 Atlas bottle</p>
+          <div className="complete-kit__price-row">
+            <strong className="complete-kit__price">${STARTER_OFFER.price}</strong>
+            <span className="complete-kit__save-badge">Free U.S. shipping</span>
+          </div>
         </div>
+        <button type="button" className={`complete-kit__btn ${styles.button}`} onClick={handleAdd} disabled={adding}>
+          {adding ? "Added" : "Add starter kit"}
+        </button>
       </div>
-      <div className={styles.details}>
-        <p className={styles.eyebrow}>THE ATLAS STARTER OFFER</p>
-        <h3>More hydration.<br />One complete kit.</h3>
-        <p className={styles.contents}>Two Strawberry Lemonade pouches. {STARTER_OFFER.stickQuantity} sticks. One 26 oz Atlas bottle.</p>
-        <div className={styles.priceRow}>
-          <strong className={styles.price}>${STARTER_OFFER.price}</strong>
-          <span className={styles.saving}>Save ${(STARTER_OFFER.separateValue - STARTER_OFFER.price).toFixed(2)}</span>
-        </div>
-        <p className={styles.value}>${STARTER_OFFER.separateValue.toFixed(2)} value when purchased separately</p>
-        <p className={styles.shipping}>Free standard U.S. shipping</p>
-        <button type="button" className={styles.button} onClick={() => addToCart("atlas-starter-kit")}>Add starter kit — $50</button>
-        <p className={styles.terms}>One-time purchase. No subscription required. For new and existing customers. Cannot be combined with discounts. Applicable tax calculated at checkout.</p>
-        <p className={styles.expiry}>Strawberry Lemonade expiration: 01/2027.</p>
+      <div className={styles.footer}>
+        <span>Strawberry Lemonade · One-time purchase</span>
+        <details className={styles.terms}>
+          <summary>Offer details</summary>
+          <p>$83.97 value when purchased separately. Save $33.97. Includes two 16-stick Strawberry Lemonade pouches and one 26 oz Atlas bottle. Free standard U.S. shipping. New and existing customers. No subscription required. Cannot be combined with discounts. Applicable tax calculated at checkout.</p>
+        </details>
       </div>
     </section>
   );

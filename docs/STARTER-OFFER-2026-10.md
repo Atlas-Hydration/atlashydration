@@ -57,3 +57,13 @@ Do not uninstall Bundles automatically; the owner approved its use.
 No payment/order submission or fulfillment run. Payment-provider completion,
 Apple Pay device-specific behavior and every tax jurisdiction cannot be verified
 without those environments. Guest and returning checkout totals were inspected.
+
+## October 15 compact-offer repair
+
+Owner screenshot showed a successfully added kit with an $83.97 line price and red component-value text; the $33.97 discount and $50 total were below. No failing cart API request was involved: Add starter kit calls the local CartContext, and Shopify is contacted at checkout. Cart presentation now includes the kit discount in its line price and displayed subtotal, so one kit reads $50 without subtracting the discount twice. Competing-discount logic and Shopify configuration are unchanged.
+
+Reused the prior complete-kit visual language and 52px real product thumbnails. Section is approximately 136px high at desktop buy-box width and 221px at 390px mobile viewport, instead of roughly 700px. Detailed terms sit in an accessible disclosure. Removed promotional expiration copy per owner's instruction; packaging imagery untouched. Brief add feedback and a synchronous duplicate-click guard prevent accidental double adds.
+
+Validation: production build; 14 pricing/display assertions; local real-button fresh add $50; quantity increase $100; repeated later add $150; decrease; mixed cart one kit plus one pouch $81.99; reload persistence; mobile and desktop visual inspection. No checkout route, Shopify price, discount, shipping, inventory or subscription changes in this repair.
+
+Repair rollback: revert this repair commit to restore production merge be0e02dc95285ea7228866856bea980a536c63d3. Shopify needs no rollback for this repair.

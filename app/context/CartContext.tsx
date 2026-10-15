@@ -138,7 +138,11 @@ function computeCartPricing(items: CartItem[]) {
   const pouchDiscount = kitWins || bottleWins ? 0 : pouchOffer;
 
   const total = Math.round((subtotal - pouchDiscount - bottleDiscount - starterDiscount) * 100) / 100;
-  return { subtotal, oneTimePouchQty, pouchDiscount, bottleDiscount, starterDiscount, total };
+  // Display the kit at its actual offer price, with its saving already included.
+  const kitQuantity = items.filter(i => i.slug === "atlas-starter-kit").reduce((sum, i) => sum + i.quantity, 0);
+  const starterUnitDiscount = kitQuantity ? starterDiscount / kitQuantity : 0;
+  const displaySubtotal = Math.round((subtotal - starterDiscount) * 100) / 100;
+  return { subtotal, displaySubtotal, starterUnitDiscount, oneTimePouchQty, pouchDiscount, bottleDiscount, starterDiscount, total };
 }
 
 // ---------------------------------------------------------------------------
