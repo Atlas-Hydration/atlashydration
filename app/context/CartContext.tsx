@@ -71,25 +71,15 @@ function loadCart(): CartItem[] {
     return saved.map((item) => {
       const product = PRODUCTS[item.slug];
       if (!product) return item;
-      return { ...item, price: item.subscriptionFrequency ? product.subscribePrice : product.price };
+      const subscriptionFrequency = product.oneTimeOnly ? undefined : item.subscriptionFrequency;
+      return { ...item, subscriptionFrequency, price: subscriptionFrequency ? product.subscribePrice : product.price };
     });
   } catch { return []; }
 }
 
 // ---------------------------------------------------------------------------
-// Bottle discount tiers, purely a function of qualifying pouch quantity:
-// 2 pouches -> bottle 50% off, 4 pouches -> bottle free.
-//
-// These are only TRUE if Shopify has a matching automatic discount (Buy 2
-// pouches get the bottle 50% off, Buy 4 get it free, set to combine with
-// product discounts so it coexists with ATLAS2PACK). A live checkout on
-// 2026-08-27 (#134) showed the site promising this while Shopify charged full
-// price. BOTTLE_DISCOUNT_LIVE gates every place that asserts a bottle discount
-// (slider, cart total, item tag, promo card, bundle price, announcement bar,
-// hints). If a checkout ever shows the bottle at full price, set it to false.
-// Verify with docs/PRICING.md rows 9, 10 and 10b.
-// ---------------------------------------------------------------------------
-
+// Four one-time pouches still qualify for the existing free-bottle offer.
+// The old two-pouch/half-off rule was retired on 2026-10-15.
 export const BOTTLE_DISCOUNT_LIVE = true;
 
 const QUALIFYING_POUCH_SLUGS = ["strawberry-lemonade", "grapefruit"];
@@ -111,31 +101,20 @@ function computeBottlePromo(items: CartItem[]) {
 
   const tier: BottleTier =
     qualifyingQty >= BOTTLE_FREE_THRESHOLD ? "free"
-    : qualifyingQty >= BOTTLE_HALF_OFF_THRESHOLD ? "half"
     : "none";
 
   const remainingToNextTier =
     tier === "free" ? 0
-    : tier === "half" ? BOTTLE_FREE_THRESHOLD - qualifyingQty
-    : BOTTLE_HALF_OFF_THRESHOLD - qualifyingQty;
+    : BOTTLE_FREE_THRESHOLD - qualifyingQty;
 
   return { qualifyingQty, bottleInCart, tier, remainingToNextTier };
 }
 
 // ---------------------------------------------------------------------------
-// Expected cart totals. Shopify checkout is authoritative; this only mirrors
-// what it really charges:
-//   - ATLAS2PACK (automatic): $2.50 off each one-time pouch, 2+ pouches.
-//   - Bottle tiers (automatic Buy X Get Y): 50% off at 2 one-time pouches,
-//     free at 4. Only while BOTTLE_DISCOUNT_LIVE.
-//   - Shopify will NOT apply ATLAS2PACK and a bottle discount on the same
-//     order (live checkout 2026-09-30: 2 pouches alone got ATLAS2PACK -$5.00,
-//     2 pouches + bottle got only the bottle -$9.99). It gives the customer the
-//     larger one, so the cart shows only the larger one too.
-//   - Subscription pouches are already priced at 20% off and never count toward
-//     ATLAS2PACK or the bottle tiers.
-// ---------------------------------------------------------------------------
-
+// Expected automatic discounts mirror Shopify. The starter offer cannot combine
+// with any other discount. Existing ATLAS2PACK and four-pouch bottle discounts
+// remain available; Shopify selects the largest eligible saving. Subscription
+// selling-plan prices are independent and do not qualify for one-time discounts.
 function computeCartPricing(items: CartItem[]) {
   const subtotal = items.reduce((sum, i) => sum + i.price * i.quantity, 0);
   const oneTimePouchQty = items.reduce(
@@ -143,21 +122,23 @@ function computeCartPricing(items: CartItem[]) {
     0
   );
   const pouchOffer = multiPouchDiscount(oneTimePouchQty);
+  const kitOffer = Math.round(items.filter(i => i.slug === "atlas-starter-kit").reduce((sum, i) => sum + 33.97 * i.quantity, 0) * 100) / 100;
 
   const { bottleInCart, tier } = computeBottlePromo(items);
   const bottleOffer =
     !BOTTLE_DISCOUNT_LIVE || !bottleInCart ? 0
     : tier === "free" ? BOTTLE_FULL_PRICE
-    : tier === "half" ? Math.round((BOTTLE_FULL_PRICE - BOTTLE_HALF_PRICE) * 100) / 100
     : 0;
 
   // One discount wins, never both.
-  const bottleWins = bottleOffer > 0 && bottleOffer >= pouchOffer;
+  const kitWins = kitOffer > 0 && kitOffer >= Math.max(bottleOffer, pouchOffer);
+  const starterDiscount = kitWins ? kitOffer : 0;
+  const bottleWins = !kitWins && bottleOffer > 0 && bottleOffer >= pouchOffer;
   const bottleDiscount = bottleWins ? bottleOffer : 0;
-  const pouchDiscount = bottleWins ? 0 : pouchOffer;
+  const pouchDiscount = kitWins || bottleWins ? 0 : pouchOffer;
 
-  const total = Math.round((subtotal - pouchDiscount - bottleDiscount) * 100) / 100;
-  return { subtotal, oneTimePouchQty, pouchDiscount, bottleDiscount, total };
+  const total = Math.round((subtotal - pouchDiscount - bottleDiscount - starterDiscount) * 100) / 100;
+  return { subtotal, oneTimePouchQty, pouchDiscount, bottleDiscount, starterDiscount, total };
 }
 
 // ---------------------------------------------------------------------------
@@ -182,6 +163,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     (productSlug: string, qty = 1, subscriptionFrequency?: number) => {
       const product = PRODUCTS[productSlug];
       if (!product) return;
+      if (product.oneTimeOnly) subscriptionFrequency = undefined;
 
       const price = subscriptionFrequency ? product.subscribePrice : product.price;
 
@@ -276,6 +258,16 @@ export function CartProvider({ children }: { children: ReactNode }) {
         value: total,
         items: items.map((i) => ({ item_id: i.slug, item_name: i.title, quantity: i.quantity, price: i.price })),
       });
+    }
+
+    // A permalink replaces the one-time cart instead of appending it again on
+    // repeated checkout visits. Selling-plan carts retain the existing form route.
+    if (items.every(i => !i.subscriptionFrequency)) {
+      const lines = items.filter(i => PRODUCTS[i.slug]).map(i =>
+        `${PRODUCTS[i.slug].variantId.replace("gid://shopify/ProductVariant/", "")}:${i.quantity}`
+      );
+      window.location.assign(`https://${SHOPIFY_DOMAIN}/cart/${lines.join(",")}`);
+      return;
     }
 
     // Shopify owns InitiateCheckout and Purchase; do not double-count the handoff.

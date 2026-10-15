@@ -154,7 +154,7 @@ function SignupModal({ onClose }: { onClose: () => void }) {
           <div className="wp__offer">
             <span className="wp__offer-eyebrow">Welcome offer</span>
             <span className="wp__offer-number">10<small>%</small></span>
-            <span className="wp__offer-caption">off your first order</span>
+            <span className="wp__offer-caption">off your first eligible order</span>
           </div>
           <p className="wp__perk">Plus priority access to launches, events &amp; more.</p>
         </aside>
@@ -189,8 +189,8 @@ function SignupModal({ onClose }: { onClose: () => void }) {
           ) : (
             <div className="wp__content" key="form">
               <p className="wp__eyebrow">Join the Atlas list</p>
-              <h2 id="wp-title" className="wp__title">Unlock 10% off your order.</h2>
-              <p className="wp__lede">Enter your email to reveal your code.</p>
+              <h2 id="wp-title" className="wp__title">Unlock 10% off eligible orders.</h2>
+              <p className="wp__lede">Enter your email to reveal your code. Starter kit excluded.</p>
 
               <form className="wp__form" onSubmit={submit} noValidate>
                 <input

@@ -21,12 +21,14 @@ export default function CartDrawer() {
   const { qualifyingQty, bottleInCart, tier } = computeBottlePromo(items);
   const {
     subtotal,
+    starterDiscount,
     pouchDiscount: twoPackDiscountAmount,
     bottleDiscount: bottleDiscountAmount,
     total: estimatedTotal,
   } = computeCartPricing(items);
   const hasSubscription = items.some((i) => i.subscriptionFrequency);
-  const totalDiscountAmount = twoPackDiscountAmount + bottleDiscountAmount;
+  const totalDiscountAmount = twoPackDiscountAmount + bottleDiscountAmount + starterDiscount;
+  const hasStarter = items.some(i => i.slug === "atlas-starter-kit");
 
   return (
     <div
@@ -92,6 +94,7 @@ export default function CartDrawer() {
                         </span>
                       )}
                     </p>
+                    {item.slug === "atlas-starter-kit" && <p className="cart-item__subscription">2 × 16-stick Strawberry Lemonade pouches + 1 Atlas bottle. Component value shown; kit savings below.</p>}
                     {item.subscriptionFrequency && (
                       <p className="cart-item__subscription">
                         Subscription · Every {item.subscriptionFrequency} weeks
@@ -140,10 +143,10 @@ export default function CartDrawer() {
                 </div>
               ))}
 
-              {/* Sliding-scale rewards: Free Shipping @ $40, 50% Off Bottle @ 2 pouches, Free Bottle @ 4 pouches */}
+              {/* Standard shipping threshold mirrors the Shopify rate. */}
               <CartRewardsBar subtotal={estimatedTotal} qualifyingQty={qualifyingQty} tier={tier} hasSubscription={hasSubscription} />
 
-              {BOTTLE_DISCOUNT_LIVE && tier !== "none" && !bottleInCart && (
+              {!hasStarter && BOTTLE_DISCOUNT_LIVE && tier !== "none" && !bottleInCart && (
                 <div className="cart-promo cart-promo--unlocked">
                   <div className="cart-promo__bottle-card">
                     {bottle.images[0] && (
@@ -184,6 +187,7 @@ export default function CartDrawer() {
                 <span>Subtotal</span>
                 <span>${subtotal.toFixed(2)}</span>
               </div>
+              {starterDiscount > 0 && <div className="cart-drawer__line cart-drawer__line--discount"><span>Atlas starter savings</span><span>&minus;${starterDiscount.toFixed(2)}</span></div>}
               {twoPackDiscountAmount > 0 && (
                 <div className="cart-drawer__line cart-drawer__line--discount">
                   <span>Pouch savings (${MULTI_POUCH_DISCOUNT_PER_POUCH.toFixed(2)} each)</span>

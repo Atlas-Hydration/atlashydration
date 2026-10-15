@@ -1,3 +1,5 @@
+> October 15, 2026 update: the two-pouch/half-off bottle offer is retired. See [current starter kit configuration and rollback](STARTER-OFFER-2026-10.md). Older checkout observations below are historical.
+
 # Atlas Hydration pricing: source of truth
 
 **Shopify checkout is authoritative.** The storefront only mirrors what Shopify really does so it can show an

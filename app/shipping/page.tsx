@@ -5,13 +5,13 @@ import Link from "next/link";
 export const metadata: Metadata = {
   title: "Shipping & Returns | Atlas Hydration",
   description:
-    "Atlas Hydration shipping and returns policy. Free shipping on orders over $40. Learn about processing times, shipping rates, and our return policy.",
+    "Atlas Hydration shipping and returns policy. Free shipping on orders $50 and up. Learn about processing times, shipping rates, and our return policy.",
   alternates: { canonical: "https://atlas-hydration.com/shipping" },
   openGraph: {
     type: "website",
     url: "https://atlas-hydration.com/shipping",
     title: "Shipping & Returns | Atlas Hydration",
-    description: "Atlas Hydration shipping and returns policy. Free shipping on orders over $40.",
+    description: "Atlas Hydration shipping and returns policy. Free shipping on orders $50 and up.",
     siteName: "Atlas Hydration",
     images: [DEFAULT_OG_IMAGE],
   },
@@ -22,7 +22,7 @@ const webPageJsonLd = {
   "@context": "https://schema.org",
   "@type": "WebPage",
   name: "Shipping & Returns",
-  description: "Atlas Hydration shipping and returns policy. Free shipping on orders over $40.",
+  description: "Atlas Hydration shipping and returns policy. Free shipping on orders $50 and up.",
   url: "https://atlas-hydration.com/shipping",
   publisher: { "@type": "Organization", name: "Atlas Hydration", url: "https://atlas-hydration.com" },
 };
@@ -84,8 +84,8 @@ export default function Shipping() {
 
           <h2>Shipping Rates</h2>
           <ul>
-            <li>Orders over $40 (4-6 Business Days): FREE</li>
-            <li>Orders under $40 (4-6 Business Days): $4.99</li>
+            <li>Orders $50 and up (3–4 Business Days): FREE</li>
+            <li>Orders under $50 (3–4 Business Days): $5.00</li>
             <li>
               Once an order has been processed, the shipping method cannot be
               changed.
