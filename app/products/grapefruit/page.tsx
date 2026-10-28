@@ -126,7 +126,8 @@ const accordionItems = [
     title: "Shipping & Returns",
     content: (
       <>
-        <p><strong>Free shipping</strong> on U.S. orders over ${FREE_SHIPPING_THRESHOLD}. Orders under ${FREE_SHIPPING_THRESHOLD} ship for ${SHIPPING_RATE} (4–6 business days). Subscriptions always ship free.</p>
+        <p><strong>Preorder:</strong> Expected to ship by the end of November 2026. Delivery time begins after dispatch.</p>
+        <p><strong>Free shipping</strong> on U.S. orders over ${FREE_SHIPPING_THRESHOLD}. Orders under ${FREE_SHIPPING_THRESHOLD} ship for ${SHIPPING_RATE}. Subscriptions always ship free.</p>
         <p><strong>Satisfaction guaranteed:</strong> If you&apos;re not completely happy with your order, contact us within 30 days for a full refund or exchange — no questions asked.</p>
         <p>We currently ship within the United States. International shipping coming soon.</p>
       </>
@@ -152,6 +153,7 @@ export default function Grapefruit() {
         ctaText: "16 stick packs of crisp, refreshing hydration. Zero sugar. Five calories. Full performance.",
         supplementFactsProps: { otherIngredients: "Citric Acid, Bamboo Extract, Grapefruit Oil, Annatto Seed Extract (color)" },
         preorder: true,
+        preorderShippingMessage: "Expected to ship by the end of November 2026.",
       }}
     />
     </>

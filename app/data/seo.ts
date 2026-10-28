@@ -46,14 +46,14 @@ export function buildOffer({ url, price, preorder = false }: { url: string; pric
         shippingRate: usd(0),
         shippingDestination: destination,
         shippingConditions: { "@type": "ShippingConditions", orderValue: { "@type": "MonetaryAmount", minValue: FREE_SHIPPING_THRESHOLD, currency: "USD" } },
-        deliveryTime: delivery,
+        ...(preorder ? {} : { deliveryTime: delivery }),
       },
       {
         "@type": "OfferShippingDetails",
         shippingRate: usd(SHIPPING_RATE),
         shippingDestination: destination,
         shippingConditions: { "@type": "ShippingConditions", orderValue: { "@type": "MonetaryAmount", maxValue: FREE_SHIPPING_THRESHOLD - 0.01, currency: "USD" } },
-        deliveryTime: delivery,
+        ...(preorder ? {} : { deliveryTime: delivery }),
       },
     ],
     hasMerchantReturnPolicy: {

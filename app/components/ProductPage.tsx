@@ -35,6 +35,7 @@ interface ProductPageConfig {
   activeFlavorClass: "strawberry" | "grapefruit";
   supplementFactsProps?: { otherIngredients?: string; formula?: "current" | "legacy" };
   preorder?: boolean;
+  preorderShippingMessage?: string;
 }
 
 function ProductGallery({ images }: { images: ProductImage[] }) {
@@ -197,6 +198,7 @@ export default function ProductPage({ config }: { config: ProductPageConfig }) {
                 onAddBottleChange={setAddBottle}
               />
 
+              {config.preorderShippingMessage && <p>{config.preorderShippingMessage}</p>}
               <div className="product-hero__buy" ref={buyRef}>
                 <button className="btn btn--primary btn--lg" onClick={handleAddToCart}>{buyButtonText} — ${addTotal.toFixed(2)}</button>
               </div>
@@ -274,6 +276,7 @@ export default function ProductPage({ config }: { config: ProductPageConfig }) {
           <div className="cta-section__inner">
             <h2 className="cta-section__title">{config.ctaTitle}</h2>
             <p className="cta-section__text">{config.ctaText}</p>
+            {config.preorderShippingMessage && <p className="cta-section__text">{config.preorderShippingMessage}</p>}
             <button className="btn btn--white btn--lg" onClick={handleAddToCart}>{ctaButtonText}</button>
           </div>
         </div>
