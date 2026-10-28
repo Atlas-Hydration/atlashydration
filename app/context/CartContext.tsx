@@ -8,7 +8,9 @@ import {
   useCallback,
   type ReactNode,
 } from "react";
+import { buildOneTimeCheckoutUrl } from "@/app/lib/checkoutAttribution";
 import { trackMeta } from "@/app/lib/metaPixel";
+import { STARTER_OFFER } from "@/app/data/starterOffer";
 import { PRODUCTS } from "@/app/data/products";
 import { BOTTLE_RETAIL, BOTTLE_HALF_PRICE as BOTTLE_HALF_PRICE_CALC, multiPouchDiscount } from "@/app/data/pricing";
 
@@ -171,9 +173,12 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
       const price = subscriptionFrequency ? product.subscribePrice : product.price;
 
-      trackMeta("AddToCart", {
+      const eventPrice = productSlug === "atlas-starter-kit" ? STARTER_OFFER.price : price;
+      // UCP checkout emits InitiateCheckout, not the legacy cart-link AddToCart.
+      // Subscription carts keep the existing Shopify /cart/add event ownership.
+      if (!subscriptionFrequency) trackMeta("AddToCart", {
         content_ids: [product.variantId.replace("gid://shopify/ProductVariant/", "")],
-        content_type: "product", currency: "USD", value: price * qty,
+        content_type: "product", currency: "USD", value: eventPrice * qty,
         contents: [{ id: product.variantId.replace("gid://shopify/ProductVariant/", ""), quantity: qty }],
       });
 
@@ -183,8 +188,8 @@ export function CartProvider({ children }: { children: ReactNode }) {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         (window as any).gtag('event', 'add_to_cart', {
           currency: 'USD',
-          value: price * qty,
-          items: [{ item_id: productSlug, item_name: product.name, quantity: qty, price }],
+          value: eventPrice * qty,
+          items: [{ item_id: productSlug, item_name: product.name, quantity: qty, price: eventPrice }],
         });
       }
 
@@ -255,7 +260,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     // GA4 tracking
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     if (typeof window !== 'undefined' && typeof (window as any).gtag === 'function') {
-      const total = items.reduce((s, i) => s + i.price * i.quantity, 0);
+      const total = computeCartPricing(items).total;
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (window as any).gtag('event', 'begin_checkout', {
         currency: 'USD',
@@ -270,7 +275,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
       const lines = items.filter(i => PRODUCTS[i.slug]).map(i =>
         `${PRODUCTS[i.slug].variantId.replace("gid://shopify/ProductVariant/", "")}:${i.quantity}`
       );
-      window.location.assign(`https://${SHOPIFY_DOMAIN}/cart/${lines.join(",")}`);
+      window.location.assign(buildOneTimeCheckoutUrl(lines));
       return;
     }
 

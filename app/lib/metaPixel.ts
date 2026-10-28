@@ -1,4 +1,4 @@
-// Browser events only. Shopify remains responsible for InitiateCheckout and Purchase/CAPI.
+// Browser events only. Shopify owns InitiateCheckout and Purchase/CAPI.
 export const META_PIXEL_ID = "1949506255832708";
 export const CONSENT_KEY = "atlas_cookie_consent";
 type EventName = "PageView" | "ViewContent" | "AddToCart";
