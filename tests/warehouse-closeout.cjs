@@ -22,7 +22,7 @@ function load(file){const mod={exports:{}};const code=ts.transpileModule(fs.read
  return require(name);
  },mod,mod.exports);return mod.exports;}
 const {buildCloseoutCheckoutUrl}=load('app/lib/closeoutCheckout.ts');
-for(const size of [5,2]){const url=new URL(buildCloseoutCheckoutUrl(size));assert.equal(url.pathname,`/buy/${config.CLOSEOUT_BUNDLES[size].variantId}:1`);assert.equal(url.searchParams.get('discount'),config.CLOSEOUT_SHIPPING_CODE);assert.equal(url.searchParams.get('attribution/utm_campaign'),'closeout');assert.equal(url.searchParams.get('ucp/version'),'2026-08-25');}
+for(const size of [5,2]){const url=new URL(buildCloseoutCheckoutUrl(size));assert.equal(url.pathname,`/buy/${config.CLOSEOUT_BUNDLES[size].variantId}:1`);assert.equal(url.searchParams.get('discount'),size===2?config.CLOSEOUT_SHIPPING_CODE:null);assert.equal(url.searchParams.get('attribution/utm_campaign'),'closeout');assert.equal(url.searchParams.get('ucp/version'),'2026-08-25');}
 config.CLOSEOUT_LIVE=false;assert.equal(buildCloseoutCheckoutUrl(5),null);config.CLOSEOUT_LIVE=true;
 const Sale=load('app/components/home/WarehouseCloseout.tsx').default;
 function render(preview=false){cursor=0;effects=[];const tree=Sale({preview});return{tree,html:renderToStaticMarkup(tree)};}

@@ -6,6 +6,8 @@ export function buildCloseoutCheckoutUrl(size: CloseoutSize): string | null {
   const bundle = CLOSEOUT_BUNDLES[size];
   if (!CLOSEOUT_LIVE || !bundle?.variantId) return null;
   const url = new URL(buildOneTimeCheckoutUrl([`${bundle.variantId}:1`]));
-  if (CLOSEOUT_SHIPPING_CODE) url.searchParams.set('discount', CLOSEOUT_SHIPPING_CODE);
+  // The five-pouch bundle already qualifies for the standard $50 threshold.
+  // Applying the shipping code to that offer produces an unnecessary Shopify warning.
+  if (size === 2 && CLOSEOUT_SHIPPING_CODE) url.searchParams.set('discount', CLOSEOUT_SHIPPING_CODE);
   return url.toString();
 }
