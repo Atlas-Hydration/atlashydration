@@ -1,10 +1,8 @@
 import type { Metadata } from "next";
 import { PRODUCTS } from "@/app/data/products";
 import { buildOffer, reviewJsonLd, breadcrumbJsonLd, twitterCard } from "@/app/data/seo";
-import { CLOSEOUT_LIVE } from "@/app/data/closeoutOffer";
-import { CloseoutProductBanner } from "@/app/components/home/WarehouseCloseout";
 import ProductPage from "@/app/components/ProductPage";
-import { FORMULA, FORMULA_TOTAL, FORMULA_ELECTROLYTE_BREAKDOWN, FREE_SHIPPING_THRESHOLD, SHIPPING_RATE } from "@/app/data/formula";
+import { FORMULA, FORMULA_TOTAL, FORMULA_ELECTROLYTE_BREAKDOWN, FREE_SHIPPING_THRESHOLD } from "@/app/data/formula";
 
 export const metadata: Metadata = {
   title: "Strawberry Lemonade Electrolytes | Atlas Hydration",
@@ -124,7 +122,7 @@ const accordionItems = [
     title: "Shipping & Returns",
     content: (
       <>
-        <p><strong>Free standard shipping</strong> on U.S. orders ${FREE_SHIPPING_THRESHOLD} and up. Orders under ${FREE_SHIPPING_THRESHOLD} ship for ${SHIPPING_RATE.toFixed(2)} (estimated 3–4 business days after processing). Subscriptions always ship free.</p>
+        <p><strong>Free shipping</strong> on U.S. orders over ${FREE_SHIPPING_THRESHOLD}. Orders under ${FREE_SHIPPING_THRESHOLD} ship for $4.99 (4–6 business days). Subscriptions always ship free.</p>
         <p><strong>Satisfaction guaranteed:</strong> If you&apos;re not completely happy with your order, contact us within 30 days for a full refund or exchange — no questions asked.</p>
         <p>We currently ship within the United States. International shipping coming soon.</p>
       </>
@@ -138,7 +136,6 @@ export default function StrawberryLemonade() {
     <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd([{ name: "Home", path: "/" }, { name: "Strawberry Lemonade Electrolytes", path: "/products/strawberry-lemonade" }])) }} />
     <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(productJsonLd) }} />
     <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }} />
-    {CLOSEOUT_LIVE && <CloseoutProductBanner />}
     <ProductPage
       config={{
         slug: "strawberry-lemonade",
@@ -149,7 +146,7 @@ export default function StrawberryLemonade() {
         activeFlavorClass: "strawberry",
         supplementFactsProps: { formula: "current" },
         ctaTitle: <>Ready to Try <span className="wave-text">Strawberry Lemonade?</span></>,
-        ctaText: `${FORMULA_TOTAL}mg electrolytes. Zero sugar. ${FORMULA.calories} calories.`,
+        ctaText: `16 stick packs. ${FORMULA_TOTAL}mg electrolytes. Zero sugar. ${FORMULA.calories} calories.`,
       }}
     />
     </>

@@ -12,7 +12,7 @@ const items = [
   `${FORMULA.magnesiumMg}mg magnesium`,
   "L-Glutamine + L-Alanine",
   "Sweetened with stevia + allulose",
-  `Free standard shipping on orders $${FREE_SHIPPING_THRESHOLD} and up`,
+  `Free shipping over $${FREE_SHIPPING_THRESHOLD}`,
   "Subscribe & Save 20%",
   "Skip or cancel anytime",
   "Made in USA",

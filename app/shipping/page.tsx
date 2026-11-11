@@ -2,8 +2,6 @@ import type { Metadata } from "next";
 import { DEFAULT_OG_IMAGE } from "@/app/data/seo";
 import Link from "next/link";
 
-import { CLOSEOUT_LIVE } from "@/app/data/closeoutOffer";
-
 export const metadata: Metadata = {
   title: "Shipping & Returns | Atlas Hydration",
   description:
@@ -85,7 +83,6 @@ export default function Shipping() {
           </ul>
 
           <h2>Shipping Rates</h2>
-          {CLOSEOUT_LIVE && <p><strong>Warehouse closeout:</strong> Both Strawberry Lemonade closeout bundles, 5 pouches for $50 and 2 for $32, include free standard U.S. shipping when purchased through the <Link href="/#closeout-bundles">closeout offer</Link>. Expedited shipping is not included. Other orders follow the rates below.</p>}
           <ul>
             <li>Orders $50 and up (3–4 Business Days): FREE</li>
             <li>Orders under $50 (3–4 Business Days): $5.00</li>

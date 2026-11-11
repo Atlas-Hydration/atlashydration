@@ -219,7 +219,7 @@ export default function FeaturedProduct() {
             <ul className="trust-row" aria-label="Why customers feel good buying Atlas">
               <li>Third-party tested</li>
               <li>Made in USA</li>
-              <li>Free standard shipping on orders ${FREE_SHIPPING_THRESHOLD} and up</li>
+              <li>Free shipping over ${FREE_SHIPPING_THRESHOLD}</li>
               <li>Skip or cancel subscriptions anytime</li>
             </ul>
           </div>

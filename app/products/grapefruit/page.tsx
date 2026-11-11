@@ -6,14 +6,14 @@ import ProductPage from "@/app/components/ProductPage";
 
 export const metadata: Metadata = {
   title: "Grapefruit Electrolytes | Atlas Hydration",
-  description: "Zero-sugar grapefruit electrolyte drink mix with sodium, potassium, magnesium, B vitamins, Vitamin C, and recovery amino acids. 16 stick packs per pouch.",
+  description: "Zero-sugar grapefruit electrolyte drink mix with 1,769mg electrolytes, B vitamins, Vitamin C, and recovery amino acids. 16 stick packs per box.",
   alternates: { canonical: "https://atlas-hydration.com/products/grapefruit" },
   twitter: twitterCard({ title: "Grapefruit Electrolytes | Atlas Hydration", description: "Zero-sugar electrolyte drink mix with B vitamins, vitamin C, and amino acids. 16 stick packs.", image: PRODUCTS.grapefruit.images[0] }),
   openGraph: {
     type: "website",
     url: "https://atlas-hydration.com/products/grapefruit",
     title: "Grapefruit Electrolytes | Atlas Hydration",
-    description: "Zero-sugar grapefruit electrolyte drink mix with sodium, potassium, magnesium, B vitamins, Vitamin C, and recovery amino acids.",
+    description: "Zero-sugar grapefruit electrolyte drink mix with 1,769mg electrolytes, B vitamins, Vitamin C, and recovery amino acids.",
     siteName: "Atlas Hydration",
     images: ["https://atlas-hydration.com/images/products/grapefruit/atlas-grapefruit-cover.jpg"],
   },
@@ -23,7 +23,7 @@ const productJsonLd = {
   "@context": "https://schema.org",
   "@type": "Product",
   name: "Atlas Hydration Grapefruit Electrolytes",
-  description: "Premium zero-sugar grapefruit electrolyte drink mix with sodium, potassium, magnesium, B vitamins, Vitamin C, and recovery amino acids. 16 stick packs per pouch.",
+  description: "Premium zero-sugar grapefruit electrolyte drink mix with 1,769mg electrolytes, B vitamins, Vitamin C, and recovery amino acids. 16 stick packs per box.",
   image: "https://atlas-hydration.com/images/products/grapefruit/atlas-grapefruit-cover.jpg",
   brand: { "@type": "Brand", name: "Atlas Hydration" },
   sku: PRODUCTS.grapefruit.variantId.replace("gid://shopify/ProductVariant/", ""),
@@ -31,10 +31,10 @@ const productJsonLd = {
   ...reviewJsonLd(),
   nutrition: {
     "@type": "NutritionInformation",
-    sodiumContent: "600mg",
-    potassiumContent: "500mg",
+    sodiumContent: "500mg",
+    potassiumContent: "400mg",
     sugarContent: "0g",
-    servingSize: "1 stick pack (7.91g)",
+    servingSize: "1 stick pack (7g)",
   },
 };
 
@@ -47,7 +47,7 @@ const faqJsonLd = {
       name: "What electrolytes does Atlas contain?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "Each Grapefruit stick pack contains 600mg sodium, 500mg potassium, and 200mg magnesium. See the Supplement Facts for ingredient forms and daily values.",
+        text: "Each stick pack contains 1,769mg of total electrolytes: 600mg Sodium (from Sodium Citrate and Pink Himalayan Salt), 500mg Potassium (from Potassium Citrate), 200mg Magnesium (from Magnesium Malate), and 469mg Chloride (from Pink Himalayan Salt). More per serving than LMNT, Liquid I.V., or WaterBoy.",
       },
     },
     {
@@ -55,7 +55,7 @@ const faqJsonLd = {
       name: "Is Atlas sugar-free?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "100% sugar-free with zero grams of sugar per serving. 20 calories per stick pack.",
+        text: "100% sugar-free with zero grams of sugar per serving. Only 25 calories per stick pack, naturally sweetened with stevia leaf extract and allulose — a rare sugar with near-zero glycemic impact.",
       },
     },
     {
@@ -63,7 +63,7 @@ const faqJsonLd = {
       name: "How does Atlas compare to LMNT?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "Compare current product labels side by side. Each Grapefruit stick contains 600mg sodium, 500mg potassium, 200mg magnesium, B vitamins, vitamin C, L-Glutamine, and L-Alanine.",
+        text: "1,769mg electrolytes vs LMNT's 1,260mg. Atlas also includes B vitamins (B3, B5, B6, B12), 90mg Vitamin C, and 1,200mg recovery amino acids — none of which LMNT offers. More affordable too: $1.87/stick ($1.50 with subscription) vs $2.00/packet.",
       },
     },
     {
@@ -71,7 +71,7 @@ const faqJsonLd = {
       name: "How does Atlas compare to Liquid IV?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "600mg sodium, 500mg potassium, 200mg magnesium, and 20 calories per Grapefruit stick. Compare current labels for other brands. Atlas also includes B vitamins, Vitamin C, and recovery amino acids.",
+        text: "1,769mg electrolytes, zero sugar, 25 calories vs Liquid I.V.'s ~500mg electrolytes with 11g sugar and 425 calories. Atlas also includes B vitamins, Vitamin C, and recovery amino acids.",
       },
     },
     {
@@ -87,7 +87,7 @@ const faqJsonLd = {
       name: "How many electrolytes per serving?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "The Grapefruit Supplement Facts list 600mg sodium, 500mg potassium, and 200mg magnesium per serving.",
+        text: "1,769mg per serving from four key electrolytes: 600mg Sodium, 500mg Potassium, 200mg Magnesium, and 469mg Chloride.",
       },
     },
   ],
@@ -104,9 +104,9 @@ const accordionItems = [
     title: "Description & Ingredients",
     content: (
       <>
-        <p><strong>Atlas Hydration Grapefruit</strong> is a premium zero-sugar electrolyte drink mix engineered for superior hydration, recovery, and everyday performance. Each pouch contains 16 individually wrapped stick packs — perfect for the gym, office, or travel.</p>
-        <p><strong>Key Electrolytes:</strong> Sodium 600mg, Potassium 500mg, Magnesium 200mg. <strong>Vitamins:</strong> Vitamin C 90mg, Niacin (B3) 24mg, Pantothenic Acid (as Calcium-D-Pantothenate) 5mg, Vitamin B6 2mg, Vitamin B12 8mcg. <strong>Amino Acids:</strong> L-Glutamine 1,000mg, L-Alanine 200mg.</p>
-        <p><strong>Other Ingredients:</strong> Citric Acid, Bamboo Stem/Shoot Extract, Grapefruit Oil Blend (Maltodextrin, Grapefruit Oil, Modified Food Starch), Annatto Seed Extract (color).</p>
+        <p><strong>Atlas Hydration Grapefruit</strong> is a premium zero-sugar electrolyte drink mix engineered for superior hydration, recovery, and everyday performance. Each box contains 16 individually wrapped stick packs — perfect for the gym, office, or travel.</p>
+        <p><strong>Key Electrolytes:</strong> Sodium 600mg, Potassium 500mg, Magnesium 200mg, Chloride 469mg. <strong>Vitamins:</strong> Vitamin C 90mg, Niacin (B3) 24mg, Pantothenic Acid (B5) 5mg, Vitamin B6 2mg, Vitamin B12 8mcg. <strong>Amino Acids:</strong> L-Glutamine 1,000mg, L-Alanine 200mg.</p>
+        <p><strong>Other Ingredients:</strong> Citric Acid, Natural Grapefruit Flavor, Bamboo Extract, Grapefruit Oil, Annatto Seed Extract (color), Stevia Leaf Extract, Allulose.</p>
       </>
     ),
   },
@@ -127,7 +127,7 @@ const accordionItems = [
     content: (
       <>
         <p><strong>Preorder:</strong> Expected to ship by the end of November 2026. Delivery time begins after dispatch.</p>
-        <p><strong>Free standard shipping</strong> on U.S. orders ${FREE_SHIPPING_THRESHOLD} and up. Orders under ${FREE_SHIPPING_THRESHOLD} ship for ${SHIPPING_RATE.toFixed(2)} (estimated 3–4 business days after processing). Subscriptions always ship free.</p>
+        <p><strong>Free shipping</strong> on U.S. orders over ${FREE_SHIPPING_THRESHOLD}. Orders under ${FREE_SHIPPING_THRESHOLD} ship for ${SHIPPING_RATE}. Subscriptions always ship free.</p>
         <p><strong>Satisfaction guaranteed:</strong> If you&apos;re not completely happy with your order, contact us within 30 days for a full refund or exchange — no questions asked.</p>
         <p>We currently ship within the United States. International shipping coming soon.</p>
       </>
@@ -150,8 +150,8 @@ export default function Grapefruit() {
         accordionItems,
         activeFlavorClass: "grapefruit",
         ctaTitle: "Ready to Try Grapefruit?",
-        ctaText: "Crisp, refreshing hydration. Zero sugar. 20 calories. Full performance.",
-        supplementFactsProps: { formula: "grapefruit", otherIngredients: "Citric Acid, Bamboo Stem/Shoot Extract, Grapefruit Oil Blend (Maltodextrin, Grapefruit Oil, Modified Food Starch), Annatto Seed Extract (color)" },
+        ctaText: "16 stick packs of crisp, refreshing hydration. Zero sugar. Five calories. Full performance.",
+        supplementFactsProps: { otherIngredients: "Citric Acid, Bamboo Extract, Grapefruit Oil, Annatto Seed Extract (color)" },
         preorder: true,
         preorderShippingMessage: "Expected to ship by the end of November 2026.",
       }}

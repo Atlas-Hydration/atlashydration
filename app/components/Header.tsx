@@ -9,9 +9,6 @@ import { useSignupPopup } from "@/app/components/SignupPopup";
 
 import { STARTER_OFFER_LIVE } from "@/app/data/starterOffer";
 
-import { CLOSEOUT_LIVE } from "@/app/data/closeoutOffer";
-import { CloseoutNavigation } from "@/app/components/home/WarehouseCloseout";
-
 const NAV_LINKS: { label: string; href: string }[] = [];
 
 interface Announcement {
@@ -153,8 +150,6 @@ export default function Header() {
   ]
     .filter(Boolean)
     .join(" ");
-
-  if (CLOSEOUT_LIVE) return <CloseoutNavigation />;
 
   return (
     <>

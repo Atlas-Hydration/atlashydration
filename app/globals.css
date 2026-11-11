@@ -10188,7 +10188,7 @@ img {
   .pdp-sticky__meta {
     font-size: var(--text-xs);
     color: var(--color-text-muted);
-    white-space: normal;
+    white-space: nowrap;
   }
 
   .pdp-sticky .btn {

@@ -1,8 +1,6 @@
 "use client";
 
 import { usePurchaseSelection } from "@/app/context/PurchaseSelectionContext";
-import { STICKS_PER_POUCH } from "@/app/data/pricing";
-import { STARTER_OFFER } from "@/app/data/starterOffer";
 import { PRODUCTS } from "@/app/data/products";
 
 const CF_BASE = "https://customer-1sijhr9xl3yqixxu.cloudflarestream.com";
@@ -14,12 +12,7 @@ const streamParams = (id: string) =>
 
 export default function DarkCta() {
   // Same selection (flavor, offer, quantity, plan, bottle) as the main buy box.
-  const { flavor, purchaseType, qty, bottleIncluded, total, isPreorder, addSelectionToCart } = usePurchaseSelection();
-
-  const isStarter = flavor === "strawberry-lemonade" && purchaseType === "starter";
-  const packSummary = isStarter
-    ? `${STARTER_OFFER.stickQuantity} stick packs · ${STARTER_OFFER.pouchQuantity} pouches + ${STARTER_OFFER.bottleQuantity} free Atlas bottle`
-    : `${qty * STICKS_PER_POUCH} stick packs · ${qty} ${qty === 1 ? "pouch" : "pouches"}${bottleIncluded ? " + Atlas bottle" : ""}`;
+  const { flavor, total, isPreorder, addSelectionToCart } = usePurchaseSelection();
 
   return (
     <section className="cta-dark cta-dark--video" aria-label="Buy now">
@@ -57,13 +50,13 @@ export default function DarkCta() {
             <span className="wave-text">{PRODUCTS[flavor].name.replace(" ", "\u00a0")}?</span>
           </h2>
           <p className="cta-dark__text">
-            {packSummary}. 1,769mg electrolytes. Zero sugar. 25 calories.
+            16 stick packs. 1,769mg electrolytes. Zero sugar. 25 calories.
           </p>
           <button
             className="cta-dark__btn"
             onClick={() => addSelectionToCart()}
           >
-            {isStarter ? "Order starter kit" : isPreorder ? "Pre-Order" : "Order"} &mdash; ${total.toFixed(2)}
+            {isPreorder ? "Pre-Order" : "Order"} &mdash; ${total.toFixed(2)}
           </button>
         </div>
       </div>

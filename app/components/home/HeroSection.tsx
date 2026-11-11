@@ -39,7 +39,7 @@ export default function HeroSection() {
         <ul className="hero__trust" aria-label="Atlas at a glance">
           <li>Made in USA</li>
           <li>Third-party tested</li>
-          <li>{`Free standard shipping on orders $${FREE_SHIPPING_THRESHOLD} and up`}</li>
+          <li>{`Free shipping over $${FREE_SHIPPING_THRESHOLD}`}</li>
         </ul>
       </div>
     </section>
