@@ -3,6 +3,9 @@
 import { useEffect, useRef, useState } from "react";
 import { CLOSEOUT_BUNDLES, type CloseoutSize } from "@/app/data/closeoutOffer";
 import { buildCloseoutCheckoutUrl } from "@/app/lib/closeoutCheckout";
+import { POUCH_RETAIL } from "@/app/data/pricing";
+import { PRODUCTS } from "@/app/data/products";
+import { resizeShopify } from "@/app/lib/images";
 import styles from "./CloseoutHighlight.module.css";
 
 /** An additive sale feature. The original hero, catalog and homepage remain intact. */
@@ -52,14 +55,26 @@ export default function CloseoutHighlight() {
             <legend>Choose your sale bundle</legend>
             {([5, 2] as const).map((count) => {
               const option = CLOSEOUT_BUNDLES[count];
+              const separateValue = Math.round(POUCH_RETAIL * count * 100) / 100;
+              const savings = (separateValue - option.price).toFixed(2);
               return (
                 <label key={count} className={`${styles.option} ${size === count ? styles.selected : ""}`}>
                   <input type="radio" name="closeout-size" value={count} checked={size === count} onChange={() => setSize(count)} />
-                  <span className={styles.optionCopy}>
-                    <span className={styles.optionTitle}>{count} pouches {count === 5 && <small>Best value</small>}</span>
-                    <span className={styles.optionDetail}>{option.sticks} sticks · ${option.perPouch} per pouch</span>
+                  <span className={styles.selectionMark} aria-hidden="true">{size === count ? "✓" : ""}</span>
+                  <span className={styles.optionVisual} aria-hidden="true">
+                    <img src={resizeShopify(PRODUCTS["strawberry-lemonade"].images[0], 160)} alt="" width="64" height="80" loading="lazy" />
                   </span>
-                  <strong className={styles.optionPrice}>${option.price}</strong>
+                  <span className={styles.optionCopy}>
+                    {count === 5 && <span className={styles.optionEyebrow}>Best value</span>}
+                    <span className={styles.optionTitle}>{count} pouches</span>
+                    <span className={styles.optionDetail}>{option.sticks} sticks · ${option.perPouch} per pouch</span>
+                    <span className={styles.priceRow}>
+                      <strong className={styles.optionPrice}>${option.price}</strong>
+                      <s className={styles.originalPrice}>${separateValue.toFixed(2)}</s>
+                      <span className={styles.savings}>Save ${savings}</span>
+                    </span>
+                    <span className={styles.valueCaption}>Value when purchased separately</span>
+                  </span>
                 </label>
               );
             })}

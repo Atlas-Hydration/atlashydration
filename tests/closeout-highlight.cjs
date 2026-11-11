@@ -71,3 +71,17 @@ assert(!/expires|expiration|countdown|moving warehouses|selling fast|only \d+ le
 const header=fs.readFileSync('app/components/Header.tsx','utf8');
 for(const lead of ['Free shipping','Subscribe & Save 20%','Unlock 10% off','Atlas starter offer','Made in USA','Inside every stick','30-day guarantee','New flavor']) assert(header.includes(`lead: "${lead}"`));
 console.log('Additive scope, all original homepage sections and product/cart files, exact checkout variants, prices, shipping, selector, double-click guard, Back restoration and retry behavior passed.');
+
+const published = file => cp.execFileSync('git',['show',`fc076cf47a1f8e7c6c137093a36008e989c9cdb9:${file}`],{encoding:'utf8'});
+for(const file of ['app/components/Header.tsx','app/components/FooterSignup.tsx','app/components/SignupPopup.tsx','app/components/home/StickyBuyBar.tsx','app/page.tsx','app/shipping/page.tsx','app/data/closeoutOffer.ts','app/lib/closeoutCheckout.ts']) assert.equal(fs.readFileSync(file,'utf8'),published(file),`${file} unchanged from live`);
+assert(text(tree).includes('Big hydration.Our biggest sale.'));
+assert(text(tree).includes('The warehouse closeout event'));
+assert(text(tree).includes('Save $109.95'));
+assert(text(tree).includes('Save $31.98'));
+assert(text(tree).includes('$159.95'));
+assert(text(tree).includes('$63.98'));
+assert(text(tree).includes('Value when purchased separately'));
+assert.equal(all(tree).filter(x=>x.type==='input' && x.props.type==='radio').length,2);
+assert.equal(all(tree).filter(x=>x.type==='img').length,2);
+assert(all(tree).filter(x=>x.type==='img').every(x=>x.props.src.includes('1_e4b7eae7-01d9-430c-9655-7949d910deb6')));
+console.log('Zest styling: original live copy and site preserved, accurate $109.95/$31.98 savings, approved pouch images only, native radio inputs retained.');

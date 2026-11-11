@@ -37,3 +37,28 @@
 @media (max-width: 660px) { .inner { display: block; padding: 48px 24px; } .title { font-size: clamp(36px, 8.5vw, 51px); } .eyebrow { font-size: 9px; margin-bottom: 22px; } .description { font-size: 14px; } .heroPrice { margin-top: 22px; font-size: 36px; } .shipping { margin-top: 17px; } .order { margin-top: 30px; padding: 23px 20px; } .option { padding: 19px 13px; } .optionTitle { font-size: 14px; } .optionDetail { font-size: 11px; } .optionPrice { font-size: 26px; } }
 @media (prefers-reduced-motion: reduce) { .option { transition: none; } }
 @media (max-width: 360px) { .inner { padding: 42px 16px; } .order { padding: 20px 14px; } .option { padding: 17px 10px; gap: 8px; } .optionTitle { font-size: 13px; } .optionDetail { font-size: 10px; } .buy { padding: 15px 14px; gap: 8px; font-size: 12px; } }
+
+/* Strawberry accents mirror the existing Atlas Starter Kit card. */
+.order { border-color: #eadde0; background: #fffdfb; box-shadow: 0 12px 36px #a12b4510; }
+.option { position: relative; gap: 14px; padding: 20px 34px 19px 17px; background: #fff; border-color: #e3dedf; align-items: center; }
+.option:hover { border-color: #cd7185; background: #fffafb; }
+.option:focus-within { outline: 2px solid #bf3654; outline-offset: 3px; }
+.selected { background: #fff5f6; border-color: #bf3654; box-shadow: inset 0 0 0 .5px #bf3654; }
+.selected:hover { background: #fff1f3; }
+.option input { position: absolute; width: 1px; height: 1px; opacity: 0; margin: 0; }
+.selectionMark { position: absolute; right: 12px; top: 15px; width: 18px; height: 18px; border: 1px solid #8a8b8f; border-radius: 50%; display: grid; place-items: center; color: #bf3654; font-size: 12px; line-height: 1; }
+.selected .selectionMark { border-color: #bf3654; }
+.optionVisual { width: 64px; flex: 0 0 64px; border-radius: 10px; overflow: hidden; box-shadow: 0 3px 8px #1d1d1f14; border: 2px solid #fff; }
+.optionVisual img { width: 100%; height: 80px; object-fit: cover; display: block; }
+.optionEyebrow { display: block; font-size: 9px; line-height: 1.4; font-weight: 750; color: #a52141; letter-spacing: .07em; text-transform: uppercase; margin-bottom: 4px; }
+.optionTitle { display: block; font-family: var(--font-serif); font-size: 20px; font-weight: 650; line-height: 1.2; }
+.optionDetail { margin-top: 4px; font-size: 11px; }
+.priceRow { display: flex; align-items: center; flex-wrap: wrap; column-gap: 7px; row-gap: 3px; margin-top: 8px; }
+.optionPrice { font-size: 27px; line-height: 1.15; }
+.originalPrice { font-size: 12px; color: #6e6e73; }
+.savings { font-size: 10px; font-weight: 650; line-height: 1.4; padding: 3px 5px; border-radius: 4px; background: #eaf1e2; color: #2d6634; white-space: nowrap; }
+.valueCaption { display: block; font-size: 9px; line-height: 1.4; color: #6e6e73; margin-top: 5px; }
+.buy:hover { background: #a52141; }
+@media (min-width: 661px) and (max-width: 1000px) { .inner { grid-template-columns: 1fr 1.05fr; gap: 26px; padding-left: 24px; padding-right: 24px; } .order { padding: 20px; } .option { gap: 10px; padding-left: 12px; } .optionVisual { width: 50px; flex-basis: 50px; } .optionVisual img { height: 66px; } .optionTitle { font-size: 18px; } .priceRow { column-gap: 5px; } .optionPrice { font-size: 25px; } }
+@media (max-width: 660px) { .order { padding: 23px 16px; } .option { padding: 19px 28px 18px 12px; gap: 12px; } .optionVisual { width: 54px; flex-basis: 54px; } .optionVisual img { height: 72px; } .optionTitle { font-size: 19px; } .optionDetail { font-size: 10px; } .optionPrice { font-size: 26px; } .priceRow { column-gap: 6px; } }
+@media (max-width: 360px) { .inner { padding-left: 16px; padding-right: 16px; } .order { padding: 20px 12px; } .option { padding: 17px 25px 16px 10px; gap: 9px; } .optionVisual { width: 45px; flex-basis: 45px; } .optionVisual img { height: 62px; } .optionTitle { font-size: 18px; } .optionPrice { font-size: 24px; } .originalPrice { font-size: 11px; } .savings { font-size: 9px; } .valueCaption { font-size: 8px; } }
