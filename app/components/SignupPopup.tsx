@@ -21,6 +21,9 @@ import {
   useWelcomeSignup,
 } from "@/app/lib/welcomeSignup";
 import { openWelcomeForm } from "@/app/lib/klaviyo";
+import { STARTER_OFFER_LIVE } from "@/app/data/starterOffer";
+
+import { CLOSEOUT_LIVE } from "@/app/data/closeoutOffer";
 
 const AUTO_OPEN_DELAY_MS = 8000;
 // Never interrupt shopping/checkout flows or the internal dashboard.
@@ -41,6 +44,9 @@ export function SignupPopupProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     pathRef.current = pathname;
+    // A popup from the previous page must not cover the next shopping step.
+    // Same-route rerenders still preserve a manually opened signup form.
+    setOpen(false);
   }, [pathname]);
 
   // One automatic appearance per page load, 8s after arriving, never on
@@ -49,8 +55,14 @@ export function SignupPopupProvider({ children }: { children: ReactNode }) {
     const started = Date.now();
     const id = window.setInterval(() => {
       if (shownRef.current) return;
+      // A competing welcome offer must not interrupt the closeout journey.
+      if (CLOSEOUT_LIVE || /^\/closeout-preview/.test(pathRef.current)) return;
+      if (typeof document !== 'undefined' && document.querySelector('[data-closeout-page]')) return;
       if (Date.now() - started < AUTO_OPEN_DELAY_MS) return;
       if (NO_AUTO_OPEN.some((re) => re.test(pathRef.current))) return;
+      // The default offer here excludes this discount. Keep signup available
+      // on request, without interrupting the Starter Kit purchase journey.
+      if (STARTER_OFFER_LIVE && /^\/products\/strawberry-lemonade\/?$/.test(pathRef.current)) return;
       if (autoOpenSuppressed()) {
         shownRef.current = true;
         return;
@@ -170,7 +182,7 @@ function SignupModal({ onClose }: { onClose: () => void }) {
             <div className="wp__content" key="success">
               <p className="wp__eyebrow">{alreadyIn ? "Welcome back" : "You're in"}</p>
               <h2 id="wp-title" className="wp__title">Here&apos;s your 10% off.</h2>
-              <p className="wp__lede">Paste it at checkout.</p>
+              <p className="wp__lede">Paste it at checkout on eligible orders. {CLOSEOUT_LIVE ? "Starter kit and closeout bundles excluded." : "Starter kit excluded."}</p>
 
               <div className="wp__code">
                 <span className="wp__code-value" aria-label={`Your code is ${WELCOME_CODE}`}>{WELCOME_CODE}</span>
@@ -190,7 +202,7 @@ function SignupModal({ onClose }: { onClose: () => void }) {
             <div className="wp__content" key="form">
               <p className="wp__eyebrow">Join the Atlas list</p>
               <h2 id="wp-title" className="wp__title">Unlock 10% off eligible orders.</h2>
-              <p className="wp__lede">Enter your email to reveal your code. Starter kit excluded.</p>
+              <p className="wp__lede">Enter your email to reveal your code. {CLOSEOUT_LIVE ? "Starter kit and closeout bundles excluded." : "Starter kit excluded."}</p>
 
               <form className="wp__form" onSubmit={submit} noValidate>
                 <input

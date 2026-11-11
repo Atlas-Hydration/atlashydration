@@ -1,0 +1,18 @@
+const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const ts = require('typescript');
+const React = require('react');
+const {renderToStaticMarkup} = require('react-dom/server');
+const source=fs.readFileSync('app/components/home/StrawberrySale.tsx','utf8');
+const code=ts.transpileModule(source,{compilerOptions:{module:ts.ModuleKind.CommonJS,jsx:ts.JsxEmit.ReactJSX}}).outputText;
+const mod={exports:{}};
+new Function('require','module','exports',code)(name=>name.endsWith('.css')?{default:new Proxy({},{get:(_,k)=>k})}:require(name),mod,mod.exports);
+const html=renderToStaticMarkup(React.createElement(mod.exports.default));
+for(const text of ['5 pouches.','$50.','80 stick packs','2-pouch bundle','$32','32 stick packs','Free standard shipping','Free standard shipping']) assert.ok(html.includes(text),text);
+assert.equal((html.match(/January 1, 2027/g)||[]).length,4);
+assert.equal((html.match(/<button[^>]*disabled/g)||[]).length,2);
+assert.ok(!/onClick|useCart|addToCart|checkoutUrl/.test(source));
+assert.ok(!/warehouse move|low stock|selling fast|expires|best before/i.test(html));
+assert.ok(fs.readFileSync('app/sale-preview/page.tsx','utf8').includes("process.env.NODE_ENV === 'production') notFound()"));
+assert.ok(fs.readFileSync('app/page.tsx','utf8').includes('process.env.NODE_ENV !== "production" && process.env.ATLAS_SALE_PREVIEW === "true"'));
+console.log('Sale copy, quantity, date visibility, disabled checkout, and production isolation checks passed');

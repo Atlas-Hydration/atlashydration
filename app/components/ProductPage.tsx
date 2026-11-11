@@ -3,11 +3,11 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { useCart, BOTTLE_DISCOUNT_LIVE, computeCartPricing } from "@/app/context/CartContext";
-import { oneTimePouchTotal } from "@/app/data/pricing";
+import { oneTimePouchTotal, STICKS_PER_POUCH } from "@/app/data/pricing";
 import { PRODUCTS } from "@/app/data/products";
 import { FREE_SHIPPING_THRESHOLD } from "@/app/data/formula";
 import PurchaseOptions from "@/app/components/PurchaseOptions";
-import { STARTER_OFFER_LIVE } from "@/app/data/starterOffer";
+import { STARTER_OFFER, STARTER_OFFER_LIVE } from "@/app/data/starterOffer";
 import ProductArticles from "@/app/components/ProductArticles";
 import { resizeShopify, shopifySrcSet } from "@/app/lib/images";
 import { SupplementFactsWithPanel } from "@/app/components/IngredientDetailPanel";
@@ -33,7 +33,7 @@ interface ProductPageConfig {
   ctaTitle: React.ReactNode;
   ctaText: string;
   activeFlavorClass: "strawberry" | "grapefruit";
-  supplementFactsProps?: { otherIngredients?: string; formula?: "current" | "legacy" };
+  supplementFactsProps?: { otherIngredients?: string; formula?: "current" | "legacy" | "grapefruit" };
   preorder?: boolean;
   preorderShippingMessage?: string;
 }
@@ -105,7 +105,7 @@ export default function ProductPage({ config }: { config: ProductPageConfig }) {
   // Optional Atlas Bottle add-on, only offered with the 2-pouch one-time option.
   const bottleIncluded = BOTTLE_DISCOUNT_LIVE && addBottle && !isSubscribing && qty === 2 && !customQtyOpen;
   const isStarter = purchaseOption === "starter" && config.slug === "strawberry-lemonade";
-  const addTotal = isStarter ? 50 : bottleIncluded
+  const addTotal = isStarter ? STARTER_OFFER.price : bottleIncluded
     ? computeCartPricing([
         { slug: config.slug, title: product.name, price: product.price, quantity: 2, image: null },
         { slug: "bottle", title: PRODUCTS.bottle.name, price: PRODUCTS.bottle.price, quantity: 1, image: null },
@@ -143,8 +143,12 @@ export default function ProductPage({ config }: { config: ProductPageConfig }) {
 
   const buyButtonText = isStarter ? "Add starter kit" : config.preorder ? "Pre-Order" : "Add to Cart";
   const pouchLabel = `${qty} pouch${qty === 1 ? "" : "es"}`;
-  const stickyMeta = isStarter ? "Starter kit · 2 pouches + free bottle" : isSubscribing ? `Subscribe & Save · ${pouchLabel}` : `One-time · ${pouchLabel}${bottleIncluded ? " + bottle" : ""}`;
-  const ctaButtonText = `${config.preorder ? "Pre-Order" : "Order"} — $${addTotal.toFixed(2)}`;
+  const packSummary = isStarter
+    ? `${STARTER_OFFER.stickQuantity} stick packs · ${STARTER_OFFER.pouchQuantity} pouches + ${STARTER_OFFER.bottleQuantity} free Atlas bottle`
+    : `${qty * STICKS_PER_POUCH} stick packs · ${pouchLabel}${bottleIncluded ? " + Atlas bottle" : ""}`;
+  const offerSummary = isStarter ? "Starter Kit · One-time purchase" : isSubscribing ? `Subscribe & Save · Every ${frequency} weeks` : "One-time purchase";
+  const stickyMeta = isStarter ? `Starter kit · ${STARTER_OFFER.stickQuantity} sticks + bottle` : `${qty * STICKS_PER_POUCH} sticks · ${isSubscribing ? "Subscribe & Save" : "One-time"}${bottleIncluded ? " + bottle" : ""}`;
+  const ctaButtonText = `${isStarter ? "Order starter kit" : config.preorder ? "Pre-Order" : "Order"} — $${addTotal.toFixed(2)}`;
 
   return (
     <main>
@@ -160,16 +164,16 @@ export default function ProductPage({ config }: { config: ProductPageConfig }) {
                 <span className="junip-product-summary" data-product-id={config.junipProductId} />
               </div>
               <p className="product-hero__price">
-                <strong>${product.price.toFixed(2)}</strong>
-                <span>or ${product.subscribePrice.toFixed(2)} per pouch with Subscribe &amp; Save</span>
+                <strong>${addTotal.toFixed(2)}</strong>
+                <span>{offerSummary}</span>
               </p>
-              <p className="product-hero__packs">16 Stick Packs</p>
+              <p className="product-hero__packs">{packSummary}</p>
               <p className="product-hero__desc">Zero-sugar electrolytes with B vitamins, vitamin C, and amino acids. Built for training, travel, heat, and long days.</p>
 
               <div className="product-hero__actives">
-                <span className="product-hero__actives-chip"><strong>1,769mg</strong> Electrolytes</span>
+                <span className="product-hero__actives-chip">{config.slug === "grapefruit" ? "Sodium + Potassium + Magnesium" : <><strong>1,769mg</strong> Electrolytes</>}</span>
                 <span className="product-hero__actives-chip">Zero Sugar</span>
-                <span className="product-hero__actives-chip">25 Calories</span>
+                <span className="product-hero__actives-chip">{config.slug === "grapefruit" ? 20 : 25} Calories</span>
                 <span className="product-hero__actives-chip">B Vitamins + C</span>
                 <a href="#supplement-facts" className="product-hero__actives-link">Full breakdown →</a>
               </div>
@@ -206,7 +210,7 @@ export default function ProductPage({ config }: { config: ProductPageConfig }) {
               <ul className="trust-row" aria-label="Why customers feel good buying Atlas">
                 <li>Third-party tested</li>
                 <li>Made in USA</li>
-                <li>Free shipping over ${FREE_SHIPPING_THRESHOLD}</li>
+                <li>Free standard shipping on orders ${FREE_SHIPPING_THRESHOLD} and up</li>
                 <li>Skip or cancel subscriptions anytime</li>
               </ul>
 
@@ -265,7 +269,7 @@ export default function ProductPage({ config }: { config: ProductPageConfig }) {
 
       <ProductArticles />
 
-      <FaqSection />
+      <FaqSection flavor={config.slug === "grapefruit" ? "grapefruit" : "strawberry"} />
 
       <section className="cta-section" aria-label="Buy now">
         <div className="cta-section__video-wrap">
@@ -275,7 +279,7 @@ export default function ProductPage({ config }: { config: ProductPageConfig }) {
         <div className="container">
           <div className="cta-section__inner">
             <h2 className="cta-section__title">{config.ctaTitle}</h2>
-            <p className="cta-section__text">{config.ctaText}</p>
+            <p className="cta-section__text">{packSummary}. {config.ctaText}</p>
             {config.preorderShippingMessage && <p className="cta-section__text">{config.preorderShippingMessage}</p>}
             <button className="btn btn--white btn--lg" onClick={handleAddToCart}>{ctaButtonText}</button>
           </div>

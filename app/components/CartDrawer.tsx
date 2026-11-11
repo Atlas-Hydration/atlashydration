@@ -6,6 +6,8 @@ import { STARTER_OFFER } from "@/app/data/starterOffer";
 import { PRODUCTS } from "@/app/data/products";
 import CartRewardsBar from "@/app/components/CartRewardsBar";
 
+import { CLOSEOUT_LIVE } from "@/app/data/closeoutOffer";
+
 const bottle = PRODUCTS.bottle;
 
 export default function CartDrawer() {
@@ -69,7 +71,7 @@ export default function CartDrawer() {
               <div className="cart-spinner" />
               <p>Your cart is empty</p>
               <a
-                href="/#products"
+                href={CLOSEOUT_LIVE ? "/#closeout-bundles" : "/#products"}
                 className="btn btn--outline btn--sm"
                 onClick={closeCart}
               >

@@ -1,11 +1,17 @@
 "use client";
 
+import { POUCH_PRICES } from "@/app/data/pricing";
 import { useState } from "react";
 import { FORMULA, FORMULA_TOTAL, FORMULA_ELECTROLYTE_BREAKDOWN } from "@/app/data/formula";
 
 const ELECTROLYTE_ANSWER = `Each Strawberry Lemonade stick pack contains ${FORMULA_ELECTROLYTE_BREAKDOWN}. See the Supplement Facts on the product page for every ingredient and daily value.`;
 
-function buildFaqItems() {
+function buildFaqItems(flavor: "strawberry" | "grapefruit") {
+  if (flavor === "grapefruit") return [
+    { question: "What is in each Grapefruit serving?", answer: "Each 7.91g stick contains 20 calories and 5g carbohydrate, with 600mg sodium, 500mg potassium, and 200mg magnesium." },
+    { question: "What vitamins and amino acids are included?", answer: "Vitamin C 90mg, Niacin 24mg, Pantothenic Acid (as Calcium-D-Pantothenate) 5mg, Vitamin B6 2mg, Vitamin B12 8mcg, L-Glutamine 1g, and L-Alanine 200mg." },
+    { question: "What are the other ingredients?", answer: "Citric Acid, Bamboo Stem/Shoot Extract, Grapefruit Oil Blend (Maltodextrin, Grapefruit Oil, Modified Food Starch), Annatto Seed Extract (color)." },
+  ];
   return [
     {
       question: "What electrolytes does Atlas contain?",
@@ -17,7 +23,7 @@ function buildFaqItems() {
     },
     {
       question: "How does Atlas compare to other electrolyte mixes?",
-      answer: `Every brand formulates differently, so we suggest comparing labels side by side. Atlas provides <strong>${FORMULA_TOTAL}mg total electrolytes</strong>, zero sugar, and ${FORMULA.calories} calories per stick, plus B vitamins, vitamin C, L-Glutamine, and L-Alanine. That works out to $1.87 per stick, or $1.50 with a subscription.`,
+      answer: `Every brand formulates differently, so we suggest comparing labels side by side. Atlas provides <strong>${FORMULA_TOTAL}mg total electrolytes</strong>, zero sugar, and ${FORMULA.calories} calories per stick, plus B vitamins, vitamin C, L-Glutamine, and L-Alanine. For a single pouch, that works out to $${POUCH_PRICES.perStick.toFixed(2)} per stick, or $${POUCH_PRICES.subscribePerStick.toFixed(2)} with a subscription.`,
     },
     {
       question: "What vitamins and amino acids are included?",
@@ -37,9 +43,9 @@ function buildFaqItems() {
   ];
 }
 
-export default function FaqSection() {
+export default function FaqSection({ flavor = "strawberry" }: { flavor?: "strawberry" | "grapefruit" } = {}) {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
-  const faqItems = buildFaqItems();
+  const faqItems = buildFaqItems(flavor);
 
   return (
     <section className="product-faq product-faq--dark" id="faq" aria-label="Frequently Asked Questions about Atlas Hydration">

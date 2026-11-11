@@ -202,6 +202,9 @@ const CURRENT_INGREDIENT_OVERRIDES: Record<string, Partial<IngredientInfo>> = {
   vitaminb5: { name: "Vitamin B5 (Pantethine)", dose: "12mg — 150% DV" },
 };
 
+const GRAPEFRUIT_OTHER_INGREDIENTS =
+  "Citric Acid, Bamboo Stem/Shoot Extract, Grapefruit Oil Blend (Maltodextrin, Grapefruit Oil, Modified Food Starch), Annatto Seed Extract (color)";
+
 const CURRENT_OTHER_INGREDIENTS =
   "Allulose, Citric Acid, Inulin, Natural Flavors, Malic Acid, Silicon Dioxide, Rebaudioside A (from Stevia Leaf Extract)";
 
@@ -314,13 +317,14 @@ export function SupplementFactsWithPanel({
   formula = "legacy",
 }: {
   otherIngredients?: string;
-  formula?: "current" | "legacy";
+  formula?: "current" | "legacy" | "grapefruit";
 }) {
   const isCurrent = formula === "current";
+  const isGrapefruit = formula === "grapefruit";
   const [activeIngredient, setActiveIngredient] = useState<string | null>(null);
   const [mobileSheet, setMobileSheet] = useState<string | null>(null);
   const ingredientData = (key: string): IngredientInfo =>
-    isCurrent ? { ...INGREDIENT_DATA[key], ...CURRENT_INGREDIENT_OVERRIDES[key] } : INGREDIENT_DATA[key];
+    isCurrent ? { ...INGREDIENT_DATA[key], ...CURRENT_INGREDIENT_OVERRIDES[key] } : isGrapefruit && key === "vitaminb5" ? { ...INGREDIENT_DATA[key], name: "Pantothenic Acid (Vitamin B5)", desc: "Provided as Calcium-D-Pantothenate. Pantothenic acid is a component of coenzyme A, which supports energy metabolism." } : INGREDIENT_DATA[key];
   const data = activeIngredient ? ingredientData(activeIngredient) : null;
   const sheetData = mobileSheet ? ingredientData(mobileSheet) : null;
 
@@ -348,7 +352,7 @@ export function SupplementFactsWithPanel({
       </div>
     ));
 
-  const other = otherIngredients || (isCurrent ? CURRENT_OTHER_INGREDIENTS : "Citric Acid, Natural Strawberry & Lemon Flavors, Bamboo Extract, Annatto Seed Extract (color)");
+  const other = otherIngredients || (isCurrent ? CURRENT_OTHER_INGREDIENTS : isGrapefruit ? GRAPEFRUIT_OTHER_INGREDIENTS : "Citric Acid, Natural Strawberry & Lemon Flavors, Bamboo Extract, Annatto Seed Extract (color)");
 
   return (
     <>
@@ -356,24 +360,24 @@ export function SupplementFactsWithPanel({
         <div className="supplement-facts__table" role="table" aria-label="Supplement Facts">
           <h3>Supplement Facts</h3>
           <p className="sf-meta">16 servings per container</p>
-          <p className="sf-meta">Serving Size <strong>1 Stick ({isCurrent ? FORMULA.servingG : 8}g)</strong></p>
+          <p className="sf-meta">Serving Size <strong>1 Stick ({isCurrent ? FORMULA.servingG : isGrapefruit ? 7.91 : 8}g)</strong></p>
           <div className="sf-divider" />
           <p className="sf-meta" style={{ fontSize: "var(--text-xs)" }}>Amount per serving</p>
-          <div className="sf-row sf-row--calories"><span>Calories</span><span>{isCurrent ? FORMULA.calories : 5}</span></div>
+          <div className="sf-row sf-row--calories"><span>Calories</span><span>{isCurrent ? FORMULA.calories : isGrapefruit ? 20 : 5}</span></div>
           <div className="sf-row sf-row--header"><span>% Daily Value*</span></div>
-          <div className="sf-row"><span><strong>Total Carbohydrate</strong> {isCurrent ? FORMULA.carbsG : 1}g</span><span>{isCurrent ? "2%*" : "<1%*"}</span></div>
-          <div className="sf-row"><span><strong>Total Sugar</strong> 0g</span><span>0%</span></div>
-          <div className="sf-row"><span><strong>Protein</strong> 0g</span><span>0%</span></div>
+          <div className="sf-row"><span><strong>Total Carbohydrate</strong> {isCurrent ? FORMULA.carbsG : isGrapefruit ? 5 : 1}g</span><span>{isCurrent || isGrapefruit ? "2%*" : "<1%*"}</span></div>
+          {!isGrapefruit && <div className="sf-row"><span><strong>Total Sugar</strong> 0g</span><span>0%</span></div>}
+          {!isGrapefruit && <div className="sf-row"><span><strong>Protein</strong> 0g</span><span>0%</span></div>}
           <div className="sf-section-divider" />
-          {renderRows(isCurrent ? CURRENT_ELECTROLYTE_ROWS : ELECTROLYTE_ROWS)}
+          {renderRows(isCurrent ? CURRENT_ELECTROLYTE_ROWS : isGrapefruit ? ELECTROLYTE_ROWS.filter(row => row.key !== "chloride") : ELECTROLYTE_ROWS)}
           <div className="sf-section-divider" />
-          {renderRows(isCurrent ? CURRENT_VITAMIN_ROWS : VITAMIN_ROWS)}
+          {renderRows(isCurrent ? CURRENT_VITAMIN_ROWS : isGrapefruit ? VITAMIN_ROWS.map(row => row.key === "vitaminb5" ? { ...row, label: <>Pantothenic Acid (as Calcium-D-Pantothenate) 5mg</> } : row) : VITAMIN_ROWS)}
           <div className="sf-section-divider" />
-          {renderRows(isCurrent ? CURRENT_AMINO_ROWS : AMINO_ROWS)}
+          {renderRows(isCurrent || isGrapefruit ? CURRENT_AMINO_ROWS : AMINO_ROWS)}
           <div className="sf-divider" />
           <p className="sf-other"><strong>Other Ingredients:</strong> {other}</p>
           <p className="sf-other">*Percent Daily Values Are Based on a 2000 Calorie Diet</p>
-          {isCurrent && <p className="sf-other">†Daily Value not established.</p>}
+          {(isCurrent || isGrapefruit) && <p className="sf-other">†Daily Value not established.</p>}
         </div>
 
         <div className="sf-detail-panel">

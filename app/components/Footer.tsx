@@ -1,6 +1,8 @@
 import Link from "next/link";
 import FooterSignup from "@/app/components/FooterSignup";
 
+import { CLOSEOUT_LIVE } from "@/app/data/closeoutOffer";
+
 function FooterYear() {
   return <>{new Date().getFullYear()}</>;
 }
@@ -61,7 +63,7 @@ export default function Footer() {
             <nav aria-label="Support links">
               <a href="mailto:support@atlas-hydration.com">Support</a>
               <Link href="/products/strawberry-lemonade">Shop</Link>
-              <Link href="/#founder">About Us</Link>
+              <Link href={CLOSEOUT_LIVE ? "/contact" : "/#founder"}>{CLOSEOUT_LIVE ? "Contact Atlas" : "About Us"}</Link>
               <Link href="/products/strawberry-lemonade#supplement-facts">
                 Supplement Facts
               </Link>
