@@ -170,7 +170,7 @@ function SignupModal({ onClose }: { onClose: () => void }) {
             <div className="wp__content" key="success">
               <p className="wp__eyebrow">{alreadyIn ? "Welcome back" : "You're in"}</p>
               <h2 id="wp-title" className="wp__title">Here&apos;s your 10% off.</h2>
-              <p className="wp__lede">Paste it at checkout.</p>
+              <p className="wp__lede">Paste it at checkout. Starter kit and closeout bundles excluded.</p>
 
               <div className="wp__code">
                 <span className="wp__code-value" aria-label={`Your code is ${WELCOME_CODE}`}>{WELCOME_CODE}</span>
@@ -190,7 +190,7 @@ function SignupModal({ onClose }: { onClose: () => void }) {
             <div className="wp__content" key="form">
               <p className="wp__eyebrow">Join the Atlas list</p>
               <h2 id="wp-title" className="wp__title">Unlock 10% off eligible orders.</h2>
-              <p className="wp__lede">Enter your email to reveal your code. Starter kit excluded.</p>
+              <p className="wp__lede">Enter your email to reveal your code. Starter kit and closeout bundles excluded.</p>
 
               <form className="wp__form" onSubmit={submit} noValidate>
                 <input

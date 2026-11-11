@@ -32,7 +32,10 @@ export default function StickyBuyBar() {
       const box = document.getElementById("products")?.getBoundingClientRect();
       const vh = window.innerHeight;
       const buyBoxInView = !!box && box.top < vh * 0.85 && box.bottom > vh * 0.15;
-      setVisible(window.scrollY > 600 && !buyBoxInView);
+      // Keep the normal bag control out of the separate sale checkout section.
+      const sale = document.getElementById("closeout-bundles")?.getBoundingClientRect();
+      const saleInView = !!sale && sale.top < vh * 0.85 && sale.bottom > vh * 0.15;
+      setVisible(window.scrollY > 600 && !buyBoxInView && !saleInView);
     };
     window.addEventListener("scroll", handleScroll, { passive: true });
     handleScroll();

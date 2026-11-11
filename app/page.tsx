@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import CloseoutHighlight from "@/app/components/home/CloseoutHighlight";
 import HeroSection from "@/app/components/home/HeroSection";
 import ProofStrip from "@/app/components/home/ProofStrip";
 import FeaturedProduct from "@/app/components/home/FeaturedProduct";
@@ -65,6 +66,7 @@ export default function Home() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }} />
       <PurchaseSelectionProvider>
       <HeroSection />
+      <CloseoutHighlight />
       <ProofStrip />
       <FeaturedProduct />
       <ReviewsSection />

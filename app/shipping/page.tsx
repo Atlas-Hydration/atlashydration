@@ -83,6 +83,11 @@ export default function Shipping() {
           </ul>
 
           <h2>Shipping Rates</h2>
+          <p>
+            Warehouse closeout bundles (5 pouches for $50 or 2 for $32) include free
+            standard U.S. shipping when purchased through the sale checkout.
+            Express shipping costs extra.
+          </p>
           <ul>
             <li>Orders $50 and up (3–4 Business Days): FREE</li>
             <li>Orders under $50 (3–4 Business Days): $5.00</li>

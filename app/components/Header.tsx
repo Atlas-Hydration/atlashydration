@@ -23,6 +23,12 @@ interface Announcement {
 
 const ANNOUNCEMENTS: Announcement[] = [
   {
+    lead: "Warehouse closeout",
+    detail: "5 pouches for $50 or 2 for $32 · free standard U.S. shipping",
+    short: "Warehouse closeout: 5 pouches $50 · 2 for $32",
+    href: "/#closeout-bundles",
+  },
+  {
     lead: "Free shipping",
     detail: `on orders $${FREE_SHIPPING_THRESHOLD} and up, and always free with Subscribe & Save`,
     short: `Free shipping $${FREE_SHIPPING_THRESHOLD}+`,
@@ -36,7 +42,7 @@ const ANNOUNCEMENTS: Announcement[] = [
   },
   {
     lead: "Unlock 10% off",
-    detail: "your first eligible order when you join the Atlas list · starter kit excluded",
+    detail: "your first eligible order when you join the Atlas list · starter kit and closeout bundles excluded",
     short: "Unlock 10% off your first eligible order",
     signup: true,
   },
