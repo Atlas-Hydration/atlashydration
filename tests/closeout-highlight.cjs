@@ -59,21 +59,25 @@ assert(!find('button').props.disabled); assert(text(find('p',x=>x.props.role==='
 assert.equal(find('a').props.href,'#products');
 assert(text(tree).includes('Sale bundles check out separately from your bag.'));
 
-const original = file => cp.execFileSync('git',['show',`953388d4843d6386fbdecec881f2e82ed0c64e7d:${file}`],{encoding:'utf8'});
+const baseline = file => cp.execFileSync('git',['show',`bdea335:${file}`],{encoding:'utf8'});
 const home = fs.readFileSync('app/page.tsx','utf8');
-assert.equal(home.replace('import CloseoutHighlight from "@/app/components/home/CloseoutHighlight";\n','').replace('      <CloseoutHighlight />\n',''), original('app/page.tsx'));
-for(const name of ['HeroSection','ProofStrip','FeaturedProduct','ReviewsSection','BottleSection','ScienceSection','WhyAtlasSection','FounderSection','HydrationBenefits','BlogSection','GrapefruitWaitlist','FaqSection','CtaSection','DarkCta']) {
- const file=`app/components/home/${name}.tsx`; assert.equal(fs.readFileSync(file,'utf8'),original(file),`${name} must remain unchanged`);
+assert.equal(home, baseline('app/page.tsx').replace('import CtaSection from "@/app/components/home/CtaSection";\n','').replace('      <CtaSection />\n',''));
+for(const name of ['ProofStrip','FeaturedProduct','ReviewsSection','BottleSection','ScienceSection','FounderSection','HydrationBenefits','BlogSection','GrapefruitWaitlist','DarkCta']) {
+ const file=`app/components/home/${name}.tsx`; assert.equal(fs.readFileSync(file,'utf8'),baseline(file),`${name} must remain unchanged`);
 }
-for(const file of ['app/components/Footer.tsx','app/components/CartDrawer.tsx','app/components/PurchaseOptions.tsx','app/context/CartContext.tsx','app/context/PurchaseSelectionContext.tsx','app/products/strawberry-lemonade/page.tsx','app/products/grapefruit/page.tsx','app/globals.css']) assert.equal(fs.readFileSync(file,'utf8'),original(file),`${file} must remain unchanged`);
+for(const file of ['app/components/Footer.tsx','app/components/CartDrawer.tsx','app/components/PurchaseOptions.tsx','app/context/CartContext.tsx','app/context/PurchaseSelectionContext.tsx','app/products/strawberry-lemonade/page.tsx','app/products/grapefruit/page.tsx','app/globals.css']) assert.equal(fs.readFileSync(file,'utf8'),baseline(file),`${file} must remain unchanged`);
+assert.equal(fs.readFileSync('app/components/home/HeroSection.tsx','utf8'),baseline('app/components/home/HeroSection.tsx').replace('href="/products/strawberry-lemonade"','href="#closeout-bundles"'));
+assert.equal(fs.readFileSync('app/components/home/FaqSection.tsx','utf8'),baseline('app/components/home/FaqSection.tsx').replace(' Atlas is a 1% for the Planet member and donates 1% of every sale to clean-water organizations.',''));
+assert.equal(fs.readFileSync('app/components/home/WhyAtlasSection.tsx','utf8'),baseline('app/components/home/WhyAtlasSection.tsx').replace('  { big: "1%", label: "For the Planet" },\n',''));
+assert(!fs.existsSync('app/components/home/CtaSection.tsx'));
 const source=fs.readFileSync('app/components/home/CloseoutHighlight.tsx','utf8');
 assert(!/expires|expiration|countdown|moving warehouses|selling fast|only \d+ left/i.test(source));
 const header=fs.readFileSync('app/components/Header.tsx','utf8');
 for(const lead of ['Free shipping','Subscribe & Save 20%','Unlock 10% off','Atlas starter offer','Made in USA','Inside every stick','30-day guarantee','New flavor']) assert(header.includes(`lead: "${lead}"`));
-console.log('Additive scope, all original homepage sections and product/cart files, exact checkout variants, prices, shipping, selector, double-click guard, Back restoration and retry behavior passed.');
+console.log('Authorized claims removal and hero sale routing, unchanged product/cart files, exact checkout variants, prices, shipping, selector, double-click guard, Back restoration and retry behavior passed.');
 
 const published = file => cp.execFileSync('git',['show',`fc076cf47a1f8e7c6c137093a36008e989c9cdb9:${file}`],{encoding:'utf8'});
-for(const file of ['app/components/Header.tsx','app/components/FooterSignup.tsx','app/components/SignupPopup.tsx','app/components/home/StickyBuyBar.tsx','app/page.tsx','app/shipping/page.tsx','app/data/closeoutOffer.ts','app/lib/closeoutCheckout.ts']) assert.equal(fs.readFileSync(file,'utf8'),published(file),`${file} unchanged from live`);
+for(const file of ['app/components/Header.tsx','app/components/FooterSignup.tsx','app/components/SignupPopup.tsx','app/components/home/StickyBuyBar.tsx','app/shipping/page.tsx','app/data/closeoutOffer.ts','app/lib/closeoutCheckout.ts']) assert.equal(fs.readFileSync(file,'utf8'),published(file),`${file} unchanged from live`);
 assert(text(tree).includes('Big hydration.Our biggest sale.'));
 assert(text(tree).includes('The warehouse closeout event'));
 assert(text(tree).includes('Save $109.95'));

@@ -30,7 +30,6 @@ const specs = [
 const proof = [
   { big: "USA", label: "Made & sourced" },
   { big: "3rd", label: "Party tested" },
-  { big: "1%", label: "For the Planet" },
 ];
 
 export default function WhyAtlasSection() {

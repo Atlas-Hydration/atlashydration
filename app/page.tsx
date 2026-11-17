@@ -12,7 +12,6 @@ import BlogSection from "@/app/components/home/BlogSection";
 import FounderSection from "@/app/components/home/FounderSection";
 import GrapefruitWaitlist from "@/app/components/home/GrapefruitWaitlist";
 import FaqSection from "@/app/components/home/FaqSection";
-import CtaSection from "@/app/components/home/CtaSection";
 import DarkCta from "@/app/components/home/DarkCta";
 import StickyBuyBar from "@/app/components/home/StickyBuyBar";
 import { twitterCard } from "@/app/data/seo";
@@ -78,7 +77,6 @@ export default function Home() {
       <BlogSection />
       <GrapefruitWaitlist />
       <FaqSection />
-      <CtaSection />
       <DarkCta />
       <StickyBuyBar />
       </PurchaseSelectionProvider>
