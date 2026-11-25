@@ -44,8 +44,9 @@ export default function CloseoutHighlight() {
           <p className={styles.value}>{BLACK_FRIDAY.sticks} stick packs</p>
           <p className={styles.shipping}>
             <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4"><path d="M3 5h11v12H3zM14 9h4l3 4v4h-7"/><circle cx="7" cy="18" r="2"/><circle cx="18" cy="18" r="2"/></svg>
-            Free standard U.S. shipping
+            {BLACK_FRIDAY.shipping}
           </p>
+          <p className={styles.value}>{BLACK_FRIDAY.endLabel}</p>
         </div>
         <div className={styles.order}>
           <div className={styles.options}>

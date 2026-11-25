@@ -47,6 +47,7 @@ let tree = render();
 const find = (type,predicate=()=>true) => all(tree).find(x=>x.type===type && predicate(x));
 assert(text(find('button')).includes('$20'));
 assert(text(tree).includes('Black Friday Sale'));
+assert(text(tree).includes('Sale ends Monday, November 30'));
 assert(text(tree).includes('Free standard U.S. shipping'));
 assert.equal(all(tree).filter(x=>x.type==='input').length,0);
 assert.equal(all(tree).filter(x=>x.type==='img').length,1);

@@ -3,6 +3,7 @@ export const BLACK_FRIDAY = {
   productSlug: "strawberry-lemonade",
   variantId: "42739482067018",
   price: 20,
+  endLabel: "Sale ends Monday, November 30",
   quantity: 1,
   sticks: 16,
   discountCode: "ATLASBLACKFRIDAY",

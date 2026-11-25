@@ -167,6 +167,7 @@ export default function ProductPage({ config }: { config: ProductPageConfig }) {
                 <span>{isSale ? BLACK_FRIDAY.shipping : <>or ${product.subscribePrice.toFixed(2)} per pouch with Subscribe &amp; Save</>}</span>
               </p>
               <p className="product-hero__packs">16 Stick Packs</p>
+              {isSale && <p className="product-hero__packs">{BLACK_FRIDAY.endLabel}</p>}
               <p className="product-hero__desc">Zero-sugar electrolytes with B vitamins, vitamin C, and amino acids. Built for training, travel, heat, and long days.</p>
 
               <div className="product-hero__actives">
