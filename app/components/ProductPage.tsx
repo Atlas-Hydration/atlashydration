@@ -7,6 +7,7 @@ import { oneTimePouchTotal } from "@/app/data/pricing";
 import { PRODUCTS } from "@/app/data/products";
 import { FREE_SHIPPING_THRESHOLD } from "@/app/data/formula";
 import PurchaseOptions from "@/app/components/PurchaseOptions";
+import BlackFridayPrice from "@/app/components/BlackFridayPrice";
 import { BLACK_FRIDAY, isBlackFridayProduct } from "@/app/data/blackFriday";
 import { openBlackFridayCheckout } from "@/app/lib/blackFridayCheckout";
 import ProductArticles from "@/app/components/ProductArticles";
@@ -162,12 +163,17 @@ export default function ProductPage({ config }: { config: ProductPageConfig }) {
               <div className="product-hero__stars">
                 <span className="junip-product-summary" data-product-id={config.junipProductId} />
               </div>
-              <p className="product-hero__price">
-                <strong>${(isSale ? BLACK_FRIDAY.price : product.price).toFixed(2)}</strong>
-                <span>{isSale ? BLACK_FRIDAY.shipping : <>or ${product.subscribePrice.toFixed(2)} per pouch with Subscribe &amp; Save</>}</span>
-              </p>
-              <p className="product-hero__packs">16 Stick Packs</p>
-              {isSale && <p className="product-hero__packs">{BLACK_FRIDAY.endLabel}</p>}
+              {isSale ? <>
+                <BlackFridayPrice />
+                <p className="product-hero__packs">{BLACK_FRIDAY.shipping} · {BLACK_FRIDAY.sticks} sticks</p>
+                <p className="product-hero__packs">{BLACK_FRIDAY.endLabel}</p>
+              </> : <>
+                <p className="product-hero__price">
+                  <strong>${product.price.toFixed(2)}</strong>
+                  <span>or ${product.subscribePrice.toFixed(2)} per pouch with Subscribe &amp; Save</span>
+                </p>
+                <p className="product-hero__packs">16 Stick Packs</p>
+              </>}
               <p className="product-hero__desc">Zero-sugar electrolytes with B vitamins, vitamin C, and amino acids. Built for training, travel, heat, and long days.</p>
 
               <div className="product-hero__actives">

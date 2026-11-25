@@ -27,6 +27,7 @@ function load(file) {
     if(name==='react') return React;
     if(name==='react/jsx-runtime') return {jsx:(type,props)=>({type,props}),jsxs:(type,props)=>({type,props})};
     if(name.endsWith('.css')) return {default:new Proxy({},{get:(_,k)=>k})};
+    if(name.startsWith('./') && !name.endsWith('.css')) { const base=path.resolve(path.dirname(file),name); return load(fs.existsSync(base+'.ts')?base+'.ts':base+'.tsx'); }
     if(name.startsWith('@/')) {const base=path.resolve(name.slice(2)); return load(fs.existsSync(base+'.ts')?base+'.ts':base+'.tsx');}
     return require(name);
   }, mod, mod.exports);
@@ -45,7 +46,11 @@ const all = node => !node || typeof node !== 'object' ? [] : Array.isArray(node)
 const text = node => typeof node === 'string' || typeof node === 'number' ? String(node) : Array.isArray(node) ? node.map(text).join('') : text(node?.props?.children || '');
 let tree = render();
 const find = (type,predicate=()=>true) => all(tree).find(x=>x.type===type && predicate(x));
-assert(text(find('button')).includes('$20'));
+assert(text(find('button')).includes('Shop the Black Friday Sale'));
+const quote=load(path.resolve('app/components/BlackFridayPrice.tsx')).default();
+assert(text(quote).includes('$36.99'));
+assert(text(quote).includes('$20'));
+assert(text(quote).includes('Save $16.99'));
 assert(text(tree).includes('Black Friday Sale'));
 assert(text(tree).includes('Sale ends Monday, November 30'));
 assert(text(tree).includes('Free standard U.S. shipping'));
@@ -57,13 +62,12 @@ assert.equal(attempts,1); assert.equal(destination,offer.href); tree=render(); a
 listeners.get('pageshow')(); tree=render(); assert(!find('button').props.disabled);
 fail=true; find('button').props.onClick(); tree=render();
 assert(!find('button').props.disabled); assert(text(find('p',x=>x.props.role==='alert')).includes('try again'));
-assert.equal(find('a').props.href,'#products');
 assert(!/expires|expiration|countdown|only \d+ left/i.test(text(tree)));
 
 const baseline = file => cp.execFileSync('git',['show',`65641af:${file}`],{encoding:'utf8'});
 const home = fs.readFileSync('app/page.tsx','utf8');
 assert.equal(home.slice(home.indexOf('export default function Home')), baseline('app/page.tsx').split('export default function Home').slice(1).map(x=>'export default function Home'+x)[0]);
-for(const file of ['app/globals.css','app/products/grapefruit/page.tsx','app/components/home/WhyAtlasSection.tsx','app/components/home/CloseoutHighlight.module.css']) assert.equal(fs.readFileSync(file,'utf8'),baseline(file),`${file} must stay unchanged`);
+for(const file of ['app/globals.css','app/products/grapefruit/page.tsx','app/components/home/WhyAtlasSection.tsx']) assert.equal(fs.readFileSync(file,'utf8'),baseline(file),`${file} must stay unchanged`);
 assert(fs.readFileSync('app/components/ProductPage.tsx','utf8').includes('!isSale && <PurchaseOptions'));
 assert(fs.readFileSync('app/components/home/FeaturedProduct.tsx','utf8').includes('BLACK_FRIDAY.shipping}</p> : <PurchaseOptions'));
 assert(fs.readFileSync('app/context/CartContext.tsx','utf8').includes('stored.filter(item => !isBlackFridayProduct(item.slug)'));

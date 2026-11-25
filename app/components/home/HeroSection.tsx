@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { BLACK_FRIDAY } from "@/app/data/blackFriday";
 import HeroVideo from "@/app/components/home/HeroVideo";
 
@@ -33,9 +32,9 @@ export default function HeroSection() {
       <div className="hero__content">
         <h1 className="hero__title">Daily performance hydration.</h1>
         <p className="hero__stat">1,769&nbsp;mg electrolytes. Zero sugar. 25 calories.</p>
-        <Link href="#closeout-bundles" className="btn btn--hero">
+        <a href="#closeout-bundles" className="btn btn--hero">
           Black Friday: Strawberry Lemonade · ${BLACK_FRIDAY.price}
-        </Link>
+        </a>
         <ul className="hero__trust" aria-label="Atlas at a glance">
           <li>Made in USA</li>
           <li>Third-party tested</li>
