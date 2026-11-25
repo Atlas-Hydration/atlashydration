@@ -2,6 +2,7 @@
 
 import { useState, useRef, useCallback, useEffect } from "react";
 import { usePurchaseSelection } from "@/app/context/PurchaseSelectionContext";
+import { BLACK_FRIDAY } from "@/app/data/blackFriday";
 import { FREE_SHIPPING_THRESHOLD } from "@/app/data/formula";
 import PurchaseOptions from "@/app/components/PurchaseOptions";
 import { resizeShopify, shopifySrcSet } from "@/app/lib/images";
@@ -193,7 +194,7 @@ export default function FeaturedProduct() {
             </div>
 
 
-            <PurchaseOptions
+            {!isPreorder ? <p><strong>1 pouch · {BLACK_FRIDAY.sticks} sticks</strong><br />{BLACK_FRIDAY.shipping}</p> : <PurchaseOptions
               slug={selectedFlavor}
               purchaseType={purchaseType}
               onPurchaseTypeChange={setPurchaseType}
@@ -205,22 +206,24 @@ export default function FeaturedProduct() {
               onFrequencyChange={setFrequency}
               addBottle={addBottle}
               onAddBottleChange={setAddBottle}
-            />
+            />}
 
             <div style={{ marginTop: 16 }}>
               <button
                 className={`btn btn--primary btn--lg${adding ? " btn--added" : ""}`}
                 onClick={handleAdd}
               >
-                {adding ? "Added" : isPreorder ? "Pre-Order" : `${purchaseType === "starter" ? "Add starter kit" : "Add to Cart"} — $${addTotal.toFixed(2)}`}
+                {adding ? (isPreorder ? "Added" : "Opening checkout…") : isPreorder ? "Pre-Order" : `Buy one pouch — $${addTotal.toFixed(2)}`}
               </button>
             </div>
 
             <ul className="trust-row" aria-label="Why customers feel good buying Atlas">
               <li>Third-party tested</li>
               <li>Made in USA</li>
-              <li>Free shipping over ${FREE_SHIPPING_THRESHOLD}</li>
-              <li>Skip or cancel subscriptions anytime</li>
+              {isPreorder ? <>
+                <li>Free shipping over ${FREE_SHIPPING_THRESHOLD}</li>
+                <li>Skip or cancel subscriptions anytime</li>
+              </> : <li>One-time purchase</li>}
             </ul>
           </div>
         </div>

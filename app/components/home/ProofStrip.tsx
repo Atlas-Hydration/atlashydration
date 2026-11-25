@@ -1,4 +1,4 @@
-import { FORMULA, FORMULA_TOTAL, FREE_SHIPPING_THRESHOLD } from "@/app/data/formula";
+import { FORMULA, FORMULA_TOTAL } from "@/app/data/formula";
 
 // Product figures mirror the Supplement Facts label (see app/data/formula.ts);
 // policy items mirror the shipping/returns page and subscription terms.
@@ -12,9 +12,7 @@ const items = [
   `${FORMULA.magnesiumMg}mg magnesium`,
   "L-Glutamine + L-Alanine",
   "Sweetened with stevia + allulose",
-  `Free shipping over $${FREE_SHIPPING_THRESHOLD}`,
-  "Subscribe & Save 20%",
-  "Skip or cancel anytime",
+  "Free standard U.S. shipping on the Black Friday offer",
   "Made in USA",
   "Third-party tested",
   "Non-GMO",

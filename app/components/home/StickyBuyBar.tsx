@@ -83,7 +83,7 @@ export default function StickyBuyBar() {
           className="sticky-buy__btn"
           onClick={() => addSelectionToCart()}
         >
-          <span className="sticky-buy__btn-text">{isPreorder ? "Pre-Order" : "Add to Cart"}</span>
+          <span className="sticky-buy__btn-text">{isPreorder ? "Pre-Order" : "Buy one pouch"}</span>
         </button>
       </div>
     </div>

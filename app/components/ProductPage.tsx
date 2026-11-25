@@ -7,7 +7,8 @@ import { oneTimePouchTotal } from "@/app/data/pricing";
 import { PRODUCTS } from "@/app/data/products";
 import { FREE_SHIPPING_THRESHOLD } from "@/app/data/formula";
 import PurchaseOptions from "@/app/components/PurchaseOptions";
-import { STARTER_OFFER_LIVE } from "@/app/data/starterOffer";
+import { BLACK_FRIDAY, isBlackFridayProduct } from "@/app/data/blackFriday";
+import { openBlackFridayCheckout } from "@/app/lib/blackFridayCheckout";
 import ProductArticles from "@/app/components/ProductArticles";
 import { resizeShopify, shopifySrcSet } from "@/app/lib/images";
 import { SupplementFactsWithPanel } from "@/app/components/IngredientDetailPanel";
@@ -87,7 +88,7 @@ function ProductGallery({ images }: { images: ProductImage[] }) {
 
 export default function ProductPage({ config }: { config: ProductPageConfig }) {
   const { addToCart } = useCart();
-  const [purchaseOption, setPurchaseOption] = useState<"subscribe" | "onetime" | "starter">(config.slug === "strawberry-lemonade" && STARTER_OFFER_LIVE ? "starter" : "subscribe");
+  const [purchaseOption, setPurchaseOption] = useState<"subscribe" | "onetime" | "starter">(isBlackFridayProduct(config.slug) ? "onetime" : "subscribe");
   const [frequency, setFrequency] = useState(2);
   const [qty, setQty] = useState(1);
   const [customQtyOpen, setCustomQtyOpen] = useState(false);
@@ -97,6 +98,7 @@ export default function ProductPage({ config }: { config: ProductPageConfig }) {
   const [showSticky, setShowSticky] = useState(false);
 
   const product = PRODUCTS[config.slug];
+  const isSale = isBlackFridayProduct(config.slug);
   const isSubscribing = purchaseOption === "subscribe";
   const unitPrice = isSubscribing ? product.subscribePrice : product.price;
   // The multi-pouch discount only applies to one-time purchases.
@@ -105,7 +107,7 @@ export default function ProductPage({ config }: { config: ProductPageConfig }) {
   // Optional Atlas Bottle add-on, only offered with the 2-pouch one-time option.
   const bottleIncluded = BOTTLE_DISCOUNT_LIVE && addBottle && !isSubscribing && qty === 2 && !customQtyOpen;
   const isStarter = purchaseOption === "starter" && config.slug === "strawberry-lemonade";
-  const addTotal = isStarter ? 50 : bottleIncluded
+  const addTotal = isSale ? BLACK_FRIDAY.price : isStarter ? 50 : bottleIncluded
     ? computeCartPricing([
         { slug: config.slug, title: product.name, price: product.price, quantity: 2, image: null },
         { slug: "bottle", title: PRODUCTS.bottle.name, price: PRODUCTS.bottle.price, quantity: 1, image: null },
@@ -113,11 +115,12 @@ export default function ProductPage({ config }: { config: ProductPageConfig }) {
     : customQtyTotal;
 
   const handleAddToCart = useCallback(() => {
+    if (isSale) { openBlackFridayCheckout(); return; }
     if (isStarter) { addToCart("atlas-starter-kit", 1); return; }
     const isSubscription = purchaseOption === "subscribe";
     addToCart(config.slug, qty, isSubscription ? frequency : undefined);
     if (bottleIncluded) addToCart("bottle", 1);
-  }, [addToCart, config.slug, qty, purchaseOption, frequency, bottleIncluded, isStarter]);
+  }, [addToCart, config.slug, qty, purchaseOption, frequency, bottleIncluded, isStarter, isSale]);
 
   // Mobile sticky Add to Cart: only while the main buy button is off-screen and
   // the closing CTA hasn't been reached. Reuses handleAddToCart unchanged.
@@ -141,9 +144,9 @@ export default function ProductPage({ config }: { config: ProductPageConfig }) {
     };
   }, []);
 
-  const buyButtonText = isStarter ? "Add starter kit" : config.preorder ? "Pre-Order" : "Add to Cart";
+  const buyButtonText = isSale ? "Buy one pouch" : isStarter ? "Add starter kit" : config.preorder ? "Pre-Order" : "Add to Cart";
   const pouchLabel = `${qty} pouch${qty === 1 ? "" : "es"}`;
-  const stickyMeta = isStarter ? "Starter kit · 2 pouches + free bottle" : isSubscribing ? `Subscribe & Save · ${pouchLabel}` : `One-time · ${pouchLabel}${bottleIncluded ? " + bottle" : ""}`;
+  const stickyMeta = isSale ? "1 pouch · Free U.S. shipping" : isStarter ? "Starter kit · 2 pouches + free bottle" : isSubscribing ? `Subscribe & Save · ${pouchLabel}` : `One-time · ${pouchLabel}${bottleIncluded ? " + bottle" : ""}`;
   const ctaButtonText = `${config.preorder ? "Pre-Order" : "Order"} — $${addTotal.toFixed(2)}`;
 
   return (
@@ -154,14 +157,14 @@ export default function ProductPage({ config }: { config: ProductPageConfig }) {
             <ProductGallery images={config.images} />
 
             <div className="product-hero__info">
-              <p className="product-hero__eyebrow">Daily performance hydration</p>
+              <p className="product-hero__eyebrow">{isSale ? "Black Friday Sale" : "Daily performance hydration"}</p>
               <h1 className="product-hero__title">Atlas {config.flavorName} Electrolytes</h1>
               <div className="product-hero__stars">
                 <span className="junip-product-summary" data-product-id={config.junipProductId} />
               </div>
               <p className="product-hero__price">
-                <strong>${product.price.toFixed(2)}</strong>
-                <span>or ${product.subscribePrice.toFixed(2)} per pouch with Subscribe &amp; Save</span>
+                <strong>${(isSale ? BLACK_FRIDAY.price : product.price).toFixed(2)}</strong>
+                <span>{isSale ? BLACK_FRIDAY.shipping : <>or ${product.subscribePrice.toFixed(2)} per pouch with Subscribe &amp; Save</>}</span>
               </p>
               <p className="product-hero__packs">16 Stick Packs</p>
               <p className="product-hero__desc">Zero-sugar electrolytes with B vitamins, vitamin C, and amino acids. Built for training, travel, heat, and long days.</p>
@@ -184,7 +187,7 @@ export default function ProductPage({ config }: { config: ProductPageConfig }) {
               </div>
 
 
-              <PurchaseOptions
+              {!isSale && <PurchaseOptions
                 slug={config.slug}
                 purchaseType={purchaseOption}
                 onPurchaseTypeChange={setPurchaseOption}
@@ -196,7 +199,7 @@ export default function ProductPage({ config }: { config: ProductPageConfig }) {
                 onFrequencyChange={setFrequency}
                 addBottle={addBottle}
                 onAddBottleChange={setAddBottle}
-              />
+              />}
 
               {config.preorderShippingMessage && <p>{config.preorderShippingMessage}</p>}
               <div className="product-hero__buy" ref={buyRef}>
@@ -206,8 +209,10 @@ export default function ProductPage({ config }: { config: ProductPageConfig }) {
               <ul className="trust-row" aria-label="Why customers feel good buying Atlas">
                 <li>Third-party tested</li>
                 <li>Made in USA</li>
-                <li>Free shipping over ${FREE_SHIPPING_THRESHOLD}</li>
-                <li>Skip or cancel subscriptions anytime</li>
+                {isSale ? <li>One-time purchase · 1 pouch</li> : <>
+                  <li>Free shipping over ${FREE_SHIPPING_THRESHOLD}</li>
+                  <li>Skip or cancel subscriptions anytime</li>
+                </>}
               </ul>
 
               <div className="product-accordions" style={{ marginTop: 16 }}>

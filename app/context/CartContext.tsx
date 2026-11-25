@@ -9,6 +9,7 @@ import {
   type ReactNode,
 } from "react";
 import { buildOneTimeCheckoutUrl } from "@/app/lib/checkoutAttribution";
+import { isBlackFridayProduct } from "@/app/data/blackFriday";
 import { trackMeta } from "@/app/lib/metaPixel";
 import { STARTER_OFFER } from "@/app/data/starterOffer";
 import { PRODUCTS } from "@/app/data/products";
@@ -157,7 +158,10 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   // Load cart from localStorage on mount
   useEffect(() => {
-    setItems(loadCart());
+    const stored = loadCart();
+    const current = stored.filter(item => !isBlackFridayProduct(item.slug) && item.slug !== "atlas-starter-kit");
+    if (current.length !== stored.length) saveCart(current);
+    setItems(current);
   }, []);
 
   const cartCount = items.reduce((sum, i) => sum + i.quantity, 0);
@@ -167,6 +171,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
   // -----------------------------------------------------------------------
   const addToCart = useCallback(
     (productSlug: string, qty = 1, subscriptionFrequency?: number) => {
+      if (isBlackFridayProduct(productSlug) || productSlug === "atlas-starter-kit") return;
       const product = PRODUCTS[productSlug];
       if (!product) return;
       if (product.oneTimeOnly) subscriptionFrequency = undefined;

@@ -7,7 +7,7 @@ import { useCart } from "@/app/context/CartContext";
 import { FREE_SHIPPING_THRESHOLD } from "@/app/data/formula";
 import { useSignupPopup } from "@/app/components/SignupPopup";
 
-import { STARTER_OFFER_LIVE } from "@/app/data/starterOffer";
+import { BLACK_FRIDAY } from "@/app/data/blackFriday";
 
 const NAV_LINKS: { label: string; href: string }[] = [];
 
@@ -23,39 +23,23 @@ interface Announcement {
 
 const ANNOUNCEMENTS: Announcement[] = [
   {
-    lead: "Warehouse closeout",
-    detail: "5 pouches for $50 or 2 for $32 · free standard U.S. shipping",
-    short: "Warehouse closeout: 5 pouches $50 · 2 for $32",
+    lead: "Black Friday Sale",
+    detail: `1 Strawberry Lemonade pouch for $${BLACK_FRIDAY.price} · free standard U.S. shipping`,
+    short: `Black Friday: $${BLACK_FRIDAY.price} · Free shipping`,
     href: "/#closeout-bundles",
   },
   {
     lead: "Free shipping",
-    detail: `on orders $${FREE_SHIPPING_THRESHOLD} and up, and always free with Subscribe & Save`,
+    detail: `on other eligible orders $${FREE_SHIPPING_THRESHOLD} and up`,
     short: `Free shipping $${FREE_SHIPPING_THRESHOLD}+`,
     href: "/shipping",
   },
   {
-    lead: "Subscribe & Save 20%",
-    detail: "Free shipping on every delivery · skip, pause, or cancel anytime",
-    short: "Subscribe & Save 20% + free shipping",
-    href: "/products/strawberry-lemonade",
-  },
-  {
     lead: "Unlock 10% off",
-    detail: "your first eligible order when you join the Atlas list · starter kit and closeout bundles excluded",
+    detail: "your first eligible order when you join the Atlas list · Black Friday offer excluded",
     short: "Unlock 10% off your first eligible order",
     signup: true,
   },
-  ...(STARTER_OFFER_LIVE
-    ? [
-        {
-          lead: "Atlas starter offer",
-          detail: "2 Strawberry Lemonade pouches + Atlas bottle · $50 · free standard U.S. shipping",
-          short: "2 pouches + Atlas bottle — $50",
-          href: "/products/strawberry-lemonade",
-        },
-      ]
-    : []),
   {
     lead: "Made in USA",
     detail: "Third-party tested · zero sugar · 25 calories per stick",

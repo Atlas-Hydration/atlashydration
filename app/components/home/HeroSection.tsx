@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { FREE_SHIPPING_THRESHOLD } from "@/app/data/formula";
+import { BLACK_FRIDAY } from "@/app/data/blackFriday";
 import HeroVideo from "@/app/components/home/HeroVideo";
 
 const CF_BASE = "https://customer-1sijhr9xl3yqixxu.cloudflarestream.com";
@@ -34,12 +34,12 @@ export default function HeroSection() {
         <h1 className="hero__title">Daily performance hydration.</h1>
         <p className="hero__stat">1,769&nbsp;mg electrolytes. Zero sugar. 25 calories.</p>
         <Link href="#closeout-bundles" className="btn btn--hero">
-          Shop Strawberry Lemonade
+          Black Friday: Strawberry Lemonade · ${BLACK_FRIDAY.price}
         </Link>
         <ul className="hero__trust" aria-label="Atlas at a glance">
           <li>Made in USA</li>
           <li>Third-party tested</li>
-          <li>{`Free shipping over $${FREE_SHIPPING_THRESHOLD}`}</li>
+          <li>Free standard U.S. shipping on the sale</li>
         </ul>
       </div>
     </section>

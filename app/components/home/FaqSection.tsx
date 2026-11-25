@@ -17,7 +17,7 @@ function buildFaqItems() {
     },
     {
       question: "How does Atlas compare to other electrolyte mixes?",
-      answer: `Every brand formulates differently, so we suggest comparing labels side by side. Atlas provides <strong>${FORMULA_TOTAL}mg total electrolytes</strong>, zero sugar, and ${FORMULA.calories} calories per stick, plus B vitamins, vitamin C, L-Glutamine, and L-Alanine. That works out to $1.87 per stick, or $1.50 with a subscription.`,
+      answer: `Every brand formulates differently, so we suggest comparing labels side by side. Atlas provides <strong>${FORMULA_TOTAL}mg total electrolytes</strong>, zero sugar, and ${FORMULA.calories} calories per stick, plus B vitamins, vitamin C, L-Glutamine, and L-Alanine.`,
     },
     {
       question: "What vitamins and amino acids are included?",

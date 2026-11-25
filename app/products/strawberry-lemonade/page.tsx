@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import { PRODUCTS } from "@/app/data/products";
+import { BLACK_FRIDAY } from "@/app/data/blackFriday";
 import { buildOffer, reviewJsonLd, breadcrumbJsonLd, twitterCard } from "@/app/data/seo";
 import ProductPage from "@/app/components/ProductPage";
-import { FORMULA, FORMULA_TOTAL, FORMULA_ELECTROLYTE_BREAKDOWN, FREE_SHIPPING_THRESHOLD } from "@/app/data/formula";
+import { FORMULA, FORMULA_TOTAL, FORMULA_ELECTROLYTE_BREAKDOWN } from "@/app/data/formula";
 
 export const metadata: Metadata = {
   title: "Strawberry Lemonade Electrolytes | Atlas Hydration",
@@ -27,7 +28,7 @@ const productJsonLd = {
   image: "https://cdn.shopify.com/s/files/1/0595/8133/3578/files/1_e4b7eae7-01d9-430c-9655-7949d910deb6.jpg?v=1771507844",
   brand: { "@type": "Brand", name: "Atlas Hydration" },
   sku: PRODUCTS["strawberry-lemonade"].variantId.replace("gid://shopify/ProductVariant/", ""),
-  offers: buildOffer({ url: "https://atlas-hydration.com/products/strawberry-lemonade", price: PRODUCTS["strawberry-lemonade"].price.toFixed(2), preorder: false }),
+  offers: buildOffer({ url: "https://atlas-hydration.com/products/strawberry-lemonade", price: BLACK_FRIDAY.price.toFixed(2), preorder: false }),
   ...reviewJsonLd(),
   nutrition: {
     "@type": "NutritionInformation",
@@ -122,7 +123,7 @@ const accordionItems = [
     title: "Shipping & Returns",
     content: (
       <>
-        <p><strong>Free shipping</strong> on U.S. orders over ${FREE_SHIPPING_THRESHOLD}. Orders under ${FREE_SHIPPING_THRESHOLD} ship for $4.99 (4–6 business days). Subscriptions always ship free.</p>
+        <p><strong>Free standard U.S. shipping</strong> is included with this Black Friday offer. Taxes, if applicable, are calculated at checkout.</p>
         <p><strong>Satisfaction guaranteed:</strong> If you&apos;re not completely happy with your order, contact us within 30 days for a full refund or exchange — no questions asked.</p>
         <p>We currently ship within the United States. International shipping coming soon.</p>
       </>

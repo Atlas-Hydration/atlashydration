@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import { PRODUCTS } from "@/app/data/products";
 import { setMetaConsent, trackMeta } from "@/app/lib/metaPixel";
 import { captureCheckoutAttribution } from "@/app/lib/checkoutAttribution";
-import { STARTER_OFFER, STARTER_OFFER_LIVE } from "@/app/data/starterOffer";
+import { BLACK_FRIDAY, isBlackFridayProduct } from "@/app/data/blackFriday";
 
 export default function MetaPixel({ accepted }: { accepted: boolean }) {
   const pathname = usePathname();
@@ -19,12 +19,10 @@ export default function MetaPixel({ accepted }: { accepted: boolean }) {
     lastPage.current = pathname;
     trackMeta("PageView");
     const slug = pathname.match(/^\/products\/([^/]+)\/?$/)?.[1];
-    // Match the default selected Starter Kit offer, not its undiscounted components.
-    const starter = slug === "strawberry-lemonade" && STARTER_OFFER_LIVE;
-    const product = slug ? PRODUCTS[starter ? "atlas-starter-kit" : slug] : undefined;
+    const product = slug ? PRODUCTS[slug] : undefined;
     if (product) trackMeta("ViewContent", {
       content_ids: [product.variantId.replace("gid://shopify/ProductVariant/", "")],
-      content_type: "product", currency: "USD", value: starter ? STARTER_OFFER.price : product.price,
+      content_type: "product", currency: "USD", value: slug && isBlackFridayProduct(slug) ? BLACK_FRIDAY.price : product.price,
     });
   }, [accepted, pathname]);
   return null;
