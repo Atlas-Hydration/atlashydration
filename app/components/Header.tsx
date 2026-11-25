@@ -7,7 +7,6 @@ import { useCart } from "@/app/context/CartContext";
 import { FREE_SHIPPING_THRESHOLD } from "@/app/data/formula";
 import { useSignupPopup } from "@/app/components/SignupPopup";
 
-import { BLACK_FRIDAY } from "@/app/data/blackFriday";
 
 const NAV_LINKS: { label: string; href: string }[] = [];
 
@@ -23,20 +22,14 @@ interface Announcement {
 
 const ANNOUNCEMENTS: Announcement[] = [
   {
-    lead: "Black Friday Sale",
-    detail: `1 Strawberry Lemonade pouch for $${BLACK_FRIDAY.price} · free standard U.S. shipping`,
-    short: `Black Friday: $${BLACK_FRIDAY.price} · Free shipping`,
-    href: "/#closeout-bundles",
-  },
-  {
     lead: "Free shipping",
-    detail: `on other eligible orders $${FREE_SHIPPING_THRESHOLD} and up`,
+    detail: `on eligible orders $${FREE_SHIPPING_THRESHOLD} and up`,
     short: `Free shipping $${FREE_SHIPPING_THRESHOLD}+`,
     href: "/shipping",
   },
   {
     lead: "Unlock 10% off",
-    detail: "your first eligible order when you join the Atlas list · Black Friday offer excluded",
+    detail: "your first eligible order when you join the Atlas list",
     short: "Unlock 10% off your first eligible order",
     signup: true,
   },

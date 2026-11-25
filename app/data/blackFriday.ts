@@ -4,13 +4,13 @@ import { POUCH_RETAIL } from "@/app/data/pricing";
 export const BLACK_FRIDAY = {
   productSlug: "strawberry-lemonade",
   variantId: "42739482067018",
-  price: 20,
+  price: POUCH_RETAIL,
   regularDelivered: Number((POUCH_RETAIL + 5).toFixed(2)),
   endLabel: "Sale ends Monday, November 30",
   quantity: 1,
   sticks: 16,
   discountCode: "ATLASBLACKFRIDAY",
-  shipping: "Free standard U.S. shipping",
+  shipping: "Standard U.S. shipping calculated at checkout",
 } as const;
 
 export function isBlackFridayProduct(slug: string) {

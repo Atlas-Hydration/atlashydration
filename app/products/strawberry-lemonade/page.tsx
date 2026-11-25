@@ -123,7 +123,7 @@ const accordionItems = [
     title: "Shipping & Returns",
     content: (
       <>
-        <p><strong>Free standard U.S. shipping</strong> is included with this Black Friday offer. Taxes, if applicable, are calculated at checkout.</p>
+        <p><strong>Standard U.S. shipping</strong> is $5 on orders under $50 and free on eligible orders of $50 or more. Taxes, if applicable, are calculated at checkout.</p>
         <p><strong>Satisfaction guaranteed:</strong> If you&apos;re not completely happy with your order, contact us within 30 days for a full refund or exchange — no questions asked.</p>
         <p>We currently ship within the United States. International shipping coming soon.</p>
       </>

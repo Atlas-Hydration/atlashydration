@@ -80,7 +80,7 @@ export function PurchaseSelectionProvider({ children }: { children: ReactNode })
     : pouchTotal;
 
   const pouches = qty === 1 ? "1 pouch" : `${qty} pouches`;
-  const offerLabel = isSale ? "1 pouch · Free U.S. shipping" : isStarter ? "Starter kit · 2 pouches + free bottle" : isSubscribing
+  const offerLabel = isSale ? "1 pouch · 16 sticks" : isStarter ? "Starter kit · 2 pouches + free bottle" : isSubscribing
     ? qty === 1 ? "Subscribe & Save" : `Subscribe · ${pouches}`
     : `${pouches}${bottleIncluded ? " + bottle" : ""}`;
 

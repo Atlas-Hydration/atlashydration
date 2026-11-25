@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import CloseoutHighlight from "@/app/components/home/CloseoutHighlight";
 import HeroSection from "@/app/components/home/HeroSection";
 import ProofStrip from "@/app/components/home/ProofStrip";
 import FeaturedProduct from "@/app/components/home/FeaturedProduct";
@@ -21,7 +20,7 @@ import { PurchaseSelectionProvider } from "@/app/context/PurchaseSelectionContex
 export const metadata: Metadata = {
   title: "Atlas Hydration | Zero-Sugar Electrolyte Mixes",
   description:
-    "Shop premium zero-sugar electrolyte drink mixes with 1,769mg electrolytes, B vitamins, and amino acids. Black Friday: one Strawberry Lemonade pouch for $20 with free standard U.S. shipping.",
+    "Shop premium zero-sugar electrolyte drink mixes with 1,769mg electrolytes, B vitamins, and amino acids. Shop Strawberry Lemonade and explore Atlas Grapefruit.",
   keywords:
     "electrolyte drink mix, zero sugar electrolytes, sports hydration, Atlas Hydration, electrolyte powder, sugar free hydration, recovery drink",
   alternates: { canonical: "https://atlas-hydration.com/" },
@@ -31,7 +30,7 @@ export const metadata: Metadata = {
     url: "https://atlas-hydration.com/",
     title: "Atlas Hydration | Zero-Sugar Electrolyte Mixes",
     description:
-      "Premium zero-sugar electrolyte drink mixes with 1,769mg electrolytes, B vitamins, and amino acids. Black Friday: one Strawberry Lemonade pouch for $20.",
+      "Premium zero-sugar electrolyte drink mixes with 1,769mg electrolytes, B vitamins, and amino acids. Shop Strawberry Lemonade and explore Atlas Grapefruit.",
     siteName: "Atlas Hydration",
     images: ["https://cdn.shopify.com/s/files/1/0595/8133/3578/files/1_e4b7eae7-01d9-430c-9655-7949d910deb6.jpg?v=1771507844"],
   },
@@ -65,7 +64,6 @@ export default function Home() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }} />
       <PurchaseSelectionProvider>
       <HeroSection />
-      <CloseoutHighlight />
       <ProofStrip />
       <FeaturedProduct />
       <ReviewsSection />

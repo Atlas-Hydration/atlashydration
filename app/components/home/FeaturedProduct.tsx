@@ -97,6 +97,7 @@ export default function FeaturedProduct() {
 
   return (
     <section className="featured-product" id="products" aria-label="Featured Product">
+      <span id="closeout-bundles" aria-hidden="true" />
       <div className="container">
         <div className="featured-product__grid">
           {/* Gallery */}

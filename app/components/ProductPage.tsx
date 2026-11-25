@@ -7,7 +7,6 @@ import { oneTimePouchTotal } from "@/app/data/pricing";
 import { PRODUCTS } from "@/app/data/products";
 import { FREE_SHIPPING_THRESHOLD } from "@/app/data/formula";
 import PurchaseOptions from "@/app/components/PurchaseOptions";
-import BlackFridayPrice from "@/app/components/BlackFridayPrice";
 import { BLACK_FRIDAY, isBlackFridayProduct } from "@/app/data/blackFriday";
 import { openBlackFridayCheckout } from "@/app/lib/blackFridayCheckout";
 import ProductArticles from "@/app/components/ProductArticles";
@@ -147,7 +146,7 @@ export default function ProductPage({ config }: { config: ProductPageConfig }) {
 
   const buyButtonText = isSale ? "Buy one pouch" : isStarter ? "Add starter kit" : config.preorder ? "Pre-Order" : "Add to Cart";
   const pouchLabel = `${qty} pouch${qty === 1 ? "" : "es"}`;
-  const stickyMeta = isSale ? "1 pouch · Free U.S. shipping" : isStarter ? "Starter kit · 2 pouches + free bottle" : isSubscribing ? `Subscribe & Save · ${pouchLabel}` : `One-time · ${pouchLabel}${bottleIncluded ? " + bottle" : ""}`;
+  const stickyMeta = isSale ? "1 pouch · 16 sticks" : isStarter ? "Starter kit · 2 pouches + free bottle" : isSubscribing ? `Subscribe & Save · ${pouchLabel}` : `One-time · ${pouchLabel}${bottleIncluded ? " + bottle" : ""}`;
   const ctaButtonText = `${config.preorder ? "Pre-Order" : "Order"} — $${addTotal.toFixed(2)}`;
 
   return (
@@ -158,15 +157,14 @@ export default function ProductPage({ config }: { config: ProductPageConfig }) {
             <ProductGallery images={config.images} />
 
             <div className="product-hero__info">
-              <p className="product-hero__eyebrow">{isSale ? "Black Friday Sale" : "Daily performance hydration"}</p>
+              <p className="product-hero__eyebrow">Daily performance hydration</p>
               <h1 className="product-hero__title">Atlas {config.flavorName} Electrolytes</h1>
               <div className="product-hero__stars">
                 <span className="junip-product-summary" data-product-id={config.junipProductId} />
               </div>
               {isSale ? <>
-                <BlackFridayPrice />
-                <p className="product-hero__packs">{BLACK_FRIDAY.shipping} · {BLACK_FRIDAY.sticks} sticks</p>
-                <p className="product-hero__packs">{BLACK_FRIDAY.endLabel}</p>
+                <p className="product-hero__price"><strong>${BLACK_FRIDAY.price.toFixed(2)}</strong></p>
+                <p className="product-hero__packs">{BLACK_FRIDAY.sticks} stick packs</p>
               </> : <>
                 <p className="product-hero__price">
                   <strong>${product.price.toFixed(2)}</strong>

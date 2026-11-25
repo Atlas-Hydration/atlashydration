@@ -83,14 +83,9 @@ export default function Shipping() {
           </ul>
 
           <h2>Shipping Rates</h2>
-          <p>
-            The $20 Black Friday Strawberry Lemonade pouch includes free
-            standard U.S. shipping when purchased through the sale checkout.
-            Express shipping costs extra.
-          </p>
           <ul>
-            <li>Other orders $50 and up (3–4 Business Days): FREE</li>
-            <li>Other orders under $50 (3–4 Business Days): $5.00</li>
+            <li>Orders $50 and up (3–4 Business Days): FREE</li>
+            <li>Orders under $50 (3–4 Business Days): $5.00</li>
             <li>
               Once an order has been processed, the shipping method cannot be
               changed.
